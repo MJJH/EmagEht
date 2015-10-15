@@ -10,6 +10,8 @@ public class PartyInvite {
 
     private int id;
     private Date datetime;
+    private Party party;
+    private Account account;
 
     /**
      *
@@ -18,13 +20,16 @@ public class PartyInvite {
      */
     public PartyInvite(Account account, Party party)
     {
-
+        this.account = account;
+        this.party = party;
+        datetime = new Date();
     }
 
     /**
      *
+     * @return party
      */
-    public void accept()
+    public Party accept()
     {
         // TODO - implement PartyInvite.accept
         throw new UnsupportedOperationException();

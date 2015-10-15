@@ -11,6 +11,7 @@ public class Message {
     private int id;
     private String text;
     private Date time;
+    private Account account;
 
     /**
      *
@@ -19,7 +20,9 @@ public class Message {
      */
     public Message(Account account, String text)
     {
-
+        this.account = account;
+        this.text = text;
+        time = new Date();
     }
 
 }

@@ -7,6 +7,9 @@ package thegame.com.Menu;
 public class Party {
 
     private int id;
+    private Account[] members;
+    private Account owner;
+    private Message[] chat;
 
     /**
      *
@@ -14,7 +17,7 @@ public class Party {
      */
     public Party(Account owner)
     {
-
+        this.owner = owner;
     }
 
     /**
@@ -25,5 +28,15 @@ public class Party {
     {
 
     }
-
+    
+    /**
+     *
+     * @param sender
+     * @param message
+     * @return
+     */
+    public boolean sendMessage(Account sender, String message)
+    {
+        return false;
+    }
 }
