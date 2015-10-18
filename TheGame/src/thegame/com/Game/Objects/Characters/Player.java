@@ -14,18 +14,18 @@ public class Player extends CharacterGame {
     private int spawnY;
 
     /**
-     *
-     * @param character
-     * @param name
-     * @param hp
-     * @param skills
-     * @param attacks
-     * @param x
-     * @param y
-     * @param skin
-     * @param height
-     * @param width
-     * @param solid
+     * This constructor will create an player
+     * @param character, 
+     * @param name, Name of the player
+     * @param hp, HP of the player
+     * @param skills, Skills of the player
+     * @param attacks, Attacks of the player
+     * @param x, X-coordinate of the player
+     * @param y, Y-coordinate of the player
+     * @param skin, Skin of the player
+     * @param height, height of the player
+     * @param width, width of the player
+     * @param solid, solidness of the player
      */
     public Player(Character character, String name, int hp, SkillType[] skills, AttackType[] attacks, int x, int y, Image skin, int height, int width, float solid)
     {
@@ -33,7 +33,7 @@ public class Player extends CharacterGame {
     }
 
     /**
-     *
+     * This will spawn the player in the game on a location.
      */
     public void spawn()
     {
@@ -42,7 +42,7 @@ public class Player extends CharacterGame {
     }
 
     /**
-     *
+     * THis method will level the Player up by 1 level.
      */
     public void LevelUp()
     {

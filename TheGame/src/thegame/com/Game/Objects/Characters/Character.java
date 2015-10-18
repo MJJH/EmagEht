@@ -2,7 +2,7 @@ package thegame.com.Game.Objects.Characters;
 
 /**
  *
- * @author laure
+ * @author Nick Bijmoer
  */
 public class Character {
 
@@ -11,9 +11,9 @@ public class Character {
     private int xp;
 
     /**
-     *
-     * @param name
-     * @param xp
+     * Creates a new character with a name and xp(Experience). (This is not an in game character)
+     * @param name, Name of the character
+     * @param xp, Total experience that a character got
      */
     public Character(String name, int xp)
     {
@@ -22,7 +22,7 @@ public class Character {
     }
 
     /**
-     *
+     * In this method you level the character up by 1 level.
      */
     public void LevelUp()
     {

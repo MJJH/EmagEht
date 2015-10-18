@@ -4,8 +4,8 @@ import java.awt.Image;
 import java.util.*;
 
 /**
- *
- * @author laure
+ * This constructor creates an enemy
+ * @author Nick Bijmoer
  */
 public class Enemy extends CharacterGame {
 
@@ -13,15 +13,15 @@ public class Enemy extends CharacterGame {
 
     /**
      *
-     * @param name
-     * @param hp
-     * @param skills
-     * @param x
-     * @param y
-     * @param skin
-     * @param height
-     * @param width
-     * @param solid
+     * @param name, name of the enemy
+     * @param hp, HP of the enemy
+     * @param skills, Skills that the enemy has
+     * @param x, X- Coordinate of the enemy
+     * @param y, Y- Coordinate of the enemy
+     * @param skin, Skin that the enemy has
+     * @param height, Height of the enemy
+     * @param width, Width of the enemy
+     * @param solid, How solid an enemy is
      */
     public Enemy(String name, int hp, SkillType[] skills, int x, int y, Image skin, int height, int width, float solid)
     {
@@ -29,9 +29,9 @@ public class Enemy extends CharacterGame {
     }
     
     /**
-     *
-     * @param x
-     * @param y
+     * This method will move the enemy
+     * @param x, X-coordinate of the enemy
+     * @param y, Y-coordinate of the enemy
      */
     public void move (float x, float y)
     {
