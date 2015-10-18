@@ -27,5 +27,23 @@ public class Enemy extends CharacterGame {
     {
         super(name, hp, skills, x, y, skin, height, width, solid);
     }
-
+    
+    /**
+     *
+     * @param x
+     * @param y
+     */
+    public void move (float x, float y)
+    {
+        /*
+        dx = player_x - enemy_x;
+        dy = player_y - enemy_y;
+        float norm = Math.sqrt(dx * dx + dy * dy);
+        if (norm)
+        {
+            dx *= (enemy.speed / norm);
+            dy *= (enemy.speed / norm);
+        }
+        */
+    }
 }
