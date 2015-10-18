@@ -4,14 +4,12 @@ import java.awt.Image;
 import java.util.*;
 
 /**
- *
- * @author laure
+ * A tooltype defines what a tool will be able to do
+ * @author Martijn
  */
 public enum ToolType {
 
     ;
-
-	Collection<Tool> type;
     private String name;
     private int strength;
     private int speed;

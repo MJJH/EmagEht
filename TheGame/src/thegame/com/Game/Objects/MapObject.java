@@ -4,13 +4,12 @@ import thegame.com.Game.Objects.Characters.*;
 import java.awt.Image;
 
 /**
- *
- * @author laure
+ * An object that can be drawn on the map
+ * @author Martijn
  */
 public abstract class MapObject {
 
-    CharacterGame backpack;
-    private int id;
+    //private int id;
     private float xPosition;
     private float yPosition;
     private float hSpeed;
@@ -21,13 +20,13 @@ public abstract class MapObject {
     private float solid;
 
     /**
-     *
-     * @param x
-     * @param y
-     * @param skin
-     * @param height
-     * @param width
-     * @param solid
+     * Create a new MapObject to use in the game
+     * @param x         the horizontal position of this object
+     * @param y         the vertical position of this object
+     * @param skin      the texture of this object
+     * @param height    the height of this object
+     * @param width     the width of this object
+     * @param solid     the density of this object
      */
     public MapObject(int x, int y, Image skin, int height, int width, float solid)
     {
@@ -36,7 +35,7 @@ public abstract class MapObject {
     }
 
     /**
-     *
+     * Create a new MapObject without position and density
      * @param skin
      * @param height
      * @param width
@@ -47,7 +46,8 @@ public abstract class MapObject {
     }
 
     /**
-     *
+     * Update the object
+     * Will be called everytime the map is updated
      */
     public void update()
     {

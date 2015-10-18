@@ -3,19 +3,19 @@ package thegame.com.Game.Objects;
 import java.awt.Image;
 
 /**
- *
- * @author laure
+ * A tool is an object that a character can use to mine, fight, dig or chop
+ * @author Martijn
  */
 public class Tool extends MapObject {
 
     private final ToolType type;
 
     /**
-     *
-     * @param type
-     * @param skin
-     * @param height
-     * @param width
+     * Create a usable tool
+     * @param type      the type of this tool (sword, hatchet, etc)
+     * @param skin      the texture of this object
+     * @param height    the height of this object
+     * @param width     the width of this object
      */
     public Tool(ToolType type, Image skin, int height, int width)
     {
