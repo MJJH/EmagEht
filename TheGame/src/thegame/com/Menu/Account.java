@@ -1,7 +1,7 @@
 package thegame.com.Menu;
 
 /**
- *
+ *  Contains methods to create accounts
  * @author laure
  */
 public class Account {
@@ -12,9 +12,9 @@ public class Account {
     private String password;
 
     /**
-     *
-     * @param name
-     * @param password
+     * Creates a new account with a name and password
+     * @param name : the name of the account
+     * @param password : the password of the account
      */
     public Account(String name, String password)
     {
@@ -23,8 +23,8 @@ public class Account {
     }
 
     /**
-     *
-     * @param name
+     * Creates a new account with only a name
+     * @param name : the name of the account
      */
     public Account(String name)
     {
@@ -33,19 +33,20 @@ public class Account {
     }
 
     /**
-     *
-     * @param oldP
-     * @param newP
+     * Changes the password of a account
+     * @param account : the instance of the account where the password change is needed
+     * @param oldP : the old password from the account
+     * @param newP : the new passwrod from the account
      */
-    public void changePassword(String oldP, String newP)
+    public void changePassword(Account account, String oldP, String newP)
     {
         // TODO - implement Account.changePassword
         throw new UnsupportedOperationException();
     }
 
     /**
-     *
-     * @param to
+     * Method to send a freind request to another account
+     * @param to : the account where the request needs to go
      */
     public void sendFriendRequest(Account to)
     {
@@ -53,9 +54,9 @@ public class Account {
     }
 
     /**
-     *
-     * @param setting
-     * @param value
+     * Method to change the settings from a account
+     * @param setting : the name of the setting
+     * @param value : the value of the setting
      */
     public void changeSetting(String setting, String value)
     {

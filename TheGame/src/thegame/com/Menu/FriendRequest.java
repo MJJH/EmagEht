@@ -1,7 +1,7 @@
 package thegame.com.Menu;
 
 /**
- *
+ * Contains methods to accept or decline friend requests
  * @author laure
  */
 public class FriendRequest {
@@ -9,7 +9,7 @@ public class FriendRequest {
     private int id;
 
     /**
-     *
+     * Method to accept a friend request
      */
     public void Accept()
     {
@@ -18,7 +18,7 @@ public class FriendRequest {
     }
 
     /**
-     *
+     * Method to decline a friend request
      */
     public void Decline()
     {
