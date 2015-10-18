@@ -3,7 +3,8 @@ package thegame.com.Menu;
 import thegame.com.Game.Map;
 
 /**
- *
+ * This class contains code for the game lobby.
+ * The game lobby contains messages, map and players
  * @author laure
  */
 public class Lobby {
@@ -14,7 +15,7 @@ public class Lobby {
     private Account[] accounts;
 
     /**
-     * This class implements the Game Lobby
+     * This method creates a new gamelobby.
      */
     public Lobby()
     {
@@ -23,10 +24,10 @@ public class Lobby {
     }
 
     /**
-     *
+     * This method creates a new message in the lobby chat.
      * @param sender
      * @param message
-     * @return
+     * @return Returns true if send, else false
      */
     public boolean sendMessage(Account sender, String message)
     {
@@ -34,9 +35,10 @@ public class Lobby {
     }
 
     /**
-     *
+     * This method adds an account to a lobby.
+     * There cannot be more than 4 players (accounts)
      * @param account
-     * @return
+     * @return Returns true if joined, else false.
      */
     public boolean joinLobby(Account account)
     {
@@ -44,8 +46,8 @@ public class Lobby {
     }
 
     /**
-     *
-     * @return
+     * This method generates a map.
+     * @return Returns true if a map is generated, else false.
      */
     public boolean generateMap()
     {

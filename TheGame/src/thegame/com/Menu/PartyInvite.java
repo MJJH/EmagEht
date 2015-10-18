@@ -3,7 +3,8 @@ package thegame.com.Menu;
 import java.util.Date;
 
 /**
- *
+ * This class contains code for the Party Invite.
+ * 
  * @author laure
  */
 public class PartyInvite {
@@ -12,13 +13,15 @@ public class PartyInvite {
     private Date datetime;
     private Party party;
     private Account account;
+    private Account sender;
 
     /**
-     *
+     * Creates a new invite with an account, sender and the party.
      * @param account
      * @param party
+     * @param sender
      */
-    public PartyInvite(Account account, Party party)
+    public PartyInvite(Account account, Party party, Account sender)
     {
         this.account = account;
         this.party = party;
@@ -26,8 +29,8 @@ public class PartyInvite {
     }
 
     /**
-     *
-     * @return party
+     * This method accepts the invite, delete's itself and returns the party.
+     * @return Returns the accepted party.
      */
     public Party accept()
     {
@@ -36,7 +39,7 @@ public class PartyInvite {
     }
 
     /**
-     *
+     * This method declines the invite and delete's itself.
      */
     public void decline()
     {
