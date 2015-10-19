@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.awt.Image;
 import java.util.*;
+import javafx.scene.image.Image;
 
 /**
  * This constructor creates an enemy
@@ -22,12 +22,9 @@ public class Enemy extends CharacterGame {
      * @param width, Width of the enemy
      * @param solid, How solid an enemy is
      */
-    public Enemy(String name, int hp, ArrayList<SkillType> skills, int x, int y, Image skin, int height, int width, float solid)
+    public Enemy(String name, int hp, ArrayList<SkillType> skills, float x, float y, Image skin, float height, float width)
     {
-        super(name, hp, skills, x, y, skin, height, width, solid);
-       
-        
-        
+        super(name, hp, skills, x, y, skin, height, width);
     }
     
     /**

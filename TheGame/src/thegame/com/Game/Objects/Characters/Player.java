@@ -1,6 +1,9 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.awt.Image;
+import java.util.ArrayList;
+import javafx.scene.image.Image;
+
+
 
 /**
  *
@@ -27,9 +30,9 @@ public class Player extends CharacterGame {
      * @param width, width of the player
      * @param solid, solidness of the player
      */
-    public Player(Character character, String name, int hp, SkillType[] skills, AttackType[] attacks, int x, int y, Image skin, int height, int width, float solid)
+    public Player(Character character, String name, int hp, ArrayList<SkillType> skills, AttackType[] attacks, float x, float y, Image skin, float height, float width)
     {
-        super(name, hp, skills, x, y, skin, height, width, solid);
+        super(name, hp, skills, x, y, skin, height, width);
     }
 
     /**

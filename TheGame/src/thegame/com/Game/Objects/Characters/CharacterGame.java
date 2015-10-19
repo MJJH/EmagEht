@@ -1,9 +1,9 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.image.Image;
 import thegame.com.Game.Objects.*;
 
 /**
