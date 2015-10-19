@@ -9,8 +9,7 @@ import java.util.*;
  */
 public class Enemy extends CharacterGame {
 
-    Collection<SkillType> skillType;
-
+    
     /**
      *
      * @param name, name of the enemy
@@ -26,9 +25,7 @@ public class Enemy extends CharacterGame {
     public Enemy(String name, int hp, ArrayList<SkillType> skills, int x, int y, Image skin, int height, int width, float solid)
     {
         super(name, hp, skills, x, y, skin, height, width, solid);
-        this.name = name;
-        this.hp = hp;
-        this.skills = skills;
+       
         
         
     }
