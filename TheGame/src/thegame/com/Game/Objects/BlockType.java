@@ -27,4 +27,6 @@ public class BlockType {
      this.reqToolLvl = 1;
      this.skin = skin;
     }
+    
+    public Image getskin(){return skin;}
 }

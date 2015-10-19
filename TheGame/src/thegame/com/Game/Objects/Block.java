@@ -22,7 +22,7 @@ public class Block extends MapObject {
      */
     public Block(BlockType type, int x, int y, Image skin, int height, int width, float solid)
     {
-        super(x, y, skin, height, width, solid);
+        super(x, y, type.getskin(), height, width, solid);
     }
     
     /**

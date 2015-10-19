@@ -25,12 +25,13 @@ public class Map {
      * @param spawnX The X coordinate of spawnpoint
      * @param spawnY The Y coordinate of the spawnpoint
      */
-    public Map(int height, int width, int spawnX, int spawnY)
+    public Map()
     {
-    this.height= height;
-    this.width=width;
-    this.spawnX=spawnX;
-    this.spawnY=spawnY;
+GenerateMap();
+    }
+    public void GenerateMap()
+    {
+        //TODO
     }
 
     /**
