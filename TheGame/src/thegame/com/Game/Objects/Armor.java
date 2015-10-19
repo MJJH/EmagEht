@@ -4,18 +4,18 @@ import java.awt.Image;
 
 /**
  *
- * @author laure
+ * @author Mark 
  */
 public class Armor extends MapObject {
 
     private final ArmorType type;
 
     /**
-     *
-     * @param type
-     * @param skin
-     * @param height
-     * @param width
+     * Initiates an instance of this class with the type as an attribute
+     * @param type The type of the armor ( From the class ArmorType) 
+     * @param skin the look of the armor
+     * @param height the height of the armor
+     * @param width the width of the armor
      */
     public Armor(ArmorType type, Image skin, int height, int width)
     {

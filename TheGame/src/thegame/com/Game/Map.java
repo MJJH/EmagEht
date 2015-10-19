@@ -3,8 +3,8 @@ package thegame.com.Game;
 import java.lang.reflect.Array;
 
 /**
- *
- * @author laure
+ * The class for the map of the game.
+ * @author Mark
  */
 public class Map {
 
@@ -19,24 +19,24 @@ public class Map {
     private int spawnY;
 
     /**
-     *
-     * @param height
-     * @param width
-     * @param spawnX
-     * @param spawnY
+     * Creates a new instance of the map with height,width, spawnX and spawnY.
+     * @param height The height of the Map (y-value)
+     * @param width The width of the Map (x-value)
+     * @param spawnX The X coordinate of spawnpoint
+     * @param spawnY The Y coordinate of the spawnpoint
      */
     public Map(int height, int width, int spawnX, int spawnY)
     {
-        // TODO - implement Map.Map
+       
         throw new UnsupportedOperationException();
     }
 
     /**
-     *
+     *  Handles the redirect to the next map.
      */
     public void NextLevel()
     {
-        // TODO - implement Map.NextLevel
+        
         throw new UnsupportedOperationException();
     }
 

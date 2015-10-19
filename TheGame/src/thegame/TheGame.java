@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author laure
+ * @author laurens
  */
 public class TheGame extends Application {
 
