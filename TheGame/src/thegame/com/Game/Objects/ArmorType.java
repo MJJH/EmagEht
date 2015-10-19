@@ -8,10 +8,10 @@ import java.awt.Image;
  */
 public class ArmorType {
 
-    private final String name;
-    private final int dia;
-    private final int reqLvl;
-    private final Image skin;
+    final String name;
+    final int dia;
+    final int reqLvl;
+    final Image skin;
 
     /**
      * Initiates an instance of this class with the following attributes
