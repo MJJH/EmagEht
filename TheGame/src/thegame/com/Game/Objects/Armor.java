@@ -17,9 +17,9 @@ public class Armor extends MapObject {
      * @param height the height of the armor
      * @param width the width of the armor
      */
-    public Armor(ArmorType type, int height, int width)
+    public Armor(ArmorType type,Image skin, int height, int width)
     {
-        super(type.skin, height, width);
+        super(skin, height, width);
         this.type = type;
     }
 
