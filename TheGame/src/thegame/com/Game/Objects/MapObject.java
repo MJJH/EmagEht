@@ -28,10 +28,15 @@ public abstract class MapObject {
      * @param width     the width of this object
      * @param solid     the density of this object
      */
-    public MapObject(int x, int y, Image skin, int height, int width, float solid)
+    public MapObject(float x, float y, Image skin, float height, float width, float solid)
     {
-        // TODO - implement MapObject.MapObject
-        throw new UnsupportedOperationException();
+        this.setX(x);
+        this.setY(y);
+        this.setH(height);
+        this.setW(width);
+        this.setS(solid);
+        
+        this.skin = skin;
     }
 
     /**
@@ -40,9 +45,12 @@ public abstract class MapObject {
      * @param height
      * @param width
      */
-    public MapObject(Image skin, int height, int width)
+    public MapObject(Image skin, float height, float width)
     {
-
+        this.setH(height);
+        this.setW(width);
+        
+        this.skin = skin;
     }
 
     /**
@@ -54,5 +62,103 @@ public abstract class MapObject {
         // TODO - implement MapObject.update
         throw new UnsupportedOperationException();
     }
-
+    
+    private void setX(float x) {
+        if(x >= 0)
+            this.xPosition = x;
+        else
+            this.xPosition = 0;
+    }
+    
+    private void setY(float y) {
+        if(y >= 0)
+            this.yPosition = y;
+        else
+            this.yPosition = 0;
+    }
+    
+    private void setH(float h) {
+        if(h > 0)
+            this.height = Float.floatToIntBits(h);
+        else
+            throw new IllegalArgumentException("Height cant be 0.");
+    }
+    
+    private void setW(float w) {
+        if(w > 0)
+            this.height = Float.floatToIntBits(w);
+        else
+            throw new IllegalArgumentException("Width cant be 0.");
+    }
+    
+    private void setS(float s) {
+        if(s >= 0 && s <= 1)
+            this.solid = s;
+        else
+            throw new IllegalArgumentException("Solid should be between 0 and 1");
+    }
+    
+    /**
+     * Get x (horizontal) position
+     * @return xPosition
+     */
+    public float getX() {
+        return xPosition;
+    }
+    
+    /**
+     * Get y (vertical) position
+     * @return yPosition
+     */
+    public float getY() {
+        return yPosition;
+    }
+    
+    /**
+     * Get height
+     * @return height
+     */
+    public float getH() {
+        return height;
+    }
+    
+    /**
+     * Get width
+     * @return width
+     */
+    public float getW() {
+        return width;
+    }
+    
+    /**
+     * Get density of object
+     * @return solid
+     */
+    public float getS() {
+        return solid;
+    }
+    
+    /**
+     * Get horizontal speed
+     * @return hSpeed
+     */
+    public float getSX() {
+        return hSpeed;
+    }
+    
+    /**
+     * Get vertical speed
+     * @return vSpeed
+     */
+    public float getSY() {
+        return vSpeed;
+    }
+    
+    /**
+     * Get skin
+     * @return skin
+     */
+    public Image getSkin() {
+        return skin;
+    }
 }

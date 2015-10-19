@@ -17,9 +17,9 @@ public class Tool extends MapObject {
      * @param height    the height of this object
      * @param width     the width of this object
      */
-    public Tool(ToolType type, Image skin, int height, int width)
+    public Tool(ToolType type, int height, int width)
     {
-        super(skin, height, width);
+        super(type.skin, type.height, type.width);
         this.type = type;
     }
 
