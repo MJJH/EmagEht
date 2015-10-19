@@ -10,21 +10,23 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
 public class Particle extends MapObject {
 
     private MapObject object;
+    private int count;
     
     /**
      * Create a new particle
      * @param object    the object this particle used to be and will be once picked up
      * @param x         the horizontal position of this object
      * @param y         the vertical position of this object
-     * @param skin      the texture of this object
      * @param height    the height of this object
      * @param width     the width of this object
      * @param solid     the density of this object
+     * @param count     the ammount of this object
      */
-    public Particle(MapObject object, int x, int y, int height, int width, float solid)
+    public Particle(MapObject object, int x, int y, int height, int width, float solid, int count)
     {
         super(x, y, object.getSkin(), height, width, 0);
         setObject(object);
+        this.count = count;
     }
     
     private void setObject(MapObject object) {
