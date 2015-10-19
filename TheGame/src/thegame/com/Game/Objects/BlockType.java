@@ -1,7 +1,10 @@
 package thegame.com.Game.Objects;
 
-import java.awt.Image;
-
+import javafx.scene.image.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javafx.embed.swing.SwingFXUtils;
+import javax.imageio.ImageIO;
 /**
  * A class representing the type of block used
  * @author Mark
@@ -12,7 +15,8 @@ public class BlockType {
     private final int strength;
     private final int reqToolLvl;
     private final Image skin;
-
+    private int btx;
+    private int bty;
     /**
      * Initiates an instance of this class with the following attributes
      * @param name The name of the BlockType 
@@ -20,13 +24,21 @@ public class BlockType {
      * @param reqLvl The required level of the BlockType
      * @param skin The look of the Armortype
      */
-    public BlockType(String name, int strength, int reqLvl, Image skin)
+    public BlockType(String name, int strength, int reqLvl, Image skin,int btx,int bty) throws IOException
     {
      this.name = name;
      this.strength = 1;
      this.reqToolLvl = 1;
-     this.skin = skin;
+     this.btx = btx;
+     this.bty = bty;
+     this.skin = getskin();
     }
     
-    public Image getskin(){return skin;}
+    public Image getskin() throws IOException
+    {
+    BufferedImage bigImg = ImageIO.read(getClass().getResource("/mapping.png"));
+    BufferedImage small = bigImg.getSubimage(btx,bty,20,20);
+    Image returnimg =  SwingFXUtils.toFXImage(small,null);
+    return returnimg;
+    }
 }
