@@ -20,10 +20,10 @@ public class Block extends MapObject {
      * @param width The width of this block
      * @param solid A Float representing its liquefide state.
      */
-    public Block(BlockType type, int x, int y, Image skin, int height, int width, float solid)
+    public Block(BlockType type, float x, float y, Image skin, float height, float width, float solid)
     {
-        super(x, y, type.skin, height, width);
-        this.solid = solid;
+        super(x, y, type.skin, height, width,solid);
+        
     }
     
     /**

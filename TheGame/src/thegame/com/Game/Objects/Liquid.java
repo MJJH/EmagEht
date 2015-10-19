@@ -22,9 +22,9 @@ public class Liquid extends Block {
      * @param solid     the density of this object
      */
     
-    public Liquid(BlockType blockType, float volume, int x, int y, int height, int width, float solid)
+    public Liquid(BlockType blockType, float volume, float x, float y, float height, float width, float solid)
     {
-        super(blockType, x, y, height, width, solid);
+        super(blockType, x, y,blockType.skin, height, width, solid);
         this.volume = volume;
     }
     

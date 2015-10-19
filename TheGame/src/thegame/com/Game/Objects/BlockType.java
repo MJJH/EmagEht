@@ -15,8 +15,8 @@ public class BlockType {
     private final int strength;
     private final int reqToolLvl;
     final Image skin;
-    private int btx;
-    private int bty;
+    private float btx;
+    private float bty;
     /**
      * Initiates an instance of this class with the following attributes
      * @param name The name of the BlockType 
@@ -24,7 +24,7 @@ public class BlockType {
      * @param reqLvl The required level of the BlockType
      * @param skin The look of the Armortype
      */
-    public BlockType(String name, int strength, int reqLvl, Image skin,int btx,int bty) throws IOException
+    public BlockType(String name, int strength, int reqLvl, Image skin,float btx,float bty) throws IOException
     {
      this.name = name;
      this.strength = 1;
@@ -36,8 +36,10 @@ public class BlockType {
     
     public Image getskin() throws IOException
     {
+    int X = Float.floatToIntBits(btx);
+    int Y = Float.floatToIntBits(bty);
     BufferedImage bigImg = ImageIO.read(getClass().getResource("/mapping.png"));
-    BufferedImage small = bigImg.getSubimage(btx,bty,20,20);
+    BufferedImage small = bigImg.getSubimage(X,Y,20,20);
     Image returnimg =  SwingFXUtils.toFXImage(small,null);
     return returnimg;
     }

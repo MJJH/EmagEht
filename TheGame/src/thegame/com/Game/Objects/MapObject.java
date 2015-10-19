@@ -15,8 +15,8 @@ public abstract class MapObject {
     private float hSpeed;
     private float vSpeed;
     private Image skin;
-    private int height;
-    private int width;
+    private float height;
+    private float width;
     private float solid;
 
     /**
