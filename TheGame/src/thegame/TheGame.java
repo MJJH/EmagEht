@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import thegame.com.Game.Map;
 
 /**
  *
@@ -29,7 +30,7 @@ public class TheGame extends Application {
             @Override
             public void handle(ActionEvent event)
             {
-                System.out.println("Hello World!");
+                new Map();
             }
         });
 

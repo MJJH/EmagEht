@@ -24,7 +24,7 @@ public class Liquid extends Block {
     
     public Liquid(BlockType blockType, float volume, float x, float y, float height, float width, float solid)
     {
-        super(blockType, x, y,blockType.skin, height, width, solid);
+        super(blockType, x, y, height, width, solid);
         this.volume = volume;
     }
     
