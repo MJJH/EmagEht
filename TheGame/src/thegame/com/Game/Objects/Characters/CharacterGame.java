@@ -14,12 +14,12 @@ public class CharacterGame extends MapObject {
 
     private int hp;
     private final String name;
-    private ArrayList<SkillType> skills = new ArrayList<>();
     private float solid;
 
-    private ArrayList<Armor> armor;
     private Tool holding;
-
+    
+    private java.util.Map<MapObject, String> Skills;
+    private java.util.Map<MapObject, String > armor;
     private java.util.Map<MapObject, Integer> backpack;
 
     /**
@@ -34,15 +34,15 @@ public class CharacterGame extends MapObject {
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      */
-    public CharacterGame(String name, int hp, ArrayList<SkillType> skills, float x, float y, Image skin, float height, float width)
+    public CharacterGame(String name, int hp,java.util.Map<MapObject, String> Skills, float x, float y, Image skin, float height, float width)
     {
         super(x, y, skin, height, width, 1);
-        this.skills = skills;
         this.name = name;
         this.hp = 100;
 
-        armor = new ArrayList();
+        this.Skills = Skills;
         backpack = new HashMap();
+        armor = new HashMap();
     }
 
     /**
