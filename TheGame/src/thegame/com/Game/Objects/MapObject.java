@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects;
 
 import thegame.com.Game.Objects.Characters.*;
-import java.awt.Image;
+import javafx.scene.image.Image;
 
 /**
  * An object that can be drawn on the map

@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects;
 
-import java.awt.Image;
+import javafx.scene.image.Image;
 
 /**
  * A tool is an object that a character can use to mine, fight, dig or chop

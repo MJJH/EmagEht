@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects;
 
-import java.awt.Image;
+import javafx.scene.image.Image;
 import java.util.*;
 
 /**

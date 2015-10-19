@@ -14,7 +14,7 @@ public class BlockType {
     private final String name;
     private final int strength;
     private final int reqToolLvl;
-    private final Image skin;
+    final Image skin;
     private int btx;
     private int bty;
     /**

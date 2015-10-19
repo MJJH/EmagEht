@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects;
 
-import java.awt.Image;
+import javafx.scene.image.Image;
 
 /**
  *
@@ -22,7 +22,8 @@ public class Block extends MapObject {
      */
     public Block(BlockType type, int x, int y, Image skin, int height, int width, float solid)
     {
-        super(x, y, type.getskin(), height, width, solid);
+        super(x, y, type.skin, height, width);
+        this.solid = solid;
     }
     
     /**
