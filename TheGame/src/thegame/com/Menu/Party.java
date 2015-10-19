@@ -1,5 +1,7 @@
 package thegame.com.Menu;
 
+import java.util.ArrayList;
+
 /**
  * This class contains code for the party. 
  * @author laure
@@ -7,9 +9,9 @@ package thegame.com.Menu;
 public class Party {
 
     private int id;
-    private Account[] members;
+    private ArrayList<Account> members;
     private Account owner;
-    private Message[] chat;
+    private ArrayList<Message> chat;
 
     /**
      * This method creates a party with the owner as member and owner.
@@ -18,6 +20,9 @@ public class Party {
     public Party(Account owner)
     {
         this.owner = owner;
+        members = new ArrayList();
+        chat = new ArrayList();
+        
     }
 
     /**
@@ -38,6 +43,12 @@ public class Party {
      */
     public boolean sendMessage(Account sender, String message)
     {
+        if(!message.isEmpty())
+        {
+            chat.add(new Message(sender, message));
+            return true;
+        }
+        
         return false;
     }
     
@@ -45,10 +56,27 @@ public class Party {
      * This method is used to leave a party. 
      * If the owner is leaving, the party will get a new owner.
      * @param leaveAccount
-     * @return returns null if owner is the same, else new owner.
+     * @return returns null if party is empty and owner is leaving, else new/current owner.
      */
     public Account leaveParty (Account leaveAccount)
     {
-        return  null;
+        if(leaveAccount.equals(owner))
+        {
+            if(members.size() > 1)
+            {
+                members.remove(leaveAccount);
+                owner = members.get(0);
+                return owner;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            members.remove(leaveAccount);
+        }
+        return  owner;
     }
 }

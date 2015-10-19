@@ -27,24 +27,4 @@ public class PartyInvite {
         this.party = party;
         datetime = new Date();
     }
-
-    /**
-     * This method accepts the invite, delete's itself and returns the party.
-     * @return Returns the accepted party.
-     */
-    public Party accept()
-    {
-        // TODO - implement PartyInvite.accept
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * This method declines the invite and delete's itself.
-     */
-    public void decline()
-    {
-        // TODO - implement PartyInvite.decline
-        throw new UnsupportedOperationException();
-    }
-
 }

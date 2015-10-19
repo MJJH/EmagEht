@@ -8,10 +8,6 @@ import java.lang.reflect.Array;
  * @author laure
  */
 public enum Settings {
-
+    UP(),DOWN(),LEFT(),RIGHT(),JUMP(),INVENTORY(),ACTION(),CHAT(),SOUND()
     ;
-
-	private Array[] keybinding;
-    private int sound;
-
 }

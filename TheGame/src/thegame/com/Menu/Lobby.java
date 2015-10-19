@@ -1,18 +1,20 @@
 package thegame.com.Menu;
 
+import java.util.ArrayList;
 import thegame.com.Game.Map;
 
 /**
- * This class contains code for the game lobby.
- * The game lobby contains messages, map and players
+ * This class contains code for the game lobby. The game lobby contains
+ * messages, map and players
+ *
  * @author laure
  */
 public class Lobby {
 
     private int id;
-    private Message[] chat;
+    private ArrayList<Message> chat;
     private Map plays;
-    private Account[] accounts;
+    private ArrayList<Account> accounts;
 
     /**
      * This method creates a new gamelobby.
@@ -20,37 +22,55 @@ public class Lobby {
     public Lobby()
     {
         // TODO - implement Lobby.Lobby
-        throw new UnsupportedOperationException();
+        chat = new ArrayList();
+        accounts = new ArrayList();
     }
 
     /**
      * This method creates a new message in the lobby chat.
+     *
      * @param sender
      * @param message
      * @return Returns true if send, else false
      */
     public boolean sendMessage(Account sender, String message)
     {
+        if(!message.isEmpty())
+        {
+            chat.add(new Message(sender, message));
+            return true;
+        }
+        
         return false;
     }
 
     /**
-     * This method adds an account to a lobby.
-     * There cannot be more than 4 players (accounts)
+     * This method adds an account to a lobby. There cannot be more than 4
+     * players (accounts)
+     *
      * @param account
      * @return Returns true if joined, else false.
      */
     public boolean joinLobby(Account account)
     {
+        if (accounts.size() < 4)
+        {
+            if (!accounts.contains(account))
+            {
+                accounts.add(account);
+                return true;
+            }
+        }
+        
         return false;
     }
 
     /**
      * This method generates a map.
-     * @return Returns true if a map is generated, else false.
+     *
      */
     public boolean generateMap()
     {
-        return false;
+        plays = new Map();
     }
 }
