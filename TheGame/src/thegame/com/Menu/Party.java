@@ -79,4 +79,31 @@ public class Party {
         }
         return  owner;
     }
+    
+    /**
+     * This method gets the members of a party
+     * @return list of accounts
+     */
+    public ArrayList<Account> getMembers()
+    {
+        return members;
+    }
+    
+    /**
+     * This method gets the party owner
+     * @return account
+     */
+    public Account getOwner()
+    {
+        return owner;
+    }
+    
+    /**
+     * This method gets party chat
+     * @return list of messages
+     */
+    public ArrayList<Message> getChat()
+    {
+        return chat;
+    }
 }

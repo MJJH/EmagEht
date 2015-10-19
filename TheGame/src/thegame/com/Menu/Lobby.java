@@ -69,8 +69,44 @@ public class Lobby {
      * This method generates a map.
      *
      */
-    public boolean generateMap()
+    public void generateMap()
     {
         plays = new Map();
+    }
+    
+    /**
+     * This method gets chat messages
+     * @return messages in chat
+     */
+    public ArrayList<Message> getChat ()
+    {
+        return chat;
+    }
+    
+    /**
+     * This method gets all joined players
+     * @return accounts in lobby
+     */
+    public ArrayList<Account> getAccounts ()
+    {
+        return accounts;
+    }
+    
+    /**
+     * This method gets the map 
+     * @return game map
+     */
+    public Map getMap ()
+    {
+        return plays;
+    }
+    
+    /**
+     * This method gets the lobby ID
+     * @return lobby ID
+     */
+    public int getID ()
+    {
+        return id;
     }
 }
