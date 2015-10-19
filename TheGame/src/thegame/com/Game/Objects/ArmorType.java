@@ -12,6 +12,7 @@ public class ArmorType {
     private final int multiplier;
     private final int reqLvl;
     private final Image skin;
+    public final String bodyPart;
 
     /**
      * Initiates an instance of this class with the following attributes
@@ -19,13 +20,15 @@ public class ArmorType {
      * @param multiplier The multiplier of the Armortype
      * @param reqLvl The required level of the Armortype
      * @param skin The look of the Armortype
+     * @param bodyPart The place on the body where to wear the Armor
      */
-    public ArmorType(String name, int multiplier, int reqLvl, Image skin)
+    public ArmorType(String name, int multiplier, int reqLvl, Image skin, String bodyPart)
     {
      this.name = name;
      this.multiplier = multiplier;
      this.reqLvl = reqLvl;
      this.skin = skin;
+     this.bodyPart = bodyPart;
     }
     
 }

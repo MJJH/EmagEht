@@ -22,5 +22,13 @@ public class Armor extends MapObject {
         super(skin, height, width);
         this.type = type;
     }
-
+    
+    /**
+     * The method to get the armor type.
+     * @return the armor type
+     */
+    public ArmorType getArmorType ()
+    {
+        return type;
+    }
 }

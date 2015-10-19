@@ -17,9 +17,9 @@ public class CharacterGame extends MapObject {
     private float solid;
 
     private Tool holding;
-    
-    private java.util.Map<MapObject, String> Skills;
-    private java.util.Map<MapObject, String > armor;
+
+    private java.util.Map<SkillType, Integer> skills;
+    private java.util.Map<String, Armor> armor;
     private java.util.Map<MapObject, Integer> backpack;
 
     /**
@@ -34,13 +34,13 @@ public class CharacterGame extends MapObject {
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      */
-    public CharacterGame(String name, int hp,java.util.Map<MapObject, String> Skills, float x, float y, Image skin, float height, float width)
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width)
     {
         super(x, y, skin, height, width, 1);
         this.name = name;
         this.hp = 100;
 
-        this.Skills = Skills;
+        this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
     }
@@ -55,16 +55,23 @@ public class CharacterGame extends MapObject {
     {
         if (backpack.containsKey(object))
         {
-            if (backpack.get(object) > 99)
+            if (object.getClass() == Armor.class || object.getClass() == Tool.class)
             {
-                backpack.put(object, backpack.get(object) + 1);
+                backpack.put(object, 1);
             } else
             {
-                return false;
+                if (backpack.get(object) < 99)
+                {
+                    backpack.put(object, backpack.get(object) + 1);
+                } else
+                {
+                    return false;
+                }
             }
+
         } else
         {
-            if (backpack.size() > 30)
+            if (backpack.size() < 30)
             {
                 backpack.put(object, 1);
             } else
@@ -103,9 +110,15 @@ public class CharacterGame extends MapObject {
      */
     public void equipArmor(Armor armorAdd)
     {
-        if (!armor.contains(armorAdd))
+        if (armor.containsKey(armorAdd.getArmorType().bodyPart))
         {
-            armor.add(armorAdd);
+            unequipArmor(armor.get(armorAdd.getArmorType().bodyPart));
+            backpack.remove(armorAdd);
+            armor.put(armorAdd.getArmorType().bodyPart, armorAdd);
+        } else
+        {
+            armor.put(armorAdd.getArmorType().bodyPart, armorAdd);
+            backpack.remove(armorAdd);
         }
     }
 
@@ -116,14 +129,16 @@ public class CharacterGame extends MapObject {
      */
     public void unequipArmor(Armor armorDel)
     {
-        if (armor.contains(armorDel))
+        if (armor.containsValue(armorDel))
         {
-            armor.remove(armorDel);
+            armor.remove(armorDel.getArmorType(), armorDel);
+            addToBackpack(armorDel);
         }
     }
 
     /**
      * This method lets the in game character equip a tool.
+     *
      * @param toolAdd tool to equip
      */
     public void equipTool(Tool toolAdd)
@@ -144,6 +159,7 @@ public class CharacterGame extends MapObject {
 
     /**
      * This method changes the hp of the in game character
+     *
      * @param change the ammount to change
      * @return the new HP
      */
@@ -165,6 +181,7 @@ public class CharacterGame extends MapObject {
 
     /**
      * This method gets the current hp
+     *
      * @return HP
      */
     public int getHP()
@@ -174,6 +191,7 @@ public class CharacterGame extends MapObject {
 
     /**
      * This method gets the name
+     *
      * @return name
      */
     public String getName()
@@ -183,15 +201,17 @@ public class CharacterGame extends MapObject {
 
     /**
      * This method gets the list of skills
+     *
      * @return list of skills
      */
-    public ArrayList<SkillType> getSkills()
+    public java.util.Map<SkillType, Integer> getSkills()
     {
         return skills;
     }
 
     /**
      * This method gets the solid float
+     *
      * @return solid float
      */
     public float getSolid()
@@ -201,27 +221,30 @@ public class CharacterGame extends MapObject {
 
     /**
      * This method gets a list of the current armor
+     *
      * @return list of armor
      */
-    public ArrayList<Armor> getArmor()
+    public java.util.Map<String, Armor> getArmor()
     {
         return armor;
     }
-    
+
     /**
      * This method gets the tool the character is currently holding
+     *
      * @return tool
      */
-    public Tool getHolding ()
+    public Tool getHolding()
     {
         return holding;
     }
-    
+
     /**
      * This method return a map of backpack objects
+     *
      * @return map of mapobjects
      */
-    public java.util.Map<MapObject, Integer> getBackpackMap ()
+    public java.util.Map<MapObject, Integer> getBackpackMap()
     {
         return backpack;
     }
