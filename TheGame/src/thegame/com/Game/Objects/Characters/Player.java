@@ -28,9 +28,8 @@ public class Player extends CharacterGame {
      * @param skin, Skin of the player
      * @param height, height of the player
      * @param width, width of the player
-     * @param solid, solidness of the player
      */
-    public Player(Character character, String name, int hp, ArrayList<SkillType> skills, AttackType[] attacks, float x, float y, Image skin, float height, float width)
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Image skin, float height, float width)
     {
         super(name, hp, skills, x, y, skin, height, width);
     }

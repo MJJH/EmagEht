@@ -8,7 +8,7 @@ import thegame.com.Game.Objects.*;
 
 /**
  *
- * @author Nick Bijmoer
+ * @author Laurens Adema
  */
 public class CharacterGame extends MapObject {
 
