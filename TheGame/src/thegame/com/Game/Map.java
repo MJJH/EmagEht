@@ -27,8 +27,10 @@ public class Map {
      */
     public Map(int height, int width, int spawnX, int spawnY)
     {
-       
-        throw new UnsupportedOperationException();
+    this.height= height;
+    this.width=width;
+    this.spawnX=spawnX;
+    this.spawnY=spawnY;
     }
 
     /**

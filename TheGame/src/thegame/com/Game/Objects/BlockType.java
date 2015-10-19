@@ -23,8 +23,8 @@ public class BlockType {
     public BlockType(String name, int strength, int reqLvl, Image skin)
     {
      this.name = name;
-     this.strength = strength;
-     this.reqToolLvl = reqLvl;
+     this.strength = 1;
+     this.reqToolLvl = 1;
      this.skin = skin;
     }
 }
