@@ -23,9 +23,14 @@ public class Enemy extends CharacterGame {
      * @param width, Width of the enemy
      * @param solid, How solid an enemy is
      */
-    public Enemy(String name, int hp, SkillType[] skills, int x, int y, Image skin, int height, int width, float solid)
+    public Enemy(String name, int hp, ArrayList<SkillType> skills, int x, int y, Image skin, int height, int width, float solid)
     {
         super(name, hp, skills, x, y, skin, height, width, solid);
+        this.name = name;
+        this.hp = hp;
+        this.skills = skills;
+        
+        
     }
     
     /**

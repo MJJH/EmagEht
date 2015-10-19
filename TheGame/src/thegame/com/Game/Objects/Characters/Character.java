@@ -18,16 +18,44 @@ public class Character {
     public Character(String name, int xp)
     {
         // TODO - implement Character.Character
-        throw new UnsupportedOperationException();
+        setName(name);
+        setXp(xp);
     }
 
     /**
-     * In this method you level the character up by 1 level.
+     * In this method you level the character skill up by 1 level.
+     * @param skilltype, is the name of the skill you want to level up
      */
-    public void LevelUp()
+    public void levelUp(String skilltype)
     {
         // TODO - implement Character.LevelUp
-        throw new UnsupportedOperationException();
+        
+           
+    }
+    
+    public int getXp()
+    {
+        return xp;
+    }
+    
+    private void setName(String name)
+    {
+     if(name == null || name == "")
+     {
+         throw new IllegalArgumentException();
+     }
+     else this.name = name;
+    }
+    
+    private void setXp(int xp)
+    {
+        if(xp < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+        else
+            this.xp = xp;
+
     }
 
 }
