@@ -77,16 +77,20 @@ public abstract class MapObject {
             this.yPosition = 0;
     }
     
+    public void moveX(float x) {
+        setX(this.xPosition + x);
+    }
+    
     private void setH(float h) {
         if(h > 0)
-            this.height = Float.floatToIntBits(h);
+            this.height = h;
         else
             throw new IllegalArgumentException("Height cant be 0.");
     }
     
     private void setW(float w) {
         if(w > 0)
-            this.height = Float.floatToIntBits(w);
+            this.width = w;
         else
             throw new IllegalArgumentException("Width cant be 0.");
     }

@@ -51,5 +51,10 @@ public class Player extends CharacterGame {
         // TODO - implement Player.LevelUp
         throw new UnsupportedOperationException();
     }
+    
+    public void testMove() 
+    {
+        this.moveX(0.1f);
+    }
 
 }
