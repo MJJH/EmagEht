@@ -9,9 +9,9 @@ import java.util.ArrayList;
 public class Party {
 
     private int id;
-    private ArrayList<Account> members;
+    private final ArrayList<Account> members;
     private Account owner;
-    private ArrayList<Message> chat;
+    private final ArrayList<Message> chat;
 
     /**
      * This method creates a party with the owner as member and owner.
@@ -68,6 +68,7 @@ public class Party {
             if(members.size() > 1)
             {
                 members.remove(leaveAccount);
+                leaveAccount.leaveParty();
                 owner = members.get(0);
                 return owner;
             }
@@ -79,6 +80,7 @@ public class Party {
         else
         {
             members.remove(leaveAccount);
+            leaveAccount.leaveParty();
         }
         return  owner;
     }

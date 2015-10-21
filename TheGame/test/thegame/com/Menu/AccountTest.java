@@ -17,26 +17,26 @@ import static org.junit.Assert.*;
  * @author laure
  */
 public class AccountTest {
-    
+
     public AccountTest()
     {
     }
-    
+
     @BeforeClass
     public static void setUpClass()
     {
     }
-    
+
     @AfterClass
     public static void tearDownClass()
     {
     }
-    
+
     @Before
     public void setUp()
     {
     }
-    
+
     @After
     public void tearDown()
     {
@@ -277,5 +277,5 @@ public class AccountTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+
 }
