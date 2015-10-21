@@ -18,25 +18,40 @@ import static org.junit.Assert.*;
  */
 public class BlockTest {
     
+    /**
+     *
+     */
     public BlockTest()
     {
     }
     
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass()
     {
     }
     
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass()
     {
     }
     
+    /**
+     *
+     */
     @Before
     public void setUp()
     {
     }
     
+    /**
+     *
+     */
     @After
     public void tearDown()
     {

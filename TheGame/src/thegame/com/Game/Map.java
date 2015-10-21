@@ -27,16 +27,15 @@ public class Map {
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
-     * @param height The height of the Map (y-value)
-     * @param width The width of the Map (x-value)
-     * @param spawnX The X coordinate of spawnpoint
-     * @param spawnY The Y coordinate of the spawnpoint
      */
     public Map()
     {
         generateMap();
     }
     
+    /**
+     *
+     */
     public void generateMap()
     {
         width = 300;

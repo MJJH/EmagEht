@@ -12,6 +12,10 @@ public class ArmorType {
     private final int multiplier;
     private final int reqLvl;
     private final Image skin;
+
+    /**
+     *
+     */
     public final String bodyPart;
 
     /**

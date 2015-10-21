@@ -19,25 +19,40 @@ import static org.junit.Assert.*;
  */
 public class MessageTest {
     
+    /**
+     *
+     */
     public MessageTest()
     {
     }
     
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass()
     {
     }
     
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass()
     {
     }
     
+    /**
+     *
+     */
     @Before
     public void setUp()
     {
     }
     
+    /**
+     *
+     */
     @After
     public void tearDown()
     {
@@ -50,12 +65,11 @@ public class MessageTest {
     public void testGetText()
     {
         System.out.println("getText");
-        Message instance = null;
-        String expResult = "";
+        Account account = new Account("test");
+        Message instance = new Message(account, "Test Message");
+        String expResult = "Test Message";
         String result = instance.getText();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The text doesn't match.", expResult, result);
     }
 
     /**
@@ -65,12 +79,11 @@ public class MessageTest {
     public void testGetDate()
     {
         System.out.println("getDate");
-        Message instance = null;
-        Date expResult = null;
+        Account account = new Account("test");
+        Message instance = new Message(account, "Test Message");
+        Date expResult = new Date();
         Date result = instance.getDate();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The date doesn't match.", expResult, result);
     }
 
     /**
@@ -80,12 +93,11 @@ public class MessageTest {
     public void testGetSender()
     {
         System.out.println("getSender");
-        Message instance = null;
-        Account expResult = null;
-        Account result = instance.getSender();
+        Account account = new Account("test");
+        Message instance = new Message(account, "Test Message");
+        String expResult = account.getUsername();
+        String result = instance.getSender().getUsername();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

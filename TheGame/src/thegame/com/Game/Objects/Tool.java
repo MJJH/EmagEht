@@ -13,7 +13,6 @@ public class Tool extends MapObject {
     /**
      * Create a usable tool
      * @param type      the type of this tool (sword, hatchet, etc)
-     * @param skin      the texture of this object
      * @param height    the height of this object
      * @param width     the width of this object
      */

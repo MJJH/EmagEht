@@ -20,25 +20,40 @@ import thegame.com.Game.Map;
  */
 public class LobbyTest {
     
+    /**
+     *
+     */
     public LobbyTest()
     {
     }
     
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass()
     {
     }
     
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass()
     {
     }
     
+    /**
+     *
+     */
     @Before
     public void setUp()
     {
     }
     
+    /**
+     *
+     */
     @After
     public void tearDown()
     {
@@ -46,35 +61,107 @@ public class LobbyTest {
 
     /**
      * Test of sendMessage method, of class Lobby.
+     * Normal
      */
     @Test
-    public void testSendMessage()
+    public void testSendMessage1()
     {
         System.out.println("sendMessage");
-        Account sender = null;
+        Account sender = new Account("test");
+        String message = "Test";
+        Lobby instance = new Lobby();
+        boolean expResult = true;
+        boolean result = instance.sendMessage(sender, message);
+        assertEquals("The message wasn't added.", expResult, result);
+    }
+    
+    /**
+     * Test of sendMessage method, of class Lobby.
+     * Empty
+     */
+    @Test
+    public void testSendMessage2()
+    {
+        System.out.println("sendMessage");
+        Account sender = new Account("test");
         String message = "";
         Lobby instance = new Lobby();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.sendMessage(sender, message);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The message wasn't added.", expResult, result);
     }
 
     /**
      * Test of joinLobby method, of class Lobby.
+     * 0 players joined.
      */
     @Test
-    public void testJoinLobby()
+    public void testJoinLobby1()
     {
         System.out.println("joinLobby");
-        Account account = null;
+        Account account = new Account("test");
         Lobby instance = new Lobby();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.joinLobby(account);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The first player can't join.", expResult, result);
+    }
+    
+    /**
+     * Test of joinLobby method, of class Lobby.
+     * 2 players joined.
+     */
+    @Test
+    public void testJoinLobby2()
+    {
+        System.out.println("joinLobby");
+        Account account1 = new Account("test1");
+        Account account2 = new Account("test2");
+        Account account3 = new Account("test3");
+        Lobby instance = new Lobby();
+        instance.joinLobby(account1); 
+        instance.joinLobby(account2);
+        boolean expResult = true;
+        boolean result = instance.joinLobby(account3);
+        assertEquals("The player could not join a lobby that is half full.", expResult, result);
+    }
+    
+    /**
+     * Test of joinLobby method, of class Lobby.
+     * 4 players joined.
+     */
+    @Test
+    public void testJoinLobby3()
+    {
+        System.out.println("joinLobby");
+        Account account1 = new Account("test1");
+        Account account2 = new Account("test2");
+        Account account3 = new Account("test3");
+        Account account4 = new Account("test4");
+        Account account5 = new Account("test5");
+        Lobby instance = new Lobby();
+        instance.joinLobby(account1);
+        instance.joinLobby(account2);
+        instance.joinLobby(account3);
+        instance.joinLobby(account4);
+        boolean expResult = false;
+        boolean result = instance.joinLobby(account5);
+        assertEquals("The player could join a full lobby.", expResult, result);
+    }
+    
+    /**
+     * Test of joinLobby method, of class Lobby.
+     * Already joined.
+     */
+    @Test
+    public void testJoinLobby4()
+    {
+        System.out.println("joinLobby");
+        Account account1 = new Account("test1");
+        Lobby instance = new Lobby();
+        instance.joinLobby(account1); 
+        boolean expResult = false;
+        boolean result = instance.joinLobby(account1);
+        assertEquals("The player could join a lobby that he already joined.", expResult, result);
     }
 
     /**
@@ -86,8 +173,6 @@ public class LobbyTest {
         System.out.println("generateMap");
         Lobby instance = new Lobby();
         instance.generateMap();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -98,11 +183,14 @@ public class LobbyTest {
     {
         System.out.println("getChat");
         Lobby instance = new Lobby();
-        ArrayList<Message> expResult = null;
+        Account henk = new Account("Henk");
+        instance.sendMessage(henk, "Test");
+        ArrayList<Message> expResult = new ArrayList<>();
+        expResult.add(new Message(henk, "Test"));
         ArrayList<Message> result = instance.getChat();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Message message1 = expResult.get(0);
+        Message message2 = result.get(0);
+        assertEquals("The chat wasn't acquired.", message1.getText(), message2.getText());
     }
 
     /**
@@ -112,12 +200,13 @@ public class LobbyTest {
     public void testGetAccounts()
     {
         System.out.println("getAccounts");
+        Account account1 = new Account("test1");
         Lobby instance = new Lobby();
-        ArrayList<Account> expResult = null;
+        instance.joinLobby(account1);
+        ArrayList<Account> expResult = new ArrayList<>();
+        expResult.add(account1);
         ArrayList<Account> result = instance.getAccounts();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The accounts weren't acquired.", expResult.get(0).getUsername(), result.get(0).getUsername());
     }
 
     /**
@@ -128,15 +217,15 @@ public class LobbyTest {
     {
         System.out.println("getMap");
         Lobby instance = new Lobby();
-        Map expResult = null;
-        Map result = instance.getMap();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.generateMap();
+        Class expResult = new Map().getClass();
+        Class result = instance.getMap().getClass();
+        assertEquals("A map wasn't generated.", expResult, result);
     }
 
     /**
      * Test of getID method, of class Lobby.
+     * NOTE: This test has no immediate function.
      */
     @Test
     public void testGetID()
@@ -145,9 +234,7 @@ public class LobbyTest {
         Lobby instance = new Lobby();
         int expResult = 0;
         int result = instance.getID();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The ID isn't correct.", expResult, result);
     }
     
 }

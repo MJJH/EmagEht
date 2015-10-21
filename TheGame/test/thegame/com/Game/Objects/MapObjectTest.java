@@ -19,25 +19,40 @@ import static org.junit.Assert.*;
  */
 public class MapObjectTest {
     
+    /**
+     *
+     */
     public MapObjectTest()
     {
     }
     
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass()
     {
     }
     
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass()
     {
     }
     
+    /**
+     *
+     */
     @Before
     public void setUp()
     {
     }
     
+    /**
+     *
+     */
     @After
     public void tearDown()
     {
@@ -176,28 +191,17 @@ public class MapObjectTest {
         fail("The test case is a prototype.");
     }
 
+    /**
+     *
+     */
     public class MapObjectImpl extends MapObject {
 
+        /**
+         *
+         */
         public MapObjectImpl()
         {
             super(null, 0.0F, 0.0F);
         }
     }
-
-    public class MapObjectImpl extends MapObject {
-
-        public MapObjectImpl()
-        {
-            super(null, 0.0F, 0.0F);
-        }
-    }
-
-    public class MapObjectImpl extends MapObject {
-
-        public MapObjectImpl()
-        {
-            super(null, 0.0F, 0.0F);
-        }
-    }
-    
 }

@@ -6,6 +6,50 @@ package thegame.com.Menu;
  * @author laure
  */
 public enum Settings {
-    UP(),DOWN(),LEFT(),RIGHT(),JUMP(),INVENTORY(),ACTION(),CHAT(),SOUND()
+
+    /**
+     *
+     */
+    UP(),
+
+    /**
+     *
+     */
+    DOWN(),
+
+    /**
+     *
+     */
+    LEFT(),
+
+    /**
+     *
+     */
+    RIGHT(),
+
+    /**
+     *
+     */
+    JUMP(),
+
+    /**
+     *
+     */
+    INVENTORY(),
+
+    /**
+     *
+     */
+    ACTION(),
+
+    /**
+     *
+     */
+    CHAT(),
+
+    /**
+     *
+     */
+    SOUND()
     ;
 }

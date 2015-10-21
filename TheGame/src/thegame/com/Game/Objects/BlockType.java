@@ -24,7 +24,6 @@ public class BlockType {
      * @param strength The strength of the Armortype
      * @param reqLvl The required level of the BlockType
      * @param btx
-     * @param skin The look of the Armortype
      * @param bty
      * @throws java.io.IOException
      */
@@ -38,6 +37,11 @@ public class BlockType {
      this.skin = getskin();
     }
     
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
     public Image getskin() throws IOException
     {
     int X = Float.floatToIntBits(btx);

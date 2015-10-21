@@ -33,6 +33,10 @@ public class Character {
            
     }
     
+    /**
+     *
+     * @return
+     */
     public int getXp()
     {
         return xp;

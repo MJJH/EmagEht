@@ -7,5 +7,13 @@ package thegame.com.Game.Objects.Characters;
  */
 public enum SkillType {
     
-    ATTACK,SPEED;
+    /**
+     *
+     */
+    ATTACK,
+
+    /**
+     *
+     */
+    SPEED;
 }
