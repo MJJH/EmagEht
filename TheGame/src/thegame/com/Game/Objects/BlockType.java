@@ -4,8 +4,10 @@ import javafx.scene.image.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import static java.time.Clock.system;
 import javafx.embed.swing.SwingFXUtils;
 import javax.imageio.ImageIO;
+
 /**
  * A class representing the type of block used
  * @author Mark
@@ -44,10 +46,10 @@ public class BlockType {
      */
     public Image getskin() throws IOException
     {
-    int X = Float.floatToIntBits(btx);
-    int Y = Float.floatToIntBits(bty);
+    int X = (int)(float)btx;
+    int Y = (int)(float)bty;
     
-    BufferedImage bigImg = ImageIO.read(new File("/resources/mapping.png"));
+    BufferedImage bigImg = ImageIO.read(new File("src/resources/mapping.png"));
     BufferedImage small = bigImg.getSubimage(X,Y,20,20);
     Image returnimg =  SwingFXUtils.toFXImage(small,null);
     return returnimg;
