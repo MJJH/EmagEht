@@ -32,7 +32,10 @@ public class Party {
      */
     public void sendInvite(Account invite, Account sender)
     {
-
+        if(invite != null && sender != null && !invite.getUsername().equals(sender.getUsername()))
+        {
+            invite.sendPartyInviteToMe(new PartyInvite(invite, this, sender));
+        }
     }
     
     /**
