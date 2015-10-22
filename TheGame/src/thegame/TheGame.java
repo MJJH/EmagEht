@@ -47,15 +47,19 @@ public class TheGame extends Application {
                 {
                     case UP:
                         me.moveY(1);
+                        System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
                         me.moveY(-1);
+                        System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:
                         me.moveX(-1);
+                        System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case RIGHT:
                         me.moveX(1);
+                        System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                 }
                 event.consume();
@@ -84,8 +88,9 @@ public class TheGame extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(scene);
         primaryStage.show();
-        
-        primaryStage.setOnCloseRequest(event -> {
+
+        primaryStage.setOnCloseRequest(event ->
+        {
             System.exit(0);
         });
 
@@ -105,25 +110,25 @@ public class TheGame extends Application {
                 timer.start();
             }
         }.start();
-        
-        /*
-        new Thread() {
-            @Override
-            public void run()
-            {
-                // Start repaint timer (max 60fps)
-                Timer timer = new Timer(1000 / 30, new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        //me.testMove();
-                    }
-                });
-                timer.start();
-            }
-        }.start();
-        */
+        /*
+         new Thread() {
+         @Override
+         public void run()
+         {
+         // Start repaint timer (max 60fps)
+         Timer timer = new Timer(1000 / 30, new ActionListener() {
+
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+         //me.testMove();
+         }
+         });
+         timer.start();
+         }
+         }.start();
+         */
     }
 
     private void draw(GraphicsContext g)
@@ -142,12 +147,16 @@ public class TheGame extends Application {
 
             if (draw instanceof Player)
             {
+                g.beginPath();
                 g.setFill(Color.RED);
                 g.rect(x, y, config.block.val, config.block.val);
                 g.fill();
+                g.closePath();
             } else
             {
+                g.beginPath();
                 g.drawImage(draw.getSkin(), x, y);
+                g.closePath();
             }
         }
     }
