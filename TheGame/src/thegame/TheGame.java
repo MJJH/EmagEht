@@ -32,9 +32,12 @@ import thegame.com.Game.Objects.MapObject;
  */
 public class TheGame extends Application {
 
-    Map play;
-    Player me;
-    Scene scene;
+    private Map play;
+    private Player me;
+    private Scene scene;
+    
+    private int startX;
+    private int startY;
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
         @Override
@@ -133,17 +136,20 @@ public class TheGame extends Application {
 
     private void draw(GraphicsContext g)
     {
-        // Clear scene
-        clear(g);
-
         // Get viewables
         List<MapObject> view = viewable();
         view.add(me);
-
+        
+        // Clear scene
+        clear(g);
+        
         for (MapObject draw : view)
         {
-            float x = (draw.getX() - view.get(0).getX()) * config.block.val - (me.getW() / 2) * config.block.val;
-            float y = (float) (scene.getHeight() - (draw.getY() - view.get(0).getY() + 1) * config.block.val - (me.getH() / 2) * config.block.val);
+            // float x = (draw.getX() - view.get(0).getX()) * config.block.val - (me.getW() / 2) * config.block.val;
+            // float y = (float) (scene.getHeight() - (draw.getY() - view.get(0).getY() + 1) * config.block.val - (me.getH() / 2) * config.block.val);
+            
+            float x = (draw.getX() - startX) * config.block.val - (me.getW() / 2) * config.block.val;
+            float y = (float) (scene.getHeight() - (draw.getY() - startY + 1) * config.block.val - (me.getH() / 2) * config.block.val);
 
             if (draw instanceof Player)
             {
@@ -174,8 +180,8 @@ public class TheGame extends Application {
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
 
-        int startX = (int) (midX - Math.floor((blockHorizontal - 1) / 2));
-        int startY = (int) (midY - Math.floor((blockVertical - 1) / 2));
+        startX = (int) (midX - Math.floor((blockHorizontal - 1) / 2));
+        startY = (int) (midY - Math.floor((blockVertical - 1) / 2));
         int endX = (int) (midX + Math.ceil((blockHorizontal - 1) / 2));
         int endY = (int) (midY + Math.ceil((blockVertical - 1) / 2));
 

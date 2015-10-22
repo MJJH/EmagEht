@@ -13,6 +13,7 @@ import thegame.com.Game.Objects.MapObject;
 
 /**
  * The class for the map of the game.
+ *
  * @author Mark
  */
 public class Map {
@@ -26,7 +27,7 @@ public class Map {
     private int level;
     private int spawnX;
     private int spawnY;
-    
+
     private Block[][] blocks;
 
     /**
@@ -36,7 +37,7 @@ public class Map {
     {
         generateMap();
     }
-    
+
     /**
      *
      */
@@ -44,85 +45,104 @@ public class Map {
     {
         width = 300;
         height = 100;
-        
+
         this.spawnX = 0;
         this.spawnY = 4;
-        
+
         blocks = new Block[height][width];
-        
+
         BlockType dirt;
         BlockType stone;
-        try {
+        try
+        {
             dirt = new BlockType("dirt", 1, 1, 0, 0);
             stone = new BlockType("stone", 1, 1, 0, 20);
-        
-            for(int x = 0; x < 5; x++) {
+
+            for (int x = 0; x < 5; x++)
+            {
                 blocks[2][x] = new Block(stone, x, 2, 1);
                 blocks[1][x] = new Block(stone, x, 1, 1);
                 blocks[0][x] = new Block(stone, x, 0, 1);
             }
 
-            for(int x = 5; x < width; x++) {
-                if(Math.random() > 0.5) {
+            for (int x = 5; x < width; x++)
+            {
+                if (Math.random() > 0.5)
+                {
                     blocks[3][x] = new Block(dirt, x, 3, 1);
                     blocks[2][x] = new Block(dirt, x, 2, 1);
                     blocks[1][x] = new Block(stone, x, 1, 1);
                     blocks[0][x] = new Block(stone, x, 0, 1);
-                } else {
+                } else
+                {
                     blocks[2][x] = new Block(dirt, x, 2, 1);
                     blocks[1][x] = new Block(stone, x, 1, 1);
                     blocks[0][x] = new Block(stone, x, 0, 1);
                 }
             }
-        
-        } catch (IOException ex) {
+
+        } catch (IOException ex)
+        {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     *  Handles the redirect to the next map.
+     * Handles the redirect to the next map.
      */
     public void NextLevel()
     {
         throw new UnsupportedOperationException();
     }
 
-    public float getSpawnX() {
+    public float getSpawnX()
+    {
         return spawnX;
     }
-    
-    public float getSpawnY() {
+
+    public float getSpawnY()
+    {
         return spawnY;
     }
-    
-    public int getWidth() {
+
+    public int getWidth()
+    {
         return width;
     }
-    
-    public int getHeight() {
+
+    public int getHeight()
+    {
         return height;
     }
-    
-    public List<MapObject> getObjects(int startX, int startY, int endX, int endY) {
+
+    public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
+    {
         List<MapObject> ret = new ArrayList<MapObject>();
-        
-        if(startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+
+        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+        {
             throw new IllegalArgumentException("Wrong start and end parameters given");
-        
-        for(int y = startY; y < endY; y++) {
-            for(int x = startX; x < endX; x++) {
-                try {
+        }
+
+        for (int y = startY; y < endY; y++)
+        {
+            for (int x = startX; x < endX; x++)
+            {
+                try
+                {
                     Block cur = blocks[y][x];
-                    
-                    if(cur != null) {
+
+                    if (cur != null)
+                    {
                         ret.add(cur);
                     }
-                } catch (Exception e){}
+                } catch (Exception e)
+                {
+                }
             }
         }
-        
+
         return ret;
     }
-    
+
 }
