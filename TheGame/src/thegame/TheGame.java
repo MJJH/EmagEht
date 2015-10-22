@@ -38,6 +38,8 @@ public class TheGame extends Application {
     
     private int startX;
     private int startY;
+    
+    private boolean repainting;
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
         @Override
@@ -49,19 +51,19 @@ public class TheGame extends Application {
                 switch (event.getCode())
                 {
                     case UP:
-                        me.moveY(1);
+                        me.moveY(.1f);
                         System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
-                        me.moveY(-1);
+                        me.moveY(-.1f);
                         System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:
-                        me.moveX(-1);
+                        me.moveX(-.1f);
                         System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case RIGHT:
-                        me.moveX(1);
+                        me.moveX(.1f);
                         System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                 }
@@ -78,7 +80,7 @@ public class TheGame extends Application {
     public void start(Stage primaryStage)
     {
         play = new Map();
-        me = new Player(null, "Dummy", 100, null, null, 20, 10, null, 1, 1);
+        me = new Player(null, "Dummy", 100, null, null, 50, 10, null, 1, 1);
 
         StackPane root = new StackPane();
 
@@ -97,23 +99,26 @@ public class TheGame extends Application {
             System.exit(0);
         });
 
+        repainting = false;
+        
         new Thread() {
             @Override
             public void run()
             {
                 // Start repaint timer (max 60fps)
-                Timer timer = new Timer(1000 / 60, new ActionListener() {
+                Timer timer = new Timer(1000 / 30, new ActionListener() {
 
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        draw(gc);
+                        if(!repainting)
+                            draw(gc);
                     }
                 });
                 timer.start();
             }
         }.start();
-
+        
         /*
          new Thread() {
          @Override
@@ -136,6 +141,8 @@ public class TheGame extends Application {
 
     private void draw(GraphicsContext g)
     {
+        repainting = true;
+        
         // Get viewables
         List<MapObject> view = viewable();
         view.add(me);
@@ -145,11 +152,14 @@ public class TheGame extends Application {
         
         for (MapObject draw : view)
         {
-            // float x = (draw.getX() - view.get(0).getX()) * config.block.val - (me.getW() / 2) * config.block.val;
-            // float y = (float) (scene.getHeight() - (draw.getY() - view.get(0).getY() + 1) * config.block.val - (me.getH() / 2) * config.block.val);
+            float x = (draw.getX() - startX) * config.block.val/* + (me.getX() % 1) * config.block.val*/;
+            float y = ((float)scene.getHeight() - (draw.getY() - startY + 1) * config.block.val);
             
-            float x = (draw.getX() - startX) * config.block.val - (me.getW() / 2) * config.block.val;
-            float y = (float) (scene.getHeight() - (draw.getY() - startY + 1) * config.block.val - (me.getH() / 2) * config.block.val);
+            if(startX > 0) {
+                if(me.getX()%1 >= .5f)
+                    x+=config.block.val;
+                x -= (config.block.val * (me.getX() % 1));
+            }
 
             if (draw instanceof Player)
             {
@@ -165,6 +175,8 @@ public class TheGame extends Application {
                 g.closePath();
             }
         }
+        
+        repainting = false;
     }
 
     private void clear(GraphicsContext g)
@@ -180,8 +192,8 @@ public class TheGame extends Application {
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
 
-        startX = (int) (midX - Math.floor((blockHorizontal - 1) / 2));
-        startY = (int) (midY - Math.floor((blockVertical - 1) / 2));
+        startX = (int) Math.round(midX - Math.floor((blockHorizontal - 1) / 2));
+        startY = (int) Math.round(midY - Math.floor((blockVertical - 1) / 2));
         int endX = (int) (midX + Math.ceil((blockHorizontal - 1) / 2));
         int endY = (int) (midY + Math.ceil((blockVertical - 1) / 2));
 
