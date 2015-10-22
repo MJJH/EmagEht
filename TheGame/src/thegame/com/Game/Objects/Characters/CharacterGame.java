@@ -39,7 +39,7 @@ public class CharacterGame extends MapObject {
         super(x, y, skin, height, width, 1);
         this.name = name;
         this.hp = 100;
-
+        solid = 0;
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();

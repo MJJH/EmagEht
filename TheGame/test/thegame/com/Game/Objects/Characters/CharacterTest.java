@@ -78,8 +78,8 @@ public class CharacterTest {
     public void testGetXp()
     {
         System.out.println("getXp");
-        Character instance = null;
-        int expResult = 0;
+        Character instance = new Character("Bob", 10000);
+        int expResult = 10000;
         int result = instance.getXp();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.

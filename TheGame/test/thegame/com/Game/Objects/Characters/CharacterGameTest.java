@@ -5,6 +5,7 @@
  */
 package thegame.com.Game.Objects.Characters;
 
+import java.util.EnumMap;
 import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -155,9 +156,9 @@ public class CharacterGameTest {
     public void testUpdateHP()
     {
         System.out.println("updateHP");
-        int change = 0;
-        CharacterGame instance = null;
-        int expResult = 0;
+        int change = 40;
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
+        int expResult = 40;
         int result = instance.updateHP(change);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -171,8 +172,8 @@ public class CharacterGameTest {
     public void testGetHP()
     {
         System.out.println("getHP");
-        CharacterGame instance = null;
-        int expResult = 0;
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
+        int expResult = 100;
         int result = instance.getHP();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -186,8 +187,8 @@ public class CharacterGameTest {
     public void testGetName()
     {
         System.out.println("getName");
-        CharacterGame instance = null;
-        String expResult = "";
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
+        String expResult = "John";
         String result = instance.getName();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -201,9 +202,12 @@ public class CharacterGameTest {
     public void testGetSkills()
     {
         System.out.println("getSkills");
-        CharacterGame instance = null;
-        Map<SkillType, Integer> expResult = null;
+        
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
+        
+        Map<SkillType, Integer> expResult = new EnumMap<SkillType, Integer>(SkillType.class);
         Map<SkillType, Integer> result = instance.getSkills();
+        
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -215,8 +219,9 @@ public class CharacterGameTest {
     @Test
     public void testGetSolid()
     {
+        
         System.out.println("getSolid");
-        CharacterGame instance = null;
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
         float expResult = 0.0F;
         float result = instance.getSolid();
         assertEquals(expResult, result, 0.0);
@@ -231,7 +236,7 @@ public class CharacterGameTest {
     public void testGetArmor()
     {
         System.out.println("getArmor");
-        CharacterGame instance = null;
+        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
         Map<String, Armor> expResult = null;
         Map<String, Armor> result = instance.getArmor();
         assertEquals(expResult, result);
