@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Scene;
@@ -87,8 +89,21 @@ public class TheGame extends Application {
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
 
-        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
+        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight()); 
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override 
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                canvas.setWidth((double) newSceneWidth);
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override 
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                canvas.setHeight((double) newSceneHeight);
+            }
+        });
 
         root.getChildren().add(canvas);
         primaryStage.setScene(scene);
@@ -118,25 +133,7 @@ public class TheGame extends Application {
                 timer.start();
             }
         }.start();
-        
-        /*
-         new Thread() {
-         @Override
-         public void run()
-         {
-         // Start repaint timer (max 60fps)
-         Timer timer = new Timer(1000 / 30, new ActionListener() {
-
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-         //me.testMove();
-         }
-         });
-         timer.start();
-         }
-         }.start();
-         */
+       
     }
 
     private void draw(GraphicsContext g)
@@ -152,13 +149,20 @@ public class TheGame extends Application {
         
         for (MapObject draw : view)
         {
-            float x = (draw.getX() - startX) * config.block.val/* + (me.getX() % 1) * config.block.val*/;
-            float y = ((float)scene.getHeight() - (draw.getY() - startY + 1) * config.block.val);
+            float x = (draw.getX() - startX - me.getW()/2) * config.block.val;
+            float y = ((float)scene.getHeight() - (draw.getY() - startY + 1 - me.getH()/2) * config.block.val);
+            
             
             if(startX > 0) {
                 if(me.getX()%1 >= .5f)
                     x+=config.block.val;
                 x -= (config.block.val * (me.getX() % 1));
+            }
+            
+            if(startY > 0) {
+                if(me.getY()%1 > .5f)
+                    y-=config.block.val;
+                y += (config.block.val * (me.getY() % 1));
             }
 
             if (draw instanceof Player)
@@ -186,8 +190,8 @@ public class TheGame extends Application {
 
     private List<MapObject> viewable()
     {
-        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 1;
-        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 1;
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
 
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
