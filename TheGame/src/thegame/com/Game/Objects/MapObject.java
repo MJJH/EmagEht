@@ -81,6 +81,10 @@ public abstract class MapObject {
         setX(this.xPosition + x);
     }
     
+    public void moveY(float y) {
+        setY(this.yPosition + y);
+    }
+    
     private void setH(float h) {
         if(h > 0)
             this.height = h;
