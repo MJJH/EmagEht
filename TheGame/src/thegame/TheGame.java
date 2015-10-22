@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Scene;
@@ -83,6 +84,10 @@ public class TheGame extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+        primaryStage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
 
         new Thread() {
             @Override
@@ -100,7 +105,8 @@ public class TheGame extends Application {
                 timer.start();
             }
         }.start();
-
+        
+        /*
         new Thread() {
             @Override
             public void run()
@@ -117,6 +123,7 @@ public class TheGame extends Application {
                 timer.start();
             }
         }.start();
+        */
     }
 
     private void draw(GraphicsContext g)
