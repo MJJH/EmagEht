@@ -47,25 +47,30 @@ public class TheGame extends Application {
         @Override
         public void handle(KeyEvent event)
         {
+            float speed = .2f;
+            
+            if(event.isShiftDown())
+                speed = 1;
+            
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN
                     || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
             {
                 switch (event.getCode())
                 {
                     case UP:
-                        me.moveY(.1f);
+                        me.moveY(speed);
                         System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
-                        me.moveY(-.1f);
+                        me.moveY(-speed);
                         System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:
-                        me.moveX(-.1f);
+                        me.moveX(-speed);
                         System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case RIGHT:
-                        me.moveX(.1f);
+                        me.moveX(speed);
                         System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                 }
@@ -152,17 +157,23 @@ public class TheGame extends Application {
             float x = (draw.getX() - startX - me.getW()/2) * config.block.val;
             float y = ((float)scene.getHeight() - (draw.getY() - startY + 1 - me.getH()/2) * config.block.val);
             
+            int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+            int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
             
-            if(startX > 0) {
+            if(startX > 0 || (startX == 0 && me.getX() > blockHorizontal/2 - 0.5)) {
                 if(me.getX()%1 >= .5f)
                     x+=config.block.val;
                 x -= (config.block.val * (me.getX() % 1));
+            } else {
+                x += config.block.val / 2;
             }
             
-            if(startY > 0) {
-                if(me.getY()%1 > .5f)
+            if(startY > 0 || (startY == 0 && me.getY() > blockVertical/2 - 0.5)) {
+                if(me.getY()%1 >= .5f)
                     y-=config.block.val;
                 y += (config.block.val * (me.getY() % 1));
+            } else {
+                y -= config.block.val / 2;
             }
 
             if (draw instanceof Player)
