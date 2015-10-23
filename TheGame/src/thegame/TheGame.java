@@ -86,7 +86,7 @@ public class TheGame extends Application {
     public void start(Stage primaryStage)
     {
         play = new Map();
-        me = new Player(null, "Dummy", 100, null, null, 50, 10, null, 1, 1);
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1);
 
         
         StackPane root = new StackPane();
@@ -152,29 +152,72 @@ public class TheGame extends Application {
         // Clear scene
         clear(g);
         
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+        
+        float dx = 0;
+        float dy = 0;
+        /*if((startX > 0 || (startX == 0 && me.getX() > blockHorizontal/2 - 0.5))) {
+            if(me.getX()%1 >= .5f)
+                dx+=config.block.val;
+            dx -= (config.block.val * (me.getX() % 1));
+
+        } else {
+           dx += config.block.val / 2; 
+        }*/
+        
+        if(startX > 0 && startX < play.getWidth() - blockHorizontal + 1) {
+            if(me.getX()%1 >= .5f)
+                dx+=config.block.val;
+            dx -= config.block.val * (me.getX() % 1);
+        } else if(startX == 0 && me.getX() > blockHorizontal / 2 - 0.5) {
+            if(me.getX()%1 >= .5f)
+                dx+=config.block.val;
+            dx -= config.block.val * (me.getX() % 1);
+        } else if(startX == play.getWidth() - blockHorizontal + 1 && me.getX() < play.getWidth() - (blockHorizontal + 1) / 2 + 2) {
+            if((me.getX() - play.getWidth() - (blockHorizontal + 1) / 2 + 2) % 1 < .5f)
+                dx-=config.block.val;
+            dx -= config.block.val * ((me.getX() - play.getWidth() - (blockHorizontal + 1) / 2 + 2) % 2);
+        } else if(startX == play.getWidth() - blockHorizontal + 1) {
+            dx -= config.block.val * 1.5;
+        } else if(startX == 0) {
+            dx += config.block.val / 2;
+        }
+
+        /*if((startY > 0 || (startY == 0 && me.getY() > blockVertical/2 - 0.5))) {
+            if(me.getY()%1 >= .5f)
+                dy-=config.block.val;
+            dy += (config.block.val * (me.getY() % 1));
+        } else {
+            dy -= config.block.val / 2;
+        }*/
+        
+        if(startY > 0 && startY < play.getHeight()- blockVertical + 1) {
+            if(me.getY()%1 >= .5f)
+                dy-=config.block.val;
+            dy += config.block.val * (me.getY() % 1);
+        } else if(startY == 0 && me.getY() > blockVertical / 2 - 0.5) {
+            if(me.getY()%1 >= .5f)
+                dy-=config.block.val;
+            dy += config.block.val * (me.getY() % 1);
+        } else if(startY == play.getHeight() - blockVertical + 1 && me.getY() < play.getHeight() - (blockVertical + 1) / 2 + 2) {
+            if((me.getY() - play.getHeight() - (blockVertical + 1) / 2 + 2) % 1 < .5f)
+                dy+=config.block.val;
+            dy += config.block.val * ((me.getY() - play.getHeight() - (blockVertical + 1) / 2 + 2) % 2);
+        } else if(startY == play.getHeight() - blockVertical + 1) {
+            dy += config.block.val * 1.5;
+        } else if(startY == 0) {
+            dy -= config.block.val / 2;
+        }
+        
         for (MapObject draw : view)
         {
             float x = (draw.getX() - startX - me.getW()/2) * config.block.val;
             float y = ((float)scene.getHeight() - (draw.getY() - startY + 1 - me.getH()/2) * config.block.val);
             
-            int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-            int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+            x += dx;
+            y += dy;
             
-            if(startX > 0 || (startX == 0 && me.getX() > blockHorizontal/2 - 0.5)) {
-                if(me.getX()%1 >= .5f)
-                    x+=config.block.val;
-                x -= (config.block.val * (me.getX() % 1));
-            } else {
-                x += config.block.val / 2;
-            }
-            
-            if(startY > 0 || (startY == 0 && me.getY() > blockVertical/2 - 0.5)) {
-                if(me.getY()%1 >= .5f)
-                    y-=config.block.val;
-                y += (config.block.val * (me.getY() % 1));
-            } else {
-                y -= config.block.val / 2;
-            }
 
             if (draw instanceof Player)
             {

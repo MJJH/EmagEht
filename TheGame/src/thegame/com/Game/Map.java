@@ -1,6 +1,9 @@
 package thegame.com.Game;
 
 import com.sun.javaws.exceptions.InvalidArgumentException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -46,43 +49,53 @@ public class Map {
         width = 300;
         height = 100;
 
-        this.spawnX = 0;
-        this.spawnY = 4;
-
         blocks = new Block[height][width];
 
-        BlockType dirt;
-        BlockType stone;
-        try
-        {
-            dirt = new BlockType("dirt", 1, 1, 0, 0);
-            stone = new BlockType("stone", 1, 1, 0, 20);
-
-            for (int x = 0; x < 5; x++)
-            {
-                blocks[2][x] = new Block(stone, x, 2, 1);
-                blocks[1][x] = new Block(stone, x, 1, 1);
-                blocks[0][x] = new Block(stone, x, 0, 1);
-            }
-
-            for (int x = 5; x < width; x++)
-            {
-                if (Math.random() > 0.5)
-                {
-                    blocks[3][x] = new Block(dirt, x, 3, 1);
-                    blocks[2][x] = new Block(dirt, x, 2, 1);
-                    blocks[1][x] = new Block(stone, x, 1, 1);
-                    blocks[0][x] = new Block(stone, x, 0, 1);
-                } else
-                {
-                    blocks[2][x] = new Block(dirt, x, 2, 1);
-                    blocks[1][x] = new Block(stone, x, 1, 1);
-                    blocks[0][x] = new Block(stone, x, 0, 1);
+        int y = height-1;
+        int x = 0;
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt")))) {
+            String line;
+            
+            while((line = br.readLine()) != null) {
+                x = 0;
+                for(char b : line.toCharArray()) {
+                    
+                    switch(b) {
+                        case '0': break;
+                        case 'x': 
+                            this.spawnX = x;
+                            this.spawnY = y;
+                            break;
+                        case 'd':
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1);
+                            break;
+                        case 's':
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1);
+                            break;
+                        case 'S':
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1);
+                            break;
+                        case 'O':
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1);
+                            break;
+                        case 'c':
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1);
+                            break;
+                        case 't':
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1);
+                            break;
+                        case 'i':
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1);
+                            break;
+                    }
+                    
+                    x++;
                 }
+                
+                y--;
             }
-
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
