@@ -36,10 +36,9 @@ public class CharacterGame extends MapObject {
      */
     public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width)
     {
-        super(x, y, skin, height, width, 1);
+        super(x, y, skin, height, width, 0);
         this.name = name;
         this.hp = 100;
-        solid = 0;
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();

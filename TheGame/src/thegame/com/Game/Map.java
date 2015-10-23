@@ -114,7 +114,24 @@ public class Map {
     {
         return height;
     }
-
+    
+    
+    
+    public Block GetTile(float x, float y)
+    {
+        
+        for (Block Blocka[] : blocks) {
+         for(Block block : Blocka)
+         {
+            if(block.getX() == x && block.getY() == y)
+            {
+              //test
+              return block;
+            }
+         }
+        }
+        return null;
+    }
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<MapObject>();

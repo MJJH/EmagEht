@@ -31,4 +31,5 @@ public class Block extends MapObject {
     public int hitBlock (Tool tool){
         return 0;
     }
+    
 }

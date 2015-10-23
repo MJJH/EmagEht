@@ -37,10 +37,9 @@ public class TheGame extends Application {
     private Map play;
     private Player me;
     private Scene scene;
-    
     private int startX;
     private int startY;
-    
+    private MapObject obj;
     private boolean repainting;
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
@@ -89,6 +88,7 @@ public class TheGame extends Application {
         play = new Map();
         me = new Player(null, "Dummy", 100, null, null, 50, 10, null, 1, 1);
 
+        
         StackPane root = new StackPane();
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
@@ -245,6 +245,21 @@ public class TheGame extends Application {
         }
 
         return play.getObjects(startX, startY, endX, endY);
+    }
+    
+    public Player getPlayer()
+    {
+        return me;
+    }
+    
+    public Map getmap()
+    {
+        return play;
+    }
+    
+    public TheGame getgame()
+    {
+        return this;
     }
 
     /**
