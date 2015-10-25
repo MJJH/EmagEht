@@ -74,8 +74,6 @@ public class CharacterGameTest {
         boolean expResult = false;
         boolean result = instance.addToBackpack(object);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -90,8 +88,6 @@ public class CharacterGameTest {
         Map expResult = null;
         Map result = instance.dropItem(object);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -104,8 +100,6 @@ public class CharacterGameTest {
         Armor armorAdd = null;
         CharacterGame instance = null;
         instance.equipArmor(armorAdd);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -118,8 +112,6 @@ public class CharacterGameTest {
         Armor armorDel = null;
         CharacterGame instance = null;
         instance.unequipArmor(armorDel);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -132,8 +124,6 @@ public class CharacterGameTest {
         Tool toolAdd = null;
         CharacterGame instance = null;
         instance.equipTool(toolAdd);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -145,8 +135,6 @@ public class CharacterGameTest {
         System.out.println("unequipTool");
         CharacterGame instance = null;
         instance.unequipTool();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -161,8 +149,6 @@ public class CharacterGameTest {
         int expResult = 40;
         int result = instance.updateHP(change);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -176,8 +162,6 @@ public class CharacterGameTest {
         int expResult = 100;
         int result = instance.getHP();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -191,8 +175,6 @@ public class CharacterGameTest {
         String expResult = "John";
         String result = instance.getName();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -209,8 +191,6 @@ public class CharacterGameTest {
         Map<SkillType, Integer> result = instance.getSkills();
         
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -225,8 +205,6 @@ public class CharacterGameTest {
         float expResult = 0.0F;
         float result = instance.getSolid();
         assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -240,8 +218,6 @@ public class CharacterGameTest {
         Map<String, Armor> expResult = null;
         Map<String, Armor> result = instance.getArmor();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -255,8 +231,6 @@ public class CharacterGameTest {
         Tool expResult = null;
         Tool result = instance.getHolding();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -270,8 +244,6 @@ public class CharacterGameTest {
         Map<MapObject, Integer> expResult = null;
         Map<MapObject, Integer> result = instance.getBackpackMap();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

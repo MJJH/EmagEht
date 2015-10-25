@@ -23,6 +23,9 @@ public class CharacterTest {
      */
     public CharacterTest()
     {
+        Character character = new Character("Piet", 2000);
+        assertEquals(character.getXp(), 2000);
+        assertEquals(character.getName(), "Piet");
     }
     
     /**
@@ -64,11 +67,9 @@ public class CharacterTest {
     public void testLevelUp()
     {
         System.out.println("levelUp");
-        String skilltype = "";
-        Character instance = null;
+        String skilltype = "Attack";
+        Character instance = new Character("Piet", 2000);
         instance.levelUp(skilltype);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -82,8 +83,18 @@ public class CharacterTest {
         int expResult = 10000;
         int result = instance.getXp();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getName method, of class Character.
+     */
+    @Test
+    public void testGetName() {
+        System.out.println("getName");
+        Character instance = new Character("Bob", 10000);
+        String expResult = "Bob";
+        String result = instance.getName();
+        assertEquals(expResult, result);
     }
     
 }

@@ -51,6 +51,11 @@ public class Character {
      else this.name = name;
     }
     
+    public String getName()
+    {
+        return name;
+    }
+    
     private void setXp(int xp)
     {
         if(xp < 0)
