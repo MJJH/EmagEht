@@ -39,5 +39,20 @@ public class CharacterType {
         this.startItems = startItems;
         this.startSkills = startSkills;
     }
+    
+    public String getName()
+    {
+    return name;
+    }
+    
+    public List<MapObject> getStartItems()
+    {
+        return startItems;
+    }
+    
+    public Map<SkillType,Integer> getStartSkills()
+    {
+        return startSkills;
+    }
 
 }

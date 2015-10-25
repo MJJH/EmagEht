@@ -64,12 +64,17 @@ public class EnemyTest {
     public void testMove()
     {
         System.out.println("move");
-        float x = 0.0F;
-        float y = 0.0F;
-        Enemy instance = null;
+        float x = 1.0F;
+        float y = 1.0F;
+        Enemy instance = new Enemy("Zombie", 100, null, 10, 10, null, 1, 1);
         instance.move(x, y);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        float resultX = instance.getX();
+        float resultY = instance.getY();
+        float expresultY = 11;
+        float expresultX = 11;
+        assertEquals(resultX, expresultX);
+        assertEquals(resultY, expresultY);
+
     }
     
 }
