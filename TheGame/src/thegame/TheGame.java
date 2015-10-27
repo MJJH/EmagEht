@@ -8,6 +8,8 @@ package thegame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -39,7 +41,6 @@ public class TheGame extends Application {
     private Scene scene;
     private int startX;
     private int startY;
-    private MapObject obj;
     private boolean repainting;
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
@@ -58,19 +59,19 @@ public class TheGame extends Application {
                 {
                     case UP:
                         me.moveY(speed);
-                        System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
+                        //System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
                         me.moveY(-speed);
-                        System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
+                        //System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:
                         me.moveX(-speed);
-                        System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
+                        //System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case RIGHT:
                         me.moveX(speed);
-                        System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
+                        //System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                 }
                 event.consume();
@@ -86,7 +87,7 @@ public class TheGame extends Application {
     public void start(Stage primaryStage)
     {
         play = new Map();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1);
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 2, 2);
 
         
         StackPane root = new StackPane();
@@ -119,32 +120,20 @@ public class TheGame extends Application {
             System.exit(0);
         });
 
-        repainting = false;
         
-        new Thread() {
-            @Override
-            public void run()
-            {
-                // Start repaint timer (max 60fps)
-                Timer timer = new Timer(1000 / 30, new ActionListener() {
+        AnimationTimer loop = new AnimationTimer() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        if(!repainting)
-                            draw(gc);
-                    }
-                });
-                timer.start();
+            @Override
+            public void handle(long now) {
+                draw(gc);
             }
-        }.start();
+        };
+        loop.start();
        
     }
 
     private void draw(GraphicsContext g)
     {
-        repainting = true;
-        
         // Get viewables
         List<MapObject> view = viewable();
         view.add(me);
@@ -157,58 +146,38 @@ public class TheGame extends Application {
         
         float dx = 0;
         float dy = 0;
-        /*if((startX > 0 || (startX == 0 && me.getX() > blockHorizontal/2 - 0.5))) {
-            if(me.getX()%1 >= .5f)
-                dx+=config.block.val;
-            dx -= (config.block.val * (me.getX() % 1));
-
-        } else {
-           dx += config.block.val / 2; 
-        }*/
         
-        if(startX > 0 && startX < play.getWidth() - blockHorizontal + 1) {
-            if(me.getX()%1 >= .5f)
-                dx+=config.block.val;
+        
+        
+        dx += config.block.val * (me.getW() / 2);
+        if(me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal)/2)-me.getW()/2 && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal)/2)) {
+            if(me.getX() % 1 >= me.getW() / 2)
+                dx += config.block.val;
             dx -= config.block.val * (me.getX() % 1);
-        } else if(startX == 0 && me.getX() > blockHorizontal / 2 - 0.5) {
-            if(me.getX()%1 >= .5f)
-                dx+=config.block.val;
+        } else if(me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal)/2) && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal)/2)+1) {
+            if(me.getX() % 1 >= me.getW() / 2)
+                dx += config.block.val;
             dx -= config.block.val * (me.getX() % 1);
-        } else if(startX == play.getWidth() - blockHorizontal + 1 && me.getX() < play.getWidth() - (blockHorizontal + 1) / 2 + 2) {
-            if((me.getX() - play.getWidth() - (blockHorizontal + 1) / 2 + 2) % 1 < .5f)
-                dx-=config.block.val;
-            dx -= config.block.val * ((me.getX() - play.getWidth() - (blockHorizontal + 1) / 2 + 2) % 2);
-        } else if(startX == play.getWidth() - blockHorizontal + 1) {
-            dx -= config.block.val * 1.5;
-        } else if(startX == 0) {
-            dx += config.block.val / 2;
+            dx -= config.block.val;
+        } else if(me.getX() + me.getW() / 2 > Math.floor(startX + (blockHorizontal)/2) + 1) {
+            dx -= config.block.val*2;
+        }
+        
+        dy -= config.block.val * (me.getH() / 2);
+        if(me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical)/2)-me.getH()/2 && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical)/2)) {
+            if(me.getY() % 1 >= me.getH() / 2)
+                dy -= config.block.val;
+            dy += config.block.val * (me.getY() % 1);
+        } else if(me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical)/2) && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical)/2)+1) {
+            if(me.getY() % 1 >= me.getH() / 2)
+                dy -= config.block.val;
+            dy += config.block.val * (me.getY() % 1);
+            dy += config.block.val;
+        } else if(me.getY() + me.getH() / 2 > Math.floor(startY + (blockVertical)/2) + 1) {
+            dy += config.block.val*2;
         }
 
-        /*if((startY > 0 || (startY == 0 && me.getY() > blockVertical/2 - 0.5))) {
-            if(me.getY()%1 >= .5f)
-                dy-=config.block.val;
-            dy += (config.block.val * (me.getY() % 1));
-        } else {
-            dy -= config.block.val / 2;
-        }*/
         
-        if(startY > 0 && startY < play.getHeight()- blockVertical + 1) {
-            if(me.getY()%1 >= .5f)
-                dy-=config.block.val;
-            dy += config.block.val * (me.getY() % 1);
-        } else if(startY == 0 && me.getY() > blockVertical / 2 - 0.5) {
-            if(me.getY()%1 >= .5f)
-                dy-=config.block.val;
-            dy += config.block.val * (me.getY() % 1);
-        } else if(startY == play.getHeight() - blockVertical + 1 && me.getY() < play.getHeight() - (blockVertical + 1) / 2 + 2) {
-            if((me.getY() - play.getHeight() - (blockVertical + 1) / 2 + 2) % 1 < .5f)
-                dy+=config.block.val;
-            dy += config.block.val * ((me.getY() - play.getHeight() - (blockVertical + 1) / 2 + 2) % 2);
-        } else if(startY == play.getHeight() - blockVertical + 1) {
-            dy += config.block.val * 1.5;
-        } else if(startY == 0) {
-            dy -= config.block.val / 2;
-        }
         
         for (MapObject draw : view)
         {
@@ -222,8 +191,8 @@ public class TheGame extends Application {
             if (draw instanceof Player)
             {
                 g.beginPath();
-                g.setFill(Color.RED);
-                g.rect(x, y, config.block.val, config.block.val);
+                g.setFill(Color.BLACK);
+                g.rect(x, y, config.block.val * ((Player) draw).getW(), config.block.val * ((Player) draw).getH());
                 g.fill();
                 g.closePath();
             } else
@@ -233,8 +202,6 @@ public class TheGame extends Application {
                 g.closePath();
             }
         }
-        
-        repainting = false;
     }
 
     private void clear(GraphicsContext g)
@@ -244,8 +211,8 @@ public class TheGame extends Application {
 
     private List<MapObject> viewable()
     {
-        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 4;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 4;
 
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
