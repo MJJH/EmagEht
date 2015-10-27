@@ -12,15 +12,15 @@ import thegame.com.Game.Objects.*;
  */
 public class CharacterGame extends MapObject {
 
-    private int hp;
-    private final String name;
-    private float solid;
+    protected int hp;
+    protected final String name;
+    protected float solid;
 
-    private Tool holding;
+    protected Tool holding;
 
-    private java.util.Map<SkillType, Integer> skills;
-    private java.util.Map<String, Armor> armor;
-    private java.util.Map<MapObject, Integer> backpack;
+    protected java.util.Map<SkillType, Integer> skills;
+    protected java.util.Map<String, Armor> armor;
+    protected java.util.Map<MapObject, Integer> backpack;
 
     /**
      * This constructor creates a new in game character.

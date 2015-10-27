@@ -59,6 +59,7 @@ public class TheGame extends Application {
                 {
                     case UP:
                         me.moveY(speed);
+                        
                         //System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
@@ -87,7 +88,7 @@ public class TheGame extends Application {
     public void start(Stage primaryStage)
     {
         play = new Map();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 2, 2);
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
 
         
         StackPane root = new StackPane();
@@ -129,6 +130,15 @@ public class TheGame extends Application {
             }
         };
         loop.start();
+        
+        AnimationTimer update = new AnimationTimer() {
+
+            @Override
+            public void handle(long now) {
+                me.update();
+            }
+        };
+        update.start();
        
     }
 

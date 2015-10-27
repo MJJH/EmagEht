@@ -130,20 +130,14 @@ public class Map {
     
     
     
-    public Block GetTile(float x, float y)
+    public Block GetTile(int x, int y)
     {
         
-        for (Block Blocka[] : blocks) {
-         for(Block block : Blocka)
-         {
-            if(block.getX() == x && block.getY() == y)
-            {
-              //test
-              return block;
-            }
-         }
+        try {
+            return blocks[y][x];
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {

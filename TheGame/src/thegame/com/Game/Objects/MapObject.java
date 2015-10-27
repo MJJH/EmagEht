@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.util.HashMap;
 import thegame.com.Game.Objects.Characters.*;
 import javafx.scene.image.Image;
 import thegame.TheGame;
@@ -12,17 +13,17 @@ import thegame.com.Game.Map;
 public abstract class MapObject {
 
     //private int id;
-    private float xPosition;
-    private float yPosition;
-    private float hSpeed;
-    private float vSpeed;
-    private Image skin;
-    private float height;
-    private float width;
-    private float solid;
-    private TheGame game;
-    private Map map;
-    private Player me;
+    protected float xPosition;
+    protected float yPosition;
+    protected float hSpeed;
+    protected float vSpeed;
+    protected Image skin;
+    protected float height;
+    protected float width;
+    protected float solid;
+    protected TheGame game;
+    protected Map map;
+    protected Player me;
 
     /**
      * Create a new MapObject to use in the game
@@ -84,50 +85,19 @@ public abstract class MapObject {
     
     public void moveX(float x) {
         
-        if(!collision(x,"X"))
-        {
-        setX(this.xPosition + x);
-    
+       
+        hSpeed += x;
         }
-    }
+    
     
         public void moveY(float y) {
-        if(!collision(y,"Y"))
-        {
-        setY(this.yPosition + y);
-        }
-    }
         
-    private boolean collision(float move , String direction)
-    {
-    /* float x = me.getX();
-     float y = me.getY();
-     
-     if(direction == "X")
-     {
-         if(map.GetTile(x + move , y).getS() == 1)
-     {
-         return true;
-     } 
-     }
-     else if (direction == "Y")
-    {
-     
-     if(map.GetTile(x, y + move).getS() == 1)
-     {
-         return true;
-     }  
-    } */
-   
-        return false;
-     
-    }
+        vSpeed += y;
+        }
+        
+ 
     
-    public void setthings(Player p , Map m)
-    {
-        me = p;
-        map = m;
-    }
+   
     
     private void setH(float h) {
         if(h > 0)
@@ -213,4 +183,6 @@ public abstract class MapObject {
     public Image getSkin() {
         return skin;
     }
+    
+   
 }
