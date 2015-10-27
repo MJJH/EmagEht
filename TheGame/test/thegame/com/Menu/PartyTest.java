@@ -65,14 +65,23 @@ public class PartyTest {
     public void testSendMessage()
     {
         System.out.println("sendMessage");
-        Account sender = null;
-        String message = "";
-        Party instance = null;
-        boolean expResult = false;
+        Account sender = new Account("Henk");
+        String message = "Test";
+        Party instance = new Party(sender);
+        boolean expResult = true;
         boolean result = instance.sendMessage(sender, message);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The message gave a 'not send' answer.", expResult, result);
+        ArrayList<Message> chat = instance.getChat();
+        boolean result2 = false;
+        for (Message chatMessage : chat)
+        {
+            if (chatMessage.getText().equals(message))
+            {
+                result2 = true;
+                break;
+            }
+        }
+        assertEquals("The message isn't in the chat.", expResult, result2);
     }
 
     /**
@@ -128,12 +137,20 @@ public class PartyTest {
     public void testGetChat()
     {
         System.out.println("getChat");
-        Party instance = null;
-        ArrayList<Message> expResult = null;
-        ArrayList<Message> result = instance.getChat();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Account account = new Account("Bob");
+        Party instance = new Party(account);
+        instance.sendMessage(account, "Test");
+        boolean expResult = true;
+        boolean result = false;
+        for (Message chatMessage : instance.getChat())
+        {
+            if (chatMessage.getText().equals("Test"))
+            {
+                result = true;
+                break;
+            }
+        }
+        assertEquals("There are no messages in the chat.", expResult, result);
     }
 
 }

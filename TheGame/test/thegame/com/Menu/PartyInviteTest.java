@@ -65,12 +65,13 @@ public class PartyInviteTest {
     public void testGetDate()
     {
         System.out.println("getDate");
-        PartyInvite instance = null;
-        Date expResult = null;
+        Account sender = new Account("Henk");
+        Account recepient = new Account("Frank");
+        Party party = new Party(sender);
+        PartyInvite instance = new PartyInvite(recepient, party, sender);
+        Date expResult = new Date();
         Date result = instance.getDate();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The datetime is not correct.", expResult, result);
     }
 
     /**
@@ -80,12 +81,13 @@ public class PartyInviteTest {
     public void testGetParty()
     {
         System.out.println("getParty");
-        PartyInvite instance = null;
-        Party expResult = null;
+        Account sender = new Account("Henk");
+        Account recepient = new Account("Frank");
+        Party party = new Party(sender);
+        PartyInvite instance = new PartyInvite(recepient, party, sender);
+        Party expResult = party;
         Party result = instance.getParty();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The party was not saved properly in the invite.", expResult, result);
     }
 
     /**
@@ -95,12 +97,13 @@ public class PartyInviteTest {
     public void testGetAccount()
     {
         System.out.println("getAccount");
-        PartyInvite instance = null;
-        Account expResult = null;
+        Account sender = new Account("Henk");
+        Account recepient = new Account("Frank");
+        Party party = new Party(sender);
+        PartyInvite instance = new PartyInvite(recepient, party, sender);
+        Account expResult = recepient;
         Account result = instance.getAccount();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The recepient account was not saved properly in the invite.", expResult, result);
     }
 
     /**
@@ -110,12 +113,13 @@ public class PartyInviteTest {
     public void testGetSender()
     {
         System.out.println("getSender");
-        PartyInvite instance = null;
+        Account sender = new Account("Henk");
+        Account recepient = new Account("Frank");
+        Party party = new Party(sender);
+        PartyInvite instance = new PartyInvite(recepient, party, sender);
         Account expResult = null;
         Account result = instance.getSender();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals("The ender account was not saved properly in the invite.", expResult, result);
     }
     
 }
