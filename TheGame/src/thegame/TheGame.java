@@ -58,12 +58,12 @@ public class TheGame extends Application {
                 switch (event.getCode())
                 {
                     case UP:
-                        me.moveY(speed);
+                        me.moveY(speed, me);
                         
                         //System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
-                        me.moveY(-speed);
+                        me.moveY(-speed,me);
                         //System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:

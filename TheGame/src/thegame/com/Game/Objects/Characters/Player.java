@@ -65,11 +65,11 @@ public class Player extends CharacterGame {
     {
     vSpeed -= .1;
      HashMap<String, Boolean> c = Collision();
-     if(c.get("Top") && vSpeed < 0)
+     if(c.get("Top") && vSpeed > 0)
      {
          vSpeed = 0;
      }
-     if(c.get("Bottom") && vSpeed > 0)
+     if(c.get("Bottom") && vSpeed < 0)
      {
          vSpeed = 0;
      }
@@ -96,24 +96,25 @@ public class Player extends CharacterGame {
         Collide.put("Left", false);
         Collide.put("Right", false);
         
-        if(vSpeed >= 0)
+        if(vSpeed > 0)
         {
         //onder
         for(int x = (int) Math.floor(currentX); x < Math.ceil(currentX + width); x++)
         {
         if(map.GetTile(x, (int) (currentY + height)) != null)
         {
-         Collide.put("Bottom", true);
+         Collide.put("Top", true);
          break;
         }
         }
         }
-        else
+        else if(vSpeed <= 0.0)
          for(int x = (int) Math.floor(currentX); x < Math.ceil(currentX + width); x++)
         {
         if(map.GetTile(x, (int) currentY) != null)
         {
-         Collide.put("Top", true);
+         Collide.put("Bottom", true);
+         
          break;
         }
         }

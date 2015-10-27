@@ -89,10 +89,14 @@ public abstract class MapObject {
         hSpeed += x;
         }
     
-    
-        public void moveY(float y) {
         
+        public void moveY(float y, Player me) {
+        HashMap<String, Boolean> c = me.Collision();
+        if(c.get("Bottom"))
+        {
         vSpeed += y;
+    
+        }
         }
         
  
