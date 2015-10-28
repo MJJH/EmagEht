@@ -83,7 +83,26 @@ public class Player extends CharacterGame {
          hSpeed = 0;
      }
      xPosition += hSpeed;
+     if(xPosition <= 0)
+     {
+         xPosition = 0;
+     }
+     
+     if(xPosition >= map.getWidth())
+     {
+         xPosition = map.getWidth();
+     }
+     
      yPosition += vSpeed;
+     
+     if(yPosition <= 0)
+     {
+         yPosition = 0;
+     }
+     if(yPosition >= map.getHeight())
+     {
+         yPosition = map.getHeight();
+     }
     }
     
      public HashMap<String,Boolean> Collision()
@@ -111,7 +130,7 @@ public class Player extends CharacterGame {
         else if(vSpeed <= 0.0)
          for(int x = (int) Math.floor(currentX); x < Math.ceil(currentX + width); x++)
         {
-        if(map.GetTile(x, (int) currentY) != null)
+        if(map.GetTile(x, (int) (currentY)) != null)
         {
          Collide.put("Bottom", true);
          
@@ -123,7 +142,7 @@ public class Player extends CharacterGame {
         {
         for(int y = (int) Math.floor(currentY); y < Math.ceil(currentY + height); y++)
         {
-        if(map.GetTile((int) currentX, y) != null)
+        if(map.GetTile((int) currentX, (int) (y + 1)) != null)
         {
          Collide.put("Left", true);
          break;
@@ -134,7 +153,7 @@ public class Player extends CharacterGame {
         {
         for(int y = (int) Math.floor(currentY); y < Math.ceil(currentY + height); y++)
         {
-        if(map.GetTile((int) (currentX + width), y) != null)
+        if(map.GetTile((int) (currentX + width),  (y + 1)) != null)
         {
          Collide.put("Right", true);
          break;

@@ -47,10 +47,10 @@ public class TheGame extends Application {
         @Override
         public void handle(KeyEvent event)
         {
-            float speed = .2f;
-            
+            float speed = 0.2f;
+            float speedy = 1.0f;
             if(event.isShiftDown())
-                speed = 1;
+                speed = 2;
             
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN
                     || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
@@ -58,12 +58,12 @@ public class TheGame extends Application {
                 switch (event.getCode())
                 {
                     case UP:
-                        me.moveY(speed, me);
+                        me.moveY(speedy, me);
                         
                         //System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case DOWN:
-                        me.moveY(-speed,me);
+                        me.moveY(-speedy,me);
                         //System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
                         break;
                     case LEFT:
@@ -80,9 +80,12 @@ public class TheGame extends Application {
             {
                 //spring
                 event.consume();
-            }
+            } 
+            
+            
         }
     };
+    
 
     @Override
     public void start(Stage primaryStage)

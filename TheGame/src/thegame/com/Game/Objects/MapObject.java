@@ -84,9 +84,15 @@ public abstract class MapObject {
     }
     
     public void moveX(float x) {
-        
-       
         hSpeed += x;
+        
+         
+         
+       
+                
+        
+        
+        
         }
     
         
