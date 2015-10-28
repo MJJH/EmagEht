@@ -86,6 +86,15 @@ public abstract class MapObject {
     public void moveX(float x) {
         hSpeed += x;
         
+        if(hSpeed > 0.2f)
+        {
+            hSpeed = 0.2f;
+        }
+         if(hSpeed < -0.2f)
+        {
+            hSpeed = -0.2f;
+        }
+        
          
          
        

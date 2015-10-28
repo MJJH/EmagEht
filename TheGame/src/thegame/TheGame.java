@@ -51,7 +51,6 @@ public class TheGame extends Application {
             float speedy = 1.0f;
             if(event.isShiftDown())
                 speed = 2;
-            
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN
                     || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
             {
@@ -81,6 +80,15 @@ public class TheGame extends Application {
                 //spring
                 event.consume();
             } 
+            
+            if(event.getEventType() == KeyEvent.KEY_RELEASED && event.getCode() == KeyCode.RIGHT)
+            {
+                me.moveX(-0.2f);
+            }
+            if(event.getEventType() == KeyEvent.KEY_RELEASED && event.getCode() == KeyCode.LEFT)
+            {
+                me.moveX(0.2f);
+            }
             
             
         }
