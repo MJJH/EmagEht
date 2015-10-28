@@ -88,9 +88,9 @@ public class Player extends CharacterGame {
          xPosition = 0;
      }
      
-     if(xPosition >= map.getWidth())
+     if(xPosition >= map.getWidth() - 1.0)
      {
-         xPosition = map.getWidth();
+         xPosition = map.getWidth() - 1.0f;
      }
      
      yPosition += vSpeed;
