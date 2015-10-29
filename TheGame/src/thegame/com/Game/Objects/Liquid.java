@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import javafx.scene.image.Image;
+import thegame.com.Game.Map;
 
 /**
  * A liquid is a type of block that will devide its content around it
@@ -22,9 +23,9 @@ public class Liquid extends Block {
      * @param solid     the density of this object
      */
     
-    public Liquid(BlockType blockType, float volume, float x, float y, float solid)
+    public Liquid(BlockType blockType, float volume, float x, float y, float solid, Map map)
     {
-        super(blockType, x, y, solid);
+        super(blockType, x, y, solid, map);
         this.volume = volume;
     }
     
@@ -55,5 +56,10 @@ public class Liquid extends Block {
      */
     public float getVolume() {
         return volume;
+    }
+    
+    @Override
+    public void update() {
+        // Water flowing
     }
 }

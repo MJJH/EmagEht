@@ -21,28 +21,15 @@ public class Enemy extends CharacterGame {
      * @param height, Height of the enemy
      * @param width, Width of the enemy
      */
-    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width)
+    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width, thegame.com.Game.Map map)
     {
-        super(name, hp, skills, x, y, skin, height, width);
+        super(name, hp, skills, x, y, skin, height, width, map);
     }
     
-    /**
-     * This method will move the enemy
-     * @param x, X-coordinate of the enemy
-     * @param y, Y-coordinate of the enemy
-     */
-    public void move (float x, float y)
-    {
-        /*
-        dx = player_x - enemy_x;
-        dy = player_y - enemy_y;
-        float norm = Math.sqrt(dx * dx + dy * dy);
-        if (norm)
-        {
-            dx *= (enemy.speed / norm);
-            dy *= (enemy.speed / norm);
-        }
-        */
+
+    @Override
+    public void update() {
+        // HIER LAURENS!
     }
     
 }

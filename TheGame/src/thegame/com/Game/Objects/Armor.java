@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import javafx.scene.image.Image;
+import thegame.com.Game.Map;
 
 /**
  *
@@ -12,17 +13,17 @@ public class Armor extends MapObject {
 
     /**
      * Initiates an instance of this class with the type as an attribute
-     * @param type The type of the armor ( From the class ArmorType) 
-     * @param skin the look of the armor
+     * @param type The type of the armor ( From the class ArmorType)
      * @param height the height of the armor
      * @param width the width of the armor
+     * @param map the map with this armor
      */
-    public Armor(ArmorType type,Image skin, int height, int width)
+    public Armor(ArmorType type, float height, float width, Map map)
     {
-        super(skin, height, width);
+        super(type.skin, height, width, map);
         this.type = type;
     }
-    
+
     /**
      * The method to get the armor type.
      * @return the armor type
@@ -31,4 +32,7 @@ public class Armor extends MapObject {
     {
         return type;
     }
+
+    @Override
+    public void update() {}
 }

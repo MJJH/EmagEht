@@ -1,6 +1,9 @@
 package thegame.com.Game.Objects;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import thegame.com.Game.Objects.Characters.*;
 import javafx.scene.image.Image;
 import thegame.TheGame;
@@ -21,9 +24,9 @@ public abstract class MapObject {
     protected float height;
     protected float width;
     protected float solid;
-    protected TheGame game;
-    protected Map map;
-    protected Player me;
+    protected final Map playing;
+    
+    public enum sides { TOP, BOTTOM, LEFT, RIGHT }
 
     /**
      * Create a new MapObject to use in the game
@@ -33,16 +36,17 @@ public abstract class MapObject {
      * @param height    the height of this object
      * @param width     the width of this object
      * @param solid     the density of this object
+     * @param map       the map that this is on
      */
-    public MapObject(float x, float y, Image skin, float height, float width, float solid)
+    public MapObject(float x, float y, Image skin, float height, float width, float solid, Map map)
     {
+        this.playing = map;
+        this.skin = skin;
         this.setX(x);
         this.setY(y);
         this.setH(height);
         this.setW(width);
         this.setS(solid);
-        
-        this.skin = skin;
     }
 
     /**
@@ -50,74 +54,137 @@ public abstract class MapObject {
      * @param skin
      * @param height
      * @param width
+     * @param map
      */
-    public MapObject(Image skin, float height, float width)
+    public MapObject(Image skin, float height, float width, Map map)
     {
+        this.skin = skin;
+        this.playing = map;
         this.setH(height);
         this.setW(width);
-        
-        this.skin = skin;
     }
 
     /**
      * Update the object
      * Will be called everytime the map is updated
      */
-    public void update()
-    {
-        // TODO - implement MapObject.update
-        throw new UnsupportedOperationException();
-    }
+    public abstract void update();
     
     private void setX(float x) {
-        if(x >= 0 )
+        if(x >= 0 && x < playing.getWidth())
             this.xPosition = x;
         else
             this.xPosition = 0;
     }
     
     private void setY(float y) {
-        if(y >= 0)
+        if(y >= 0 && y < playing.getHeight())
             this.yPosition = y;
         else
             this.yPosition = 0;
     }
     
-    public void moveX(float x) {
-        hSpeed += x;
         
-        if(hSpeed > 0.2f)
-        {
-            hSpeed = 0.2f;
+    protected boolean fall(EnumMap<sides, List<MapObject>> collision) {
+        if(collision.get(sides.BOTTOM).size() == 0 && vSpeed > -5) {
+            vSpeed -= .1f;
+            return true;
         }
-         if(hSpeed < -0.2f)
-        {
-            hSpeed = -0.2f;
-        }
+        return false;
+    }
         
-         
-         
-       
+    protected boolean moveH(EnumMap<sides, List<MapObject>> collision) {
+        if(hSpeed > 0) {
+            List<MapObject> r = collision.get(sides.RIGHT);
+            if(r.isEmpty()) {
+                hSpeed -= 0.2;
+                if(hSpeed < 0)
+                    hSpeed = 0;
                 
-        
-        
-        
+                setX(xPosition + hSpeed);
+                return true;
+            } else {
+                hSpeed = 0;
+                
+                float minX = 999;
+                for(MapObject c : r) {
+                    if(c.getX() - this.width < minX)
+                        minX = c.getX() - this.width;
+                }
+                
+                setX(minX);
+                return true;
+            }
+        } else if (hSpeed < 0) {
+            List<MapObject> l = collision.get(sides.LEFT);
+            if(l.isEmpty()) {
+                hSpeed += 0.2;
+                
+                if(hSpeed > 0)
+                    hSpeed = 0;
+                
+                setX(xPosition + hSpeed);
+                return true;
+            } else {
+                hSpeed = 0;
+                
+                float maxX = 0;
+                for(MapObject c : l) {
+                    if(c.getX() + c.getW() > maxX)
+                        maxX = c.getX() + c.getW();
+                }
+                
+                setX(maxX);
+                return true;
+            }
         }
+        
+        return false;
+    }
     
+    protected boolean moveV(EnumMap<sides, List<MapObject>> collision) {
+        if(vSpeed > 0) {
+            List<MapObject> t = collision.get(sides.TOP);
+            if(t.isEmpty()) {
+                setY(yPosition + vSpeed);
+                return true;
+            } else {
+                vSpeed = 0;
+                
+                float minY = 999;
+                for(MapObject c : t) {
+                    if(c.getY() - this.height < minY)
+                        minY = c.getY() - this.height;
+                }
+                
+                setY(minY);
+                return true;
+            }
+        } else if (vSpeed < 0) {
+            List<MapObject> b = collision.get(sides.BOTTOM);
+            if(b.isEmpty()) {
+                setY(yPosition + vSpeed);
+                return true;
+            } else {
+                vSpeed = 0;
+                
+                float maxY = 0;
+                for(MapObject c : b) {
+                    if(c.getY() + c.getH() > maxY)
+                        maxY = c.getY() + c.getH();
+                }
+                
+                setY(maxY);
+                return true;
+            }
+        }
         
-        public void moveY(float y, Player me) {
-        HashMap<String, Boolean> c = me.Collision();
-        if(c.get("Bottom"))
-        {
-        vSpeed += y;
+        return false;
+    }
     
-        }
-        }
-        
+    
+    
  
-    
-   
-    
     private void setH(float h) {
         if(h > 0)
             this.height = h;
@@ -137,6 +204,50 @@ public abstract class MapObject {
             this.solid = s;
         else
             throw new IllegalArgumentException("Solid should be between 0 and 1");
+    }
+    
+    public EnumMap<sides, List<MapObject>> Collision()
+    {
+        EnumMap<sides, List<MapObject>> collision = new EnumMap<>(sides.class);
+        List<MapObject> founds;
+        
+        // Bottom
+        founds = new ArrayList<>();
+        for(float x = xPosition; x <= xPosition + width; x+=0.5){
+            MapObject found = playing.GetTile(x, yPosition - height);
+            if(found != null)
+                founds.add(found);
+        }
+        collision.put(sides.BOTTOM, founds);
+        
+        // Top
+        founds = new ArrayList<>();
+        for(float x = xPosition; x <= xPosition + width; x+=0.5){
+            MapObject found = playing.GetTile(x, yPosition);
+            if(found != null)
+                founds.add(found);
+        }
+        collision.put(sides.TOP, founds);
+        
+        // Left
+        founds = new ArrayList<>();
+        for(float y = yPosition; y <= yPosition + height; y+=0.5){
+            MapObject found = playing.GetTile(xPosition, y);
+            if(found != null)
+                founds.add(found);
+        }
+        collision.put(sides.LEFT, founds);
+        
+        // Right
+        founds = new ArrayList<>();
+        for(float y = yPosition; y <= yPosition + height; y+=0.5){
+            MapObject found = playing.GetTile(xPosition + width, y);
+            if(found != null)
+                founds.add(found);
+        }
+        collision.put(sides.RIGHT, founds);
+        
+        return collision;
     }
     
     /**

@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import java.awt.Image;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 
 /**
@@ -22,9 +23,9 @@ public class Particle extends MapObject {
      * @param solid     the density of this object
      * @param count     the ammount of this object
      */
-    public Particle(MapObject object, int x, int y, int height, int width, float solid, int count)
+    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count)
     {
-        super(x, y, object.getSkin(), height, width, 0);
+        super(x, y, object.getSkin(), height, width, 0, map);
         setObject(object);
         this.count = count;
     }
@@ -37,6 +38,11 @@ public class Particle extends MapObject {
         
         else
             this.object = object;
+    }
+
+    @Override
+    public void update() {
+        // Fall And Maybe go in 
     }
 
 }

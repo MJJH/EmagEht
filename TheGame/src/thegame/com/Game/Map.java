@@ -38,7 +38,10 @@ public class Map {
      */
     public Map()
     {
-        generateMap();
+        width = 300;
+        height = 100;
+
+        blocks = new Block[height][width];
     }
 
     /**
@@ -46,10 +49,6 @@ public class Map {
      */
     public void generateMap()
     {
-        width = 300;
-        height = 100;
-
-        blocks = new Block[height][width];
 
         int y = height-1;
         int x = 0;
@@ -68,25 +67,25 @@ public class Map {
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1);
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
                             break;
                     }
                     
@@ -130,14 +129,18 @@ public class Map {
     
     
     
-    public Block GetTile(int x, int y)
+    public Block GetTile(float x, float y)
     {
-        
+        // Find in blocks
         try {
-            return blocks[y][x];
-        } catch (Exception e) {
-            return null;
-        }
+            int bx = (int) Math.floor(x);
+            int by = (int) Math.floor(y);
+            
+            Block found = blocks[by][bx];
+            if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
+                return found;
+        } catch (Exception e){}
+        return null;
     }
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
@@ -168,5 +171,4 @@ public class Map {
 
         return ret;
     }
-
 }
