@@ -26,9 +26,7 @@ public abstract class MapObject {
     protected float solid;
     protected final Map playing;
     
-    public boolean debug = false;
-    
-    public enum sides { TOP, BOTTOM, LEFT, RIGHT, CENTER }
+    public enum sides { TOP, BOTTOM, LEFT, RIGHT }
 
     /**
      * Create a new MapObject to use in the game
@@ -75,22 +73,15 @@ public abstract class MapObject {
     private void setX(float x) {
         if(x >= 0 && x < playing.getWidth())
             this.xPosition = x;
-        else {
-            if(x <= 0)
-                this.xPosition = 0;
-            else if(x + width >= playing.getWidth())
-                this.xPosition = playing.getWidth()-width;
-            hSpeed = 0;
-        }
+        else
+            this.xPosition = 0;
     }
     
     private void setY(float y) {
         if(y >= 0 && y < playing.getHeight())
             this.yPosition = y;
-        else {
+        else
             this.yPosition = 0;
-            vSpeed = 0;
-        }
     }
     
         
@@ -110,7 +101,7 @@ public abstract class MapObject {
                 if(hSpeed < 0)
                     hSpeed = 0;
                 
-                setX(xPosition + hSpeed/2);
+                setX(xPosition + hSpeed);
                 return true;
             } else {
                 hSpeed = 0;
@@ -132,7 +123,7 @@ public abstract class MapObject {
                 if(hSpeed > 0)
                     hSpeed = 0;
                 
-                setX(xPosition + hSpeed/2);
+                setX(xPosition + hSpeed);
                 return true;
             } else {
                 hSpeed = 0;
@@ -184,13 +175,15 @@ public abstract class MapObject {
                 }
                 
                 setY(maxY);
-                
                 return true;
             }
-        } 
+        }
         
         return false;
     }
+    
+    
+    
  
     private void setH(float h) {
         if(h > 0)
@@ -220,7 +213,7 @@ public abstract class MapObject {
         
         // Bottom
         founds = new ArrayList<>();
-        for(float x = xPosition; x <= xPosition + width; x+=width/3){
+        for(float x = xPosition; x <= xPosition + width; x+=0.5){
             MapObject found = playing.GetTile(x, yPosition - height);
             if(found != null)
                 founds.add(found);
@@ -229,8 +222,8 @@ public abstract class MapObject {
         
         // Top
         founds = new ArrayList<>();
-        for(float x = xPosition; x <= xPosition + width; x+=width/3){
-            MapObject found = playing.GetTile(x, yPosition + 1);
+        for(float x = xPosition; x <= xPosition + width; x+=0.5){
+            MapObject found = playing.GetTile(x, yPosition);
             if(found != null)
                 founds.add(found);
         }
@@ -238,8 +231,8 @@ public abstract class MapObject {
         
         // Left
         founds = new ArrayList<>();
-        for(float y = yPosition; y <= yPosition + height; y+=height/3){
-            MapObject found = playing.GetTile(xPosition - 1, y);
+        for(float y = yPosition; y <= yPosition + height; y+=0.5){
+            MapObject found = playing.GetTile(xPosition, y);
             if(found != null)
                 founds.add(found);
         }
@@ -247,24 +240,13 @@ public abstract class MapObject {
         
         // Right
         founds = new ArrayList<>();
-        for(float y = yPosition; y <= yPosition + height; y+=height/3){
+        for(float y = yPosition; y <= yPosition + height; y+=0.5){
             MapObject found = playing.GetTile(xPosition + width, y);
             if(found != null)
                 founds.add(found);
         }
         collision.put(sides.RIGHT, founds);
         
-        // Center
-        /*founds = new ArrayList<>();
-        for(float y = yPosition; y <= yPosition + height; y += height/2) {
-            for(float x = xPosition; x <= xPosition + width; x+= width/2) {
-                MapObject found = playing.GetTile(x, y);
-                if(found != null)
-                    founds.add(found);
-            }
-        }
-        collision.put(sides.CENTER, founds);*/
-         
         return collision;
     }
     

@@ -5,15 +5,18 @@
  */
 package thegame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,7 +25,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javax.swing.Timer;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
@@ -109,11 +114,10 @@ public class TheGame extends Application {
         };
         loop.start();
         
-        Timer update = new Timer();
-       update.schedule(new TimerTask() {
+        AnimationTimer update = new AnimationTimer() {
 
             @Override
-            public void run() {
+            public void handle(long now) {
                 
                 if(keys.contains(KeyCode.LEFT))
                     me.walkLeft();
@@ -124,10 +128,9 @@ public class TheGame extends Application {
                     me.Jump();
                 
                 me.update();
-                
             }
-       
-       }, 0, 1000/60);
+        };
+        update.start();
        
     }
 
@@ -199,16 +202,6 @@ public class TheGame extends Application {
                 g.beginPath();
                 g.drawImage(draw.getSkin(), x, y);
                 g.closePath();
-                /*
-                if(draw.debug){
-                    g.beginPath();
-                    g.setFill(Color.rgb(255, 0, 0, 0.2));
-                    g.rect(x, y, config.block.val * draw.getW(), config.block.val * draw.getH());
-                    g.fill();
-                    g.closePath();
-                    draw.debug = false;
-                }
-                */
             }
         }
     }

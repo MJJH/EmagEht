@@ -137,10 +137,8 @@ public class Map {
             int by = (int) Math.floor(y);
             
             Block found = blocks[by][bx];
-            if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH()){
-                found.debug = true;
+            if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
                 return found;
-            }
         } catch (Exception e){}
         return null;
     }
