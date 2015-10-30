@@ -2,6 +2,7 @@ package thegame.com.Game.Objects.Characters;
 
 import java.util.*;
 import javafx.scene.image.Image;
+import thegame.com.Game.Objects.MapObject;
 
 /**
  * This constructor creates an enemy
@@ -29,7 +30,10 @@ public class Enemy extends CharacterGame {
 
     @Override
     public void update() {
-        // HIER LAURENS!
+        EnumMap<sides, List<MapObject>> collision = Collision();
+        fall(collision);
+        moveH(collision);
+        moveV(collision);
     }
     
 }
