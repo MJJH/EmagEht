@@ -63,7 +63,7 @@ public abstract class CharacterGame extends MapObject {
     public void Jump() {
         EnumMap<MapObject.sides,List<MapObject>> c = Collision();
         if(!c.get(sides.BOTTOM).isEmpty())
-            vSpeed = 1;
+            vSpeed = .9f;
     }
 
     /**
