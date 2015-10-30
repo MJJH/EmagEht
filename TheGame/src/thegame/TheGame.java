@@ -5,17 +5,15 @@
  */
 package thegame;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
-import javafx.animation.Animation;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,9 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javax.swing.Timer;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
@@ -41,55 +37,25 @@ public class TheGame extends Application {
     private Scene scene;
     private int startX;
     private int startY;
-    private boolean repainting;
+    private List<KeyCode> keys = new ArrayList<>();
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event)
         {
-            float speed = 0.2f;
-            float speedy = 1.0f;
-            if(event.isShiftDown())
-                speed = 2;
-            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN
-                    || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
+            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
             {
-                switch (event.getCode())
-                {
-                    case UP:
-                        me.moveY(speedy, me);
-                        
-                        //System.out.println("UP The player location is: X: " + me.getX() + "Y: " + me.getY());
-                        break;
-                    case DOWN:
-                        me.moveY(-speedy,me);
-                        //System.out.println("DOWN The player location is: X: " + me.getX() + "Y: " + me.getY());
-                        break;
-                    case LEFT:
-                        me.moveX(-speed);
-                        //System.out.println("LEFT The player location is: X: " + me.getX() + "Y: " + me.getY());
-                        break;
-                    case RIGHT:
-                        me.moveX(speed);
-                        //System.out.println("RIGHT The player location is: X: " + me.getX() + "Y: " + me.getY());
-                        break;
-                }
-                event.consume();
-            } else if (event.getCode() == KeyCode.SPACE)
-            {
-                //spring
-                event.consume();
+                if(event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode())){
+                    keys.add(event.getCode());
+                    
+                    
+                    if(event.getCode() == KeyCode.LEFT && keys.contains(KeyCode.RIGHT))
+                        keys.remove(KeyCode.RIGHT);
+                    if(event.getCode() == KeyCode.RIGHT && keys.contains(KeyCode.LEFT))
+                        keys.remove(KeyCode.LEFT);
+                } else
+                    keys.remove(event.getCode());
             } 
-            
-            if(event.getEventType() == KeyEvent.KEY_RELEASED && event.getCode() == KeyCode.RIGHT)
-            {
-                me.moveX(-0.2f);
-            }
-            if(event.getEventType() == KeyEvent.KEY_RELEASED && event.getCode() == KeyCode.LEFT)
-            {
-                me.moveX(0.2f);
-            }
-            
             
         }
     };
@@ -99,6 +65,7 @@ public class TheGame extends Application {
     public void start(Stage primaryStage)
     {
         play = new Map();
+        play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
 
         
@@ -142,14 +109,22 @@ public class TheGame extends Application {
         };
         loop.start();
         
-        AnimationTimer update = new AnimationTimer() {
+        Timer update = new Timer();
+        update.schedule(new TimerTask() {
 
             @Override
-            public void handle(long now) {
+            public void run() {
+                if(keys.contains(KeyCode.LEFT))
+                    me.walkLeft();
+                else if(keys.contains(KeyCode.RIGHT))
+                    me.walkRight();
+                
+                if(keys.contains(KeyCode.UP))
+                    me.Jump();
+                
                 me.update();
             }
-        };
-        update.start();
+        }, 0, 1000/60);
        
     }
 

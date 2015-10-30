@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
-import java.awt.Image;
+import javafx.scene.image.Image;
+
 
 /**
  * A class representing the type of Armor used.
@@ -8,15 +9,13 @@ import java.awt.Image;
  */
 public class ArmorType {
 
-    private final String name;
-    private final int multiplier;
-    private final int reqLvl;
-    private final Image skin;
+    public final String name;
+    public final int multiplier;
+    public final int reqLvl;
+    public final Image skin;
+    public final bodyPart bodypart;
 
-    /**
-     *
-     */
-    public final String bodyPart;
+    public enum bodyPart { HEAD, TORSO, LEGS, FEED }
 
     /**
      * Initiates an instance of this class with the following attributes
@@ -26,13 +25,13 @@ public class ArmorType {
      * @param skin The look of the Armortype
      * @param bodyPart The place on the body where to wear the Armor
      */
-    public ArmorType(String name, int multiplier, int reqLvl, Image skin, String bodyPart)
+    public ArmorType(String name, int multiplier, int reqLvl, Image skin, bodyPart bodyPart)
     {
      this.name = name;
      this.multiplier = multiplier;
      this.reqLvl = reqLvl;
      this.skin = skin;
-     this.bodyPart = bodyPart;
+     this.bodypart = bodyPart;
     }
     
 }

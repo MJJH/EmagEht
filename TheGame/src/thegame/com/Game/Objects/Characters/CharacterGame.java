@@ -1,7 +1,9 @@
 package thegame.com.Game.Objects.Characters;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.scene.image.Image;
 import thegame.com.Game.Objects.*;
@@ -10,7 +12,7 @@ import thegame.com.Game.Objects.*;
  *
  * @author Laurens Adema
  */
-public class CharacterGame extends MapObject {
+public abstract class CharacterGame extends MapObject {
 
     protected int hp;
     protected final String name;
@@ -19,7 +21,7 @@ public class CharacterGame extends MapObject {
     protected Tool holding;
 
     protected java.util.Map<SkillType, Integer> skills;
-    protected java.util.Map<String, Armor> armor;
+    protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected java.util.Map<MapObject, Integer> backpack;
 
     /**
@@ -34,14 +36,34 @@ public class CharacterGame extends MapObject {
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width)
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width, thegame.com.Game.Map map)
     {
-        super(x, y, skin, height, width, 0);
+        super(x, y, skin, height, width, 0, map);
         this.name = name;
         this.hp = 100;
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
+    }
+    
+    public void walkRight() {
+        if(hSpeed < 0)
+            hSpeed = 0.4f;
+        else if (hSpeed < 1)
+            hSpeed += 0.4;
+    }
+    
+    public void walkLeft() {
+        if(hSpeed > 0)
+            hSpeed = -0.4f;
+        else if(hSpeed > -1)
+            hSpeed -= 0.4;
+    }
+    
+    public void Jump() {
+        EnumMap<MapObject.sides,List<MapObject>> c = Collision();
+        if(!c.get(sides.BOTTOM).isEmpty())
+            vSpeed = 0.9f;
     }
 
     /**
@@ -109,14 +131,14 @@ public class CharacterGame extends MapObject {
      */
     public void equipArmor(Armor armorAdd)
     {
-        if (armor.containsKey(armorAdd.getArmorType().bodyPart))
+        if (armor.containsKey(armorAdd.getArmorType().bodypart))
         {
-            unequipArmor(armor.get(armorAdd.getArmorType().bodyPart));
+            unequipArmor(armor.get(armorAdd.getArmorType().bodypart));
             backpack.remove(armorAdd);
-            armor.put(armorAdd.getArmorType().bodyPart, armorAdd);
+            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
         } else
         {
-            armor.put(armorAdd.getArmorType().bodyPart, armorAdd);
+            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
             backpack.remove(armorAdd);
         }
     }
@@ -223,7 +245,7 @@ public class CharacterGame extends MapObject {
      *
      * @return list of armor
      */
-    public java.util.Map<String, Armor> getArmor()
+    public java.util.Map<ArmorType.bodyPart, Armor> getArmor()
     {
         return armor;
     }

@@ -9,50 +9,18 @@ import java.util.*;
  */
 public class ToolType {
 
-    /**
-     *
-     */
     public final String name;
-
-    /**
-     *
-     */
     public final int strength;
-
-    /**
-     *
-     */
     public final int speed;
-
-    /**
-     *
-     */
     public final int range;
-
-    /**
-     *
-     */
     public final int reqLvl;
-
-    /**
-     *
-     */
     public final int kb;
-
-    /**
-     *
-     */
     public final Image skin;
-
-    /**
-     *
-     */
     public final float height;
-
-    /**
-     *
-     */
     public final float width;
+    public final toolType type; 
+    
+    public enum toolType { PICKAXE, AXE, SWORD, SHOVEL, FLINT }
     
     /**
      *
@@ -66,7 +34,7 @@ public class ToolType {
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, int speed, int range, int reqLvl, int kb, Image skin, float height, float width) {
+    public ToolType(String name, int strength, int speed, int range, int reqLvl, toolType type, int kb, Image skin, float height, float width) {
         this.name = name;
         this.strength = strength;
         this.speed = speed;
@@ -76,6 +44,7 @@ public class ToolType {
         this.skin = skin;
         this.height = height;
         this.width = width;
+        this.type = type;
     }
 
 }
