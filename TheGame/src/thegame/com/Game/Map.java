@@ -32,6 +32,7 @@ public class Map {
     private int spawnY;
 
     private Block[][] blocks;
+    private List<MapObject> objects;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
@@ -41,6 +42,7 @@ public class Map {
         width = 300;
         height = 100;
 
+        objects = new ArrayList<>();
         blocks = new Block[height][width];
     }
 
@@ -98,6 +100,10 @@ public class Map {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void addObject(MapObject mo) {
+        this.objects.add(mo);
+    }
 
     /**
      * Handles the redirect to the next map.
@@ -129,10 +135,19 @@ public class Map {
     
     
     
-    public Block GetTile(float x, float y)
+    public MapObject GetTile(float x, float y, MapObject self)
     {
         // Find in blocks
         try {
+            
+            for(MapObject mo : objects) {
+                if(mo.equals(self) || mo.getS() == 0)
+                    continue;
+                
+                if(mo.getX() >= x && mo.getX() + mo.getW() <= x && mo.getY() >= y && mo.getY() <= y);
+                    return mo;
+            }
+            
             int bx = (int) Math.floor(x);
             int by = (int) Math.floor(y);
             
@@ -144,6 +159,7 @@ public class Map {
         } catch (Exception e){}
         return null;
     }
+    
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<MapObject>();
@@ -169,6 +185,11 @@ public class Map {
                 {
                 }
             }
+        }
+        
+        for(MapObject mo : objects) {
+            if(mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY )
+                ret.add(mo);
         }
 
         return ret;

@@ -67,6 +67,7 @@ public class TheGame extends Application {
         play = new Map();
         play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+        play.addObject(me);
 
         
         StackPane root = new StackPane();
@@ -132,7 +133,6 @@ public class TheGame extends Application {
     {
         // Get viewables
         List<MapObject> view = viewable();
-        view.add(me);
         
         // Clear scene
         clear(g);
