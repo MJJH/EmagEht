@@ -65,7 +65,7 @@ public class TheGame extends Application {
                     {
                         keys.remove(KeyCode.LEFT);
                     }
-                } else
+                } else if(event.getEventType() == KeyEvent.KEY_RELEASED)
                 {
                     keys.remove(event.getCode());
                 }
