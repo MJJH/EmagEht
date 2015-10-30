@@ -94,7 +94,7 @@ public abstract class MapObject {
     
         
     protected boolean fall(EnumMap<sides, List<MapObject>> collision) {
-        if(collision.get(sides.BOTTOM).size() == 0 && vSpeed > -5) {
+        if(collision.get(sides.BOTTOM).isEmpty() && vSpeed > -5) {
             vSpeed -= .1f;
             return true;
         }
@@ -231,6 +231,8 @@ public abstract class MapObject {
         // Top
         founds = new ArrayList<>();
         for(float x = xPosition; x <= xPosition + width; x+=width/3){
+            if(vSpeed > 0)
+                System.err.println("breakhere!");
             MapObject found = playing.GetTile(x, yPosition + 1, this);
             if(found != null && found != this)
                 founds.add(found);

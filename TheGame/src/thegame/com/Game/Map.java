@@ -147,7 +147,7 @@ public class Map {
                 if(mo.equals(self) || mo.getS() == 0)
                     continue;
                 
-                if(mo.getX() >= x && mo.getX() + mo.getW() <= x && mo.getY() >= y && mo.getY() <= y);
+                if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f >= mo.getY() && y+.001f <= mo.getY() + mo.getH())
                     return mo;
             }
             

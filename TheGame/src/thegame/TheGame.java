@@ -163,7 +163,7 @@ public class TheGame extends Application {
                 play.updateEnemy();
             }
         }, 0, 1000 / 60);
-
+        
     }
 
     private void draw(GraphicsContext g)
