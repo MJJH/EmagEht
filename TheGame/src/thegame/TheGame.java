@@ -39,27 +39,43 @@ public class TheGame extends Application {
     private int startY;
     private List<KeyCode> keys = new ArrayList<>();
 
+    //one second in nanoseconds
+    private final long ONE_SECOND = 1000000000;
+    //used to store the current time to calculate fps
+    private long currentTime = 0;
+    //used to store the last time to calculate fps
+    private long lastTime = 0;
+    //fps counter
+    private int fps = 0;
+    //acumulated difference between current time and last time
+    private double delta = 0;
+
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event)
         {
             if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
             {
-                if(event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode())){
+                if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
+                {
                     keys.add(event.getCode());
-                    
-                    
-                    if(event.getCode() == KeyCode.LEFT && keys.contains(KeyCode.RIGHT))
+
+                    if (event.getCode() == KeyCode.LEFT && keys.contains(KeyCode.RIGHT))
+                    {
                         keys.remove(KeyCode.RIGHT);
-                    if(event.getCode() == KeyCode.RIGHT && keys.contains(KeyCode.LEFT))
+                    }
+                    if (event.getCode() == KeyCode.RIGHT && keys.contains(KeyCode.LEFT))
+                    {
                         keys.remove(KeyCode.LEFT);
+                    }
                 } else
+                {
                     keys.remove(event.getCode());
-            } 
-            
+                }
+            }
+
         }
     };
-    
 
     @Override
     public void start(Stage primaryStage)
@@ -69,24 +85,25 @@ public class TheGame extends Application {
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
         play.addObject(me);
 
-        
         StackPane root = new StackPane();
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
 
-        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight()); 
+        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
+
         scene.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override 
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
+            {
                 canvas.setWidth((double) newSceneWidth);
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override 
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
+            {
                 canvas.setHeight((double) newSceneHeight);
             }
         });
@@ -99,90 +116,120 @@ public class TheGame extends Application {
         {
             System.exit(0);
         });
-
+        
+        lastTime = System.nanoTime();
         
         AnimationTimer loop = new AnimationTimer() {
 
             @Override
-            public void handle(long now) {
+            public void handle(long now)
+            {
+                currentTime = now;
+                fps++;
+                delta += currentTime - lastTime;
+
                 draw(gc);
+
+                if (delta > ONE_SECOND)
+                {
+                    primaryStage.setTitle("FPS : " + fps);
+                    delta -= ONE_SECOND;
+                    fps = 0;
+                }
+
+                lastTime = currentTime;
             }
         };
         loop.start();
-        
+
         Timer update = new Timer();
         update.schedule(new TimerTask() {
 
             @Override
-            public void run() {
-                if(keys.contains(KeyCode.LEFT))
+            public void run()
+            {
+                if (keys.contains(KeyCode.LEFT))
+                {
                     me.walkLeft();
-                else if(keys.contains(KeyCode.RIGHT))
+                } else if (keys.contains(KeyCode.RIGHT))
+                {
                     me.walkRight();
-                
-                if(keys.contains(KeyCode.UP))
+                }
+
+                if (keys.contains(KeyCode.UP))
+                {
                     me.Jump();
-                
+                }
+
                 me.update();
             }
-        }, 0, 1000/60);
-       
+        }, 0, 1000 / 60);
+
     }
 
     private void draw(GraphicsContext g)
     {
         // Get viewables
         List<MapObject> view = viewable();
-        
+
         // Clear scene
         clear(g);
-        
+
         int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
         int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
-        
+
         float dx = 0;
         float dy = 0;
-        
-        
-        
+
         dx += config.block.val * (me.getW() / 2);
-        if(me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal)/2)-me.getW()/2 && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal)/2)) {
-            if(me.getX() % 1 >= me.getW() / 2)
+        if (me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal) / 2) - me.getW() / 2 && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal) / 2))
+        {
+            if (me.getX() % 1 >= me.getW() / 2)
+            {
                 dx += config.block.val;
+            }
             dx -= config.block.val * (me.getX() % 1);
-        } else if(me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal)/2) && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal)/2)+1) {
-            if(me.getX() % 1 >= me.getW() / 2)
+        } else if (me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal) / 2) && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal) / 2) + 1)
+        {
+            if (me.getX() % 1 >= me.getW() / 2)
+            {
                 dx += config.block.val;
+            }
             dx -= config.block.val * (me.getX() % 1);
             dx -= config.block.val;
-        } else if(me.getX() + me.getW() / 2 > Math.floor(startX + (blockHorizontal)/2) + 1) {
-            dx -= config.block.val*2;
-        }
-        
-        dy -= config.block.val * (me.getH() / 2);
-        if(me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical)/2)-me.getH()/2 && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical)/2)) {
-            if(me.getY() % 1 >= me.getH() / 2)
-                dy -= config.block.val;
-            dy += config.block.val * (me.getY() % 1);
-        } else if(me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical)/2) && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical)/2)+1) {
-            if(me.getY() % 1 >= me.getH() / 2)
-                dy -= config.block.val;
-            dy += config.block.val * (me.getY() % 1);
-            dy += config.block.val;
-        } else if(me.getY() + me.getH() / 2 > Math.floor(startY + (blockVertical)/2) + 1) {
-            dy += config.block.val*2;
+        } else if (me.getX() + me.getW() / 2 > Math.floor(startX + (blockHorizontal) / 2) + 1)
+        {
+            dx -= config.block.val * 2;
         }
 
-        
-        
+        dy -= config.block.val * (me.getH() / 2);
+        if (me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical) / 2) - me.getH() / 2 && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical) / 2))
+        {
+            if (me.getY() % 1 >= me.getH() / 2)
+            {
+                dy -= config.block.val;
+            }
+            dy += config.block.val * (me.getY() % 1);
+        } else if (me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical) / 2) && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical) / 2) + 1)
+        {
+            if (me.getY() % 1 >= me.getH() / 2)
+            {
+                dy -= config.block.val;
+            }
+            dy += config.block.val * (me.getY() % 1);
+            dy += config.block.val;
+        } else if (me.getY() + me.getH() / 2 > Math.floor(startY + (blockVertical) / 2) + 1)
+        {
+            dy += config.block.val * 2;
+        }
+
         for (MapObject draw : view)
         {
-            float x = (draw.getX() - startX - me.getW()/2) * config.block.val;
-            float y = ((float)scene.getHeight() - (draw.getY() - startY + 1 - me.getH()/2) * config.block.val);
-            
+            float x = (draw.getX() - startX - me.getW() / 2) * config.block.val;
+            float y = ((float) scene.getHeight() - (draw.getY() - startY + 1 - me.getH() / 2) * config.block.val);
+
             x += dx;
             y += dy;
-            
 
             if (draw instanceof Player)
             {
@@ -252,17 +299,17 @@ public class TheGame extends Application {
 
         return play.getObjects(startX, startY, endX, endY);
     }
-    
+
     public Player getPlayer()
     {
         return me;
     }
-    
+
     public Map getmap()
     {
         return play;
     }
-    
+
     public TheGame getgame()
     {
         return this;
