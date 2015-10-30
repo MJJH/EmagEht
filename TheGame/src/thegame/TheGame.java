@@ -5,18 +5,15 @@
  */
 package thegame;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.animation.Animation;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -25,9 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javax.swing.Timer;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
@@ -114,11 +109,11 @@ public class TheGame extends Application {
         };
         loop.start();
         
-        AnimationTimer update = new AnimationTimer() {
+        Timer update = new Timer();
+        update.schedule(new TimerTask() {
 
             @Override
-            public void handle(long now) {
-                
+            public void run() {
                 if(keys.contains(KeyCode.LEFT))
                     me.walkLeft();
                 else if(keys.contains(KeyCode.RIGHT))
@@ -129,8 +124,7 @@ public class TheGame extends Application {
                 
                 me.update();
             }
-        };
-        update.start();
+        }, 0, 1000/60);
        
     }
 
