@@ -23,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
@@ -38,16 +39,12 @@ public class TheGame extends Application {
     private int startX;
     private int startY;
     private List<KeyCode> keys = new ArrayList<>();
-
-    //one second in nanoseconds
+    
+    // FPS
     private final long ONE_SECOND = 1000000000;
-    //used to store the current time to calculate fps
     private long currentTime = 0;
-    //used to store the last time to calculate fps
     private long lastTime = 0;
-    //fps counter
     private int fps = 0;
-    //acumulated difference between current time and last time
     private double delta = 0;
 
     private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
@@ -162,6 +159,8 @@ public class TheGame extends Application {
                 }
 
                 me.update();
+                
+                play.updateEnemy();
             }
         }, 0, 1000 / 60);
 
@@ -238,7 +237,16 @@ public class TheGame extends Application {
                 g.rect(x, y, config.block.val * ((Player) draw).getW(), config.block.val * ((Player) draw).getH());
                 g.fill();
                 g.closePath();
-            } else
+            } 
+            else if (draw instanceof Enemy)
+            {
+                g.beginPath();
+                g.setFill(Color.RED);
+                g.rect(x, y, config.block.val * ((Enemy) draw).getW(), config.block.val * ((Enemy) draw).getH());
+                g.fill();
+                g.closePath();
+            }
+            else
             {
                 g.beginPath();
                 g.drawImage(draw.getSkin(), x, y);

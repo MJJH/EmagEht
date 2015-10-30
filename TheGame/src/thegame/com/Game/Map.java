@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -96,6 +97,8 @@ public class Map {
                 
                 y--;
             }
+            
+            addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
         } catch (IOException ex) {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -193,5 +196,16 @@ public class Map {
         }
 
         return ret;
+    }
+
+    public void updateEnemy()
+    {
+        for (MapObject mo : objects)
+        {
+            if(mo instanceof Enemy)
+            {
+                mo.update();
+            }
+        }
     }
 }
