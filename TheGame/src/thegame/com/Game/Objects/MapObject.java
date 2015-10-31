@@ -231,8 +231,6 @@ public abstract class MapObject {
         // Top
         founds = new ArrayList<>();
         for(float x = xPosition; x <= xPosition + width; x+=width/3){
-            if(vSpeed > 0)
-                System.err.println("breakhere!");
             MapObject found = playing.GetTile(x, yPosition + 1, this);
             if(found != null && found != this)
                 founds.add(found);
@@ -323,6 +321,17 @@ public abstract class MapObject {
     public Image getSkin() {
         return skin;
     }
+    
+    public float distance(MapObject to) {
+        float x1 = this.xPosition + this.width/2;
+        float x2 = to.xPosition + to.width/2;
+        float y1 = this.yPosition + this.height/2;
+        float y2 = to.yPosition + to.height/2;
+        
+        return (float) Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    }
+    
+    public abstract void hit(Tool used);
     
    
 }

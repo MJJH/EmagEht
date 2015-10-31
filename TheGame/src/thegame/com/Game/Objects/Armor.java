@@ -35,4 +35,7 @@ public class Armor extends MapObject {
 
     @Override
     public void update() {}
+
+    @Override
+    public void hit(Tool use) {}
 }

@@ -15,6 +15,8 @@ public class CharacterType {
      * @Return name
      */
     public final String name;
+    
+    private int health;
 
     /**
      * Give the starting items of the character
@@ -38,6 +40,7 @@ public class CharacterType {
         this.name = name;
         this.startItems = startItems;
         this.startSkills = startSkills;
+        health = 100;
     }
     
     public String getName()

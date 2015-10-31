@@ -36,5 +36,10 @@ public class Block extends MapObject {
 
     @Override
     public void update() {}
+
+    @Override
+    public void hit(Tool use) {
+        
+    }
     
 }

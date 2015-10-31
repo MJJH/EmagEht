@@ -19,6 +19,7 @@ public abstract class CharacterGame extends MapObject {
     protected float solid;
 
     protected Tool holding;
+    protected long used;
 
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
@@ -44,6 +45,8 @@ public abstract class CharacterGame extends MapObject {
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
+        
+        used = System.currentTimeMillis();
     }
     
     public void walkRight() {
@@ -264,9 +267,27 @@ public abstract class CharacterGame extends MapObject {
      * This method return a map of backpack objects
      *
      * @return map of mapobjects
-     */
+      */
     public java.util.Map<MapObject, Integer> getBackpackMap()
     {
         return backpack;
+    }
+    
+    
+    public boolean useTool(float x, float y) {
+        MapObject click = playing.GetTile(x, y, this);
+        if(click != null && holding != null && holding.type.range >= distance(click)) {
+            //click.hit();
+            
+            used = System.currentTimeMillis();
+            return true;
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public void hit(Tool used) {
+        
     }
 }

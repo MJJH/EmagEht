@@ -9,7 +9,7 @@ import thegame.com.Game.Map;
  */
 public class Tool extends MapObject {
 
-    private final ToolType type;
+    public final ToolType type;
 
     /**
      * Create a usable tool
@@ -25,5 +25,8 @@ public class Tool extends MapObject {
 
     @Override
     public void update() {}
+    
+    @Override
+    public void hit(Tool use) {}
 
 }
