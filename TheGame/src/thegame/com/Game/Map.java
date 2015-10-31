@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
+import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -34,6 +35,7 @@ public class Map {
 
     private Block[][] blocks;
     private List<MapObject> objects;
+    private List<Player> players;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
@@ -44,6 +46,7 @@ public class Map {
         height = 100;
 
         objects = new ArrayList<>();
+        this.players = new ArrayList<>();
         blocks = new Block[height][width];
     }
 
@@ -102,6 +105,16 @@ public class Map {
         } catch (IOException ex) {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void addPlayer(Player player)
+    {
+        players.add(player);
+    }
+    
+    public List<Player> getPlayers()
+    {
+        return players;
     }
     
     public void addObject(MapObject mo) {
