@@ -81,6 +81,7 @@ public class TheGame extends Application {
         play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
         play.addObject(me);
+        play.addPlayer(me);
 
         StackPane root = new StackPane();
 

@@ -231,8 +231,8 @@ public abstract class MapObject {
         // Top
         founds = new ArrayList<>();
         for(float x = xPosition; x <= xPosition + width; x+=width/3){
-            if(vSpeed > 0)
-                System.err.println("breakhere!");
+            //if(vSpeed > 0)
+                //System.err.println("breakhere!");
             MapObject found = playing.GetTile(x, yPosition + 1, this);
             if(found != null && found != this)
                 founds.add(found);
