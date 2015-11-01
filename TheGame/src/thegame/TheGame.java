@@ -44,6 +44,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 
 /**
  *
@@ -201,19 +202,48 @@ public class TheGame extends Application {
             x += dx;
             y += dy;
 
-            if (draw instanceof Player)
+            if (draw instanceof Player || draw instanceof Enemy)
             {
+                float width = config.block.val * draw.getW();
+                float height = config.block.val * draw.getH();
+
+                // CHARACTER
                 g.beginPath();
-                g.setFill(Color.BLACK);
-                g.rect(x, y, config.block.val * ((Player) draw).getW(), config.block.val * ((Player) draw).getH());
+                if (draw instanceof Player)
+                {
+                    g.setFill(Color.BLACK);
+                } else if (draw instanceof Enemy)
+                {
+                    g.setFill(Color.RED);
+                }
+                g.rect(x, y, width, height);
                 g.fill();
-                g.closePath();
-            } else if (draw instanceof Enemy)
-            {
-                g.beginPath();
-                g.setFill(Color.RED);
-                g.rect(x, y, config.block.val * ((Enemy) draw).getW(), config.block.val * ((Enemy) draw).getH());
-                g.fill();
+
+                // ARROW
+                double[] xPoints = new double[3];
+                double[] yPoints = new double[3];
+                CharacterGame enemy = (CharacterGame) draw;
+                yPoints[0] = y + (height / 2);
+                yPoints[1] = y;
+                yPoints[2] = y + height;
+
+                switch (enemy.getDirection())
+                {
+                    case LEFT:
+                        xPoints[0] = x;
+                        xPoints[1] = x + width;
+                        xPoints[2] = x + width;
+                        break;
+                    case RIGHT:
+                        xPoints[0] = x + width;
+                        xPoints[1] = x;
+                        xPoints[2] = x;
+                        break;
+                }
+
+                g.setFill(Color.GREEN);
+                g.fillPolygon(xPoints, yPoints, 3);
+
                 g.closePath();
             } else
             {

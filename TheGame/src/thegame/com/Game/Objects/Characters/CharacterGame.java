@@ -349,4 +349,8 @@ public abstract class CharacterGame extends MapObject {
             }
         }
     }
+    
+    public sides getDirection (){
+        return direction;
+    }
 }
