@@ -1,6 +1,5 @@
 package thegame.com.Game;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -56,19 +55,24 @@ public class Map {
     public void generateMap()
     {
 
-        int y = height-1;
+        int y = height - 1;
         int x = 0;
-        
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt")))) {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt"))))
+        {
             String line;
-            
-            while((line = br.readLine()) != null) {
+
+            while ((line = br.readLine()) != null)
+            {
                 x = 0;
-                for(char b : line.toCharArray()) {
-                    
-                    switch(b) {
-                        case '0': break;
-                        case 'x': 
+                for (char b : line.toCharArray())
+                {
+
+                    switch (b)
+                    {
+                        case '0':
+                            break;
+                        case 'x':
                             this.spawnX = x;
                             this.spawnY = y;
                             break;
@@ -94,30 +98,32 @@ public class Map {
                             blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
                             break;
                     }
-                    
+
                     x++;
                 }
-                
+
                 y--;
             }
-            
+
             addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void addPlayer(Player player)
     {
         players.add(player);
     }
-    
+
     public List<Player> getPlayers()
     {
         return players;
     }
-    
-    public void addObject(MapObject mo) {
+
+    public void addObject(MapObject mo)
+    {
         this.objects.add(mo);
     }
 
@@ -148,51 +154,68 @@ public class Map {
     {
         return height;
     }
-    
-    
-    
+
     public MapObject GetTile(float x, float y, MapObject self, boolean relative)
     {
         // Find in blocks
-        try {
-            
-            for(MapObject mo : objects) {
-                if(mo.equals(self) || mo.getS() == 0)
+        try
+        {
+
+            for (MapObject mo : objects)
+            {
+                if (mo.equals(self) || mo.getS() == 0)
+                {
                     continue;
-                
-                if(relative) {
-                    if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f >= mo.getY() && y+.001f <= mo.getY() + mo.getH())
+                }
+
+                if (relative)
+                {
+                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
+                    {
                         return mo;
-                } else {
-                    if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f <= mo.getY() && y+.001f >= mo.getY() - mo.getH())
+                    }
+                } else
+                {
+                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH())
+                    {
                         return mo;
+                    }
                 }
             }
-            
+
             int bx = (int) Math.floor(x);
             int by;
-            if(relative)
+            if (relative)
+            {
                 by = (int) Math.floor(y);
-            else
+            } else
+            {
                 by = (int) Math.ceil(y);
-            
+            }
+
             Block found = blocks[by][bx];
-            
-            if(relative) {
-                if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH()){
+
+            if (relative)
+            {
+                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
+                {
                     found.debug = true;
                     return found;
                 }
-            } else {
-                if(x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH()){
+            } else
+            {
+                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH())
+                {
                     found.debug = true;
                     return found;
                 }
             }
-        } catch (Exception e){}
+        } catch (Exception e)
+        {
+        }
         return null;
     }
-    
+
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<MapObject>();
@@ -219,10 +242,13 @@ public class Map {
                 }
             }
         }
-        
-        for(MapObject mo : objects) {
-            if(mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY )
+
+        for (MapObject mo : objects)
+        {
+            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
+            {
                 ret.add(mo);
+            }
         }
 
         return ret;
@@ -232,10 +258,15 @@ public class Map {
     {
         for (MapObject mo : objects)
         {
-            if(mo instanceof Enemy)
+            if (mo instanceof Enemy)
             {
                 mo.update();
             }
         }
+    }
+
+    public void removeMapObject(MapObject removeObject)
+    {
+        objects.remove(removeObject);
     }
 }

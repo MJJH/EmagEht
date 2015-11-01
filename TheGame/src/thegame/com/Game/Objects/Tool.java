@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import com.sun.javafx.scene.traversal.Direction;
 import javafx.scene.image.Image;
 import thegame.com.Game.Map;
 
@@ -26,6 +27,6 @@ public class Tool extends MapObject {
     public void update() {}
     
     @Override
-    public void hit(Tool use) {}
+    public void hit(Tool use, Direction hitDirection) {}
 
 }

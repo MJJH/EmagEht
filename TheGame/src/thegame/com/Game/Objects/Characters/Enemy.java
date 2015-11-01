@@ -33,7 +33,7 @@ public class Enemy extends CharacterGame {
     @Override
     public void update()
     {
-        EnumMap<sides, List<MapObject>> collision = Collision();
+        EnumMap<sides, List<MapObject>> collision = collision();
 
         List<Player> players = playing.getPlayers();
 
@@ -68,7 +68,7 @@ public class Enemy extends CharacterGame {
                         } else
                         // OTHER
                         {
-                            Jump();
+                            jump();
                         }
                     }
 

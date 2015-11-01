@@ -1,6 +1,5 @@
 package thegame.com.Game.Objects;
 
-import javafx.scene.image.Image;
 import thegame.com.Game.Map;
 
 /**
@@ -37,5 +36,5 @@ public class Armor extends MapObject {
     public void update() {}
 
     @Override
-    public void hit(Tool use) {}
+    public void hit(Tool use, sides hitDirection) {}
 }

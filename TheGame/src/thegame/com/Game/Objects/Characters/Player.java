@@ -60,7 +60,7 @@ public class Player extends CharacterGame {
     @Override
     public void update() 
     {
-        EnumMap<sides, List<MapObject>> collision = Collision();
+        EnumMap<sides, List<MapObject>> collision = collision();
         fall(collision);
         moveH(collision);
         moveV(collision);

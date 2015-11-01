@@ -1,10 +1,8 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javafx.scene.image.Image;
 import thegame.com.Game.Objects.*;
 
@@ -20,6 +18,8 @@ public abstract class CharacterGame extends MapObject {
 
     protected Tool holding;
     protected long used;
+
+    protected sides direction;
 
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
@@ -46,31 +46,60 @@ public abstract class CharacterGame extends MapObject {
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 0, null, 1, 1);
+        direction = sides.RIGHT;
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
-        
+
         used = System.currentTimeMillis();
     }
-    
-    public void walkRight() {
-        if(hSpeed < 0)
+
+    public void walkRight()
+    {
+        direction = sides.RIGHT;
+        if (hSpeed < 0)
+        {
             hSpeed = 0.4f;
-        else if (hSpeed < 1)
+        } else if (hSpeed < 1)
+        {
             hSpeed += 0.4;
+        }
     }
-    
-    public void walkLeft() {
-        if(hSpeed > 0)
+
+    public void walkLeft()
+    {
+        direction = sides.LEFT;
+        if (hSpeed > 0)
+        {
             hSpeed = -0.4f;
-        else if(hSpeed > -1)
+        } else if (hSpeed > -1)
+        {
             hSpeed -= 0.4;
+        }
     }
-    
-    public void Jump() {
-        EnumMap<MapObject.sides,List<MapObject>> c = Collision();
-        if(!c.get(sides.BOTTOM).isEmpty())
+
+    public void jump()
+    {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
+        if (!c.get(sides.BOTTOM).isEmpty())
+        {
             vSpeed = 0.9f;
+        }
+    }
+
+    public void knockBack(int kb, sides hitDirection)
+    {
+        switch (hitDirection)
+        {
+            case LEFT:
+                hSpeed = -kb;
+                vSpeed = kb;
+                break;
+            case RIGHT:
+                hSpeed = kb;
+                vSpeed = kb;
+                break;
+        }
     }
 
     /**
@@ -171,10 +200,13 @@ public abstract class CharacterGame extends MapObject {
      */
     private void equipTool(Tool toolAdd)
     {
-        if(holding == null)
+        if (holding == null)
+        {
             holding = toolAdd;
-        else if (!holding.equals(toolAdd))
+        } else if (!holding.equals(toolAdd))
+        {
             holding = toolAdd;
+        }
     }
 
     /**
@@ -193,13 +225,12 @@ public abstract class CharacterGame extends MapObject {
      */
     public int updateHP(int change)
     {
-        hp += change;
+        hp -= change;
 
         if (hp > 100)
         {
             hp = 100;
-        }
-        else if (hp <= 0)
+        } else if (hp <= 0)
         {
             hp = 0;
             System.err.println("Ik ben dood!");
@@ -272,40 +303,50 @@ public abstract class CharacterGame extends MapObject {
      * This method return a map of backpack objects
      *
      * @return map of mapobjects
-      */
+     */
     public java.util.Map<MapObject, Integer> getBackpackMap()
     {
         return backpack;
     }
-    
-    
-    public boolean useTool(float x, float y) {
+
+    public boolean useTool(float x, float y)
+    {
         MapObject click = playing.GetTile(x, y, this, false);
-        if(click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed) {
-            click.hit(holding);
+        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed && ((xPosition < x && direction == sides.RIGHT) || (xPosition > x && direction == sides.LEFT)))
+        {
+            click.hit(holding, direction);
             used = System.currentTimeMillis();
             return true;
         }
-        
+
         return false;
     }
-    
+
     @Override
-    public void hit(Tool used) {
-        if(used.type.type != ToolType.toolType.SWORD && used.type.type != ToolType.toolType.FLINT)
+    public void hit(Tool used, sides hitDirection)
+    {
+        if (used.type.type != ToolType.toolType.SWORD && used.type.type != ToolType.toolType.FLINT)
+        {
             return;
-        
+        }
+
         System.out.println("You hit me!");
-        
+
         float armorStats = 0;
-        for(Armor c : armor.values()) {
+        for (Armor c : armor.values())
+        {
             armorStats += c.getArmorType().multiplier;
         }
-        
-        updateHP((int) Math.ceil(hp - (used.type.strength - (used.type.strength * (armorStats/100)))));
-        
-        if(used.type.kb > 0) {
-            // KnockBack
+
+        if (updateHP((int) Math.ceil(used.type.strength - (used.type.strength * (armorStats / 100)))) == 0)
+        {
+            playing.removeMapObject(this);
+        } else
+        {
+            if (used.type.kb > 0)
+            {
+                knockBack(used.type.kb, hitDirection);
+            }
         }
     }
 }

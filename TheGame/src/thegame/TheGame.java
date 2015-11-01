@@ -5,30 +5,9 @@
  */
 package thegame;
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
-import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.Glow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import javafx.scene.input.KeyCode;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,22 +33,17 @@ import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-
 
 /**
  *
@@ -83,10 +57,10 @@ public class TheGame extends Application {
     private int startX;
     private int startY;
     private List<KeyCode> keys = new ArrayList<>();
-    
+
     private float dx;
     private float dy;
-    
+
     // FPS
     private final long ONE_SECOND = 1000000000;
     private long currentTime = 0;
@@ -94,57 +68,60 @@ public class TheGame extends Application {
     private int fps = 0;
     private double delta = 0;
 
-    private EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event)
+    private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
+    {
+        if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
         {
-            if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
+            if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
             {
-                if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
-                {
-                    keys.add(event.getCode());
+                keys.add(event.getCode());
 
-                    if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
-                    {
-                        keys.remove(KeyCode.D);
-                    }
-                    if (event.getCode() == KeyCode.D && keys.contains(KeyCode.A))
-                    {
-                        keys.remove(KeyCode.A);
-                    }
-                } else if(event.getEventType() == KeyEvent.KEY_RELEASED)
+                if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
                 {
-                    keys.remove(event.getCode());
+                    keys.remove(KeyCode.D);
                 }
+                if (event.getCode() == KeyCode.D && keys.contains(KeyCode.A))
+                {
+                    keys.remove(KeyCode.A);
+                }
+            } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
+            {
+                keys.remove(event.getCode());
             }
-
+        } else
+        {
+            if (event.getCode() == KeyCode.DIGIT1)
+            {
+                play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
+            }
         }
     };
-    
-    private EventHandler<MouseEvent> mouseListener = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if(event.getButton().equals(MouseButton.PRIMARY)){
-                double clickX = (event.getSceneX()+dx);
-                clickX = clickX / config.block.val;
-                clickX += startX;
-                
-                int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-                int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
-                
-                if(startX == 0)
-                    clickX -= me.getW() / 2;
-                else if(startX > 0)
-                    clickX += me.getW() / 2 + 1;
-                
-                double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY - me.getH() / 2;
 
-                
-                System.err.println(clickY + " / " + clickX);
-                System.out.println(me.getY() + " / " + me.getX());
-                
-                me.useTool((float) clickX, (float) clickY);
+    private final EventHandler<MouseEvent> mouseListener = (MouseEvent event) ->
+    {
+        if (event.getButton().equals(MouseButton.PRIMARY))
+        {
+            double clickX = (event.getSceneX() + dx);
+            clickX = clickX / config.block.val;
+            clickX += startX;
+
+            int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+            int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+
+            if (startX == 0)
+            {
+                clickX -= me.getW() / 2;
+            } else if (startX > 0)
+            {
+                clickX += me.getW() / 2 + 1;
             }
+
+            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY - me.getH() / 2;
+
+            System.err.println(clickY + " / " + clickX);
+            System.out.println(me.getY() + " / " + me.getX());
+
+            me.useTool((float) clickX, (float) clickY);
         }
     };
     private Stage stages;
@@ -157,9 +134,7 @@ public class TheGame extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         stages = primaryStage;
-        
 
-        
     }
 
     private void draw(GraphicsContext g)
@@ -233,16 +208,14 @@ public class TheGame extends Application {
                 g.rect(x, y, config.block.val * ((Player) draw).getW(), config.block.val * ((Player) draw).getH());
                 g.fill();
                 g.closePath();
-            } 
-            else if (draw instanceof Enemy)
+            } else if (draw instanceof Enemy)
             {
                 g.beginPath();
                 g.setFill(Color.RED);
                 g.rect(x, y, config.block.val * ((Enemy) draw).getW(), config.block.val * ((Enemy) draw).getH());
                 g.fill();
                 g.closePath();
-            }
-            else
+            } else
             {
                 g.beginPath();
                 g.drawImage(draw.getSkin(), x, y);
@@ -311,7 +284,9 @@ public class TheGame extends Application {
     {
         launch(args);
     }
-     public void startagame(Stage primaryStage){
+
+    public void startagame(Stage primaryStage)
+    {
         play = new Map();
         play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
@@ -327,19 +302,13 @@ public class TheGame extends Application {
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        scene.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
-            {
-                canvas.setWidth((double) newSceneWidth);
-            }
+        scene.widthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) ->
+        {
+            canvas.setWidth((double) newSceneWidth);
         });
-        scene.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
-            {
-                canvas.setHeight((double) newSceneHeight);
-            }
+        scene.heightProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) ->
+        {
+            canvas.setHeight((double) newSceneHeight);
         });
 
         root.getChildren().add(canvas);
@@ -350,9 +319,9 @@ public class TheGame extends Application {
         {
             System.exit(0);
         });
-        
+
         lastTime = System.nanoTime();
-        
+
         AnimationTimer loop = new AnimationTimer() {
 
             @Override
@@ -392,43 +361,44 @@ public class TheGame extends Application {
 
                 if (keys.contains(KeyCode.W))
                 {
-                    me.Jump();
+                    me.jump();
                 }
 
                 me.update();
-                
+
                 play.updateEnemy();
             }
         }, 0, 1000 / 60);
-     }
-     
-      private Parent createContent() {
+    }
+
+    private Parent createContent()
+    {
         Pane root = new Pane();
-        
+
         root.setPrefSize(860, 600);
-        
-        try(InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg"))) {
+
+        try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
+        {
             ImageView img = new ImageView(new Image(is));
             img.setFitWidth(860);
             img.setFitHeight(600);
             root.getChildren().add(img);
-        
-            
-        } catch (Exception e) {
+
+        } catch (Exception e)
+        {
             System.out.println("Couldnt load image");
         }
-        
-        Title title = new Title ("The Game");
+
+        Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
-        
+
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
-        
+
         MenuItem startThegame = new MenuItem("Start a game");
         startThegame.setOnMouseClicked(event -> startagame(stages));
 
-        
         MenuBox menu = new MenuBox(
                 startThegame,
                 new MenuItem("TO DO"),
@@ -437,79 +407,95 @@ public class TheGame extends Application {
                 itemExit);
         menu.setTranslateX(100);
         menu.setTranslateY(300);
-        root.getChildren().addAll(title,menu);
-        
+        root.getChildren().addAll(title, menu);
+
         return root;
     }
-    
-    private static class MenuItem extends StackPane{
-        public MenuItem(String name){
-            LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[]{
+
+    private static class MenuItem extends StackPane {
+
+        public MenuItem(String name)
+        {
+            LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[]
+            {
                 new Stop(0, Color.DARKVIOLET),
                 new Stop(0.1, Color.BLACK),
                 new Stop(0.9, Color.BLACK),
                 new Stop(01, Color.DARKVIOLET)
             });
-        
-            Rectangle bg = new Rectangle(200,30);
+
+            Rectangle bg = new Rectangle(200, 30);
             bg.setOpacity(0.4);
-            
+
             Text text = new Text(name);
             text.setFill(Color.DARKGREY);
             text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 22));
-            
+
             setAlignment(Pos.CENTER);
             getChildren().addAll(bg, text);
-            
-            setOnMouseEntered(event -> {
+
+            setOnMouseEntered(event ->
+            {
                 bg.setFill(gradient);
                 text.setFill(Color.WHITE);
             });
-                
-            setOnMouseDragExited(event -> {
-            bg.setFill(Color.BLACK);
-            text.setFill(Color.DARKGREY);
+
+            setOnMouseDragExited(event ->
+            {
+                bg.setFill(Color.BLACK);
+                text.setFill(Color.DARKGREY);
             });
-                    
-            setOnMousePressed(event -> {
-           bg.setFill(Color.DARKGREY);
+
+            setOnMousePressed(event ->
+            {
+                bg.setFill(Color.DARKGREY);
             });
-            
-            setOnMouseReleased(event -> {
-               bg.setFill(gradient);
+
+            setOnMouseReleased(event ->
+            {
+                bg.setFill(gradient);
             });
-    }
         }
+    }
+
     private static class MenuBox extends VBox {
-        public  MenuBox(MenuItem... items){
+
+        public MenuBox(MenuItem... items)
+        {
             getChildren().add(createSeparator());
-            
-            for(MenuItem item : items){
+
+            for (MenuItem item : items)
+            {
                 getChildren().addAll(item, createSeparator());
             }
-    }
-        private Line createSeparator(){
+        }
+
+        private Line createSeparator()
+        {
             Line sep = new Line();
             sep.setEndX(200);
             sep.setStroke(Color.DARKGREY);
             return sep;
         }
-                     
-            }
-                private static class Title extends StackPane{
-                    public Title(String name){
-                        Rectangle bg = new Rectangle(250,60);
-                      bg.setStroke(Color.WHITE);
-                      bg.setStrokeWidth(2);
-                      bg.setFill(null);
-                        
-                        Text text = new Text(name);
-                        text.setFill(Color.WHITE);
-                        text.setFont(Font.font("Tw Cen MT Condensed",FontWeight.SEMI_BOLD,50));
-                        
-                        setAlignment(Pos.CENTER);
-                        getChildren().addAll(bg,text);
-                    }
-                }
+
+    }
+
+    private static class Title extends StackPane {
+
+        public Title(String name)
+        {
+            Rectangle bg = new Rectangle(250, 60);
+            bg.setStroke(Color.WHITE);
+            bg.setStrokeWidth(2);
+            bg.setFill(null);
+
+            Text text = new Text(name);
+            text.setFill(Color.WHITE);
+            text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 50));
+
+            setAlignment(Pos.CENTER);
+            getChildren().addAll(bg, text);
+        }
+    }
 
 }
