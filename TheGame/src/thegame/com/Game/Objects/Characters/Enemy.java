@@ -6,13 +6,14 @@ import thegame.com.Game.Objects.MapObject;
 
 /**
  * This constructor creates an enemy
+ *
  * @author Nick Bijmoer
  */
 public class Enemy extends CharacterGame {
 
     private final float distanceX = 30;
     private final float distanceY = 10;
-    
+
     /**
      *
      * @param name, name of the enemy
@@ -28,40 +29,68 @@ public class Enemy extends CharacterGame {
     {
         super(name, hp, skills, x, y, skin, height, width, map);
     }
-    
 
     @Override
-    public void update() {
+    public void update()
+    {
         EnumMap<sides, List<MapObject>> collision = Collision();
-        
+
         List<Player> players = playing.getPlayers();
+
         for (Player player : players)
         {
             float playerX = player.getX();
             float playerY = player.getY();
 
-            if ((xPosition - distanceX) <= playerX && playerX <= (xPosition + distanceX))
+            if ((xPosition - distanceX) < playerX && (xPosition + distanceX) > playerX)
             {
-                if ((yPosition - distanceY) <= playerY && playerY <= (yPosition + distanceY))
+                if ((yPosition - distanceY) < playerY && (yPosition + distanceY) > playerY)
                 {
-                    if(collision.get(sides.LEFT).size() > 0 || collision.get(sides.RIGHT).size() > 0)
-                    {
-                        Jump();
-                    }
-                    if (playerX < xPosition)
+                    // WALK TO PLAYER
+                    if (playerX + player.getW() < xPosition)
                     {
                         walkLeft();
-                    } else
+                    } else if (playerX - player.getW() > xPosition)
                     {
                         walkRight();
                     }
+
+                    // DETECT OBSTACLES LEFT AND RIGHT
+                    if (collision.get(sides.LEFT).size() > 0 || collision.get(sides.RIGHT).size() > 0)
+                    {
+                        // PLAYER
+                        if (collision.get(sides.LEFT).size() > 0 && collision.get(sides.LEFT).get(0) instanceof Player)
+                        {
+                            //hit left
+                        } else if (collision.get(sides.RIGHT).size() > 0 && collision.get(sides.RIGHT).get(0) instanceof Player)
+                        {
+                            //hit right
+                        } else
+                        // OTHER
+                        {
+                            Jump();
+                        }
+                    }
+
+                    // NO STACKING
+                    if (collision.get(sides.TOP).size() > 0 || collision.get(sides.BOTTOM).size() > 0)
+                    {
+                        if (collision.get(sides.TOP).size() > 0 && (collision.get(sides.TOP).get(0) instanceof Player || collision.get(sides.TOP).get(0) instanceof Enemy))
+                        {
+                            walkLeft();
+                        } else if (collision.get(sides.BOTTOM).size() > 0 && (collision.get(sides.BOTTOM).get(0) instanceof Player || collision.get(sides.BOTTOM).get(0) instanceof Enemy))
+                        {
+                            walkRight();
+                        }
+                    }
                 }
+
             }
         }
-       
+
         fall(collision);
         moveH(collision);
         moveV(collision);
     }
-    
+
 }
