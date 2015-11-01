@@ -4,9 +4,6 @@ import javafx.scene.image.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import static java.time.Clock.system;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.embed.swing.SwingFXUtils;
 import javax.imageio.ImageIO;
 
@@ -16,18 +13,19 @@ import javax.imageio.ImageIO;
  * @author Mark
  */
 public enum BlockType {
-    Dirt("Dirt", 5, 3, 0, 0),
-    Sand("Sand", 5, 3, 20, 20),
-    Stone("Stone", 25, 3, 0, 20),
-    Coal("Coal", 30, 3, 0, 100),
-    Copper("Copper", 40, 3, 0, 40),
-    Tin("Tin", 40, 3, 20, 40),
-    Iron("Iron", 60, 3, 0, 80),
-    Obsidian("Obsidian", 120, 3, 20, 80);
+    Dirt("Dirt", 5, 3, 0, 0, ToolType.toolType.SHOVEL),
+    Sand("Sand", 5, 3, 20, 20, ToolType.toolType.SHOVEL),
+    Stone("Stone", 25, 3, 0, 20, ToolType.toolType.PICKAXE),
+    Coal("Coal", 30, 3, 0, 100, ToolType.toolType.PICKAXE),
+    Copper("Copper", 40, 3, 0, 40, ToolType.toolType.PICKAXE),
+    Tin("Tin", 40, 3, 20, 40, ToolType.toolType.PICKAXE),
+    Iron("Iron", 60, 3, 0, 80, ToolType.toolType.PICKAXE),
+    Obsidian("Obsidian", 120, 3, 20, 80, ToolType.toolType.PICKAXE);
     
     public final String name;
     public final int strength;
     public final int reqToolLvl;
+    public final ToolType.toolType reqTool;
     public final Image skin;
 
     /**
@@ -39,10 +37,11 @@ public enum BlockType {
      * @param btx
      * @param bty
      */
-    BlockType(String name, int strength, int reqLvl, float btx, float bty) {
+    BlockType(String name, int strength, int reqLvl, float btx, float bty, ToolType.toolType req) {
         this.name = name;
         this.strength = strength;
         this.reqToolLvl = reqLvl;
+        this.reqTool = req;
         this.skin = getskin(btx, bty);
     }
     

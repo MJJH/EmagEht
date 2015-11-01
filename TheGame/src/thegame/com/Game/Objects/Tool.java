@@ -14,10 +14,9 @@ public class Tool extends MapObject {
     /**
      * Create a usable tool
      * @param type      the type of this tool (sword, hatchet, etc)
-     * @param height    the height of this object
-     * @param width     the width of this object
+     * @param map       the map this tool is used on
      */
-    public Tool(ToolType type, int height, int width, Map map)
+    public Tool(ToolType type, Map map)
     {
         super(type.skin, type.height, type.width, map);
         this.type = type;

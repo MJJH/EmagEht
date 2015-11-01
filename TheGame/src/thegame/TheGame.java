@@ -19,6 +19,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -40,6 +42,9 @@ public class TheGame extends Application {
     private int startY;
     private List<KeyCode> keys = new ArrayList<>();
     
+    private float dx;
+    private float dy;
+    
     // FPS
     private final long ONE_SECOND = 1000000000;
     private long currentTime = 0;
@@ -51,19 +56,19 @@ public class TheGame extends Application {
         @Override
         public void handle(KeyEvent event)
         {
-            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT)
+            if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
             {
                 if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
                 {
                     keys.add(event.getCode());
 
-                    if (event.getCode() == KeyCode.LEFT && keys.contains(KeyCode.RIGHT))
+                    if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
                     {
-                        keys.remove(KeyCode.RIGHT);
+                        keys.remove(KeyCode.D);
                     }
-                    if (event.getCode() == KeyCode.RIGHT && keys.contains(KeyCode.LEFT))
+                    if (event.getCode() == KeyCode.D && keys.contains(KeyCode.A))
                     {
-                        keys.remove(KeyCode.LEFT);
+                        keys.remove(KeyCode.A);
                     }
                 } else if(event.getEventType() == KeyEvent.KEY_RELEASED)
                 {
@@ -71,6 +76,33 @@ public class TheGame extends Application {
                 }
             }
 
+        }
+    };
+    
+    private EventHandler<MouseEvent> mouseListener = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            if(event.getButton().equals(MouseButton.PRIMARY)){
+                double clickX = (event.getSceneX()+dx);
+                clickX = clickX / config.block.val;
+                clickX += startX;
+                
+                int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+                int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+                
+                if(startX == 0)
+                    clickX -= me.getW() / 2;
+                else if(startX > 0)
+                    clickX += me.getW() / 2 + 1;
+                
+                double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY - me.getH() / 2;
+
+                
+                System.err.println(clickY + " / " + clickX);
+                System.out.println(me.getY() + " / " + me.getX());
+                
+                me.useTool((float) clickX, (float) clickY);
+            }
         }
     };
 
@@ -87,6 +119,7 @@ public class TheGame extends Application {
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
+        scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
 
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -146,15 +179,15 @@ public class TheGame extends Application {
             @Override
             public void run()
             {
-                if (keys.contains(KeyCode.LEFT))
+                if (keys.contains(KeyCode.A))
                 {
                     me.walkLeft();
-                } else if (keys.contains(KeyCode.RIGHT))
+                } else if (keys.contains(KeyCode.D))
                 {
                     me.walkRight();
                 }
 
-                if (keys.contains(KeyCode.UP))
+                if (keys.contains(KeyCode.W))
                 {
                     me.Jump();
                 }
@@ -178,8 +211,8 @@ public class TheGame extends Application {
         int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
         int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
 
-        float dx = 0;
-        float dy = 0;
+        dx = 0;
+        dy = 0;
 
         dx += config.block.val * (me.getW() / 2);
         if (me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal) / 2) - me.getW() / 2 && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal) / 2))
@@ -263,8 +296,8 @@ public class TheGame extends Application {
 
     private List<MapObject> viewable()
     {
-        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 4;
-        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 4;
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
 
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
@@ -307,21 +340,6 @@ public class TheGame extends Application {
         }
 
         return play.getObjects(startX, startY, endX, endY);
-    }
-
-    public Player getPlayer()
-    {
-        return me;
-    }
-
-    public Map getmap()
-    {
-        return play;
-    }
-
-    public TheGame getgame()
-    {
-        return this;
     }
 
     /**

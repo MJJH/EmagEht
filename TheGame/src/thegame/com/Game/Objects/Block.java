@@ -10,6 +10,7 @@ import thegame.com.Game.Map;
 public class Block extends MapObject {
 
     private int damage;
+    private BlockType type;
 
     /**
      * Initiates this class
@@ -22,7 +23,7 @@ public class Block extends MapObject {
     public Block(BlockType type, float x, float y, float solid, Map map)
     {
         super(x, y, type.skin, 1.0f, 1.0f, solid, map);
-        
+        this.type = type;
     }
     
     /**
@@ -39,7 +40,7 @@ public class Block extends MapObject {
 
     @Override
     public void hit(Tool use) {
-        
+        System.err.println("Found: " + this.type.name);
     }
     
 }

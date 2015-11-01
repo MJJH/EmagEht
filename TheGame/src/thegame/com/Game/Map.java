@@ -151,7 +151,7 @@ public class Map {
     
     
     
-    public MapObject GetTile(float x, float y, MapObject self)
+    public MapObject GetTile(float x, float y, MapObject self, boolean relative)
     {
         // Find in blocks
         try {
@@ -160,17 +160,34 @@ public class Map {
                 if(mo.equals(self) || mo.getS() == 0)
                     continue;
                 
-                if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f >= mo.getY() && y+.001f <= mo.getY() + mo.getH())
-                    return mo;
+                if(relative) {
+                    if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f >= mo.getY() && y+.001f <= mo.getY() + mo.getH())
+                        return mo;
+                } else {
+                    if(x+.001f >= mo.getX() && x+.001f <= mo.getX() + mo.getW() && y+.001f <= mo.getY() && y+.001f >= mo.getY() - mo.getH())
+                        return mo;
+                }
             }
             
             int bx = (int) Math.floor(x);
-            int by = (int) Math.floor(y);
+            int by;
+            if(relative)
+                by = (int) Math.floor(y);
+            else
+                by = (int) Math.ceil(y);
             
             Block found = blocks[by][bx];
-            if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH()){
-                found.debug = true;
-                return found;
+            
+            if(relative) {
+                if(x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH()){
+                    found.debug = true;
+                    return found;
+                }
+            } else {
+                if(x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH()){
+                    found.debug = true;
+                    return found;
+                }
             }
         } catch (Exception e){}
         return null;

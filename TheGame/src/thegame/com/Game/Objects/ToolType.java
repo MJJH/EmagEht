@@ -11,8 +11,8 @@ public class ToolType {
 
     public final String name;
     public final int strength;
-    public final int speed;
-    public final int range;
+    public final float speed;
+    public final float range;
     public final int reqLvl;
     public final int kb;
     public final Image skin;
@@ -29,12 +29,13 @@ public class ToolType {
      * @param speed
      * @param range
      * @param reqLvl
+     * @param type
      * @param kb
      * @param skin
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, int speed, int range, int reqLvl, toolType type, int kb, Image skin, float height, float width) {
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, int kb, Image skin, float height, float width) {
         this.name = name;
         this.strength = strength;
         this.speed = speed;

@@ -36,6 +36,7 @@ public abstract class CharacterGame extends MapObject {
      * @param skin, Skin that the in game character got
      * @param height, Height of the in game character
      * @param width, Width of the in game character
+     * @param map
      */
     public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width, thegame.com.Game.Map map)
     {
@@ -45,6 +46,9 @@ public abstract class CharacterGame extends MapObject {
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 0, null, 1, 1);
+        Tool equip = new Tool(test, map);
+        equipTool(equip);
         
         used = System.currentTimeMillis();
     }
@@ -165,12 +169,12 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    public void equipTool(Tool toolAdd)
+    private void equipTool(Tool toolAdd)
     {
-        if (!holding.equals(toolAdd))
-        {
+        if(holding == null)
             holding = toolAdd;
-        }
+        else if (!holding.equals(toolAdd))
+            holding = toolAdd;
     }
 
     /**
@@ -195,9 +199,10 @@ public abstract class CharacterGame extends MapObject {
         {
             hp = 100;
         }
-        if (hp < 0)
+        else if (hp <= 0)
         {
             hp = 0;
+            System.err.println("Ik ben dood!");
         }
 
         return hp;
@@ -275,10 +280,9 @@ public abstract class CharacterGame extends MapObject {
     
     
     public boolean useTool(float x, float y) {
-        MapObject click = playing.GetTile(x, y, this);
-        if(click != null && holding != null && holding.type.range >= distance(click)) {
-            //click.hit();
-            
+        MapObject click = playing.GetTile(x, y, this, false);
+        if(click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed) {
+            click.hit(holding);
             used = System.currentTimeMillis();
             return true;
         }
@@ -288,6 +292,20 @@ public abstract class CharacterGame extends MapObject {
     
     @Override
     public void hit(Tool used) {
+        if(used.type.type != ToolType.toolType.SWORD && used.type.type != ToolType.toolType.FLINT)
+            return;
         
+        System.out.println("You hit me!");
+        
+        float armorStats = 0;
+        for(Armor c : armor.values()) {
+            armorStats += c.getArmorType().multiplier;
+        }
+        
+        updateHP((int) Math.ceil(hp - (used.type.strength - (used.type.strength * (armorStats/100)))));
+        
+        if(used.type.kb > 0) {
+            // KnockBack
+        }
     }
 }

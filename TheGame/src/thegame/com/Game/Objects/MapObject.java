@@ -222,7 +222,7 @@ public abstract class MapObject {
         // Bottom
         founds = new ArrayList<>();
         for(float x = xPosition; x <= xPosition + width; x+=width/3){
-            MapObject found = playing.GetTile(x, yPosition - height, this);
+            MapObject found = playing.GetTile(x, yPosition - height, this, true);
             if(found != null && found != this)
                 founds.add(found);
         }
@@ -231,7 +231,7 @@ public abstract class MapObject {
         // Top
         founds = new ArrayList<>();
         for(float x = xPosition; x <= xPosition + width; x+=width/3){
-            MapObject found = playing.GetTile(x, yPosition + 1, this);
+            MapObject found = playing.GetTile(x, yPosition + 1, this, true);
             if(found != null && found != this)
                 founds.add(found);
         }
@@ -240,7 +240,7 @@ public abstract class MapObject {
         // Left
         founds = new ArrayList<>();
         for(float y = yPosition; y <= yPosition + height; y+=height/3){
-            MapObject found = playing.GetTile(xPosition - 1, y, this);
+            MapObject found = playing.GetTile(xPosition - 1, y, this, true);
             if(found != null && found != this)
                 founds.add(found);
         }
@@ -249,7 +249,7 @@ public abstract class MapObject {
         // Right
         founds = new ArrayList<>();
         for(float y = yPosition; y <= yPosition + height; y+=height/3){
-            MapObject found = playing.GetTile(xPosition + width, y, this);
+            MapObject found = playing.GetTile(xPosition + width, y, this, true);
             if(found != null && found != this)
                 founds.add(found);
         }
