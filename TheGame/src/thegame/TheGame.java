@@ -5,29 +5,71 @@
  */
 package thegame;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.Glow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.scene.input.KeyCode;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.text.FontWeight;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+
 
 /**
  *
@@ -105,98 +147,18 @@ public class TheGame extends Application {
             }
         }
     };
+    private Stage stages;
 
     @Override
     public void start(Stage primaryStage)
     {
-        play = new Map();
-        play.generateMap();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
-        play.addObject(me);
-        play.addPlayer(me);
-
-        StackPane root = new StackPane();
-
-        scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
-        scene.addEventHandler(KeyEvent.ANY, keyListener);
-        scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
-
-        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        scene.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
-            {
-                canvas.setWidth((double) newSceneWidth);
-            }
-        });
-        scene.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
-            {
-                canvas.setHeight((double) newSceneHeight);
-            }
-        });
-
-        root.getChildren().add(canvas);
+        Scene scene = new Scene(createContent());
+        primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        primaryStage.setOnCloseRequest(event ->
-        {
-            System.exit(0);
-        });
+        stages = primaryStage;
         
-        lastTime = System.nanoTime();
-        
-        AnimationTimer loop = new AnimationTimer() {
 
-            @Override
-            public void handle(long now)
-            {
-                currentTime = now;
-                fps++;
-                delta += currentTime - lastTime;
-
-                draw(gc);
-
-                if (delta > ONE_SECOND)
-                {
-                    primaryStage.setTitle("FPS : " + fps);
-                    delta -= ONE_SECOND;
-                    fps = 0;
-                }
-
-                lastTime = currentTime;
-            }
-        };
-        loop.start();
-
-        Timer update = new Timer();
-        update.schedule(new TimerTask() {
-
-            @Override
-            public void run()
-            {
-                if (keys.contains(KeyCode.A))
-                {
-                    me.walkLeft();
-                } else if (keys.contains(KeyCode.D))
-                {
-                    me.walkRight();
-                }
-
-                if (keys.contains(KeyCode.W))
-                {
-                    me.Jump();
-                }
-
-                me.update();
-                
-                play.updateEnemy();
-            }
-        }, 0, 1000 / 60);
         
     }
 
@@ -349,4 +311,205 @@ public class TheGame extends Application {
     {
         launch(args);
     }
+     public void startagame(Stage primaryStage){
+        play = new Map();
+        play.generateMap();
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+        play.addObject(me);
+        play.addPlayer(me);
+
+        StackPane root = new StackPane();
+
+        scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
+        scene.addEventHandler(KeyEvent.ANY, keyListener);
+        scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
+
+        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
+            {
+                canvas.setWidth((double) newSceneWidth);
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
+            {
+                canvas.setHeight((double) newSceneHeight);
+            }
+        });
+
+        root.getChildren().add(canvas);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event ->
+        {
+            System.exit(0);
+        });
+        
+        lastTime = System.nanoTime();
+        
+        AnimationTimer loop = new AnimationTimer() {
+
+            @Override
+            public void handle(long now)
+            {
+                currentTime = now;
+                fps++;
+                delta += currentTime - lastTime;
+
+                draw(gc);
+
+                if (delta > ONE_SECOND)
+                {
+                    primaryStage.setTitle("FPS : " + fps);
+                    delta -= ONE_SECOND;
+                    fps = 0;
+                }
+
+                lastTime = currentTime;
+            }
+        };
+        loop.start();
+
+        Timer update = new Timer();
+        update.schedule(new TimerTask() {
+
+            @Override
+            public void run()
+            {
+                if (keys.contains(KeyCode.A))
+                {
+                    me.walkLeft();
+                } else if (keys.contains(KeyCode.D))
+                {
+                    me.walkRight();
+                }
+
+                if (keys.contains(KeyCode.W))
+                {
+                    me.Jump();
+                }
+
+                me.update();
+                
+                play.updateEnemy();
+            }
+        }, 0, 1000 / 60);
+     }
+     
+      private Parent createContent() {
+        Pane root = new Pane();
+        
+        root.setPrefSize(860, 600);
+        
+        try(InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg"))) {
+            ImageView img = new ImageView(new Image(is));
+            img.setFitWidth(860);
+            img.setFitHeight(600);
+            root.getChildren().add(img);
+        
+            
+        } catch (Exception e) {
+            System.out.println("Couldnt load image");
+        }
+        
+        Title title = new Title ("The Game");
+        title.setTranslateX(75);
+        title.setTranslateY(200);
+        
+        MenuItem itemExit = new MenuItem("EXIT");
+        itemExit.setOnMouseClicked(event -> System.exit((0)));
+        
+        MenuItem startThegame = new MenuItem("Start a game");
+        startThegame.setOnMouseClicked(event -> startagame(stages));
+
+        
+        MenuBox menu = new MenuBox(
+                startThegame,
+                new MenuItem("TO DO"),
+                new MenuItem("TO DO"),
+                new MenuItem(" TO DO HIGH SCORE"),
+                itemExit);
+        menu.setTranslateX(100);
+        menu.setTranslateY(300);
+        root.getChildren().addAll(title,menu);
+        
+        return root;
+    }
+    
+    private static class MenuItem extends StackPane{
+        public MenuItem(String name){
+            LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[]{
+                new Stop(0, Color.DARKVIOLET),
+                new Stop(0.1, Color.BLACK),
+                new Stop(0.9, Color.BLACK),
+                new Stop(01, Color.DARKVIOLET)
+            });
+        
+            Rectangle bg = new Rectangle(200,30);
+            bg.setOpacity(0.4);
+            
+            Text text = new Text(name);
+            text.setFill(Color.DARKGREY);
+            text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 22));
+            
+            setAlignment(Pos.CENTER);
+            getChildren().addAll(bg, text);
+            
+            setOnMouseEntered(event -> {
+                bg.setFill(gradient);
+                text.setFill(Color.WHITE);
+            });
+                
+            setOnMouseDragExited(event -> {
+            bg.setFill(Color.BLACK);
+            text.setFill(Color.DARKGREY);
+            });
+                    
+            setOnMousePressed(event -> {
+           bg.setFill(Color.DARKGREY);
+            });
+            
+            setOnMouseReleased(event -> {
+               bg.setFill(gradient);
+            });
+    }
+        }
+    private static class MenuBox extends VBox {
+        public  MenuBox(MenuItem... items){
+            getChildren().add(createSeparator());
+            
+            for(MenuItem item : items){
+                getChildren().addAll(item, createSeparator());
+            }
+    }
+        private Line createSeparator(){
+            Line sep = new Line();
+            sep.setEndX(200);
+            sep.setStroke(Color.DARKGREY);
+            return sep;
+        }
+                     
+            }
+                private static class Title extends StackPane{
+                    public Title(String name){
+                        Rectangle bg = new Rectangle(250,60);
+                      bg.setStroke(Color.WHITE);
+                      bg.setStrokeWidth(2);
+                      bg.setFill(null);
+                        
+                        Text text = new Text(name);
+                        text.setFill(Color.WHITE);
+                        text.setFont(Font.font("Tw Cen MT Condensed",FontWeight.SEMI_BOLD,50));
+                        
+                        setAlignment(Pos.CENTER);
+                        getChildren().addAll(bg,text);
+                    }
+                }
+
 }
