@@ -44,7 +44,7 @@ public class Block extends MapObject {
     @Override
     public void hit(Tool use, sides hitDirection)
     {
-        System.err.println("Found: " + this.type.name);
+        playing.removeMapObject(this);
     }
 
 }

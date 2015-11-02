@@ -107,7 +107,7 @@ public class TheGame extends Application {
         {
             double clickX = (event.getSceneX() + dx) / config.block.val - startX;
 
-            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY;
+            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
 
             me.useTool((float) clickX, (float) clickY);
         }
