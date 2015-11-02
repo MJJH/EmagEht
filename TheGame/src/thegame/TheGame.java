@@ -426,14 +426,14 @@ public class TheGame extends Application {
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
-        MenuItem startThegame = new MenuItem("Start a game");
+        MenuItem startThegame = new MenuItem("SINGLE PLAYER");
         startThegame.setOnMouseClicked(event -> startagame(stages));
 
         MenuBox menu = new MenuBox(
                 startThegame,
-                new MenuItem("TO DO"),
-                new MenuItem("TO DO"),
-                new MenuItem(" TO DO HIGH SCORE"),
+                new MenuItem("MULTIPLAYER [soon]"),
+                new MenuItem("CHARACTERS [soon]"),
+                new MenuItem("OPTIONS [soon]"),
                 itemExit);
         menu.setTranslateX(100);
         menu.setTranslateY(300);
