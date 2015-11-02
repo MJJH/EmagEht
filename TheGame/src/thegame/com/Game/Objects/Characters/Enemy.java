@@ -39,52 +39,77 @@ public class Enemy extends CharacterGame {
 
         for (Player player : players)
         {
-            float playerX = player.getX();
-            float playerY = player.getY();
+            float playerX = player.getX() + (player.getW()/2);
+            float playerY = player.getY() + (player.getH()/2);
 
             if ((xPosition - distanceX) < playerX && (xPosition + distanceX) > playerX)
             {
                 if ((yPosition - distanceY) < playerY && (yPosition + distanceY) > playerY)
                 {
                     // WALK TO PLAYER
-                    if (playerX + player.getW() < xPosition)
+                    if (playerX < xPosition)
                     {
                         walkLeft();
-                    } else if (playerX - player.getW() > xPosition)
+                    } else if (playerX > xPosition)
                     {
                         walkRight();
                     }
 
-                    // DETECT OBSTACLES LEFT AND RIGHT
-                    if (collision.get(sides.LEFT).size() > 0 || collision.get(sides.RIGHT).size() > 0)
+                    // COLLISION LEFT
+                    if (collision.get(sides.LEFT).size() > 0)
                     {
-                        // PLAYER
-                        if (collision.get(sides.LEFT).size() > 0 && collision.get(sides.LEFT).get(0) instanceof Player)
+                        for (MapObject colLeft : collision.get(sides.LEFT))
                         {
-                            //hit left
-                        } else if (collision.get(sides.RIGHT).size() > 0 && collision.get(sides.RIGHT).get(0) instanceof Player)
+                            if (colLeft instanceof Player)
+                            {
+                                useTool(colLeft.getX(), colLeft.getY());
+                            } else
+                            {
+                                jump();
+                            }
+                        }
+                        collision.get(sides.LEFT).get(0).hit(holding, sides.LEFT);
+                        // COLLISION RIGHT
+                    } else if (collision.get(sides.RIGHT).size() > 0)
+                    {
+                        for (MapObject colRight : collision.get(sides.RIGHT))
                         {
-                            //hit right
-                        } else
-                        // OTHER
-                        {
-                            jump();
+                            if (colRight instanceof Player)
+                            {
+                                useTool(colRight.getX(), colRight.getY());
+                            } else
+                            {
+                                jump();
+                            }
                         }
                     }
-
-                    // NO STACKING
-                    if (collision.get(sides.TOP).size() > 0 || collision.get(sides.BOTTOM).size() > 0)
+                    // COLLISION TOP
+                } else if (collision.get(sides.TOP).size() > 0)
+                {
+                    for (MapObject colTop : collision.get(sides.TOP))
                     {
-                        if (collision.get(sides.TOP).size() > 0 && (collision.get(sides.TOP).get(0) instanceof Player || collision.get(sides.TOP).get(0) instanceof Enemy))
+                        if (colTop instanceof Player)
+                        {
+                            useTool(colTop.getX(), colTop.getY());
+                        } else
                         {
                             walkLeft();
-                        } else if (collision.get(sides.BOTTOM).size() > 0 && (collision.get(sides.BOTTOM).get(0) instanceof Player || collision.get(sides.BOTTOM).get(0) instanceof Enemy))
-                        {
-                            walkRight();
                         }
                     }
                 }
-
+                // COLLISON BOTTOM
+            } else if (collision.get(sides.BOTTOM).size() > 0)
+            {
+                for (MapObject colBottom : collision.get(sides.BOTTOM))
+                {
+                    if (colBottom instanceof Player)
+                    {
+                        useTool(colBottom.getX(), colBottom.getY());
+                    } else
+                    {
+                        walkLeft();
+                    }
+                }
             }
         }
 

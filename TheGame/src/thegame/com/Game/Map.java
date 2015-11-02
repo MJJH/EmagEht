@@ -234,4 +234,9 @@ public class Map {
 
         objects.remove(removeObject);
     }
+    
+    public void addBlock (Block block, int x, int y)
+    {
+        blocks[y][x] = block;
+    }
 }

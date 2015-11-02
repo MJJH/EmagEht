@@ -83,7 +83,7 @@ public abstract class CharacterGame extends MapObject {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
         if (!c.get(sides.BOTTOM).isEmpty())
         {
-            vSpeed = 0.4f;
+            vSpeed = 0.6f;
         }
     }
 
@@ -92,11 +92,11 @@ public abstract class CharacterGame extends MapObject {
         switch (hitDirection)
         {
             case LEFT:
-                hSpeed = -kb*2;
+                hSpeed = -kb * 2;
                 vSpeed = kb;
                 break;
             case RIGHT:
-                hSpeed = kb*2;
+                hSpeed = kb * 2;
                 vSpeed = kb;
                 break;
         }
@@ -314,14 +314,27 @@ public abstract class CharacterGame extends MapObject {
         MapObject click = playing.GetTile(x, y, this, false);
         if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed)
         {
-            if(!(click instanceof Block))
+            if (!(click instanceof Block))
+            {
                 if (!((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
+                {
                     return false;
-            
+                }
+            }
+
             click.hit(holding, direction);
             used = System.currentTimeMillis();
             return true;
-        }
+        } /*else if (click == null)
+        {
+            Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
+            if(holding.type.range >= distance(block))
+            {
+                playing.addBlock(block, Math.round(x), Math.round(y));
+                return true;
+            }
+            return false;
+        }*/
 
         return false;
     }
@@ -353,8 +366,9 @@ public abstract class CharacterGame extends MapObject {
             }
         }
     }
-    
-    public sides getDirection (){
+
+    public sides getDirection()
+    {
         return direction;
     }
 }

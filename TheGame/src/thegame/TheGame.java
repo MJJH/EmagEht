@@ -44,6 +44,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import thegame.com.Game.Objects.Block;
+import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 
 /**
@@ -94,9 +96,16 @@ public class TheGame extends Application {
             }
         } else
         {
-            if (event.getCode() == KeyCode.DIGIT1)
+            if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED )
             {
                 play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
+            }
+            if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED )
+            {
+                float x = Math.round(me.getX());
+                float y = Math.round(me.getY())-1;
+                Block block = new Block(BlockType.Dirt, x, y, 1, play);
+                play.addBlock(block, (int)x, (int)y);
             }
         }
     };
