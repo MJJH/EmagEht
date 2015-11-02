@@ -230,10 +230,13 @@ public class TheGame extends Application {
             }
         }
         
+        /*
+        // Calibration lines
         g.setLineWidth(1);
         g.setStroke(Color.rgb(0, 0, 0, 0.2));
         g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
         g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
+        */
     }
 
     private void clear(GraphicsContext g)
