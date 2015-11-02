@@ -55,13 +55,16 @@ public class TheGame extends Application {
     private Map play;
     private Player me;
     private Scene scene;
-    private int startX;
-    private int startY;
+    
     private List<KeyCode> keys = new ArrayList<>();
 
+    // MAP
     private float dx;
     private float dy;
-
+    private int startX;
+    private int startY;
+    private int offsetBlocks;
+    
     // FPS
     private final long ONE_SECOND = 1000000000;
     private long currentTime = 0;
@@ -102,25 +105,9 @@ public class TheGame extends Application {
     {
         if (event.getButton().equals(MouseButton.PRIMARY))
         {
-            double clickX = (event.getSceneX() + dx);
-            clickX = clickX / config.block.val;
-            clickX += startX;
+            double clickX = (event.getSceneX() + dx) / config.block.val - startX;
 
-            int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-            int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
-
-            if (startX == 0)
-            {
-                clickX -= me.getW() / 2;
-            } else if (startX > 0)
-            {
-                clickX += me.getW() / 2 + 1;
-            }
-
-            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY - me.getH() / 2;
-
-            System.err.println(clickY + " / " + clickX);
-            System.out.println(me.getY() + " / " + me.getX());
+            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY;
 
             me.useTool((float) clickX, (float) clickY);
         }
@@ -145,62 +132,52 @@ public class TheGame extends Application {
 
         // Clear scene
         clear(g);
+            
+        // Get amount of blocks that fit on screen
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + offsetBlocks;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + offsetBlocks;
 
-        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
-
+        // preset Delta values
         dx = 0;
         dy = 0;
 
-        dx += config.block.val * (me.getW() / 2);
-        if (me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal) / 2) - me.getW() / 2 && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal) / 2))
-        {
-            if (me.getX() % 1 >= me.getW() / 2)
-            {
-                dx += config.block.val;
+        // once the player's center is on the middle
+        if((me.getX() + me.getW() / 2) * config.block.val > scene.getWidth() / 2 && (me.getX() + me.getW() / 2) * config.block.val < play.getWidth() * config.block.val - scene.getWidth() / 2) {
+            // DX will be the center of the map
+            dx = (me.getX() + me.getW() / 2) * config.block.val;
+            dx -= (scene.getWidth() / 2);
+            
+            // If you are no longer on the right side of the map
+            if(startX >= 0) {
+                dx += (startX) * config.block.val;
             }
-            dx -= config.block.val * (me.getX() % 1);
-        } else if (me.getX() + me.getW() / 2 >= Math.floor(startX + (blockHorizontal) / 2) && me.getX() + me.getW() / 2 <= Math.ceil(startX + (blockHorizontal) / 2) + 1)
-        {
-            if (me.getX() % 1 >= me.getW() / 2)
-            {
-                dx += config.block.val;
-            }
-            dx -= config.block.val * (me.getX() % 1);
-            dx -= config.block.val;
-        } else if (me.getX() + me.getW() / 2 > Math.floor(startX + (blockHorizontal) / 2) + 1)
-        {
-            dx -= config.block.val * 2;
+        } else if ((me.getX() + me.getW() / 2) * config.block.val >= play.getWidth() * config.block.val - scene.getWidth() / 2) {
+            // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
+            dx = (play.getWidth() - blockHorizontal + 2) * config.block.val*2;
         }
-
-        dy -= config.block.val * (me.getH() / 2);
-        if (me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical) / 2) - me.getH() / 2 && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical) / 2))
-        {
-            if (me.getY() % 1 >= me.getH() / 2)
-            {
-                dy -= config.block.val;
+        
+        
+        // once the player's center is on the middle
+        if((me.getY() - me.getH() / 2) * config.block.val > scene.getHeight() / 2 && 
+                (me.getY() - me.getH() / 2) * config.block.val < play.getHeight()* config.block.val - scene.getHeight() / 2) {
+            // DX will be the center of the map
+            dy = (me.getY() - me.getH() / 2) * config.block.val;
+            dy -= (scene.getHeight() / 2);
+            
+            // If you are no longer on the right side of the map
+            if(startX >= 0) {
+                dy += (startY) * config.block.val;
             }
-            dy += config.block.val * (me.getY() % 1);
-        } else if (me.getY() + me.getH() / 2 >= Math.floor(startY + (blockVertical) / 2) && me.getY() + me.getH() / 2 <= Math.ceil(startY + (blockVertical) / 2) + 1)
-        {
-            if (me.getY() % 1 >= me.getH() / 2)
-            {
-                dy -= config.block.val;
-            }
-            dy += config.block.val * (me.getY() % 1);
-            dy += config.block.val;
-        } else if (me.getY() + me.getH() / 2 > Math.floor(startY + (blockVertical) / 2) + 1)
-        {
-            dy += config.block.val * 2;
+        } else if ((me.getY() - me.getH() / 2) * config.block.val >= play.getHeight() * config.block.val - scene.getHeight() / 2) {
+            // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
+            dy = (play.getHeight()- blockVertical + 2) * config.block.val*2;
         }
-
+        
+        
         for (MapObject draw : view)
         {
-            float x = (draw.getX() - startX - me.getW() / 2) * config.block.val;
-            float y = ((float) scene.getHeight() - (draw.getY() - startY + 1 - me.getH() / 2) * config.block.val);
-
-            x += dx;
-            y += dy;
+            float x = (draw.getX() + startX) * config.block.val - dx;
+            float y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
 
             if (draw instanceof Player || draw instanceof Enemy)
             {
@@ -252,6 +229,14 @@ public class TheGame extends Application {
                 g.closePath();
             }
         }
+        
+        /*
+        // Calibration lines
+        g.setLineWidth(1);
+        g.setStroke(Color.rgb(0, 0, 0, 0.2));
+        g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
+        g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
+        */
     }
 
     private void clear(GraphicsContext g)
@@ -261,49 +246,59 @@ public class TheGame extends Application {
 
     private List<MapObject> viewable()
     {
-        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
+        // Get amount of blocks that need te be loaded 
+        int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + offsetBlocks;
+        int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + offsetBlocks;
 
+        // Calculate the mid position of the player
         int midX = (int) Math.floor(me.getX() + (me.getW() / 2));
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
 
-        startX = (int) Math.round(midX - Math.floor((blockHorizontal - 1) / 2));
-        startY = (int) Math.round(midY - Math.floor((blockVertical - 1) / 2));
-        int endX = (int) (midX + Math.ceil((blockHorizontal - 1) / 2));
-        int endY = (int) (midY + Math.ceil((blockVertical - 1) / 2));
+        // Calculate at what block we should start drawing (the player object should be centered)
+        startX = (int) Math.ceil(midX - blockHorizontal / 2);
+        startY = (int) Math.ceil(midY - blockVertical / 2);
+        // And what will the ending blocks be
+        int endX = startX + blockHorizontal;
+        int endY = startY + blockVertical;
 
+        // If we are on the left side on the map, draw the map more to the right
         while (startX < 0)
         {
             startX++;
             endX++;
         }
+        // If we are to the top side of the map, draw the map more to the bottom
         while (startY < 0)
         {
             startY++;
             endY++;
         }
+        // If we are on the right side of the map, draw the map more to the left
         while (endX > play.getWidth())
         {
             startX--;
             endX--;
         }
+        // If we are to the bottom side of the map, draw the map more to the top
         while (endY > play.getWidth())
         {
             startY--;
             endY--;
         }
-
+        // If there are less blocks than could be displayed, just display less
         if (startX < 0 && endX > play.getWidth())
         {
             startX = 0;
             endX = play.getWidth();
         }
+        // Same for height
         if (startY < 0 && endY > play.getHeight())
         {
             startY = 0;
             endY = play.getHeight();
         }
 
+        // Ask the map for the blocks and objects that should be drawn in this area.
         return play.getObjects(startX, startY, endX, endY);
     }
 
@@ -317,12 +312,16 @@ public class TheGame extends Application {
 
     public void startagame(Stage primaryStage)
     {
+        
+        // Declare variables
         play = new Map();
         play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
         play.addObject(me);
         play.addPlayer(me);
 
+        offsetBlocks = 4;
+        
         StackPane root = new StackPane();
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
@@ -332,6 +331,7 @@ public class TheGame extends Application {
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
+        // Action Listeners
         scene.widthProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) ->
         {
             canvas.setWidth((double) newSceneWidth);
@@ -341,6 +341,7 @@ public class TheGame extends Application {
             canvas.setHeight((double) newSceneHeight);
         });
 
+        // Set stage visiable
         root.getChildren().add(canvas);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -350,13 +351,14 @@ public class TheGame extends Application {
             System.exit(0);
         });
 
+        // Update screen when animationtimer says it is possible
         lastTime = System.nanoTime();
-
         AnimationTimer loop = new AnimationTimer() {
 
             @Override
             public void handle(long now)
             {
+                // Calculate fps
                 currentTime = now;
                 fps++;
                 delta += currentTime - lastTime;
@@ -375,6 +377,7 @@ public class TheGame extends Application {
         };
         loop.start();
 
+        // TEMP : update all objects that we say may be updated. Will be changed in next itteration
         Timer update = new Timer();
         update.schedule(new TimerTask() {
 
@@ -426,14 +429,14 @@ public class TheGame extends Application {
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
-        MenuItem startThegame = new MenuItem("Start a game");
+        MenuItem startThegame = new MenuItem("SINGLE PLAYER");
         startThegame.setOnMouseClicked(event -> startagame(stages));
 
         MenuBox menu = new MenuBox(
                 startThegame,
-                new MenuItem("TO DO"),
-                new MenuItem("TO DO"),
-                new MenuItem(" TO DO HIGH SCORE"),
+                new MenuItem("MULTIPLAYER [soon]"),
+                new MenuItem("CHARACTERS [soon]"),
+                new MenuItem("OPTIONS [soon]"),
                 itemExit);
         menu.setTranslateX(100);
         menu.setTranslateY(300);

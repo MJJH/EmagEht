@@ -83,7 +83,7 @@ public abstract class CharacterGame extends MapObject {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
         if (!c.get(sides.BOTTOM).isEmpty())
         {
-            vSpeed = 0.9f;
+            vSpeed = 0.4f;
         }
     }
 
@@ -92,11 +92,11 @@ public abstract class CharacterGame extends MapObject {
         switch (hitDirection)
         {
             case LEFT:
-                hSpeed = -kb;
+                hSpeed = -kb*2;
                 vSpeed = kb;
                 break;
             case RIGHT:
-                hSpeed = kb;
+                hSpeed = kb*2;
                 vSpeed = kb;
                 break;
         }
@@ -312,7 +312,7 @@ public abstract class CharacterGame extends MapObject {
     public boolean useTool(float x, float y)
     {
         MapObject click = playing.GetTile(x, y, this, false);
-        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed && ((xPosition < x && direction == sides.RIGHT) || (xPosition > x && direction == sides.LEFT)))
+        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed && ((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
         {
             click.hit(holding, direction);
             used = System.currentTimeMillis();
