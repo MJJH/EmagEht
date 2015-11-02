@@ -312,7 +312,7 @@ public abstract class CharacterGame extends MapObject {
     public boolean useTool(float x, float y)
     {
         MapObject click = playing.GetTile(x, y, this, false);
-        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed && ((xPosition < x && direction == sides.RIGHT) || (xPosition > x && direction == sides.LEFT)))
+        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed && ((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
         {
             click.hit(holding, direction);
             used = System.currentTimeMillis();
