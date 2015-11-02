@@ -158,7 +158,7 @@ public class TheGame extends Application {
         dy = 0;
 
         // once the player's center is on the middle
-        if((me.getX() + me.getW() / 2) * config.block.val > scene.getWidth() / 2 && startX < play.getWidth() - blockHorizontal) {
+        if((me.getX() + me.getW() / 2) * config.block.val > scene.getWidth() / 2 && (me.getX() + me.getW() / 2) * config.block.val < play.getWidth() * config.block.val - scene.getWidth() / 2) {
             // DX will be the center of the map
             dx = (me.getX() + me.getW() / 2) * config.block.val;
             dx -= (scene.getWidth() / 2);
@@ -167,27 +167,33 @@ public class TheGame extends Application {
             if(startX >= 0) {
                 dx += (startX) * config.block.val;
             }
-        } else if (startX == play.getWidth() - blockHorizontal) {
+        } else if ((me.getX() + me.getW() / 2) * config.block.val >= play.getWidth() * config.block.val - scene.getWidth() / 2) {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dx = -(play.getWidth() - blockHorizontal) * config.block.val;
-        } 
+            dx = (play.getWidth() - blockHorizontal + 2) * config.block.val*2;
+        }
+        
         
         // once the player's center is on the middle
-        if((me.getY() + me.getH() / 2) * config.block.val == scene.getHeight() / 2) {
+        if((me.getY() + me.getH() / 2) * config.block.val > scene.getHeight() / 2 && 
+                (me.getY() + me.getH() / 2) * config.block.val < play.getHeight()* config.block.val - scene.getHeight() / 2) {
             // DX will be the center of the map
             dy = (me.getY() + me.getH() / 2) * config.block.val;
-            dy -= (scene.getHeight()/ 2);
+            dy -= (scene.getHeight() / 2);
             
             // If you are no longer on the right side of the map
-            if(startY >= 0) {
+            if(startX >= 0) {
                 dy += (startY) * config.block.val;
             }
+        } else if ((me.getY() + me.getH() / 2) * config.block.val >= play.getHeight() * config.block.val - scene.getHeight() / 2) {
+            // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
+            dy = (play.getHeight()- blockVertical + 2) * config.block.val*2;
         }
+        
         
         for (MapObject draw : view)
         {
             float x = (draw.getX() + startX) * config.block.val - dx;
-            float y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val);
+            float y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
 
             if (draw instanceof Player || draw instanceof Enemy)
             {
@@ -262,8 +268,8 @@ public class TheGame extends Application {
         int midY = (int) Math.ceil(me.getY() - (me.getH() / 2));
 
         // Calculate at what block we should start drawing (the player object should be centered)
-        startX = (int) Math.round(midX - blockHorizontal / 2);
-        startY = (int) Math.round(midY - blockVertical / 2);
+        startX = (int) Math.ceil(midX - blockHorizontal / 2);
+        startY = (int) Math.ceil(midY - blockVertical / 2);
         // And what will the ending blocks be
         int endX = startX + blockHorizontal;
         int endY = startY + blockVertical;
@@ -323,7 +329,7 @@ public class TheGame extends Application {
         // Declare variables
         play = new Map();
         play.generateMap();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 2, 2, play);
         play.addObject(me);
         play.addPlayer(me);
 
