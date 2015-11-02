@@ -105,25 +105,9 @@ public class TheGame extends Application {
     {
         if (event.getButton().equals(MouseButton.PRIMARY))
         {
-            double clickX = (event.getSceneX() + dx);
-            clickX = clickX / config.block.val;
-            clickX += startX;
+            double clickX = (event.getSceneX() + dx) / config.block.val - startX;
 
-            int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + 3;
-            int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + 3;
-
-            if (startX == 0)
-            {
-                clickX -= me.getW() / 2;
-            } else if (startX > 0)
-            {
-                clickX += me.getW() / 2 + 1;
-            }
-
-            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY - me.getH() / 2;
-
-            System.err.println(clickY + " / " + clickX);
-            System.out.println(me.getY() + " / " + me.getX());
+            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val + startY;
 
             me.useTool((float) clickX, (float) clickY);
         }
@@ -174,17 +158,17 @@ public class TheGame extends Application {
         
         
         // once the player's center is on the middle
-        if((me.getY() + me.getH() / 2) * config.block.val > scene.getHeight() / 2 && 
-                (me.getY() + me.getH() / 2) * config.block.val < play.getHeight()* config.block.val - scene.getHeight() / 2) {
+        if((me.getY() - me.getH() / 2) * config.block.val > scene.getHeight() / 2 && 
+                (me.getY() - me.getH() / 2) * config.block.val < play.getHeight()* config.block.val - scene.getHeight() / 2) {
             // DX will be the center of the map
-            dy = (me.getY() + me.getH() / 2) * config.block.val;
+            dy = (me.getY() - me.getH() / 2) * config.block.val;
             dy -= (scene.getHeight() / 2);
             
             // If you are no longer on the right side of the map
             if(startX >= 0) {
                 dy += (startY) * config.block.val;
             }
-        } else if ((me.getY() + me.getH() / 2) * config.block.val >= play.getHeight() * config.block.val - scene.getHeight() / 2) {
+        } else if ((me.getY() - me.getH() / 2) * config.block.val >= play.getHeight() * config.block.val - scene.getHeight() / 2) {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (play.getHeight()- blockVertical + 2) * config.block.val*2;
         }
@@ -329,7 +313,7 @@ public class TheGame extends Application {
         // Declare variables
         play = new Map();
         play.generateMap();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 2, 2, play);
+        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
         play.addObject(me);
         play.addPlayer(me);
 
@@ -412,7 +396,7 @@ public class TheGame extends Application {
 
                 me.update();
 
-                //play.updateEnemy();
+                play.updateEnemy();
             }
         }, 0, 1000 / 60);
     }
