@@ -124,6 +124,7 @@ public class Map {
         if(mo instanceof Enemy)
         {
             this.objects.add(mo);
+            enemies.add((Enemy) mo);
         }
         else if (mo instanceof Block)
         {
