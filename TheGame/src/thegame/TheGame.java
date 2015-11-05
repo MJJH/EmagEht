@@ -105,7 +105,7 @@ public class TheGame extends Application {
                 float x = Math.round(me.getX());
                 float y = Math.round(me.getY())-1;
                 Block block = new Block(BlockType.Dirt, x, y, 1, play);
-                play.addBlock(block, (int)x, (int)y);
+                play.addObject(block);
             }
         }
     };
@@ -327,7 +327,6 @@ public class TheGame extends Application {
         play.generateMap();
         me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
         play.addObject(me);
-        play.addPlayer(me);
 
         offsetBlocks = 4;
         

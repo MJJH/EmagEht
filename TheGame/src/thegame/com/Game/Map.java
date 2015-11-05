@@ -34,36 +34,44 @@ public class Map {
 
     private Block[][] blocks;
     private List<MapObject> objects;
+    private List<Enemy> enemies;
     private List<Player> players;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      */
-    public Map() {
+    public Map()
+    {
         width = 300;
         height = 100;
 
         objects = new ArrayList<>();
-        this.players = new ArrayList<>();
+        players = new ArrayList<>();
+        enemies = new ArrayList<>();
         blocks = new Block[height][width];
     }
 
     /**
      *
      */
-    public void generateMap() {
+    public void generateMap()
+    {
 
         int y = height - 1;
         int x = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt")))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt"))))
+        {
             String line;
 
-            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null)
+            {
                 x = 0;
-                for (char b : line.toCharArray()) {
+                for (char b : line.toCharArray())
+                {
 
-                    switch (b) {
+                    switch (b)
+                    {
                         case '0':
                             break;
                         case 'x':
@@ -100,61 +108,85 @@ public class Map {
             }
 
             addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
-
-    public List<Player> getPlayers() {
+    public List<Player> getPlayers()
+    {
         return players;
     }
 
-    public void addObject(MapObject mo) {
-        this.objects.add(mo);
+    public void addObject(MapObject mo)
+    {
+        if(mo instanceof Enemy)
+        {
+            this.objects.add(mo);
+        }
+        else if (mo instanceof Block)
+        {
+            blocks[(int)mo.getY()][(int)mo.getX()] = (Block)mo;
+        }
+        else if (mo instanceof Player)
+        {
+            this.objects.add(mo);
+            players.add((Player)mo);
+        }
     }
 
     /**
      * Handles the redirect to the next map.
      */
-    public void NextLevel() {
+    public void NextLevel()
+    {
         throw new UnsupportedOperationException();
     }
 
-    public float getSpawnX() {
+    public float getSpawnX()
+    {
         return spawnX;
     }
 
-    public float getSpawnY() {
+    public float getSpawnY()
+    {
         return spawnY;
     }
 
-    public int getWidth() {
+    public int getWidth()
+    {
         return width;
     }
 
-    public int getHeight() {
+    public int getHeight()
+    {
         return height;
     }
 
-    public MapObject GetTile(float x, float y, MapObject self, boolean relative) {
+    public MapObject GetTile(float x, float y, MapObject self, boolean relative)
+    {
         // Find in blocks
-        try {
+        try
+        {
 
-            for (MapObject mo : objects) {
-                if (mo.equals(self) || mo.getS() == 0) {
+            for (MapObject mo : objects)
+            {
+                if (mo.equals(self) || mo.getS() == 0)
+                {
                     continue;
                 }
 
-                if (relative) {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH()) {
+                if (relative)
+                {
+                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
+                    {
                         return mo;
                     }
-                } else {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH()) {
+                } else
+                {
+                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH())
+                    {
                         return mo;
                     }
                 }
@@ -162,52 +194,68 @@ public class Map {
 
             int bx = (int) Math.floor(x);
             int by;
-            if (relative) {
+            if (relative)
+            {
                 by = (int) Math.floor(y);
-            } else {
+            } else
+            {
                 by = (int) Math.ceil(y);
             }
 
             Block found = blocks[by][bx];
 
-            if (relative) {
-                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH()) {
+            if (relative)
+            {
+                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
+                {
                     found.debug = true;
                     return found;
                 }
-            } else {
-                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH()) {
+            } else
+            {
+                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH())
+                {
                     found.debug = true;
                     return found;
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
         }
         return null;
     }
 
-    public List<MapObject> getObjects(int startX, int startY, int endX, int endY) {
+    public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
+    {
         List<MapObject> ret = new ArrayList<MapObject>();
 
-        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY) {
+        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+        {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
 
-        for (int y = startY; y < endY; y++) {
-            for (int x = startX; x < endX; x++) {
-                try {
+        for (int y = startY; y < endY; y++)
+        {
+            for (int x = startX; x < endX; x++)
+            {
+                try
+                {
                     Block cur = blocks[y][x];
 
-                    if (cur != null) {
+                    if (cur != null)
+                    {
                         ret.add(cur);
                     }
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                 }
             }
         }
 
-        for (MapObject mo : objects) {
-            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY) {
+        for (MapObject mo : objects)
+        {
+            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
+            {
                 ret.add(mo);
             }
         }
@@ -215,28 +263,27 @@ public class Map {
         return ret;
     }
 
-    public void updateEnemy() {
-        for (MapObject mo : objects) {
-            if (mo instanceof Enemy) {
-                mo.update();
-            }
+    public void updateEnemy()
+    {
+        for (Enemy enemy : enemies)
+        {
+            enemy.update();
         }
     }
 
-    public void removeMapObject(MapObject removeObject) {
-        try {
-            if (removeObject instanceof Block) {
+    public void removeMapObject(MapObject removeObject)
+    {
+        try
+        {
+            if (removeObject instanceof Block)
+            {
                 blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
                 return;
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
         }
 
         objects.remove(removeObject);
-    }
-    
-    public void addBlock (Block block, int x, int y)
-    {
-        blocks[y][x] = block;
     }
 }
