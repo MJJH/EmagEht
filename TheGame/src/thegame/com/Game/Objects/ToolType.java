@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import display.Skin;
 import javafx.scene.image.Image;
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class ToolType {
     public final float range;
     public final int reqLvl;
     public final int kb;
-    public final Image skin;
+    public final Skin skin;
     public final float height;
     public final float width;
     public final toolType type; 
@@ -35,7 +36,7 @@ public class ToolType {
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, int kb, Image skin, float height, float width) {
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, int kb, Skin skin, float height, float width) {
         this.name = name;
         this.strength = strength;
         this.speed = speed;

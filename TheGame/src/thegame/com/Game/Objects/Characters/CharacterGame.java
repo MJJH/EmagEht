@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
+import display.Skin;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public abstract class CharacterGame extends MapObject {
      * @param width, Width of the in game character
      * @param map
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Image skin, float height, float width, thegame.com.Game.Map map)
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map)
     {
         super(x, y, skin, height, width, 1, map);
         this.name = name;

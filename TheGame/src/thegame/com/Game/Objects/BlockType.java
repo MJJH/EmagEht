@@ -1,11 +1,11 @@
 package thegame.com.Game.Objects;
 
-import javafx.scene.image.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import display.Animation;
+import display.Skin;
 import java.io.IOException;
-import javafx.embed.swing.SwingFXUtils;
-import javax.imageio.ImageIO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.image.Image;
 
 /**
  * A class representing the type of block used
@@ -25,8 +25,10 @@ public enum BlockType {
     public final String name;
     public final int strength;
     public final int reqToolLvl;
+    public final int imageX;
+    public final int imageY;
     public final ToolType.toolType reqTool;
-    public final Image skin;
+    public final Skin skin;
 
     /**
      * Initiates an instance of this class with the following attributes
@@ -37,12 +39,15 @@ public enum BlockType {
      * @param btx
      * @param bty
      */
-    BlockType(String name, int strength, int reqLvl, float btx, float bty, ToolType.toolType req) {
+    BlockType(String name, int strength, int reqLvl, int btx, int bty, ToolType.toolType req) {
         this.name = name;
         this.strength = strength;
         this.reqToolLvl = reqLvl;
         this.reqTool = req;
-        this.skin = getskin(btx, bty);
+        this.imageX = btx;
+        this.imageY = bty;
+        
+        this.skin = this.createSkin();
     }
     
 
@@ -50,16 +55,21 @@ public enum BlockType {
      *
      * @return @throws IOException
      */
-    public Image getskin(float btx, float bty)
+    public Skin createSkin()
     {
-        int X = Math.round(btx);
-        int Y = Math.round(bty);
-        BufferedImage bigImg = null;
         try {
-            bigImg = ImageIO.read(new File("src/resources/mapping.png"));
-        } catch (IOException ex) {}
-        BufferedImage small = bigImg.getSubimage(X, Y, 20, 20);
-        Image returnimg = SwingFXUtils.toFXImage(small, null);
-        return returnimg;
+            if(name == "Obsidian") {
+                Animation test = new Animation(60);
+                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 0, 0, 20, 20));
+                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 0, 40, 20, 20));
+                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 20, 80, 20, 20));
+                return test;
+            } else
+                return new display.Image(20, 20, "src/resources/mapping.png", imageX, imageY, 20, 20);
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        return null;
     }
 }

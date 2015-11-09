@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import display.Skin;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class MapObject {
     protected float yPosition;
     protected float hSpeed;
     protected float vSpeed;
-    protected Image skin;
+    protected Skin skin;
     protected float height;
     protected float width;
     protected float solid;
@@ -42,7 +43,7 @@ public abstract class MapObject {
      * @param solid the density of this object
      * @param map the map that this is on
      */
-    public MapObject(float x, float y, Image skin, float height, float width, float solid, Map map)
+    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map)
     {
         this.playing = map;
         this.skin = skin;
@@ -61,7 +62,7 @@ public abstract class MapObject {
      * @param width
      * @param map
      */
-    public MapObject(Image skin, float height, float width, Map map)
+    public MapObject(Skin skin, float height, float width, Map map)
     {
         this.skin = skin;
         this.playing = map;
@@ -397,7 +398,7 @@ public abstract class MapObject {
      *
      * @return skin
      */
-    public Image getSkin()
+    public Skin getSkin()
     {
         return skin;
     }

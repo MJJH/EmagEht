@@ -234,7 +234,7 @@ public class TheGame extends Application {
             } else
             {
                 g.beginPath();
-                g.drawImage(draw.getSkin(), x, y);
+                g.drawImage(draw.getSkin().show(), x, y);
                 g.closePath();
             }
         }

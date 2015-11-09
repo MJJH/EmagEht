@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
+import display.Skin;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class Player extends CharacterGame {
      * @param height, height of the player
      * @param width, width of the player
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Image skin, float height, float width, Map map)
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, skin, height, width, map);
     }

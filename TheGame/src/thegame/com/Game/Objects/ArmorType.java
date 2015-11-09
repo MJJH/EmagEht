@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import display.Skin;
 import javafx.scene.image.Image;
 
 
@@ -12,7 +13,7 @@ public class ArmorType {
     public final String name;
     public final int multiplier;
     public final int reqLvl;
-    public final Image skin;
+    public final Skin skin;
     public final bodyPart bodypart;
 
     public enum bodyPart { HEAD, TORSO, LEGS, FEED }
@@ -25,7 +26,7 @@ public class ArmorType {
      * @param skin The look of the Armortype
      * @param bodyPart The place on the body where to wear the Armor
      */
-    public ArmorType(String name, int multiplier, int reqLvl, Image skin, bodyPart bodyPart)
+    public ArmorType(String name, int multiplier, int reqLvl, Skin skin, bodyPart bodyPart)
     {
      this.name = name;
      this.multiplier = multiplier;

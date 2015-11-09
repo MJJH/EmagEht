@@ -110,7 +110,7 @@ public class Map {
             addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
         } catch (IOException ex)
         {
-            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         }
     }
 
