@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 /**
  * A class representing the type of block used
@@ -60,9 +61,12 @@ public enum BlockType {
         try {
             if(name == "Obsidian") {
                 Animation test = new Animation(60);
-                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 0, 0, 20, 20));
-                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 0, 40, 20, 20));
-                test.addFrame(new display.Image(20, 20, "src/resources/mapping.png", 20, 80, 20, 20));
+                display.Image i = new display.Image(20, 20, "src/resources/mapping.png", 40, 0, 20, 20);
+                i.recolour(new Color[]{Color.TRANSPARENT, Color.RED, Color.BLUE, Color.GRAY, Color.GREEN, Color.GREENYELLOW, Color.AQUA});
+                test.addFrame(i);
+                display.Image i2 = new display.Image(20, 20, "src/resources/mapping.png", 40, 0, 20, 20);
+                i2.recolour(new Color[]{Color.BLUE, Color.RED, Color.BLUE, Color.GRAY, Color.RED, Color.RED, Color.RED});
+                test.addFrame(i2);
                 return test;
             } else
                 return new display.Image(20, 20, "src/resources/mapping.png", imageX, imageY, 20, 20);

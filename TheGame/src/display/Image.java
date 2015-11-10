@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import javax.imageio.ImageIO;
 
 /**
@@ -74,6 +77,22 @@ public class Image extends Skin {
         
         parts.put("background", i);
         this.image = new WritableImage(i.getPixelReader(), px, py, width, height);
+    }
+    
+    public void recolour(Color[] colors) {
+        PixelWriter edit = image.getPixelWriter();
+        PixelReader read = image.getPixelReader();
+        
+        if(colors == null) return;
+        
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                int b = (int) Math.round((read.getColor(x, y).getBlue() * 255) / 32);
+                if(colors.length - 1 < b || colors[b] != null) {
+                   edit.setColor(x, y, colors[b]);
+                }
+            }
+        }
     }
     
     
