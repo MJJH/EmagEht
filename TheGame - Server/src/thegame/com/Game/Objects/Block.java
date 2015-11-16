@@ -12,6 +12,8 @@ public class Block extends MapObject {
     private int damage;
     private BlockType type;
 
+    private boolean interaction;
+
     /**
      * Initiates this class
      *
@@ -39,11 +41,22 @@ public class Block extends MapObject {
     }
 
     @Override
-    public Boolean call() {return false;}
+    public Boolean call()
+    {
+        if (interaction)
+        {
+            interaction = false;
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
 
     @Override
     public void hit(Tool use, sides hitDirection)
     {
+        interaction = true;
         playing.removeMapObject(this);
     }
 

@@ -27,7 +27,8 @@ import thegame.com.Game.Objects.MapObject;
  *
  * @author laure
  */
-public class Map extends UnicastRemoteObject{
+public class Map extends UnicastRemoteObject {
+
     private int id;
     private int height;
     private int width;
@@ -37,14 +38,14 @@ public class Map extends UnicastRemoteObject{
     private int level;
     private int spawnX;
     private int spawnY;
-    
+
     private Block[][] blocks;
     private List<MapObject> objects;
     private List<Enemy> enemies;
     private List<Player> players;
-    
+
     private List<MapObject> toUpdate;
-    
+
     private ExecutorService threadPool;
 
     /**
@@ -54,14 +55,14 @@ public class Map extends UnicastRemoteObject{
     {
         width = 300;
         height = 100;
-        
+
         objects = new ArrayList<>();
         players = new ArrayList<>();
         enemies = new ArrayList<>();
         toUpdate = new ArrayList<>();
         blocks = new Block[height][width];
-        
-        threadPool = Executors.newFixedThreadPool(8);
+
+        threadPool = Executors.newCachedThreadPool();
     }
 
     /**
@@ -69,20 +70,20 @@ public class Map extends UnicastRemoteObject{
      */
     public void generateMap()
     {
-        
+
         int y = height - 1;
         int x = 0;
-        
+
         try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt"))))
         {
             String line;
-            
+
             while ((line = br.readLine()) != null)
             {
                 x = 0;
                 for (char b : line.toCharArray())
                 {
-                    
+
                     switch (b)
                     {
                         case '0':
@@ -113,30 +114,26 @@ public class Map extends UnicastRemoteObject{
                             blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
                             break;
                     }
-                    
+
                     x++;
                 }
-                
+
                 y--;
             }
-            
+
             addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
-            
-            for (Enemy enemy : enemies)
-            {
-                threadPool.submit(enemy);
-            }
+
         } catch (IOException ex)
         {
             System.err.println(ex.getMessage());
         }
     }
-    
+
     public List<Player> getPlayers()
     {
         return players;
     }
-    
+
     public void addObject(MapObject mo)
     {
         if (mo instanceof Enemy)
@@ -161,40 +158,40 @@ public class Map extends UnicastRemoteObject{
     {
         throw new UnsupportedOperationException();
     }
-    
+
     public float getSpawnX()
     {
         return spawnX;
     }
-    
+
     public float getSpawnY()
     {
         return spawnY;
     }
-    
+
     public int getWidth()
     {
         return width;
     }
-    
+
     public int getHeight()
     {
         return height;
     }
-    
+
     public MapObject GetTile(float x, float y, MapObject self, boolean relative)
     {
         // Find in blocks
         try
         {
-            
+
             for (MapObject mo : objects)
             {
                 if (mo.equals(self) || mo.getS() == 0)
                 {
                     continue;
                 }
-                
+
                 if (relative)
                 {
                     if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
@@ -209,7 +206,7 @@ public class Map extends UnicastRemoteObject{
                     }
                 }
             }
-            
+
             int bx = (int) Math.floor(x);
             int by;
             if (relative)
@@ -219,9 +216,9 @@ public class Map extends UnicastRemoteObject{
             {
                 by = (int) Math.ceil(y);
             }
-            
+
             Block found = blocks[by][bx];
-            
+
             if (relative)
             {
                 if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
@@ -242,16 +239,16 @@ public class Map extends UnicastRemoteObject{
         }
         return null;
     }
-    
+
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<>();
-        
+
         if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
-        
+
         for (int y = startY; y < endY; y++)
         {
             for (int x = startX; x < endX; x++)
@@ -259,7 +256,7 @@ public class Map extends UnicastRemoteObject{
                 try
                 {
                     Block cur = blocks[y][x];
-                    
+
                     if (cur != null)
                     {
                         ret.add(cur);
@@ -269,7 +266,7 @@ public class Map extends UnicastRemoteObject{
                 }
             }
         }
-        
+
         for (MapObject mo : objects)
         {
             if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
@@ -277,44 +274,56 @@ public class Map extends UnicastRemoteObject{
                 ret.add(mo);
             }
         }
-        
+
         return ret;
     }
-    
+
     public void removeMapObject(MapObject removeObject)
     {
-        try
+        if (removeObject instanceof Block)
         {
-            if (removeObject instanceof Block)
+            try
             {
                 blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-                return;
+            } catch (Exception e)
+            {
             }
-        } catch (Exception e)
-        {
         }
-        
-        objects.remove(removeObject);
+        else if (removeObject instanceof Enemy)
+        {
+            objects.remove(removeObject);
+            enemies.remove((Enemy)removeObject);
+            toUpdate.remove(removeObject);
+        }
+        else if (removeObject instanceof Player)
+        {
+            objects.remove(removeObject);
+            players.remove((Player)removeObject);
+            toUpdate.remove(removeObject);
+        }
     }
-    
+
     public void update()
     {
         HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
-        
+
         for (MapObject update : toUpdate)
         {
             updateResults.put(update, threadPool.submit(update));
         }
-        
+
         for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
         {
             MapObject key = entrySet.getKey();
-            
-            if((key instanceof Enemy)) continue;
+
+            if ((key instanceof Enemy))
+            {
+                continue;
+            }
             try
             {
                 boolean value = entrySet.getValue().get();
-                
+
                 if (value)
                 {
                     for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
@@ -334,7 +343,7 @@ public class Map extends UnicastRemoteObject{
             }
         }
     }
-    
+
     public void addToUpdate(MapObject toUpdateMO)
     {
         if (!toUpdate.contains(toUpdateMO))
