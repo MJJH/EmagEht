@@ -11,10 +11,13 @@ import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -96,7 +99,9 @@ public class TheGame extends Application {
             }
         } else
         {
-            if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED )
+            try
+            {
+                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED )
             {
                 play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
             }
@@ -107,6 +112,10 @@ public class TheGame extends Application {
                 Block block = new Block(BlockType.Dirt, x, y, 1, play);
                 play.addObject(block);
             }
+            } catch (RemoteException e)
+            {
+            }
+            
         }
     };
 
@@ -136,6 +145,14 @@ public class TheGame extends Application {
 
     private void draw(GraphicsContext g)
     {
+        float pX = me.getX();
+        float pY = me.getY();
+        float pW = me.getW();
+        float pH = me.getH();
+        
+        int playH = play.getHeight();
+        int playW = play.getWidth();
+        
         // Get viewables
         List<MapObject> view = viewable();
 
@@ -151,42 +168,51 @@ public class TheGame extends Application {
         dy = 0;
 
         // once the player's center is on the middle
-        if((me.getX() + me.getW() / 2) * config.block.val > scene.getWidth() / 2 && (me.getX() + me.getW() / 2) * config.block.val < play.getWidth() * config.block.val - scene.getWidth() / 2) {
+        if((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2) {
             // DX will be the center of the map
-            dx = (me.getX() + me.getW() / 2) * config.block.val;
+            dx = (pX + pW / 2) * config.block.val;
             dx -= (scene.getWidth() / 2);
             
             // If you are no longer on the right side of the map
             if(startX >= 0) {
                 dx += (startX) * config.block.val;
             }
-        } else if ((me.getX() + me.getW() / 2) * config.block.val >= play.getWidth() * config.block.val - scene.getWidth() / 2) {
+        } else if ((pX + pW / 2) * config.block.val >= playW * config.block.val - scene.getWidth() / 2) {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dx = (play.getWidth() - blockHorizontal + 2) * config.block.val*2;
+            dx = (playW - blockHorizontal + 2) * config.block.val*2;
         }
         
         
         // once the player's center is on the middle
-        if((me.getY() - me.getH() / 2) * config.block.val > scene.getHeight() / 2 && 
-                (me.getY() - me.getH() / 2) * config.block.val < play.getHeight()* config.block.val - scene.getHeight() / 2) {
+        if((pY - pH / 2) * config.block.val > scene.getHeight() / 2 && 
+                (pY - pH / 2) * config.block.val < playH* config.block.val - scene.getHeight() / 2) {
             // DX will be the center of the map
-            dy = (me.getY() - me.getH() / 2) * config.block.val;
+            dy = (pY - pH / 2) * config.block.val;
             dy -= (scene.getHeight() / 2);
             
             // If you are no longer on the right side of the map
             if(startX >= 0) {
                 dy += (startY) * config.block.val;
             }
-        } else if ((me.getY() - me.getH() / 2) * config.block.val >= play.getHeight() * config.block.val - scene.getHeight() / 2) {
+        } else if ((pY - pH / 2) * config.block.val >= playH * config.block.val - scene.getHeight() / 2) {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dy = (play.getHeight()- blockVertical + 2) * config.block.val*2;
+            dy = (playH- blockVertical + 2) * config.block.val*2;
         }
         
         
         for (MapObject draw : view)
         {
-            float x = (draw.getX() + startX) * config.block.val - dx;
-            float y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
+            float x;
+            float y;
+            if(!draw.equals(me))
+            {
+                x = (draw.getX() + startX) * config.block.val - dx;
+                y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
+            }
+            else{
+                x = (pX + startX) * config.block.val - dx;
+                y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
+            }
 
             if (draw instanceof Player || draw instanceof Enemy)
             {
@@ -325,7 +351,13 @@ public class TheGame extends Application {
         // Declare variables
         play = new Map();
         play.generateMap();
-        me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+        try
+        {
+            me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         play.addObject(me);
 
         offsetBlocks = 4;
@@ -384,8 +416,7 @@ public class TheGame extends Application {
             }
         };
         loop.start();
-
-        // TEMP : update all objects that we say may be updated. Will be changed in next itteration
+        
         Timer update = new Timer();
         update.schedule(new TimerTask() {
 
@@ -404,10 +435,8 @@ public class TheGame extends Application {
                 {
                     me.jump();
                 }
-
-                me.update();
-
-                play.updateEnemy();
+                
+                play.update();
             }
         }, 0, 1000 / 60);
     }

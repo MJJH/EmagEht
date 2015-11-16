@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
+import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public abstract class CharacterGame extends MapObject {
      * @param width, Width of the in game character
      * @param map
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map)
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
     {
         super(x, y, skin, height, width, 1, map);
         this.name = name;
@@ -60,10 +61,12 @@ public abstract class CharacterGame extends MapObject {
         if (hSpeed < 0)
         {
             hSpeed = 0.4f;
-        } else if (hSpeed < 1)
+        } else if (hSpeed < 0.4)
         {
             hSpeed += 0.4;
         }
+        
+        playing.addToUpdate(this);
     }
 
     public void walkLeft()
@@ -72,10 +75,12 @@ public abstract class CharacterGame extends MapObject {
         if (hSpeed > 0)
         {
             hSpeed = -0.4f;
-        } else if (hSpeed > -1)
+        } else if (hSpeed > -0.4)
         {
             hSpeed -= 0.4;
         }
+        
+        playing.addToUpdate(this);
     }
 
     public void jump()
@@ -85,6 +90,8 @@ public abstract class CharacterGame extends MapObject {
         {
             vSpeed = 0.6f;
         }
+        
+        playing.addToUpdate(this);
     }
 
     public void knockBack(int kb, sides hitDirection)
@@ -100,6 +107,8 @@ public abstract class CharacterGame extends MapObject {
                 vSpeed = kb;
                 break;
         }
+        
+        playing.addToUpdate(this);
     }
 
     /**
@@ -357,7 +366,16 @@ public abstract class CharacterGame extends MapObject {
 
         if (updateHP((int) Math.ceil(used.type.strength - (used.type.strength * (armorStats / 100)))) == 0)
         {
-            playing.removeMapObject(this);
+            if(this instanceof Player)
+            {
+                this.xPosition = playing.getSpawnX();
+                this.yPosition = playing.getSpawnY();
+                updateHP(-100);
+            }
+            else
+            {
+                playing.removeMapObject(this);
+            }
         } else
         {
             if (used.type.kb > 0)

@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -34,8 +35,9 @@ public class Player extends CharacterGame {
      * @param skin, Skin of the player
      * @param height, height of the player
      * @param width, width of the player
+     * @param map
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map)
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map) throws RemoteException
     {
         super(name, hp, skills, x, y, skin, height, width, map);
     }
@@ -59,11 +61,19 @@ public class Player extends CharacterGame {
     }
     
     @Override
-    public void update() 
+    public Boolean call() 
     {
         EnumMap<sides, List<MapObject>> collision = collision();
-        fall(collision);
-        moveH(collision);
-        moveV(collision);
+        Boolean ret = false;
+        if(fall(collision))
+            ret = true;
+        
+        if(moveH(collision))
+            ret = true;
+        
+        if(moveV(collision))
+            ret = true;
+        
+        return ret;
     }
 }

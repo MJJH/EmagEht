@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.rmi.RemoteException;
 import thegame.com.Game.Map;
 
 /**
@@ -19,8 +20,9 @@ public class Block extends MapObject {
      * @param y the Y- coordinate of its location
      * @param solid A Float representing its liquefide state.
      * @param map
+     * @throws java.rmi.RemoteException
      */
-    public Block(BlockType type, float x, float y, float solid, Map map)
+    public Block(BlockType type, float x, float y, float solid, Map map) throws RemoteException
     {
         super(x, y, type.skin, 1.0f, 1.0f, solid, map);
         this.type = type;
@@ -37,9 +39,7 @@ public class Block extends MapObject {
     }
 
     @Override
-    public void update()
-    {
-    }
+    public Boolean call() {return false;}
 
     @Override
     public void hit(Tool use, sides hitDirection)

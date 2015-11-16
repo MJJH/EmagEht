@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
+import java.rmi.RemoteException;
 import java.util.*;
 import javafx.scene.image.Image;
 import thegame.com.Game.Objects.MapObject;
@@ -25,14 +26,15 @@ public class Enemy extends CharacterGame {
      * @param skin, Skin that the enemy has
      * @param height, Height of the enemy
      * @param width, Width of the enemy
+     * @param map
      */
-    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map)
+    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
     {
         super(name, hp, skills, x, y, skin, height, width, map);
     }
 
     @Override
-    public void update()
+    public Boolean call()
     {
         EnumMap<sides, List<MapObject>> collision = collision();
 
@@ -114,9 +116,17 @@ public class Enemy extends CharacterGame {
             }
         }
 
-        fall(collision);
-        moveH(collision);
-        moveV(collision);
+        Boolean ret = false;
+        if(fall(collision))
+            ret = true;
+        
+        if(moveH(collision))
+            ret = true;
+        
+        if(moveV(collision))
+            ret = true;
+        
+        return ret;
     }
 
 }

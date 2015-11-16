@@ -66,7 +66,7 @@ public class MapObjectTest {
     {
         System.out.println("update");
         MapObject instance = null;
-        instance.update();
+        instance.call();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

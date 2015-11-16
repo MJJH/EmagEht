@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.rmi.RemoteException;
 import thegame.com.Game.Map;
 
 /**
@@ -16,16 +17,18 @@ public class Tool extends MapObject {
      *
      * @param type the type of this tool (sword, hatchet, etc)
      * @param map the map this tool is used on
+     * @throws java.rmi.RemoteException
      */
-    public Tool(ToolType type, Map map)
+    public Tool(ToolType type, Map map) throws RemoteException
     {
         super(type.skin, type.height, type.width, map);
         this.type = type;
     }
 
     @Override
-    public void update()
+    public Boolean call()
     {
+        return false;
     }
 
     @Override
