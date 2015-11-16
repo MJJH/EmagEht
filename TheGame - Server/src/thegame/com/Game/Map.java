@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,7 +22,7 @@ import thegame.com.Game.Objects.MapObject;
  *
  * @author Mark
  */
-public class Map {
+public class Map extends UnicastRemoteObject{
 
     private int id;
     private int height;
@@ -40,7 +42,7 @@ public class Map {
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      */
-    public Map()
+    public Map() throws RemoteException
     {
         width = 300;
         height = 100;
