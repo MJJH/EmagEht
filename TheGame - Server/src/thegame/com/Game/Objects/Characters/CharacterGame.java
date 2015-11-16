@@ -4,7 +4,6 @@ import display.Skin;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
-import javafx.scene.image.Image;
 import thegame.com.Game.Objects.*;
 
 /**
