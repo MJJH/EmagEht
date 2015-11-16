@@ -1,12 +1,14 @@
 package thegame.com.Menu;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
  * This class contains code for the party. 
  * @author laure
  */
-public class Party {
+public class Party extends UnicastRemoteObject{
 
     private int id;
     private final ArrayList<Account> members;
@@ -17,7 +19,7 @@ public class Party {
      * This method creates a party with the owner as member and owner.
      * @param owner
      */
-    public Party(Account owner)
+    public Party(Account owner)throws RemoteException
     {
         this.owner = owner;
         members = new ArrayList();

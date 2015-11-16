@@ -1,5 +1,7 @@
 package thegame.com.Menu;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import thegame.com.Game.Map;
 
@@ -9,7 +11,7 @@ import thegame.com.Game.Map;
  *
  * @author laure
  */
-public class Lobby {
+public class Lobby extends UnicastRemoteObject{
 
     private int id;
     private ArrayList<Message> chat;
@@ -19,7 +21,7 @@ public class Lobby {
     /**
      * This method creates a new gamelobby.
      */
-    public Lobby()
+    public Lobby() throws RemoteException
     {
         // TODO - implement Lobby.Lobby
         chat = new ArrayList();
@@ -69,7 +71,7 @@ public class Lobby {
      * This method generates a map.
      *
      */
-    public void generateMap()
+    public void generateMap() throws RemoteException
     {
         plays = new Map();
     }
