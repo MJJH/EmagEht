@@ -16,18 +16,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import thegame.BasicPublisher;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.shared.iMap;
 
 /**
  * The class for the map of the game.
  *
  * @author laure
  */
-public class Map extends UnicastRemoteObject {
+public class Map extends UnicastRemoteObject implements iMap {
 
     private int id;
     private int height;
@@ -47,9 +49,13 @@ public class Map extends UnicastRemoteObject {
     private List<MapObject> toUpdate;
 
     private ExecutorService threadPool;
+    
+    private final BasicPublisher publisher;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
+     *
+     * @throws java.rmi.RemoteException
      */
     public Map() throws RemoteException
     {
@@ -63,6 +69,11 @@ public class Map extends UnicastRemoteObject {
         blocks = new Block[height][width];
 
         threadPool = Executors.newCachedThreadPool();
+        
+        publisher = new BasicPublisher(new String[]
+        {
+            "update"
+        });
     }
 
     /**
@@ -288,17 +299,15 @@ public class Map extends UnicastRemoteObject {
             } catch (Exception e)
             {
             }
-        }
-        else if (removeObject instanceof Enemy)
+        } else if (removeObject instanceof Enemy)
         {
             objects.remove(removeObject);
-            enemies.remove((Enemy)removeObject);
+            enemies.remove((Enemy) removeObject);
             toUpdate.remove(removeObject);
-        }
-        else if (removeObject instanceof Player)
+        } else if (removeObject instanceof Player)
         {
             objects.remove(removeObject);
-            players.remove((Player)removeObject);
+            players.remove((Player) removeObject);
             toUpdate.remove(removeObject);
         }
     }
@@ -320,28 +329,35 @@ public class Map extends UnicastRemoteObject {
             {
                 continue;
             }
-            try
+            Runnable task = () ->
             {
-                boolean value = entrySet.getValue().get();
-
-                if (value)
+                try
                 {
-                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
+                    boolean value = entrySet.getValue().get();
+                    
+                    if (value)
                     {
-                        for (MapObject toUpdateMO : collision.getValue())
+                        for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
                         {
-                            addToUpdate(toUpdateMO);
+                            for (MapObject toUpdateMO : collision.getValue())
+                            {
+                                addToUpdate(toUpdateMO);
+                            }
                         }
+                    } else
+                    {
+                        toUpdate.remove(key);
                     }
-                } else
+                } catch (InterruptedException | ExecutionException ex)
                 {
-                    toUpdate.remove(key);
+                    Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (InterruptedException | ExecutionException ex)
-            {
-                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            };
+            
+            threadPool.submit(task);
         }
+        
+        publisher.inform(this, "update", null, toUpdate);
     }
 
     public void addToUpdate(MapObject toUpdateMO)

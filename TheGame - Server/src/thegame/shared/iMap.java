@@ -14,11 +14,12 @@ import thegame.com.Game.Objects.MapObject;
  * @author Martijn
  */
 public interface iMap extends Remote {
-    
+    /*
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY);
     
     public int getHeight();
     
     public int getWidth();
+    */
     
 }
