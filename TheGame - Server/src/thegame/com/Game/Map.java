@@ -1,11 +1,14 @@
 package thegame.com.Game;
 
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +20,15 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.BasicPublisher;
+import thegame.MoveListener;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.config;
+import thegame.shared.IRemotePropertyListener;
+import thegame.shared.iCharacterGame;
 import thegame.shared.iMap;
 
 /**
@@ -74,6 +81,8 @@ public class Map extends UnicastRemoteObject implements iMap {
         {
             "update"
         });
+        
+        
     }
 
     /**
@@ -156,6 +165,12 @@ public class Map extends UnicastRemoteObject implements iMap {
             blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
         } else if (mo instanceof Player)
         {
+            try {
+                Registry client = LocateRegistry.getRegistry(config.port);
+                ((iCharacterGame) client.lookup(config.bindName)).addListener(new MoveListener(), "move");
+            } catch (Exception ex) {
+                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.objects.add(mo);
             players.add((Player) mo);
         }
@@ -366,5 +381,15 @@ public class Map extends UnicastRemoteObject implements iMap {
         {
             toUpdate.add(toUpdateMO);
         }
+    }
+
+    @Override
+    public void addListener(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.addListener(listener, property);
+    }
+
+    @Override
+    public void removeListener(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.removeListener(listener, property);
     }
 }

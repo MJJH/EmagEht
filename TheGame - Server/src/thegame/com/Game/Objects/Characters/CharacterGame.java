@@ -5,13 +5,18 @@ import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import thegame.BasicPublisher;
 import thegame.com.Game.Objects.*;
+import thegame.shared.IRemotePropertyListener;
+import thegame.shared.iCharacterGame;
 
 /**
  *
  * @author Laurens Adema
  */
-public abstract class CharacterGame extends MapObject {
+public abstract class CharacterGame extends MapObject implements iCharacterGame {
 
     protected int hp;
     protected final String name;
@@ -21,6 +26,8 @@ public abstract class CharacterGame extends MapObject {
     protected long used;
 
     protected sides direction;
+    
+    private final BasicPublisher publisher;
 
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
@@ -42,6 +49,11 @@ public abstract class CharacterGame extends MapObject {
     public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
     {
         super(x, y, skin, height, width, 1, map);
+        
+        publisher = new BasicPublisher(new String[] {
+            "move"
+        });
+        
         this.name = name;
         this.hp = 100;
         this.skills = skills;
@@ -57,41 +69,61 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkRight()
     {
-        direction = sides.RIGHT;
-        if (hSpeed < 0)
-        {
-            hSpeed = 0.4f;
-        } else if (hSpeed < 0.4)
-        {
-            hSpeed += 0.4;
+        try {
+            iCharacterGame old = (iCharacterGame) this.clone();
+
+            direction = sides.RIGHT;
+            if (hSpeed < 0)
+            {
+                hSpeed = 0.4f;
+            } else if (hSpeed < 0.4)
+            {
+                hSpeed += 0.4;
+            }
+
+            playing.addToUpdate(this);
+            publisher.inform(this, "move", old, this);
+            
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        playing.addToUpdate(this);
     }
 
     public void walkLeft()
     {
-        direction = sides.LEFT;
-        if (hSpeed > 0)
-        {
-            hSpeed = -0.4f;
-        } else if (hSpeed > -0.4)
-        {
-            hSpeed -= 0.4;
+        try {
+            iCharacterGame old = (iCharacterGame) this.clone();
+            direction = sides.LEFT;
+            if (hSpeed > 0)
+            {
+                hSpeed = -0.4f;
+            } else if (hSpeed > -0.4)
+            {
+                hSpeed -= 0.4;
+            }
+
+            playing.addToUpdate(this);
+            publisher.inform(this, "move", old, this);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        playing.addToUpdate(this);
     }
 
     public void jump()
     {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if (!c.get(sides.BOTTOM).isEmpty())
-        {
-            vSpeed = 0.6f;
+        try {
+            iCharacterGame old = (iCharacterGame) this.clone();
+            EnumMap<MapObject.sides, List<MapObject>> c = collision();
+            if (!c.get(sides.BOTTOM).isEmpty())
+            {
+                vSpeed = 0.6f;
+            }
+            
+            playing.addToUpdate(this);
+            publisher.inform(this, "move", old, this);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        playing.addToUpdate(this);
     }
 
     public void knockBack(int kb, sides hitDirection)
@@ -388,5 +420,16 @@ public abstract class CharacterGame extends MapObject {
     public sides getDirection()
     {
         return direction;
+    }
+    
+    
+    @Override
+    public void addListener(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.addListener(listener, property);
+    }
+
+    @Override
+    public void removeListener(IRemotePropertyListener listener, String property) throws RemoteException {
+        publisher.removeListener(listener, property);
     }
 }

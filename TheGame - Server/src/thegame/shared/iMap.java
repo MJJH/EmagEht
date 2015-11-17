@@ -13,7 +13,7 @@ import thegame.com.Game.Objects.MapObject;
  *
  * @author Martijn
  */
-public interface iMap extends Remote {
+public interface iMap extends IRemotePublisher {
     /*
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY);
     
