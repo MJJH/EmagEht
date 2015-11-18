@@ -17,8 +17,4 @@ public enum config {
     config(float val) {
         this.val = val;
     }
-    
-    public static String bindName = "TheGame";
-    public static String ip = "127.0.0.1";
-    public static int port = 1099;
 }
