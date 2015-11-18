@@ -16,8 +16,8 @@ import thegame.com.Game.Objects.Tool;
  *
  * @author laure
  */
-public interface iCharacterGame extends IRemotePublisher {
-/*
+public interface iCharacterGame extends Remote {
+
     public java.util.Map dropItem(MapObject object);
 
     public void equipArmor(Armor armorAdd);
@@ -46,5 +46,5 @@ public interface iCharacterGame extends IRemotePublisher {
 
     public void walkLeft();
 
-    public void walkRight();*/
+    public void walkRight();
 }

@@ -5,7 +5,6 @@
  */
 package thegame;
 
-import java.beans.PropertyChangeEvent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -13,8 +12,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -53,8 +50,6 @@ import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
-import thegame.shared.IRemotePropertyListener;
-import thegame.shared.iMap;
 
 /**
  *
@@ -67,8 +62,6 @@ public class TheGame extends Application {
     private Scene scene;
     
     private List<KeyCode> keys = new ArrayList<>();
-    
-    private Registry server;
 
     // MAP
     private float dx;
@@ -88,16 +81,21 @@ public class TheGame extends Application {
     {
         if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
         {
-            switch(event.getCode()) {
-                case A:
-                    me.walkLeft();
-                    break;
-                case D:
-                    me.walkRight();
-                    break;
-                case W:
-                    me.jump();
-                    break;
+            if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
+            {
+                keys.add(event.getCode());
+
+                if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
+                {
+                    keys.remove(KeyCode.D);
+                }
+                if (event.getCode() == KeyCode.D && keys.contains(KeyCode.A))
+                {
+                    keys.remove(KeyCode.A);
+                }
+            } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
+            {
+                keys.remove(event.getCode());
             }
         } else
         {
@@ -354,16 +352,7 @@ public class TheGame extends Application {
         {
             // Declare variables
             play = new Map();
-            server = LocateRegistry.getRegistry(config.port);
-            ((iMap) server.lookup(config.bindName)).addListener(new IRemotePropertyListener() {
-                
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
-                    List<MapObject> toUpdate = (List<MapObject>) evt.getNewValue();
-                    System.err.println("Lengte: " + toUpdate.size());
-                }
-            }, "update");
-        } catch (Exception ex)
+        } catch (RemoteException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -434,7 +423,7 @@ public class TheGame extends Application {
         };
         loop.start();
         
-        /*Timer update = new Timer();
+        Timer update = new Timer();
         update.schedule(new TimerTask() {
 
             @Override
@@ -455,7 +444,7 @@ public class TheGame extends Application {
                 
                 play.update();
             }
-        }, 0, 1000 / 60);*/
+        }, 0, 1000 / 60);
     }
 
     private Parent createContent()

@@ -5,7 +5,6 @@ import java.rmi.RemoteException;
 import java.util.*;
 import javafx.scene.image.Image;
 import thegame.com.Game.Objects.MapObject;
-import thegame.shared.IRemotePropertyListener;
 
 /**
  * This constructor creates an enemy
@@ -129,6 +128,5 @@ public class Enemy extends CharacterGame {
         
         return ret;
     }
-
 
 }
