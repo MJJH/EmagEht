@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.rmi.RemoteException;
 import thegame.com.Game.Map;
 
 /**
@@ -16,8 +17,9 @@ public class Armor extends MapObject {
      * @param height the height of the armor
      * @param width the width of the armor
      * @param map the map with this armor
+     * @throws java.rmi.RemoteException
      */
-    public Armor(ArmorType type, float height, float width, Map map)
+    public Armor(ArmorType type, float height, float width, Map map) throws RemoteException
     {
         super(type.skin, height, width, map);
         this.type = type;
@@ -33,7 +35,7 @@ public class Armor extends MapObject {
     }
 
     @Override
-    public void update() {}
+    public Boolean call() {return false;}
 
     @Override
     public void hit(Tool use, sides hitDirection) {}

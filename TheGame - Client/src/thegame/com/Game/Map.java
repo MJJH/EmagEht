@@ -5,10 +5,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import thegame.GameListener;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -18,9 +26,9 @@ import thegame.com.Game.Objects.MapObject;
 /**
  * The class for the map of the game.
  *
- * @author Mark
+ * @author laure
  */
-public class Map {
+public class Map extends UnicastRemoteObject {
 
     private int id;
     private int height;
@@ -37,10 +45,14 @@ public class Map {
     private List<Enemy> enemies;
     private List<Player> players;
 
+    private List<MapObject> toUpdate;
+
+    private ExecutorService threadPool;
+
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      */
-    public Map()
+    public Map() throws RemoteException
     {
         width = 300;
         height = 100;
@@ -48,7 +60,10 @@ public class Map {
         objects = new ArrayList<>();
         players = new ArrayList<>();
         enemies = new ArrayList<>();
+        toUpdate = new ArrayList<>();
         blocks = new Block[height][width];
+
+        threadPool = Executors.newCachedThreadPool();
     }
 
     /**
@@ -108,6 +123,7 @@ public class Map {
             }
 
             addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
+
         } catch (IOException ex)
         {
             System.err.println(ex.getMessage());
@@ -121,20 +137,19 @@ public class Map {
 
     public void addObject(MapObject mo)
     {
-        if(mo instanceof Enemy)
+        if (mo instanceof Enemy)
         {
             this.objects.add(mo);
             enemies.add((Enemy) mo);
-        }
-        else if (mo instanceof Block)
+        } else if (mo instanceof Block)
         {
-            blocks[(int)mo.getY()][(int)mo.getX()] = (Block)mo;
-        }
-        else if (mo instanceof Player)
+            blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
+        } else if (mo instanceof Player)
         {
             this.objects.add(mo);
-            players.add((Player)mo);
+            players.add((Player) mo);
         }
+        toUpdate.add(mo);
     }
 
     /**
@@ -228,7 +243,7 @@ public class Map {
 
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
     {
-        List<MapObject> ret = new ArrayList<MapObject>();
+        List<MapObject> ret = new ArrayList<>();
 
         if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
         {
@@ -264,27 +279,82 @@ public class Map {
         return ret;
     }
 
-    public void updateEnemy()
+    public void removeMapObject(MapObject removeObject)
     {
-        for (Enemy enemy : enemies)
+        if (removeObject instanceof Block)
         {
-            enemy.update();
+            try
+            {
+                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+            } catch (Exception e)
+            {
+            }
+        }
+        else if (removeObject instanceof Enemy)
+        {
+            objects.remove(removeObject);
+            enemies.remove((Enemy)removeObject);
+            toUpdate.remove(removeObject);
+        }
+        else if (removeObject instanceof Player)
+        {
+            objects.remove(removeObject);
+            players.remove((Player)removeObject);
+            toUpdate.remove(removeObject);
         }
     }
 
-    public void removeMapObject(MapObject removeObject)
+    public void update()
     {
-        try
+        HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
+
+        for (MapObject update : toUpdate)
         {
-            if (removeObject instanceof Block)
-            {
-                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-                return;
-            }
-        } catch (Exception e)
-        {
+            updateResults.put(update, threadPool.submit(update));
         }
 
-        objects.remove(removeObject);
+        for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
+        {
+            MapObject key = entrySet.getKey();
+
+            if ((key instanceof Enemy))
+            {
+                continue;
+            }
+            try
+            {
+                boolean value = entrySet.getValue().get();
+
+                if (value)
+                {
+                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
+                    {
+                        for (MapObject toUpdateMO : collision.getValue())
+                        {
+                            addToUpdate(toUpdateMO);
+                        }
+                    }
+                } else
+                {
+                    toUpdate.remove(key);
+                }
+            } catch (InterruptedException | ExecutionException ex)
+            {
+                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void addToUpdate(MapObject toUpdateMO)
+    {
+        if (!toUpdate.contains(toUpdateMO))
+        {
+            toUpdate.add(toUpdateMO);
+        }
+    }
+
+    public void addListener(GameListener listener, String gameLogic)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

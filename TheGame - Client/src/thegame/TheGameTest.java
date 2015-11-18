@@ -11,7 +11,11 @@ import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -55,7 +59,7 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
  *
  * @author laurens
  */
-public class TheGame extends Application {
+public class TheGameTest extends Application {
 
     private Map play;
     private Player me;
@@ -344,19 +348,24 @@ public class TheGame extends Application {
     {
         launch(args);
     }
+    
+    private Registry server;
+    private GameListener listener;
 
     public void startagame(Stage primaryStage)
     {
-        
         try
         {
+            server = LocateRegistry.getRegistry(config.port);
+            ((Map) server.lookup(config.bindName)).addListener(listener,"gameLogic");
             // Declare variables
-            play = new Map();
-        } catch (RemoteException ex)
+            play = listener.getMap();
+        } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        play.generateMap();
+        
+        //play.generateMap();
         try
         {
             me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
@@ -423,6 +432,7 @@ public class TheGame extends Application {
         };
         loop.start();
         
+        /*
         Timer update = new Timer();
         update.schedule(new TimerTask() {
 
@@ -445,6 +455,7 @@ public class TheGame extends Application {
                 play.update();
             }
         }, 0, 1000 / 60);
+        */
     }
 
     private Parent createContent()

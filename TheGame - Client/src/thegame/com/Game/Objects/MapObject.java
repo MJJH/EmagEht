@@ -1,10 +1,12 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import javafx.scene.image.Image;
+import java.util.concurrent.Callable;
 import thegame.com.Game.Map;
 
 /**
@@ -12,7 +14,7 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public abstract class MapObject {
+public abstract class MapObject extends UnicastRemoteObject implements Callable<Boolean>{
 
     //private int id;
     protected float xPosition;
@@ -42,8 +44,9 @@ public abstract class MapObject {
      * @param width the width of this object
      * @param solid the density of this object
      * @param map the map that this is on
+     * @throws java.rmi.RemoteException
      */
-    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map)
+    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map) throws RemoteException
     {
         this.playing = map;
         this.skin = skin;
@@ -61,8 +64,9 @@ public abstract class MapObject {
      * @param height
      * @param width
      * @param map
+     * @throws java.rmi.RemoteException
      */
-    public MapObject(Skin skin, float height, float width, Map map)
+    public MapObject(Skin skin, float height, float width, Map map) throws RemoteException
     {
         this.skin = skin;
         this.playing = map;
@@ -73,7 +77,11 @@ public abstract class MapObject {
     /**
      * Update the object Will be called everytime the map is updated
      */
-    public abstract void update();
+    @Override
+    public abstract Boolean call();
+
+    
+    
 
     private void setX(float x)
     {
