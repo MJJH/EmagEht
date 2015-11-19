@@ -16,6 +16,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Account;
 import thegame.shared.IRemotePropertyListener;
 import thegame.shared.iGameLogic;
 
@@ -160,5 +161,13 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     public List<Block> getBlocks() throws RemoteException
     {
         return map.getBlocks();
+    }
+
+    @Override
+    public Player joinPlayer(Account account) throws RemoteException
+    {
+        Player player = new Player(null, "Dummy", 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map);
+        map.addObject(player);
+        return player;
     }
 }

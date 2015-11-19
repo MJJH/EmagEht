@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import thegame.RMIServer;
+import thegame.TheGameServer;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -337,7 +337,7 @@ public class Map implements Serializable{
 
         for (MapObject update : toUpdate)
         {
-            updateResults.put(update, RMIServer.threadPool.submit(update));
+            updateResults.put(update, TheGameServer.threadPool.submit(update));
         }
 
         for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())

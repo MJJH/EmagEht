@@ -17,12 +17,12 @@ import static org.junit.Assert.*;
  *
  * @author laure
  */
-public class TheGameTest {
+public class TheGame {
     
     /**
      *
      */
-    public TheGameTest()
+    public TheGame()
     {
     }
     

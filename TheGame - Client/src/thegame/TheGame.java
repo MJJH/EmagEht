@@ -9,9 +9,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -50,6 +54,7 @@ import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.shared.iGameLogic;
 
 /**
  *
@@ -60,7 +65,7 @@ public class TheGame extends Application {
     private Map play;
     private Player me;
     private Scene scene;
-    
+
     private List<KeyCode> keys = new ArrayList<>();
 
     // MAP
@@ -69,7 +74,7 @@ public class TheGame extends Application {
     private int startX;
     private int startY;
     private int offsetBlocks;
-    
+
     // FPS
     private final long ONE_SECOND = 1000000000;
     private long currentTime = 0;
@@ -101,21 +106,21 @@ public class TheGame extends Application {
         {
             try
             {
-                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED )
-            {
-                play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
-            }
-            if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED )
-            {
-                float x = Math.round(me.getX());
-                float y = Math.round(me.getY())-1;
-                Block block = new Block(BlockType.Dirt, x, y, 1, play);
-                play.addObject(block);
-            }
+                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
+                }
+                if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    float x = Math.round(me.getX());
+                    float y = Math.round(me.getY()) - 1;
+                    Block block = new Block(BlockType.Dirt, x, y, 1, play);
+                    play.addObject(block);
+                }
             } catch (RemoteException e)
             {
             }
-            
+
         }
     };
 
@@ -149,16 +154,16 @@ public class TheGame extends Application {
         float pY = me.getY();
         float pW = me.getW();
         float pH = me.getH();
-        
+
         int playH = play.getHeight();
         int playW = play.getWidth();
-        
+
         // Get viewables
         List<MapObject> view = viewable();
 
         // Clear scene
         clear(g);
-            
+
         // Get amount of blocks that fit on screen
         int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + offsetBlocks;
         int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + offsetBlocks;
@@ -168,48 +173,52 @@ public class TheGame extends Application {
         dy = 0;
 
         // once the player's center is on the middle
-        if((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2) {
+        if ((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2)
+        {
             // DX will be the center of the map
             dx = (pX + pW / 2) * config.block.val;
             dx -= (scene.getWidth() / 2);
-            
+
             // If you are no longer on the right side of the map
-            if(startX >= 0) {
+            if (startX >= 0)
+            {
                 dx += (startX) * config.block.val;
             }
-        } else if ((pX + pW / 2) * config.block.val >= playW * config.block.val - scene.getWidth() / 2) {
+        } else if ((pX + pW / 2) * config.block.val >= playW * config.block.val - scene.getWidth() / 2)
+        {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dx = (playW - blockHorizontal + 2) * config.block.val*2;
+            dx = (playW - blockHorizontal + 2) * config.block.val * 2;
         }
-        
-        
+
         // once the player's center is on the middle
-        if((pY - pH / 2) * config.block.val > scene.getHeight() / 2 && 
-                (pY - pH / 2) * config.block.val < playH* config.block.val - scene.getHeight() / 2) {
+        if ((pY - pH / 2) * config.block.val > scene.getHeight() / 2
+                && (pY - pH / 2) * config.block.val < playH * config.block.val - scene.getHeight() / 2)
+        {
             // DX will be the center of the map
             dy = (pY - pH / 2) * config.block.val;
             dy -= (scene.getHeight() / 2);
-            
+
             // If you are no longer on the right side of the map
-            if(startX >= 0) {
+            if (startX >= 0)
+            {
                 dy += (startY) * config.block.val;
             }
-        } else if ((pY - pH / 2) * config.block.val >= playH * config.block.val - scene.getHeight() / 2) {
+        } else if ((pY - pH / 2) * config.block.val >= playH * config.block.val - scene.getHeight() / 2)
+        {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dy = (playH- blockVertical + 2) * config.block.val*2;
+            dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-        
-        
+
         for (MapObject draw : view)
         {
             float x;
             float y;
-            if(!draw.equals(me))
+            if (!draw.equals(me))
             {
                 x = (draw.getX() + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
-            }
-            else{
+            } else
+            {
                 x = (pX + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
             }
@@ -264,14 +273,14 @@ public class TheGame extends Application {
                 g.closePath();
             }
         }
-        
+
         /*
-        // Calibration lines
-        g.setLineWidth(1);
-        g.setStroke(Color.rgb(0, 0, 0, 0.2));
-        g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
-        g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
-        */
+         // Calibration lines
+         g.setLineWidth(1);
+         g.setStroke(Color.rgb(0, 0, 0, 0.2));
+         g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
+         g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
+         */
     }
 
     private void clear(GraphicsContext g)
@@ -345,22 +354,61 @@ public class TheGame extends Application {
         launch(args);
     }
 
-    public void startagame(Stage primaryStage)
+    private Registry server;
+    private GameListener listener;
+    private iGameLogic gameLogic;
+
+    private Map loadMap()
     {
-        
-        //play = new Map();
-        //play.generateMap();
+        Map loadMap = null;
         try
         {
-            me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);
+            for (BlockType blockType : BlockType.values())
+            {
+                blockType.createSkin();
+            }
+
+            int height = gameLogic.getHeight();
+            int width = gameLogic.getWidth();
+            int teamlifes = gameLogic.getTeamLifes();
+            int time = gameLogic.getTime();
+            Array[] seasons = gameLogic.getSeasons();
+            int level = gameLogic.getLevel();
+            int spawnX = gameLogic.getSpawnX();
+            int spawnY = gameLogic.getSpawnY();
+
+            List<Block> blocks = gameLogic.getBlocks();
+            List<MapObject> objects = gameLogic.getObjects();
+            List<Enemy> enemies = gameLogic.getEnemies();
+            List<Player> players = gameLogic.getPlayers();
+            List<MapObject> toUpdate = gameLogic.getToUpdate();
+
+            loadMap = new Map(height, width, teamlifes, time, seasons, level, spawnX, spawnY, blocks, objects, enemies, players, toUpdate);
         } catch (RemoteException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+            loadMap = null;
         }
-        play.addObject(me);
+        return loadMap;
+    }
+
+    public void startagame(Stage primaryStage)
+    {
+        try
+        {
+            listener = new GameListener();
+            server = LocateRegistry.getRegistry(config.port);
+            gameLogic = (iGameLogic) server.lookup(config.bindName);
+            play = loadMap();
+            me = gameLogic.joinPlayer(null);
+            play.addObject(me);
+        } catch (RemoteException | NotBoundException ex)
+        {
+            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         offsetBlocks = 4;
-        
+
         StackPane root = new StackPane();
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
@@ -415,7 +463,7 @@ public class TheGame extends Application {
             }
         };
         loop.start();
-        
+
         Timer update = new Timer();
         update.schedule(new TimerTask() {
 
@@ -434,7 +482,7 @@ public class TheGame extends Application {
                 {
                     me.jump();
                 }
-                
+
                 play.update();
             }
         }, 0, 1000 / 60);

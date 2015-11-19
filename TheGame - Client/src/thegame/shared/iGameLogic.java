@@ -12,6 +12,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Account;
 
 /**
  *
@@ -46,4 +47,6 @@ public interface iGameLogic extends IRemotePublisher {
     public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY) throws RemoteException;
 
     public List<Block> getBlocks() throws RemoteException;
+    
+    public Player joinPlayer(Account account) throws RemoteException;
 }
