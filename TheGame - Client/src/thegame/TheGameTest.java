@@ -54,6 +54,7 @@ import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.shared.iGameLogic;
 
 /**
  *
@@ -356,8 +357,9 @@ public class TheGameTest extends Application {
     {
         try
         {
+            listener = new GameListener();
             server = LocateRegistry.getRegistry(config.port);
-            ((Map) server.lookup(config.bindName)).addListener(listener,"gameLogic");
+            ((iGameLogic) server.lookup(config.bindName)).addListener(listener,"map");
             // Declare variables
             play = listener.getMap();
         } catch (RemoteException | NotBoundException ex)

@@ -5,15 +5,15 @@
  */
 package thegame.shared;
 
-import java.rmi.Remote;
 import java.util.List;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
 
 /**
  *
  * @author Martijn
  */
-public interface iMap extends Remote {
+public interface iMap {
     
     public List<MapObject> getObjects(int startX, int startY, int endX, int endY);
     
@@ -21,4 +21,5 @@ public interface iMap extends Remote {
     
     public int getWidth();
     
+    public Map getMap();
 }

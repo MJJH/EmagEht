@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import thegame.com.Game.Map;
 import thegame.shared.IRemotePropertyListener;
+import thegame.shared.iGameLogic;
+import thegame.shared.iMap;
 
 /**
  *
@@ -28,7 +30,11 @@ public class GameListener extends UnicastRemoteObject implements IRemoteProperty
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException
     {
-        map = (Map) evt.getNewValue();
+        for(iMap sendMap : (iMap[]) evt.getNewValue())
+        {
+            map = sendMap.getMap();
+        }
+        //map = ((iGameLogic) evt.getNewValue()).getMap();
     }
     
     public Map getMap()

@@ -10,25 +10,32 @@ import java.rmi.server.UnicastRemoteObject;
 import thegame.BasicPublisher;
 import thegame.shared.IRemotePropertyListener;
 import thegame.shared.iGameLogic;
+import thegame.shared.iMap;
 
 /**
  *
  * @author laure
  */
 public class GameLogic extends UnicastRemoteObject implements iGameLogic {
-    private Map map;
+
+    private iMap[] map;
     private BasicPublisher publisher;
-    
+
     public GameLogic() throws RemoteException
     {
-        map = new Map();
-        map.generateMap();
-        
-        publisher = new BasicPublisher(new String[]{"map"});
+        map = new iMap[]
+        {
+            new Map()
+        };
+
+        publisher = new BasicPublisher(new String[]
+        {
+            "map"
+        });
     }
 
     @Override
-    public Map getMap() throws RemoteException
+    public iMap[] getMap() throws RemoteException
     {
         return map;
     }
@@ -37,7 +44,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     public void addListener(IRemotePropertyListener listener, String property) throws RemoteException
     {
         publisher.addListener(listener, property);
-        publisher.inform(this, property, null, map);
+        publisher.inform(this, property, null, getMap());
     }
 
     @Override
@@ -45,5 +52,5 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     {
         publisher.removeListener(listener, property);
     }
-    
+
 }

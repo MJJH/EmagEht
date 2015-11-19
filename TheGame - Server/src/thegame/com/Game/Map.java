@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +20,14 @@ import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.shared.iMap;
 
 /**
  * The class for the map of the game.
  *
  * @author laure
  */
-public class Map extends UnicastRemoteObject {
+public class Map implements iMap, Serializable{
 
     private int id;
     private int height;
@@ -51,7 +51,7 @@ public class Map extends UnicastRemoteObject {
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      */
-    public Map() throws RemoteException
+    public Map()
     {
         width = 300;
         height = 100;
@@ -63,6 +63,8 @@ public class Map extends UnicastRemoteObject {
         blocks = new Block[height][width];
 
         threadPool = Executors.newCachedThreadPool();
+        
+        generateMap();
     }
 
     /**
@@ -350,5 +352,11 @@ public class Map extends UnicastRemoteObject {
         {
             toUpdate.add(toUpdateMO);
         }
+    }
+
+    @Override
+    public Map getMap()
+    {
+        return this;
     }
 }

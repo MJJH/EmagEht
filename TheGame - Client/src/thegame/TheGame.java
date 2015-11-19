@@ -348,14 +348,7 @@ public class TheGame extends Application {
     public void startagame(Stage primaryStage)
     {
         
-        try
-        {
-            // Declare variables
-            play = new Map();
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        play = new Map();
         play.generateMap();
         try
         {
