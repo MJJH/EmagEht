@@ -12,5 +12,5 @@ import java.rmi.RemoteException;
  * @author laure
  */
 public interface iGameLogic extends IRemotePublisher{
-    iMap[] getMap() throws RemoteException;
+    iMap getMap() throws RemoteException;
 }

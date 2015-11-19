@@ -55,6 +55,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.shared.iGameLogic;
+import thegame.shared.iMap;
 
 /**
  *
@@ -65,7 +66,7 @@ public class TheGameTest extends Application {
     private Map play;
     private Player me;
     private Scene scene;
-    
+
     private List<KeyCode> keys = new ArrayList<>();
 
     // MAP
@@ -74,7 +75,7 @@ public class TheGameTest extends Application {
     private int startX;
     private int startY;
     private int offsetBlocks;
-    
+
     // FPS
     private final long ONE_SECOND = 1000000000;
     private long currentTime = 0;
@@ -106,21 +107,21 @@ public class TheGameTest extends Application {
         {
             try
             {
-                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED )
-            {
-                play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
-            }
-            if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED )
-            {
-                float x = Math.round(me.getX());
-                float y = Math.round(me.getY())-1;
-                Block block = new Block(BlockType.Dirt, x, y, 1, play);
-                play.addObject(block);
-            }
+                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
+                }
+                if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    float x = Math.round(me.getX());
+                    float y = Math.round(me.getY()) - 1;
+                    Block block = new Block(BlockType.Dirt, x, y, 1, play);
+                    play.addObject(block);
+                }
             } catch (RemoteException e)
             {
             }
-            
+
         }
     };
 
@@ -154,16 +155,16 @@ public class TheGameTest extends Application {
         float pY = me.getY();
         float pW = me.getW();
         float pH = me.getH();
-        
+
         int playH = play.getHeight();
         int playW = play.getWidth();
-        
+
         // Get viewables
         List<MapObject> view = viewable();
 
         // Clear scene
         clear(g);
-            
+
         // Get amount of blocks that fit on screen
         int blockHorizontal = (int) Math.ceil(scene.getWidth() / config.block.val) + offsetBlocks;
         int blockVertical = (int) Math.ceil(scene.getHeight() / config.block.val) + offsetBlocks;
@@ -173,48 +174,52 @@ public class TheGameTest extends Application {
         dy = 0;
 
         // once the player's center is on the middle
-        if((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2) {
+        if ((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2)
+        {
             // DX will be the center of the map
             dx = (pX + pW / 2) * config.block.val;
             dx -= (scene.getWidth() / 2);
-            
+
             // If you are no longer on the right side of the map
-            if(startX >= 0) {
+            if (startX >= 0)
+            {
                 dx += (startX) * config.block.val;
             }
-        } else if ((pX + pW / 2) * config.block.val >= playW * config.block.val - scene.getWidth() / 2) {
+        } else if ((pX + pW / 2) * config.block.val >= playW * config.block.val - scene.getWidth() / 2)
+        {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dx = (playW - blockHorizontal + 2) * config.block.val*2;
+            dx = (playW - blockHorizontal + 2) * config.block.val * 2;
         }
-        
-        
+
         // once the player's center is on the middle
-        if((pY - pH / 2) * config.block.val > scene.getHeight() / 2 && 
-                (pY - pH / 2) * config.block.val < playH* config.block.val - scene.getHeight() / 2) {
+        if ((pY - pH / 2) * config.block.val > scene.getHeight() / 2
+                && (pY - pH / 2) * config.block.val < playH * config.block.val - scene.getHeight() / 2)
+        {
             // DX will be the center of the map
             dy = (pY - pH / 2) * config.block.val;
             dy -= (scene.getHeight() / 2);
-            
+
             // If you are no longer on the right side of the map
-            if(startX >= 0) {
+            if (startX >= 0)
+            {
                 dy += (startY) * config.block.val;
             }
-        } else if ((pY - pH / 2) * config.block.val >= playH * config.block.val - scene.getHeight() / 2) {
+        } else if ((pY - pH / 2) * config.block.val >= playH * config.block.val - scene.getHeight() / 2)
+        {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
-            dy = (playH- blockVertical + 2) * config.block.val*2;
+            dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-        
-        
+
         for (MapObject draw : view)
         {
             float x;
             float y;
-            if(!draw.equals(me))
+            if (!draw.equals(me))
             {
                 x = (draw.getX() + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
-            }
-            else{
+            } else
+            {
                 x = (pX + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
             }
@@ -269,14 +274,14 @@ public class TheGameTest extends Application {
                 g.closePath();
             }
         }
-        
+
         /*
-        // Calibration lines
-        g.setLineWidth(1);
-        g.setStroke(Color.rgb(0, 0, 0, 0.2));
-        g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
-        g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
-        */
+         // Calibration lines
+         g.setLineWidth(1);
+         g.setStroke(Color.rgb(0, 0, 0, 0.2));
+         g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
+         g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
+         */
     }
 
     private void clear(GraphicsContext g)
@@ -349,7 +354,7 @@ public class TheGameTest extends Application {
     {
         launch(args);
     }
-    
+
     private Registry server;
     private GameListener listener;
 
@@ -359,14 +364,18 @@ public class TheGameTest extends Application {
         {
             listener = new GameListener();
             server = LocateRegistry.getRegistry(config.port);
-            ((iGameLogic) server.lookup(config.bindName)).addListener(listener,"map");
+            //((iGameLogic) server.lookup(config.bindName)).addListener(listener,"map");
+            iGameLogic gameLogic = (iGameLogic) server.lookup(config.bindName);
             // Declare variables
-            play = listener.getMap();
+            //play = listener.getMap();
+            iMap imap1 = (iMap) gameLogic.getMap();
+            System.out.println(imap1.getHeight());
+            play = (Map)imap1;
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         //play.generateMap();
         try
         {
@@ -378,7 +387,7 @@ public class TheGameTest extends Application {
         play.addObject(me);
 
         offsetBlocks = 4;
-        
+
         StackPane root = new StackPane();
 
         scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
@@ -433,31 +442,31 @@ public class TheGameTest extends Application {
             }
         };
         loop.start();
-        
+
         /*
-        Timer update = new Timer();
-        update.schedule(new TimerTask() {
+         Timer update = new Timer();
+         update.schedule(new TimerTask() {
 
-            @Override
-            public void run()
-            {
-                if (keys.contains(KeyCode.A))
-                {
-                    me.walkLeft();
-                } else if (keys.contains(KeyCode.D))
-                {
-                    me.walkRight();
-                }
+         @Override
+         public void run()
+         {
+         if (keys.contains(KeyCode.A))
+         {
+         me.walkLeft();
+         } else if (keys.contains(KeyCode.D))
+         {
+         me.walkRight();
+         }
 
-                if (keys.contains(KeyCode.W))
-                {
-                    me.jump();
-                }
+         if (keys.contains(KeyCode.W))
+         {
+         me.jump();
+         }
                 
-                play.update();
-            }
-        }, 0, 1000 / 60);
-        */
+         play.update();
+         }
+         }, 0, 1000 / 60);
+         */
     }
 
     private Parent createContent()
