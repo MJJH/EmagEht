@@ -7,6 +7,7 @@ package thegame.shared;
 
 import java.util.List;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -22,4 +23,6 @@ public interface iMap {
     public int getWidth();
     
     public Map getMap();
+    
+    public Block[][] getBlocks();
 }

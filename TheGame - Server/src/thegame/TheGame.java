@@ -334,7 +334,7 @@ public class TheGame extends Application {
         }
 
         // Ask the map for the blocks and objects that should be drawn in this area.
-        return play.getObjects(startX, startY, endX, endY);
+        return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
 
     /**

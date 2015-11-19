@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +19,13 @@ import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
-import thegame.shared.iMap;
 
 /**
  * The class for the map of the game.
  *
  * @author laure
  */
-public class Map implements iMap, Serializable{
+public class Map {
 
     private int id;
     private int height;
@@ -50,85 +48,41 @@ public class Map implements iMap, Serializable{
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
+     * @param height
+     * @param width
+     * @param teamlifes
+     * @param time
+     * @param seasons
+     * @param level
+     * @param spawnX
+     * @param enemies
+     * @param blocks
+     * @param objects
+     * @param spawnY
+     * @param toUpdate
+     * @param players
      */
-    public Map()
+    public Map(int height, int width, int teamlifes, int time, Array[] seasons, int level, int spawnX, int spawnY, List<Block> blocks, List<MapObject> objects, List<Enemy> enemies, List<Player> players, List<MapObject> toUpdate)
     {
-        width = 300;
-        height = 100;
+        this.height = height;
+        this.width = width;
+        this.teamlifes = teamlifes;
+        this.time = time;
+        this.seasons = seasons;
+        this.level = level;
+        this.spawnX = spawnX;
+        this.spawnY = spawnY;
+        this.objects = objects;
+        this.enemies = enemies;
+        this.players = players;
+        this.toUpdate = toUpdate;
 
-        objects = new ArrayList<>();
-        players = new ArrayList<>();
-        enemies = new ArrayList<>();
-        toUpdate = new ArrayList<>();
-        blocks = new Block[height][width];
+        for (Block block : blocks)
+        {
+            this.blocks[Math.round(block.getY())][Math.round(block.getX())] = block;
+        }
 
         threadPool = Executors.newCachedThreadPool();
-        
-        generateMap();
-    }
-
-    /**
-     *
-     */
-    public void generateMap()
-    {
-
-        int y = height - 1;
-        int x = 0;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt"))))
-        {
-            String line;
-
-            while ((line = br.readLine()) != null)
-            {
-                x = 0;
-                for (char b : line.toCharArray())
-                {
-
-                    switch (b)
-                    {
-                        case '0':
-                            break;
-                        case 'x':
-                            this.spawnX = x;
-                            this.spawnY = y;
-                            break;
-                        case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this);
-                            break;
-                        case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this);
-                            break;
-                        case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this);
-                            break;
-                        case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this);
-                            break;
-                        case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this);
-                            break;
-                        case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this);
-                            break;
-                        case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
-                            break;
-                    }
-
-                    x++;
-                }
-
-                y--;
-            }
-
-            addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
-
-        } catch (IOException ex)
-        {
-            System.err.println(ex.getMessage());
-        }
     }
 
     public List<Player> getPlayers()
@@ -290,17 +244,15 @@ public class Map implements iMap, Serializable{
             } catch (Exception e)
             {
             }
-        }
-        else if (removeObject instanceof Enemy)
+        } else if (removeObject instanceof Enemy)
         {
             objects.remove(removeObject);
-            enemies.remove((Enemy)removeObject);
+            enemies.remove((Enemy) removeObject);
             toUpdate.remove(removeObject);
-        }
-        else if (removeObject instanceof Player)
+        } else if (removeObject instanceof Player)
         {
             objects.remove(removeObject);
-            players.remove((Player)removeObject);
+            players.remove((Player) removeObject);
             toUpdate.remove(removeObject);
         }
     }
@@ -352,11 +304,5 @@ public class Map implements iMap, Serializable{
         {
             toUpdate.add(toUpdateMO);
         }
-    }
-    
-    @Override
-    public Map getMap()
-    {
-        return this;
     }
 }

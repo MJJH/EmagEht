@@ -73,7 +73,7 @@ public class Lobby extends UnicastRemoteObject{
      */
     public void generateMap() throws RemoteException
     {
-        plays = new Map();
+        //plays = new Map();
     }
     
     /**

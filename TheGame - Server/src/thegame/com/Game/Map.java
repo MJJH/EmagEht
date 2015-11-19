@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +19,13 @@ import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
-import thegame.shared.iMap;
 
 /**
  * The class for the map of the game.
  *
  * @author laure
  */
-public class Map implements iMap, Serializable{
+public class Map{
 
     private int id;
     private int height;
@@ -161,12 +159,12 @@ public class Map implements iMap, Serializable{
         throw new UnsupportedOperationException();
     }
 
-    public float getSpawnX()
+    public int getSpawnX()
     {
         return spawnX;
     }
 
-    public float getSpawnY()
+    public int getSpawnY()
     {
         return spawnY;
     }
@@ -242,7 +240,7 @@ public class Map implements iMap, Serializable{
         return null;
     }
 
-    public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
+    public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<>();
 
@@ -277,6 +275,31 @@ public class Map implements iMap, Serializable{
             }
         }
 
+        return ret;
+    }
+    
+    public List<Block> getBlocks()
+    {
+        List<Block> ret = new ArrayList<>();
+
+        for (int y = 0; y < height-1; y++)
+        {
+            for (int x = 0; x < width-1; x++)
+            {
+                try
+                {
+                    Block cur = blocks[y][x];
+
+                    if (cur != null)
+                    {
+                        ret.add(cur);
+                    }
+                } catch (Exception e)
+                {
+                }
+            }
+        }
+        
         return ret;
     }
 
@@ -353,10 +376,39 @@ public class Map implements iMap, Serializable{
             toUpdate.add(toUpdateMO);
         }
     }
-    
-    @Override
-    public Map getMap()
+
+    int getTeamLifes()
     {
-        return this;
+        return teamlifes;
+    }
+
+    int getTime()
+    {
+        return time;
+    }
+
+    Array[] getSeasons()
+    {
+        return seasons;
+    }
+
+    int getLevel()
+    {
+        return level;
+    }
+
+    List<MapObject> getObjects()
+    {
+        return objects;
+    }
+
+    List<Enemy> getEnemies()
+    {
+        return enemies;
+    }
+
+    List<MapObject> getToUpdate()
+    {
+        return toUpdate;
     }
 }

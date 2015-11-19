@@ -348,8 +348,8 @@ public class TheGame extends Application {
     public void startagame(Stage primaryStage)
     {
         
-        play = new Map();
-        play.generateMap();
+        //play = new Map();
+        //play.generateMap();
         try
         {
             me = new Player(null, "Dummy", 100, null, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play);

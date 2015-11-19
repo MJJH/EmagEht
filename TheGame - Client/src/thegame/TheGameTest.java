@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.AccessException;
@@ -357,6 +358,35 @@ public class TheGameTest extends Application {
 
     private Registry server;
     private GameListener listener;
+    private iGameLogic gameLogic;
+
+    private Map loadMap()
+    {
+        Map loadMap = null;
+        try
+        {
+            int height = gameLogic.getHeight();
+            int width = gameLogic.getWidth();
+            int teamlifes = gameLogic.getTeamLifes();
+            int time = gameLogic.getTime();
+            Array[] seasons = gameLogic.getSeasons();
+            int level = gameLogic.getLevel();
+            int spawnX = gameLogic.getSpawnX();
+            int spawnY = gameLogic.getSpawnY();
+            List<Block> blocks = gameLogic.getBlocks();
+            List<MapObject> objects = gameLogic.getObjects();
+            List<Enemy> enemies = gameLogic.getEnemies();
+            List<Player> players = gameLogic.getPlayers();
+            List<MapObject> toUpdate = gameLogic.getToUpdate();
+            
+            loadMap = new Map(height, width, teamlifes, time, seasons, level, spawnX, spawnY, blocks, objects, enemies, players, toUpdate);
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(TheGameTest.class.getName()).log(Level.SEVERE, null, ex);
+            loadMap = null;
+        }
+        return loadMap;
+    }
 
     public void startagame(Stage primaryStage)
     {
@@ -364,13 +394,8 @@ public class TheGameTest extends Application {
         {
             listener = new GameListener();
             server = LocateRegistry.getRegistry(config.port);
-            //((iGameLogic) server.lookup(config.bindName)).addListener(listener,"map");
-            iGameLogic gameLogic = (iGameLogic) server.lookup(config.bindName);
-            // Declare variables
-            //play = listener.getMap();
-            iMap imap1 = (iMap) gameLogic.getMap();
-            System.out.println(imap1.getHeight());
-            play = (Map)imap1;
+            gameLogic = (iGameLogic) server.lookup(config.bindName);
+            play = loadMap();
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
