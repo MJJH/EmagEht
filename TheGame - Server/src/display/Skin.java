@@ -9,6 +9,6 @@ package display;
  *
  * @author Martijn
  */
-public abstract class Skin {
+public abstract class Skin{
     public abstract javafx.scene.image.Image show();
 }

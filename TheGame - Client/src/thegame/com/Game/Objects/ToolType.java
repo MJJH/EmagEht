@@ -1,8 +1,6 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
-import javafx.scene.image.Image;
-import java.util.*;
 
 /**
  * A tooltype defines what a tool will be able to do

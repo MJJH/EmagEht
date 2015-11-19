@@ -1,14 +1,13 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
-import javafx.scene.image.Image;
-import java.util.*;
+import java.io.Serializable;
 
 /**
  * A tooltype defines what a tool will be able to do
  * @author Martijn
  */
-public class ToolType {
+public class ToolType implements Serializable{
 
     public final String name;
     public final int strength;

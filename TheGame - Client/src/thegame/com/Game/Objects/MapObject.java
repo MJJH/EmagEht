@@ -1,8 +1,8 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
+import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -14,8 +14,9 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public abstract class MapObject extends UnicastRemoteObject implements Callable<Boolean>{
-
+public abstract class MapObject implements Callable<Boolean>, Serializable{
+    private static final long serialVersionUID = 6529685098267757690L;
+    
     //private int id;
     protected float xPosition;
     protected float yPosition;

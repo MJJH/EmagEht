@@ -47,7 +47,8 @@ public enum BlockType {
         this.imageX = btx;
         this.imageY = bty;
 
-        this.skin = this.createSkin();
+        //this.skin = this.createSkin();
+        skin = null;
     }
 
     /**

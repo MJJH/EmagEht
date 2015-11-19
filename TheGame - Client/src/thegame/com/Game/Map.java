@@ -1,9 +1,6 @@
 package thegame.com.Game;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +12,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.com.Game.Objects.Block;
-import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -25,8 +21,9 @@ import thegame.com.Game.Objects.MapObject;
  *
  * @author laure
  */
-public class Map {
-
+public class Map implements Serializable{
+    private static final long serialVersionUID = 5529685098267757690L;
+    
     private int id;
     private int height;
     private int width;

@@ -20,30 +20,30 @@ import thegame.com.Game.Objects.MapObject;
 public interface iGameLogic extends IRemotePublisher {
 
     public int getHeight() throws RemoteException;
-    
+
     public int getWidth() throws RemoteException;
-    
+
     public int getTeamLifes() throws RemoteException;
-    
+
     public int getTime() throws RemoteException;
-    
+
     public Array[] getSeasons() throws RemoteException;
-    
+
     public int getLevel() throws RemoteException;
-    
+
     public int getSpawnX() throws RemoteException;
-    
+
     public int getSpawnY() throws RemoteException;
-    
+
     public List<MapObject> getObjects() throws RemoteException;
-    
+
     public List<Enemy> getEnemies() throws RemoteException;
-    
+
     public List<Player> getPlayers() throws RemoteException;
-    
+
     public List<MapObject> getToUpdate() throws RemoteException;
 
     public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY) throws RemoteException;
-    
+
     public List<Block> getBlocks() throws RemoteException;
 }
