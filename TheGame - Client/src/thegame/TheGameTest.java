@@ -365,6 +365,10 @@ public class TheGameTest extends Application {
         Map loadMap = null;
         try
         {
+            for (BlockType blockType : BlockType.values()) {
+                blockType.createSkin();
+             }
+            
             int height = gameLogic.getHeight();
             int width = gameLogic.getWidth();
             int teamlifes = gameLogic.getTeamLifes();
@@ -373,6 +377,7 @@ public class TheGameTest extends Application {
             int level = gameLogic.getLevel();
             int spawnX = gameLogic.getSpawnX();
             int spawnY = gameLogic.getSpawnY();
+            
             List<Block> blocks = gameLogic.getBlocks();
             List<MapObject> objects = gameLogic.getObjects();
             List<Enemy> enemies = gameLogic.getEnemies();

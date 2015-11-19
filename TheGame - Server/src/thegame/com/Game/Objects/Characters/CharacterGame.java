@@ -48,9 +48,9 @@ public abstract class CharacterGame extends MapObject {
         backpack = new HashMap();
         armor = new HashMap();
         direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
-        Tool equip = new Tool(test, map);
-        equipTool(equip);
+        //ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
+        //Tool equip = new Tool(test, map);
+        //equipTool(equip);
 
         used = System.currentTimeMillis();
     }

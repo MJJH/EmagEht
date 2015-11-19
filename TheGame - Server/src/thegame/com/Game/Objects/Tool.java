@@ -8,7 +8,7 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public class Tool extends MapObject {
+public class Tool extends MapObject{
 
     public final ToolType type;
 

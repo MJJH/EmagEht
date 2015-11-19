@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import thegame.RMIServer;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -46,7 +47,7 @@ public class Map implements Serializable{
 
     private List<MapObject> toUpdate;
 
-    private ExecutorService threadPool;
+    //private ExecutorService threadPool;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
@@ -62,7 +63,7 @@ public class Map implements Serializable{
         toUpdate = new ArrayList<>();
         blocks = new Block[height][width];
 
-        threadPool = Executors.newCachedThreadPool();
+        //threadPool = Executors.newCachedThreadPool();
         
         generateMap();
     }
@@ -336,7 +337,7 @@ public class Map implements Serializable{
 
         for (MapObject update : toUpdate)
         {
-            updateResults.put(update, threadPool.submit(update));
+            updateResults.put(update, RMIServer.threadPool.submit(update));
         }
 
         for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())

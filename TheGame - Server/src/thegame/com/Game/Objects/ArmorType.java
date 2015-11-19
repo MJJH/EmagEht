@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
+import java.io.Serializable;
 import javafx.scene.image.Image;
 
 
@@ -8,7 +9,7 @@ import javafx.scene.image.Image;
  * A class representing the type of Armor used.
  * @author Mark 
  */
-public class ArmorType {
+public class ArmorType implements Serializable{
 
     public final String name;
     public final int multiplier;

@@ -73,10 +73,15 @@ public class Map implements Serializable{
         this.enemies = enemies;
         this.players = players;
         this.toUpdate = toUpdate;
+        this.blocks = new Block[height][width];
 
         for (Block block : blocks)
         {
-            this.blocks[Math.round(block.getY())][Math.round(block.getX())] = block;
+            if(block.getSkin() == null)
+            {
+                block.createSkin();
+            }
+            this.blocks[(int)block.getY()][(int)block.getX()] = block;
         }
 
         threadPool = Executors.newCachedThreadPool();

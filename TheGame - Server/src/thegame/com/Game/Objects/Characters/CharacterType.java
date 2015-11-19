@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.io.Serializable;
 import thegame.com.Game.Objects.*;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
  *
  * @author laure
  */
-public class CharacterType {
+public class CharacterType implements Serializable{
 
     /** 
      * Give the name of the character

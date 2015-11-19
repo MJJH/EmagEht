@@ -8,7 +8,8 @@ import thegame.com.Game.Map;
  * @author Mark
  */
 public class Block extends MapObject {
-
+    private static final long serialVersionUID = 5529685098267757690L;
+    
     private int damage;
     private BlockType type;
 

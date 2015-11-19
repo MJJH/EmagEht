@@ -3,6 +3,7 @@ package thegame.com.Game.Objects;
 import display.Animation;
 import display.Skin;
 import java.io.IOException;
+import java.io.Serializable;
 import javafx.scene.paint.Color;
 
 /**
@@ -10,7 +11,7 @@ import javafx.scene.paint.Color;
  *
  * @author Mark
  */
-public enum BlockType {
+public enum BlockType implements Serializable{
 
     Dirt("Dirt", 5, 3, 0, 0, ToolType.toolType.SHOVEL),
     Sand("Sand", 5, 3, 20, 20, ToolType.toolType.SHOVEL),
