@@ -119,66 +119,66 @@ public abstract class MapObject {
 
     protected boolean moveH(EnumMap<sides, List<MapObject>> collision)
     {
-        if (hSpeed > 0)
-        {
-            List<MapObject> r = collision.get(sides.RIGHT);
-            if (r.isEmpty())
-            {
-                hSpeed -= 0.2;
-                if (hSpeed < 0)
-                {
-                    hSpeed = 0;
-                }
-
-                setX(xPosition + hSpeed / 2);
-                return true;
-            } else
-            {
+        List<MapObject> found;
+        
+        if(hSpeed > 0) {
+            hSpeed -= 0.2f;
+            if(hSpeed <= 0)
                 hSpeed = 0;
-
-                float minX = 999;
-                for (MapObject c : r)
-                {
-                    if (c.getX() - this.width < minX)
-                    {
-                        minX = c.getX() - this.width;
-                    }
+            
+            found = collision.get(sides.RIGHT);
+            if(found.isEmpty()) {
+                setX(xPosition + hSpeed);
+                return true;
+            } else {
+                float minX = -1;
+                for(MapObject mo : found) {
+                    if(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height)
+                        continue;
+                    
+                    if(minX == -1 || mo.getX() < minX)
+                        minX = mo.getX();
                 }
-
-                setX(minX);
+                
+                if(minX == -1) {
+                    setX(xPosition + hSpeed);
+                    return true;
+                }
+                
+                hSpeed = 0;
+                setX(minX - width);
                 return true;
             }
-        } else if (hSpeed < 0)
-        {
-            List<MapObject> l = collision.get(sides.LEFT);
-            if (l.isEmpty())
-            {
-                hSpeed += 0.2;
-
-                if (hSpeed > 0)
-                {
-                    hSpeed = 0;
-                }
-
-                setX(xPosition + hSpeed / 2);
-                return true;
-            } else
-            {
+        } else if(hSpeed < 0) {
+            hSpeed += 0.2f;
+            if(hSpeed >= 0)
                 hSpeed = 0;
-
-                float maxX = 0;
-                for (MapObject c : l)
-                {
-                    if (c.getX() + c.getW() > maxX)
-                    {
-                        maxX = c.getX() + c.getW();
-                    }
+            
+            found = collision.get(sides.LEFT);
+            if(found.isEmpty()) {
+                setX(xPosition + hSpeed);
+                return true;
+            } else {
+                float maxX = -1;
+                for(MapObject mo : found) {
+                    if(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height)
+                        continue;
+                    
+                    if(maxX == -1 || mo.getX() + mo.getW() > maxX)
+                        maxX = mo.getX() + mo.getW();
                 }
-
+                
+                if(maxX == -1) {
+                    setX(xPosition + hSpeed);
+                    return true;
+                }
+                
+                hSpeed = 0;
                 setX(maxX);
                 return true;
             }
         }
+        
 
         return false;
     }
@@ -202,6 +202,11 @@ public abstract class MapObject {
                         minY = mo.getY();
                 }
                 
+                if(minY == -1) {
+                    setY(yPosition + vSpeed);
+                    return true;
+                }
+                
                 vSpeed = 0;
                 setY(minY - height);
                 return true;
@@ -217,8 +222,13 @@ public abstract class MapObject {
                     if(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width)
                         continue;
                     
-                    if(maxY == -1 || mo.getY() + mo.getH() > maxY)
-                        maxY = mo.getY() + mo.getH();
+                    if(maxY == -1 || mo.getY() > maxY)
+                        maxY = mo.getY() + height;
+                }
+                
+                if(maxY == -1) {
+                    setY(yPosition + vSpeed);
+                    return true;
                 }
                 
                 vSpeed = 0;
@@ -272,8 +282,6 @@ public abstract class MapObject {
         collision.put(sides.LEFT, new ArrayList<>());
         collision.put(sides.RIGHT, new ArrayList<>());
 
-        if(yPosition == 0)
-            System.err.println("");
         
         List<MapObject> mos = playing.getObjects((int) Math.round(xPosition - 1), 
                                                 (int) Math.round(yPosition - height - 1), 
@@ -389,17 +397,26 @@ public abstract class MapObject {
         Rectangle r1 = new Rectangle(xPosition, yPosition, width, height);
         Rectangle r2 = new Rectangle(mo.getX(), mo.getY(), mo.getW(), mo.getH());
         
-        if(r1.intersects(r2.getBoundsInLocal())){
-            ArrayList<sides> ret = new ArrayList<>();
-            
-            if(r1.getX() < r2.getX())
-                ret.add(sides.LEFT);
-            if(r1.getX() + r1.getWidth() > r2.getX() + r2.getWidth())
-                ret.add(sides.RIGHT);
-            if(r1.getY() < r2.getY())
-                ret.add(sides.TOP);
-            if(r1.getY() + r1.getHeight() > r2.getY() + r2.getHeight())
-                ret.add(sides.BOTTOM);
+        if(r2.getX() == 4 && r2.getY() == 21) {
+            System.err.println("");
+        }
+        
+        boolean right = (r2.getX() >= r1.getX() && r2.getX() <= r1.getX() + r1.getWidth());
+        boolean left  = (r2.getX() + r2.getWidth() >= r1.getX() && r2.getX() + r2.getWidth() <= r1.getX() + r1.getWidth());
+        boolean top   = (r2.getY() - r2.getHeight() <= r1.getY() && r2.getY() - r2.getHeight() >= r1.getY() - r1.getHeight());
+        boolean bott  = (r2.getY() >= r1.getY() - r1.getHeight() && r2.getY() <= r1.getY());
+        
+       if((right || left) && (top || bott)){
+        ArrayList<sides> ret = new ArrayList<>();
+
+        if(r1.getX() <= r2.getX())
+            ret.add(sides.RIGHT);
+        if(r1.getX() + r1.getWidth() >= r2.getX() + r2.getWidth())
+            ret.add(sides.LEFT);
+        if(top)
+            ret.add(sides.TOP);
+        if(bott)
+            ret.add(sides.BOTTOM);
             
             return ret;
         } else {

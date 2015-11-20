@@ -87,15 +87,19 @@ public abstract class CharacterGame extends MapObject {
         if (!c.get(sides.BOTTOM).isEmpty() || jumping)
         {
             jumping = true;
-            vSpeed += 0.15f;
+            vSpeed += 0.2f;
         
-            if(vSpeed >= 0.6f) {
-                vSpeed = 0.6f;
+            if(vSpeed >= 0.8f) {
+                vSpeed = 0.8f;
                 jumping = false;
             }
         }
         
         
+    }
+    
+    public void stopJump() {
+        jumping = false;
     }
 
     public void knockBack(int kb, sides hitDirection)
