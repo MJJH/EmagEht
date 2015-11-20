@@ -25,6 +25,8 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected java.util.Map<MapObject, Integer> backpack;
+    
+    protected boolean jumping = false;
 
     /**
      * This constructor creates a new in game character.
@@ -82,10 +84,18 @@ public abstract class CharacterGame extends MapObject {
     public void jump()
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if (!c.get(sides.BOTTOM).isEmpty())
+        if (!c.get(sides.BOTTOM).isEmpty() || jumping)
         {
-            vSpeed = 0.6f;
+            jumping = true;
+            vSpeed += 0.15f;
+        
+            if(vSpeed >= 0.6f) {
+                vSpeed = 0.6f;
+                jumping = false;
+            }
         }
+        
+        
     }
 
     public void knockBack(int kb, sides hitDirection)
@@ -312,7 +322,7 @@ public abstract class CharacterGame extends MapObject {
 
     public boolean useTool(float x, float y)
     {
-        MapObject click = playing.GetTile(x, y, this, false);
+        MapObject click = playing.GetTile(x, y, this);
         if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed)
         {
             if (!(click instanceof Block))

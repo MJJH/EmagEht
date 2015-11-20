@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.Player;
 
 /**
  * An object that can be drawn on the map
@@ -107,7 +109,7 @@ public abstract class MapObject {
 
     protected boolean fall(EnumMap<sides, List<MapObject>> collision)
     {
-        if (collision.get(sides.BOTTOM).isEmpty() && vSpeed > -5)
+        if (collision.get(sides.BOTTOM).isEmpty() && vSpeed > -1)
         {
             vSpeed -= .1f;
             return true;
@@ -183,53 +185,48 @@ public abstract class MapObject {
 
     protected boolean moveV(EnumMap<sides, List<MapObject>> collision)
     {
-        if (vSpeed > 0)
-        {
-            List<MapObject> t = collision.get(sides.TOP);
-            if (t.isEmpty())
-            {
+        List<MapObject> found;
+        
+        if(vSpeed > 0) {
+            found = collision.get(sides.TOP);
+            if(found.isEmpty()) {
                 setY(yPosition + vSpeed);
                 return true;
-            } else
-            {
-                vSpeed = 0;
-
-                float minY = 999;
-                for (MapObject c : t)
-                {
-                    if (c.getY() - this.height < minY)
-                    {
-                        minY = c.getY() - this.height;
-                    }
+            } else {
+                float minY = -1;
+                for(MapObject mo : found) {
+                    if(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width)
+                        continue;
+                    
+                    if(minY == -1 || mo.getY() < minY)
+                        minY = mo.getY();
                 }
-
-                setY(minY);
+                
+                vSpeed = 0;
+                setY(minY - height);
                 return true;
             }
-        } else if (vSpeed < 0)
-        {
-            List<MapObject> b = collision.get(sides.BOTTOM);
-            if (b.isEmpty())
-            {
+        } else if(vSpeed < 0) {
+            found = collision.get(sides.BOTTOM);
+            if(found.isEmpty()) {
                 setY(yPosition + vSpeed);
                 return true;
-            } else
-            {
-                vSpeed = 0;
-
-                float maxY = 0;
-                for (MapObject c : b)
-                {
-                    if (c.getY() + c.getH() > maxY)
-                    {
-                        maxY = c.getY() + c.getH();
-                    }
+            } else {
+                float maxY = -1;
+                for(MapObject mo : found) {
+                    if(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width)
+                        continue;
+                    
+                    if(maxY == -1 || mo.getY() + mo.getH() > maxY)
+                        maxY = mo.getY() + mo.getH();
                 }
-
+                
+                vSpeed = 0;
                 setY(maxY);
                 return true;
             }
         }
+        
 
         return false;
     }
@@ -270,56 +267,31 @@ public abstract class MapObject {
     public EnumMap<sides, List<MapObject>> collision()
     {
         EnumMap<sides, List<MapObject>> collision = new EnumMap<>(sides.class);
-        List<MapObject> founds;
+        collision.put(sides.TOP, new ArrayList<>());
+        collision.put(sides.BOTTOM, new ArrayList<>());
+        collision.put(sides.LEFT, new ArrayList<>());
+        collision.put(sides.RIGHT, new ArrayList<>());
 
-        // Bottom
-        founds = new ArrayList<>();
-        for (float x = xPosition; x <= xPosition + width; x += width / 3)
-        {
-            MapObject found = playing.GetTile(x, yPosition - height, this, true);
-            if (found != null && found != this)
-            {
-                founds.add(found);
+        if(yPosition == 0)
+            System.err.println("");
+        
+        List<MapObject> mos = playing.getObjects((int) Math.round(xPosition - 1), 
+                                                (int) Math.round(yPosition - height - 1), 
+                                                (int) Math.round(xPosition + width + 1), 
+                                                (int) Math.round(yPosition + 1));
+        
+        for(MapObject mo : mos) {
+            if(mo.equals(this))
+                continue;
+            
+            List<sides> found = this.collision(mo);
+            if(found != null) {
+                for(sides s : found) {
+                    collision.get(s).add(mo);
+                }
             }
         }
-        collision.put(sides.BOTTOM, founds);
-
-        // Top
-        founds = new ArrayList<>();
-        for (float x = xPosition; x <= xPosition + width; x += width / 3)
-        {
-            MapObject found = playing.GetTile(x, yPosition + 1, this, true);
-            if (found != null && found != this)
-            {
-                founds.add(found);
-            }
-        }
-        collision.put(sides.TOP, founds);
-
-        // Left
-        founds = new ArrayList<>();
-        for (float y = yPosition; y <= yPosition + height; y += height / 3)
-        {
-            MapObject found = playing.GetTile(xPosition - 1, y, this, true);
-            if (found != null && found != this)
-            {
-                founds.add(found);
-            }
-        }
-        collision.put(sides.LEFT, founds);
-
-        // Right
-        founds = new ArrayList<>();
-        for (float y = yPosition; y <= yPosition + height; y += height / 3)
-        {
-            MapObject found = playing.GetTile(xPosition + width, y, this, true);
-            if (found != null && found != this)
-            {
-                founds.add(found);
-            }
-        }
-        collision.put(sides.RIGHT, founds);
-
+        
         return collision;
     }
 
@@ -411,6 +383,28 @@ public abstract class MapObject {
         float y2 = to.yPosition + to.height / 2;
 
         return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+    
+    public ArrayList<sides> collision(MapObject mo) {
+        Rectangle r1 = new Rectangle(xPosition, yPosition, width, height);
+        Rectangle r2 = new Rectangle(mo.getX(), mo.getY(), mo.getW(), mo.getH());
+        
+        if(r1.intersects(r2.getBoundsInLocal())){
+            ArrayList<sides> ret = new ArrayList<>();
+            
+            if(r1.getX() < r2.getX())
+                ret.add(sides.LEFT);
+            if(r1.getX() + r1.getWidth() > r2.getX() + r2.getWidth())
+                ret.add(sides.RIGHT);
+            if(r1.getY() < r2.getY())
+                ret.add(sides.TOP);
+            if(r1.getY() + r1.getHeight() > r2.getY() + r2.getHeight())
+                ret.add(sides.BOTTOM);
+            
+            return ret;
+        } else {
+            return null;
+        }        
     }
 
     public abstract void hit(Tool used, sides hitDirection);
