@@ -50,7 +50,7 @@ public abstract class CharacterGame extends MapObject {
         backpack = new HashMap();
         armor = new HashMap();
         direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
 
@@ -59,7 +59,12 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkRight()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.RIGHT;
+        
+        if(!c.get(sides.RIGHT).isEmpty())
+            return;
+        
         if (hSpeed < 0)
         {
             hSpeed = 0.4f;
@@ -71,7 +76,12 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkLeft()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.LEFT;
+        
+        if(!c.get(sides.LEFT).isEmpty())
+            return;
+        
         if (hSpeed > 0)
         {
             hSpeed = -0.4f;
@@ -84,7 +94,7 @@ public abstract class CharacterGame extends MapObject {
     public void jump()
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if (!c.get(sides.BOTTOM).isEmpty() || jumping)
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
         {
             jumping = true;
             vSpeed += 0.2f;

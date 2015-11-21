@@ -29,10 +29,6 @@ public abstract class MapObject {
 
     public boolean debug = false;
 
-    public enum sides {
-
-        TOP, BOTTOM, LEFT, RIGHT
-    }
 
     /**
      * Create a new MapObject to use in the game
@@ -79,7 +75,7 @@ public abstract class MapObject {
 
     private void setX(float x)
     {
-        if (x >= 0 && x < playing.getWidth())
+        if (x >= 0 && x + width < playing.getWidth())
         {
             this.xPosition = x;
         } else
@@ -133,9 +129,6 @@ public abstract class MapObject {
             } else {
                 float minX = -1;
                 for(MapObject mo : found) {
-                    if(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height)
-                        continue;
-                    
                     if(minX == -1 || mo.getX() < minX)
                         minX = mo.getX();
                 }
@@ -161,8 +154,6 @@ public abstract class MapObject {
             } else {
                 float maxX = -1;
                 for(MapObject mo : found) {
-                    if(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height)
-                        continue;
                     
                     if(maxX == -1 || mo.getX() + mo.getW() > maxX)
                         maxX = mo.getX() + mo.getW();
@@ -195,8 +186,6 @@ public abstract class MapObject {
             } else {
                 float minY = -1;
                 for(MapObject mo : found) {
-                    if(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width)
-                        continue;
                     
                     if(minY == -1 || mo.getY() < minY)
                         minY = mo.getY();
@@ -219,8 +208,6 @@ public abstract class MapObject {
             } else {
                 float maxY = -1;
                 for(MapObject mo : found) {
-                    if(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width)
-                        continue;
                     
                     if(maxY == -1 || mo.getY() > maxY)
                         maxY = mo.getY() + height;
@@ -281,6 +268,7 @@ public abstract class MapObject {
         collision.put(sides.BOTTOM, new ArrayList<>());
         collision.put(sides.LEFT, new ArrayList<>());
         collision.put(sides.RIGHT, new ArrayList<>());
+        collision.put(sides.CENTER, new ArrayList<>());
 
         
         List<MapObject> mos = playing.getObjects((int) Math.round(xPosition - 1), 
@@ -394,6 +382,9 @@ public abstract class MapObject {
     }
     
     public ArrayList<sides> collision(MapObject mo) {
+        if(this.solid == 0 || mo.solid == 0)
+            return null;
+        
         Rectangle r1 = new Rectangle(xPosition, yPosition, width, height);
         Rectangle r2 = new Rectangle(mo.getX(), mo.getY(), mo.getW(), mo.getH());
         
@@ -408,14 +399,16 @@ public abstract class MapObject {
         
        if((right || left) && (top || bott)){
         ArrayList<sides> ret = new ArrayList<>();
+        if(bott && top && left && right)
+            ret.add(sides.CENTER);
 
-        if(r1.getX() <= r2.getX())
+        if(right && !(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height))
             ret.add(sides.RIGHT);
-        if(r1.getX() + r1.getWidth() >= r2.getX() + r2.getWidth())
+        if(left && !(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height))
             ret.add(sides.LEFT);
-        if(top)
+        if(top && !(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width))
             ret.add(sides.TOP);
-        if(bott)
+        if(bott && !(mo.getX() + mo.getW() <= xPosition || mo.getX() >= xPosition + width))
             ret.add(sides.BOTTOM);
             
             return ret;
@@ -425,4 +418,8 @@ public abstract class MapObject {
     }
 
     public abstract void hit(Tool used, sides hitDirection);
+    public enum sides {
+        
+        TOP, BOTTOM, LEFT, RIGHT, CENTER
+    }
 }
