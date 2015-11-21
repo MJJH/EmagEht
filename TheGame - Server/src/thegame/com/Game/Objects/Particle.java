@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import java.rmi.RemoteException;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 
@@ -27,11 +28,12 @@ public class Particle extends MapObject {
      * @param solid the density of this object
      * @param map
      * @param count the ammount of this object
+     * @param gameLogic
      * @throws java.rmi.RemoteException
      */
-    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count) throws RemoteException
+    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count, GameLogic gameLogic) throws RemoteException
     {
-        super(x, y, object.getSkin(), height, width, 0, map);
+        super(x, y, object.getSkin(), height, width, 0, map, gameLogic);
         setObject(object);
         this.count = count;
     }

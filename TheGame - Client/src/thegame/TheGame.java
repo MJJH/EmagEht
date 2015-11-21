@@ -18,6 +18,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -54,6 +55,7 @@ import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.com.Menu.Account;
 import thegame.shared.iGameLogic;
 
 /**
@@ -61,10 +63,17 @@ import thegame.shared.iGameLogic;
  * @author laurens
  */
 public class TheGame extends Application {
-
+    private Account myAccount;
     private Map play;
     private Player me;
     private Scene scene;
+    
+    // SERVER
+    private Registry server;
+    private UpdateListener listener;
+    public iGameLogic gameLogic;
+    
+    
 
     private List<KeyCode> keys = new ArrayList<>();
 
@@ -108,7 +117,7 @@ public class TheGame extends Application {
             {
                 if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
-                    play.addObject(new Enemy("Loser", 100, null, play.getSpawnX(), play.getSpawnY(), null, 1, 1, play));
+                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX()+5, play.getSpawnY(), null, 1, 1, play));
                 }
                 if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
@@ -354,54 +363,19 @@ public class TheGame extends Application {
         launch(args);
     }
 
-    private Registry server;
-    private GameListener listener;
-    private iGameLogic gameLogic;
-
-    private Map loadMap()
-    {
-        Map loadMap = null;
-        try
-        {
-            for (BlockType blockType : BlockType.values())
-            {
-                blockType.createSkin();
-            }
-
-            int height = gameLogic.getHeight();
-            int width = gameLogic.getWidth();
-            int teamlifes = gameLogic.getTeamLifes();
-            int time = gameLogic.getTime();
-            Array[] seasons = gameLogic.getSeasons();
-            int level = gameLogic.getLevel();
-            int spawnX = gameLogic.getSpawnX();
-            int spawnY = gameLogic.getSpawnY();
-
-            List<Block> blocks = gameLogic.getBlocks();
-            List<MapObject> objects = gameLogic.getObjects();
-            List<Enemy> enemies = gameLogic.getEnemies();
-            List<Player> players = gameLogic.getPlayers();
-            List<MapObject> toUpdate = gameLogic.getToUpdate();
-
-            loadMap = new Map(height, width, teamlifes, time, seasons, level, spawnX, spawnY, blocks, objects, enemies, players, toUpdate);
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
-            loadMap = null;
-        }
-        return loadMap;
-    }
-
     public void startagame(Stage primaryStage)
     {
         try
         {
-            listener = new GameListener();
             server = LocateRegistry.getRegistry(config.port);
             gameLogic = (iGameLogic) server.lookup(config.bindName);
-            play = loadMap();
-            me = gameLogic.joinPlayer(null);
-            play.addObject(me);
+            Random rand = new Random();
+            myAccount = new Account(Integer.toString(rand.nextInt(1000)));
+            me = gameLogic.joinPlayer(myAccount);
+            play = gameLogic.getMap();
+            play.loadAfterRecieve();
+            listener = new UpdateListener(play, myAccount);
+            gameLogic.addListener(listener, "ServerUpdate");
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
@@ -464,7 +438,7 @@ public class TheGame extends Application {
         };
         loop.start();
 
-        Timer update = new Timer();
+        Timer update = new Timer("update");
         update.schedule(new TimerTask() {
 
             @Override

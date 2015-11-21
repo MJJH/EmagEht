@@ -8,6 +8,7 @@ package thegame.shared;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.List;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
@@ -49,4 +50,12 @@ public interface iGameLogic extends IRemotePublisher {
     public List<Block> getBlocks() throws RemoteException;
     
     public Player joinPlayer(Account account) throws RemoteException;
+    
+    public void addToUpdate (MapObject update) throws RemoteException;
+    
+    public Map getMap() throws RemoteException;
+    
+    public void addObject(MapObject add) throws RemoteException;
+    
+    public int getMapObjectID() throws RemoteException;
 }

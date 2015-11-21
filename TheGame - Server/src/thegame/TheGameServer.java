@@ -9,10 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.stage.Stage;
 import thegame.com.Game.GameLogic;
 
@@ -25,7 +22,6 @@ public class TheGameServer extends Application{
     // References to registry and student administration
     private Registry registry = null;
     private GameLogic gameLogic = null;
-    public static ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public TheGameServer()
     {

@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import thegame.com.Game.GameLogic;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
 
 /**
@@ -12,7 +14,8 @@ import thegame.com.Game.Objects.*;
  * @author Laurens Adema
  */
 public abstract class CharacterGame extends MapObject {
-
+    private static final long serialVersionUID = 5539685098267757690L;
+    
     protected int hp;
     protected final String name;
     protected float solid;
@@ -38,19 +41,21 @@ public abstract class CharacterGame extends MapObject {
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      * @param map
+     * @param gameLogic
+     * @throws java.rmi.RemoteException
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(x, y, skin, height, width, 1, map);
+        super(x, y, skin, height, width, 1, map, gameLogic);
         this.name = name;
         this.hp = 100;
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
         direction = sides.RIGHT;
-        //ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
-        //Tool equip = new Tool(test, map);
-        //equipTool(equip);
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
+        Tool equip = new Tool(test, map);
+        equipTool(equip);
 
         used = System.currentTimeMillis();
     }

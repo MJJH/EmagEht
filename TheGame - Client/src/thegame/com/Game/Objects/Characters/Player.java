@@ -18,6 +18,7 @@ import thegame.com.Game.Objects.MapObject;
  * @author laure
  */
 public class Player extends CharacterGame {
+    private static final long serialVersionUID = 6629685098267757690L;
     private boolean connected;
     private int spawnX;
     private int spawnY;
@@ -75,5 +76,21 @@ public class Player extends CharacterGame {
             ret = true;
         
         return ret;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Player){
+            Player p = (Player) o;
+            return name.equals(p.getName());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
     }
 }

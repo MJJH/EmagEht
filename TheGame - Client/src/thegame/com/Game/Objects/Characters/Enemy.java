@@ -12,7 +12,7 @@ import thegame.com.Game.Objects.MapObject;
  * @author Nick Bijmoer
  */
 public class Enemy extends CharacterGame {
-
+    private static final long serialVersionUID = 6729685098267757690L;
     private final float distanceX = 30;
     private final float distanceY = 10;
 
@@ -129,4 +129,19 @@ public class Enemy extends CharacterGame {
         return ret;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Enemy){
+            Enemy e = (Enemy) o;
+            return name.equals(e.getName());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
+    }
 }

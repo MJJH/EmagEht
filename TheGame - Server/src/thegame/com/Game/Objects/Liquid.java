@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects;
 
 import java.rmi.RemoteException;
-import javafx.scene.image.Image;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
 /**
@@ -21,13 +21,14 @@ public class Liquid extends Block {
      * @param y         the vertical position of this object
      * @param height    the height of this object
      * @param map
+     * @param gameLogic
      * @param width     the width of this object
      * @param solid     the density of this object
      */
     
-    public Liquid(BlockType blockType, float volume, float x, float y, float solid, Map map) throws RemoteException
+    public Liquid(BlockType blockType, float volume, float x, float y, float solid, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(blockType, x, y, solid, map);
+        super(blockType, x, y, solid, map, gameLogic);
         this.volume = volume;
     }
     

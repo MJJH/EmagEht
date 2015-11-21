@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import javafx.scene.image.Image;
 import javax.transaction.xa.XAException;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
 
@@ -18,6 +19,7 @@ import thegame.com.Game.Objects.MapObject;
  * @author laure
  */
 public class Player extends CharacterGame {
+    private static final long serialVersionUID = 6629685098267757690L;
     private boolean connected;
     private int spawnX;
     private int spawnY;
@@ -36,10 +38,11 @@ public class Player extends CharacterGame {
      * @param height, height of the player
      * @param width, width of the player
      * @param map
+     * @param gameLogic
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map) throws RemoteException
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(name, hp, skills, x, y, skin, height, width, map);
+        super(name, hp, skills, x, y, skin, height, width, map, gameLogic);
     }
 
     /**

@@ -13,9 +13,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import thegame.TheGameServer;
+import thegame.BasicPublisher;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -27,9 +28,10 @@ import thegame.com.Game.Objects.MapObject;
  *
  * @author laure
  */
-public class Map implements Serializable{
+public class Map implements Serializable {
+
     private static final long serialVersionUID = 5529685098267757690L;
-    
+
     private int id;
     private int height;
     private int width;
@@ -47,12 +49,18 @@ public class Map implements Serializable{
 
     private List<MapObject> toUpdate;
 
-    //private ExecutorService threadPool;
+    private transient ExecutorService threadPool;
+    private transient GameLogic gameLogic;
+    private transient BasicPublisher publisher;
+    private transient ReentrantLock lock;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
+     *
+     * @param publisher
+     * @param gameLogic
      */
-    public Map()
+    public Map(BasicPublisher publisher, GameLogic gameLogic)
     {
         width = 300;
         height = 100;
@@ -63,8 +71,10 @@ public class Map implements Serializable{
         toUpdate = new ArrayList<>();
         blocks = new Block[height][width];
 
-        //threadPool = Executors.newCachedThreadPool();
-        
+        threadPool = Executors.newCachedThreadPool();
+        this.gameLogic = gameLogic;
+        this.publisher = publisher;
+        lock = new ReentrantLock();
         generateMap();
     }
 
@@ -96,25 +106,25 @@ public class Map implements Serializable{
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this, gameLogic);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this, gameLogic);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this, gameLogic);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this, gameLogic);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this, gameLogic);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this, gameLogic);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this, gameLogic);
                             break;
                     }
 
@@ -124,7 +134,7 @@ public class Map implements Serializable{
                 y--;
             }
 
-            addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this));
+            addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this, gameLogic));
 
         } catch (IOException ex)
         {
@@ -139,6 +149,7 @@ public class Map implements Serializable{
 
     public void addObject(MapObject mo)
     {
+        mo.setNewObject(true);
         if (mo instanceof Enemy)
         {
             this.objects.add(mo);
@@ -151,7 +162,7 @@ public class Map implements Serializable{
             this.objects.add(mo);
             players.add((Player) mo);
         }
-        toUpdate.add(mo);
+        addToUpdate(mo);
     }
 
     /**
@@ -280,14 +291,14 @@ public class Map implements Serializable{
 
         return ret;
     }
-    
+
     public List<Block> getBlocks()
     {
         List<Block> ret = new ArrayList<>();
 
-        for (int y = 0; y < height-1; y++)
+        for (int y = 0; y < height - 1; y++)
         {
-            for (int x = 0; x < width-1; x++)
+            for (int x = 0; x < width - 1; x++)
             {
                 try
                 {
@@ -302,12 +313,15 @@ public class Map implements Serializable{
                 }
             }
         }
-        
+
         return ret;
     }
 
     public void removeMapObject(MapObject removeObject)
     {
+        toUpdate.remove(removeObject);
+        removeObject.setCords(-1, -1);
+        addToUpdate(removeObject);
         if (removeObject instanceof Block)
         {
             try
@@ -316,67 +330,82 @@ public class Map implements Serializable{
             } catch (Exception e)
             {
             }
-        }
-        else if (removeObject instanceof Enemy)
+        } else if (removeObject instanceof Enemy)
         {
             objects.remove(removeObject);
-            enemies.remove((Enemy)removeObject);
-            toUpdate.remove(removeObject);
-        }
-        else if (removeObject instanceof Player)
+            enemies.remove((Enemy) removeObject);
+        } else if (removeObject instanceof Player)
         {
             objects.remove(removeObject);
-            players.remove((Player)removeObject);
-            toUpdate.remove(removeObject);
+            players.remove((Player) removeObject);
         }
     }
 
     public void update()
     {
-        HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
-
-        for (MapObject update : toUpdate)
+        lock.lock();
+        
+        try
         {
-            updateResults.put(update, TheGameServer.threadPool.submit(update));
-        }
+            HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
 
-        for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
-        {
-            MapObject key = entrySet.getKey();
-
-            if ((key instanceof Enemy))
+            for (MapObject update : toUpdate)
             {
-                continue;
-            }
-            try
-            {
-                boolean value = entrySet.getValue().get();
-
-                if (value)
+                if (update.getNewObject())
                 {
-                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
-                    {
-                        for (MapObject toUpdateMO : collision.getValue())
-                        {
-                            addToUpdate(toUpdateMO);
-                        }
-                    }
-                } else
-                {
-                    toUpdate.remove(key);
+                    update.setNewObject(false);
                 }
-            } catch (InterruptedException | ExecutionException ex)
-            {
-                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+
+                updateResults.put(update, threadPool.submit(update));
             }
+
+            for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
+            {
+                MapObject key = entrySet.getKey();
+
+                if ((key instanceof Enemy))
+                {
+                    continue;
+                }
+                try
+                {
+                    boolean value = entrySet.getValue().get();
+                    publisher.inform(this, "ServerUpdate", "addToUpdateServer", toUpdate);
+                    
+                    if (value)
+                    {
+                        for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
+                        {
+                            for (MapObject toUpdateMO : collision.getValue())
+                            {
+                                toUpdate.add(toUpdateMO);
+                            }
+                        }
+                    } else
+                    {
+                        toUpdate.remove(key);
+                    }
+                } catch (InterruptedException | ExecutionException ex)
+                {
+                    Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } finally
+        {
+            lock.unlock();
         }
+
     }
 
     public void addToUpdate(MapObject toUpdateMO)
     {
-        if (!toUpdate.contains(toUpdateMO))
+        lock.lock();
+        try
         {
             toUpdate.add(toUpdateMO);
+        } finally
+        {
+            lock.unlock();
         }
     }
 

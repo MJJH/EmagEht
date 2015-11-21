@@ -12,7 +12,8 @@ import thegame.com.Game.Objects.*;
  * @author Laurens Adema
  */
 public abstract class CharacterGame extends MapObject {
-
+    private static final long serialVersionUID = 5539685098267757690L;
+    
     protected int hp;
     protected final String name;
     protected float solid;

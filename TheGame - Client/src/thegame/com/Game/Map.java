@@ -2,6 +2,7 @@ package thegame.com.Game;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +10,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Account;
+import thegame.shared.iGameLogic;
 
 /**
  * The class for the map of the game.
  *
  * @author laure
  */
-public class Map implements Serializable{
+public class Map implements Serializable {
+
     private static final long serialVersionUID = 5529685098267757690L;
-    
+
     private int id;
     private int height;
     private int width;
@@ -41,10 +46,15 @@ public class Map implements Serializable{
 
     private List<MapObject> toUpdate;
 
-    private ExecutorService threadPool;
+    private transient ExecutorService threadPool;
+
+    private transient Account myAccount;
+    private transient iGameLogic gameLogic;
+    private transient ReentrantLock lock;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
+     *
      * @param height
      * @param width
      * @param teamlifes
@@ -59,7 +69,7 @@ public class Map implements Serializable{
      * @param toUpdate
      * @param players
      */
-    public Map(int height, int width, int teamlifes, int time, Array[] seasons, int level, int spawnX, int spawnY, List<Block> blocks, List<MapObject> objects, List<Enemy> enemies, List<Player> players, List<MapObject> toUpdate)
+    public Map(int height, int width, int teamlifes, int time, Array[] seasons, int level, int spawnX, int spawnY, List<Block> blocks, List<MapObject> objects, List<Enemy> enemies, List<Player> players, List<MapObject> toUpdate, Account myAccount, iGameLogic gameLogic)
     {
         this.height = height;
         this.width = width;
@@ -74,17 +84,47 @@ public class Map implements Serializable{
         this.players = players;
         this.toUpdate = toUpdate;
         this.blocks = new Block[height][width];
+        this.myAccount = myAccount;
+        this.gameLogic = gameLogic;
 
         for (Block block : blocks)
         {
-            if(block.getSkin() == null)
+            if (block.getSkin() == null)
             {
                 block.createSkin();
             }
-            this.blocks[(int)block.getY()][(int)block.getX()] = block;
+            this.blocks[(int) block.getY()][(int) block.getX()] = block;
         }
 
         threadPool = Executors.newCachedThreadPool();
+        lock = new ReentrantLock();
+    }
+
+    public void loadAfterRecieve()
+    {
+        for (int y = 0; y < height - 1; y++)
+        {
+            for (int x = 0; x < width - 1; x++)
+            {
+                try
+                {
+                    Block cur = blocks[y][x];
+
+                    if (cur != null)
+                    {
+                        if (cur.getSkin() == null)
+                        {
+                            cur.createSkin();
+                        }
+                    }
+                } catch (NullPointerException e)
+                {
+                }
+            }
+        }
+
+        threadPool = Executors.newCachedThreadPool();
+        lock = new ReentrantLock();
     }
 
     public List<Player> getPlayers()
@@ -106,7 +146,6 @@ public class Map implements Serializable{
             this.objects.add(mo);
             players.add((Player) mo);
         }
-        toUpdate.add(mo);
     }
 
     /**
@@ -243,6 +282,7 @@ public class Map implements Serializable{
             try
             {
                 blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+                toUpdate.remove(removeObject);
             } catch (Exception e)
             {
             }
@@ -261,23 +301,49 @@ public class Map implements Serializable{
 
     public void update()
     {
-        HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
-
-        for (MapObject update : toUpdate)
+        lock.lock();
+        try
         {
-            updateResults.put(update, threadPool.submit(update));
-        }
+            HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
 
-        for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
-        {
-            MapObject key = entrySet.getKey();
-
-            if ((key instanceof Enemy))
+            for (MapObject update : toUpdate)
             {
-                continue;
+                if (update.getX() == -1 && update.getY() == -1)
+                {
+                    removeMapObject(update);
+                    continue;
+                }
+                if (update.getNewObject())
+                {
+                    addObject(update);
+                    update.setNewObject(false);
+                    continue;
+                }
+                if (update instanceof Enemy)
+                {
+                    removeMapObject(update);
+                    addObject(update);
+                    continue;
+                } else if (update instanceof Block)
+                {
+                    blocks[(int) update.getY()][(int) update.getX()] = (Block) update;
+                    continue;
+                } else if (update instanceof Player)
+                {
+                    if (!((Player) update).getName().equals(myAccount.getUsername()))
+                    {
+                        removeMapObject(update);
+                        addObject(update);
+                        continue;
+                    }
+                }
+
+                updateResults.put(update, threadPool.submit(update));
             }
-            try
+
+            for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
             {
+                MapObject key = entrySet.getKey();
                 boolean value = entrySet.getValue().get();
 
                 if (value)
@@ -286,25 +352,63 @@ public class Map implements Serializable{
                     {
                         for (MapObject toUpdateMO : collision.getValue())
                         {
-                            addToUpdate(toUpdateMO);
+                            toUpdate.add(toUpdateMO);
                         }
                     }
                 } else
                 {
                     toUpdate.remove(key);
+
                 }
-            } catch (InterruptedException | ExecutionException ex)
+            }
+        } catch (InterruptedException | ExecutionException ex)
+        {
+            Logger.getLogger(Map.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally
+        {
+            lock.unlock();
+        }
+    }
+
+    public synchronized void addToUpdate(MapObject toUpdateMO)
+    {
+        lock.lock();
+        try
+        {
+            toUpdate.add(toUpdateMO);
+        } finally
+        {
+            lock.unlock();
+        }
+        try
+        {
+            gameLogic.addToUpdate(toUpdateMO);
+
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(Map.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public synchronized void addToUpdateServer(MapObject toUpdateMO)
+    {
+        if (!toUpdate.contains(toUpdateMO))
+        {
+            lock.lock();
+            try
             {
-                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+                toUpdate.add(toUpdateMO);
+            } finally
+            {
+                lock.unlock();
             }
         }
     }
 
-    public void addToUpdate(MapObject toUpdateMO)
+    public Account getAccount()
     {
-        if (!toUpdate.contains(toUpdateMO))
-        {
-            toUpdate.add(toUpdateMO);
-        }
+        return myAccount;
     }
 }

@@ -2,8 +2,10 @@ package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
 import java.rmi.RemoteException;
-import java.util.*;
-import javafx.scene.image.Image;
+import java.util.EnumMap;
+import java.util.List;
+import thegame.com.Game.GameLogic;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -12,7 +14,7 @@ import thegame.com.Game.Objects.MapObject;
  * @author Nick Bijmoer
  */
 public class Enemy extends CharacterGame {
-
+    private static final long serialVersionUID = 6729685098267757690L;
     private final float distanceX = 30;
     private final float distanceY = 10;
 
@@ -27,10 +29,12 @@ public class Enemy extends CharacterGame {
      * @param height, Height of the enemy
      * @param width, Width of the enemy
      * @param map
+     * @param gameLogic
+     * @throws java.rmi.RemoteException
      */
-    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
+    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(name, hp, skills, x, y, skin, height, width, map);
+        super(name, hp, skills, x, y, skin, height, width, map, gameLogic);
     }
 
     @Override

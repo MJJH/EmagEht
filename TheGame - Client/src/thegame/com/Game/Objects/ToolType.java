@@ -1,23 +1,24 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
+import java.io.Serializable;
 
 /**
  * A tooltype defines what a tool will be able to do
  * @author Martijn
  */
-public class ToolType {
+public class ToolType implements Serializable{
 
-    public final String name;
-    public final int strength;
-    public final float speed;
-    public final float range;
-    public final int reqLvl;
-    public final int kb;
-    public final Skin skin;
-    public final float height;
-    public final float width;
-    public final toolType type; 
+    public String name;
+    public int strength;
+    public float speed;
+    public float range;
+    public int reqLvl;
+    public int kb;
+    public transient Skin skin;
+    public float height;
+    public float width;
+    public toolType type; 
     
     public enum toolType { PICKAXE, AXE, SWORD, SHOVEL, FLINT }
     

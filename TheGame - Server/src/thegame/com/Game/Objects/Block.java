@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects;
 
 import java.rmi.RemoteException;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
 /**
@@ -23,11 +24,12 @@ public class Block extends MapObject {
      * @param y the Y- coordinate of its location
      * @param solid A Float representing its liquefide state.
      * @param map
+     * @param gameLogic
      * @throws java.rmi.RemoteException
      */
-    public Block(BlockType type, float x, float y, float solid, Map map) throws RemoteException
+    public Block(BlockType type, float x, float y, float solid, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(x, y, type.skin, 1.0f, 1.0f, solid, map);
+        super(x, y, type.skin, 1.0f, 1.0f, solid, map, gameLogic);
         this.type = type;
     }
 

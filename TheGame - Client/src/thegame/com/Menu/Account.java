@@ -1,5 +1,6 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author robin
  */
-public class Account {
+public class Account implements Serializable{
 
     private Party party;
     private int id;

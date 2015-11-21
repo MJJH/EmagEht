@@ -27,44 +27,28 @@ import thegame.shared.iGameLogic;
 public class GameLogic extends UnicastRemoteObject implements iGameLogic {
 
     private Map map;
-    private BasicPublisher publisher;
-    private Timer timer;
+    public static BasicPublisher publisher;
+    private int mapObjectID;
 
     public GameLogic() throws RemoteException
     {
-        map = new Map();
-        //setTimer();
+        this.mapObjectID = 0;
         publisher = new BasicPublisher(new String[]
         {
-            "map"
+            "ServerUpdate"
         });
-    }
-    
-    private void setTimer()
-    {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+
+        map = new Map(publisher, this);
+        
+        Timer update = new Timer("update");
+        update.schedule(new TimerTask() {
 
             @Override
             public void run()
             {
-                //iMap mapOld = map.
-                /*
-                for (iMap mapOld : map)
-                {
-                    map.;
-                }
-                */
-                if (publisher == null)
-                {
-                    //System.out.println("publisher is null");
-                } else
-                {
-                    System.out.println("publisher updated");
-                    //publisher.inform(this, "map", null, getMap());
-                }
+                map.update();
             }
-        }, 0, 500);
+        }, 0, 1000 / 60);
     }
 
     @Override
@@ -166,8 +150,33 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public Player joinPlayer(Account account) throws RemoteException
     {
-        Player player = new Player(null, "Dummy", 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map);
+        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map, this);
         map.addObject(player);
         return player;
+    }
+
+    @Override
+    public synchronized void addToUpdate(MapObject update) throws RemoteException
+    {
+        map.addToUpdate(update);
+        publisher.inform(this, "ServerUpdate", "addToUpdateServer", update);
+    }
+
+    @Override
+    public Map getMap() throws RemoteException
+    {
+        return map;
+    }
+
+    @Override
+    public void addObject(MapObject add) throws RemoteException
+    {
+        map.addObject(add);
+    }
+
+    @Override
+    public synchronized int getMapObjectID() throws RemoteException
+    {
+        return mapObjectID++;
     }
 }

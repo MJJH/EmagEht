@@ -70,10 +70,11 @@ public class Lobby extends UnicastRemoteObject{
     /**
      * This method generates a map.
      *
+     * @throws java.rmi.RemoteException
      */
     public void generateMap() throws RemoteException
     {
-        plays = new Map();
+        //plays = new Map();
     }
     
     /**

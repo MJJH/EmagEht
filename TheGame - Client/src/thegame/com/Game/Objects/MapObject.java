@@ -14,19 +14,21 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public abstract class MapObject implements Callable<Boolean>, Serializable{
+public abstract class MapObject implements Callable<Boolean>, Serializable {
+
     private static final long serialVersionUID = 6529685098267757690L;
-    
-    //private int id;
+
+    protected int id;
     protected float xPosition;
     protected float yPosition;
     protected float hSpeed;
     protected float vSpeed;
-    protected Skin skin;
+    protected transient Skin skin;
     protected float height;
     protected float width;
     protected float solid;
     protected final Map playing;
+    protected boolean newObject;
 
     public boolean debug = false;
 
@@ -80,9 +82,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
      */
     @Override
     public abstract Boolean call();
-
-    
-    
 
     private void setX(float x)
     {
@@ -423,4 +422,14 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
     }
 
     public abstract void hit(Tool used, sides hitDirection);
+
+    public boolean getNewObject()
+    {
+        return newObject;
+    }
+    
+    public void setNewObject(boolean var)
+    {
+        newObject = var;
+    }
 }

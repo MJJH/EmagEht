@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.Callable;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
 /**
@@ -14,19 +15,21 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public abstract class MapObject implements Callable<Boolean>, Serializable{
+public abstract class MapObject implements Callable<Boolean>, Serializable {
+
     private static final long serialVersionUID = 6529685098267757690L;
-    
-    //private int id;
+
+    private int id;
     protected float xPosition;
     protected float yPosition;
     protected float hSpeed;
     protected float vSpeed;
-    protected Skin skin;
+    protected transient Skin skin;
     protected float height;
     protected float width;
     protected float solid;
     protected final Map playing;
+    protected boolean newObject;
 
     public boolean debug = false;
 
@@ -45,9 +48,10 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
      * @param width the width of this object
      * @param solid the density of this object
      * @param map the map that this is on
+     * @param gameLogic
      * @throws java.rmi.RemoteException
      */
-    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map) throws RemoteException
+    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map, GameLogic gameLogic) throws RemoteException
     {
         this.playing = map;
         this.skin = skin;
@@ -56,6 +60,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
         this.setH(height);
         this.setW(width);
         this.setS(solid);
+
+        id = gameLogic.getMapObjectID();
     }
 
     /**
@@ -80,9 +86,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
      */
     @Override
     public abstract Boolean call();
-
-    
-    
 
     private void setX(float x)
     {
@@ -332,6 +335,11 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
         return collision;
     }
 
+    public int getID()
+    {
+        return id;
+    }
+
     /**
      * Get x (horizontal) position
      *
@@ -423,4 +431,38 @@ public abstract class MapObject implements Callable<Boolean>, Serializable{
     }
 
     public abstract void hit(Tool used, sides hitDirection);
+
+    public boolean getNewObject()
+    {
+        return newObject;
+    }
+
+    public void setNewObject(boolean var)
+    {
+        newObject = var;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof MapObject)
+        {
+            MapObject mo = (MapObject) o;
+            return id == mo.getID();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
+    }
+
+    public void setCords(float x, float y)
+    {
+        xPosition = x;
+        yPosition = y;
+    }
 }
