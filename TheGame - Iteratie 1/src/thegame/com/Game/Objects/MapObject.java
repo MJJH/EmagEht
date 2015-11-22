@@ -101,6 +101,7 @@ public abstract class MapObject {
             this.yPosition = 0;
             vSpeed = 0;
         }
+
     }
 
     protected boolean fall(EnumMap<sides, List<MapObject>> collision)
@@ -204,6 +205,26 @@ public abstract class MapObject {
             found = collision.get(sides.BOTTOM);
             if(found.isEmpty()) {
                 setY(yPosition + vSpeed);
+                
+                
+                found = collision().get(sides.BOTTOM);
+                if(!found.isEmpty()) {
+                float maxY = -1;
+                for(MapObject mo : found) {
+                    
+                    if(maxY == -1 || mo.getY() > maxY)
+                        maxY = mo.getY() + height;
+                    }
+
+                    if(maxY == -1) {
+                        setY(yPosition + vSpeed);
+                        return true;
+                    }
+
+                    vSpeed = 0;
+                    setY(maxY);
+                }
+                
                 return true;
             } else {
                 float maxY = -1;
@@ -220,6 +241,7 @@ public abstract class MapObject {
                 
                 vSpeed = 0;
                 setY(maxY);
+                
                 return true;
             }
         }
