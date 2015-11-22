@@ -28,7 +28,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float width;
     protected float solid;
     protected final Map playing;
-    protected boolean newObject;
 
     public boolean debug = false;
 
@@ -47,9 +46,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param width the width of this object
      * @param solid the density of this object
      * @param map the map that this is on
-     * @throws java.rmi.RemoteException
      */
-    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map) throws RemoteException
+    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map)
     {
         this.playing = map;
         this.skin = skin;
@@ -422,14 +420,27 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     }
 
     public abstract void hit(Tool used, sides hitDirection);
-
-    public boolean getNewObject()
+    
+    public int getID()
     {
-        return newObject;
+        return id;
     }
     
-    public void setNewObject(boolean var)
+    @Override
+    public boolean equals(Object o)
     {
-        newObject = var;
+        if (o instanceof MapObject)
+        {
+            MapObject mo = (MapObject) o;
+            return id == mo.getID();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
     }
 }

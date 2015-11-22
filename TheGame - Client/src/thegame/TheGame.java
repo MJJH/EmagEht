@@ -124,7 +124,7 @@ public class TheGame extends Application {
                     float x = Math.round(me.getX());
                     float y = Math.round(me.getY()) - 1;
                     Block block = new Block(BlockType.Dirt, x, y, 1, play);
-                    play.addObject(block);
+                    play.addMapObject(block);
                 }
             } catch (RemoteException e)
             {

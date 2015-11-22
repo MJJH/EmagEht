@@ -10,6 +10,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 import javafx.application.Application;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import thegame.com.Game.GameLogic;
 
@@ -17,40 +18,24 @@ import thegame.com.Game.GameLogic;
  *
  * @author Gebruiker
  */
-public class TheGameServer extends Application{
+public class TheGameServer extends Application {
 
-    // References to registry and student administration
     private Registry registry = null;
     private GameLogic gameLogic = null;
 
-    public TheGameServer()
+    public void startServer()
     {
         try
         {
             gameLogic = new GameLogic();
+            System.out.println("Selected port is " + config.port);
+            registry = LocateRegistry.createRegistry(config.port);
+            registry.rebind(config.bindName, gameLogic);
+            System.out.println("Server gestart");
         } catch (RemoteException ex)
         {
             gameLogic = null;
-            System.out.println(ex.getMessage());
-        }
-
-        // Create registry at port number
-        try
-        {
-            System.out.println("Selected port is " + config.port);
-            registry = LocateRegistry.createRegistry(config.port);
-        } catch (RemoteException ex)
-        {
             registry = null;
-            System.out.println(ex.getMessage());
-        }
-
-        // Bind effectenbeurs using registry
-        try
-        {
-            registry.rebind(config.bindName, gameLogic);
-        } catch (RemoteException ex)
-        {
             System.out.println(ex.getMessage());
         }
     }
@@ -60,21 +45,20 @@ public class TheGameServer extends Application{
      */
     public static void main(String[] args)
     {
-        TheGameServer server = new TheGameServer();
-        System.out.println("Server gestart");
-        Scanner s = new Scanner(System.in);
-        System.out.println("Type stop to stop.");
-
-        while (!s.nextLine().equals("stop"))
-        {
-            System.out.println("Type stop to stop.");
-        }
-        System.exit(0);
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        primaryStage.setWidth(100);
+        primaryStage.setHeight(100);
+        primaryStage.show();
+        
+        startServer();
+        primaryStage.setOnCloseRequest(event ->
+        {
+            System.exit(0);
+        });
     }
 }

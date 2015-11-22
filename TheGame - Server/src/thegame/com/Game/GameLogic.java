@@ -151,7 +151,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     public Player joinPlayer(Account account) throws RemoteException
     {
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map, this);
-        map.addObject(player);
+        map.addMapObject(player);
         return player;
     }
 
@@ -171,12 +171,19 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public void addObject(MapObject add) throws RemoteException
     {
-        map.addObject(add);
+        map.addMapObject(add);
     }
 
     @Override
     public synchronized int getMapObjectID() throws RemoteException
     {
         return mapObjectID++;
+    }
+
+    @Override
+    public void updateMapObject(MapObject toUpdate) throws RemoteException
+    {
+        publisher.inform(this, "ServerUpdate", "updateMapObject", toUpdate);
+        map.updateMapObject(toUpdate);
     }
 }

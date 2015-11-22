@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
@@ -29,7 +31,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float width;
     protected float solid;
     protected final Map playing;
-    protected boolean newObject;
 
     public boolean debug = false;
 
@@ -49,9 +50,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param solid the density of this object
      * @param map the map that this is on
      * @param gameLogic
-     * @throws java.rmi.RemoteException
      */
-    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map, GameLogic gameLogic) throws RemoteException
+    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map, GameLogic gameLogic)
     {
         this.playing = map;
         this.skin = skin;
@@ -61,7 +61,13 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.setW(width);
         this.setS(solid);
 
-        id = gameLogic.getMapObjectID();
+        try
+        {
+            id = gameLogic.getMapObjectID();
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(MapObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -432,16 +438,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     public abstract void hit(Tool used, sides hitDirection);
 
-    public boolean getNewObject()
-    {
-        return newObject;
-    }
-
-    public void setNewObject(boolean var)
-    {
-        newObject = var;
-    }
-
     @Override
     public boolean equals(Object o)
     {
@@ -458,11 +454,5 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     {
         int hash = 7;
         return hash;
-    }
-
-    public void setCords(float x, float y)
-    {
-        xPosition = x;
-        yPosition = y;
     }
 }

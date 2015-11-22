@@ -77,20 +77,4 @@ public class Player extends CharacterGame {
         
         return ret;
     }
-    
-    @Override
-    public boolean equals(Object o){
-        if(o instanceof Player){
-            Player p = (Player) o;
-            return name.equals(p.getName());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        return hash;
-    }
 }

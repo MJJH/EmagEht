@@ -52,7 +52,11 @@ public class Map implements Serializable {
     private transient ExecutorService threadPool;
     private transient GameLogic gameLogic;
     private transient BasicPublisher publisher;
-    private transient ReentrantLock lock;
+    private transient ReentrantLock toUpdateLock;
+    private transient ReentrantLock objectsLock;
+    private transient ReentrantLock enemiesLock;
+    private transient ReentrantLock playersLock;
+    private transient ReentrantLock blocksLock;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
@@ -74,7 +78,11 @@ public class Map implements Serializable {
         threadPool = Executors.newCachedThreadPool();
         this.gameLogic = gameLogic;
         this.publisher = publisher;
-        lock = new ReentrantLock();
+        toUpdateLock = new ReentrantLock();
+        objectsLock = new ReentrantLock();
+        enemiesLock = new ReentrantLock();
+        playersLock = new ReentrantLock();
+        blocksLock = new ReentrantLock();
         generateMap();
     }
 
@@ -134,7 +142,7 @@ public class Map implements Serializable {
                 y--;
             }
 
-            addObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this, gameLogic));
+            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this, gameLogic));
 
         } catch (IOException ex)
         {
@@ -147,22 +155,161 @@ public class Map implements Serializable {
         return players;
     }
 
-    public void addObject(MapObject mo)
+    public void addMapObject(MapObject mo)
     {
-        mo.setNewObject(true);
+        publisher.inform(this, "ServerUpdate", "addMapObject", mo);
+
         if (mo instanceof Enemy)
         {
-            this.objects.add(mo);
-            enemies.add((Enemy) mo);
+            enemiesLock.lock();
+            try
+            {
+                enemies.add((Enemy) mo);
+            } finally
+            {
+                enemiesLock.unlock();
+            }
+            objectsLock.lock();
+            try
+            {
+                this.objects.add(mo);
+            } finally
+            {
+                objectsLock.unlock();
+            }
+            addToUpdate(mo);
         } else if (mo instanceof Block)
         {
-            blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
+            blocksLock.lock();
+            try
+            {
+                blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
+            } finally
+            {
+                blocksLock.unlock();
+            }
         } else if (mo instanceof Player)
         {
-            this.objects.add(mo);
-            players.add((Player) mo);
+            objectsLock.lock();
+            try
+            {
+                this.objects.add(mo);
+            } finally
+            {
+                objectsLock.unlock();
+            }
+            playersLock.lock();
+            try
+            {
+                players.add((Player) mo);
+            } finally
+            {
+                playersLock.unlock();
+            }
         }
-        addToUpdate(mo);
+    }
+
+    public void removeMapObject(MapObject removeObject)
+    {
+        publisher.inform(this, "ServerUpdate", "removeMapObject", removeObject);
+        if (removeObject instanceof Block)
+        {
+            blocksLock.lock();
+            try
+            {
+                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+            } catch (Exception e)
+            {
+            } finally
+            {
+                blocksLock.unlock();
+            }
+            toUpdateLock.lock();
+            try
+            {
+                toUpdate.remove(removeObject);
+            } finally
+            {
+                toUpdateLock.unlock();
+            }
+        } else if (removeObject instanceof Enemy)
+        {
+            objectsLock.lock();
+            try
+            {
+                objects.remove(removeObject);
+            } finally
+            {
+                objectsLock.unlock();
+            }
+            enemiesLock.lock();
+            try
+            {
+                enemies.remove((Enemy) removeObject);
+            } finally
+            {
+                enemiesLock.unlock();
+            }
+            toUpdateLock.lock();
+            try
+            {
+                toUpdate.remove(removeObject);
+            } finally
+            {
+                toUpdateLock.unlock();
+            }
+        } else if (removeObject instanceof Player)
+        {
+            objectsLock.lock();
+            try
+            {
+                objects.remove(removeObject);
+            } finally
+            {
+                objectsLock.unlock();
+            }
+            playersLock.lock();
+            try
+            {
+                players.remove((Player) removeObject);
+            } finally
+            {
+                playersLock.unlock();
+            }
+            toUpdateLock.lock();
+            try
+            {
+                toUpdate.remove(removeObject);
+            } finally
+            {
+                toUpdateLock.unlock();
+            }
+        }
+    }
+
+    public void updateMapObject(MapObject update)
+    {
+        if (update instanceof Player)
+        {
+            objectsLock.lock();
+            try
+            {
+                objects.remove(update);
+                objects.add(update);
+            } finally
+            {
+                objectsLock.unlock();
+            }
+            playersLock.lock();
+            try
+            {
+                players.remove((Player) update);
+                players.add((Player) update);
+            } finally
+            {
+                playersLock.unlock();
+            }
+        }
     }
 
     /**
@@ -317,61 +464,36 @@ public class Map implements Serializable {
         return ret;
     }
 
-    public void removeMapObject(MapObject removeObject)
-    {
-        toUpdate.remove(removeObject);
-        removeObject.setCords(-1, -1);
-        addToUpdate(removeObject);
-        if (removeObject instanceof Block)
-        {
-            try
-            {
-                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-            } catch (Exception e)
-            {
-            }
-        } else if (removeObject instanceof Enemy)
-        {
-            objects.remove(removeObject);
-            enemies.remove((Enemy) removeObject);
-        } else if (removeObject instanceof Player)
-        {
-            objects.remove(removeObject);
-            players.remove((Player) removeObject);
-        }
-    }
-
     public void update()
     {
-        lock.lock();
-        
+        toUpdateLock.lock();
+
         try
         {
             HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
 
             for (MapObject update : toUpdate)
             {
-                if (update.getNewObject())
+                if (!(update instanceof Player))
                 {
-                    update.setNewObject(false);
+                    updateResults.put(update, threadPool.submit(update));
                 }
-
-                updateResults.put(update, threadPool.submit(update));
             }
 
             for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
             {
                 MapObject key = entrySet.getKey();
 
-                if ((key instanceof Enemy))
-                {
-                    continue;
-                }
                 try
                 {
                     boolean value = entrySet.getValue().get();
-                    publisher.inform(this, "ServerUpdate", "addToUpdateServer", toUpdate);
-                    
+                    publisher.inform(this, "ServerUpdate", "updateMapObject", key);
+
+                    if ((key instanceof Enemy))
+                    {
+                        continue;
+                    }
+
                     if (value)
                     {
                         for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
@@ -379,6 +501,7 @@ public class Map implements Serializable {
                             for (MapObject toUpdateMO : collision.getValue())
                             {
                                 toUpdate.add(toUpdateMO);
+
                             }
                         }
                     } else
@@ -392,20 +515,20 @@ public class Map implements Serializable {
             }
         } finally
         {
-            lock.unlock();
+            toUpdateLock.unlock();
         }
 
     }
 
     public void addToUpdate(MapObject toUpdateMO)
     {
-        lock.lock();
+        toUpdateLock.lock();
         try
         {
             toUpdate.add(toUpdateMO);
         } finally
         {
-            lock.unlock();
+            toUpdateLock.unlock();
         }
     }
 

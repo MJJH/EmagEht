@@ -58,4 +58,6 @@ public interface iGameLogic extends IRemotePublisher {
     public void addObject(MapObject add) throws RemoteException;
     
     public int getMapObjectID() throws RemoteException;
+    
+    public void updateMapObject(MapObject toUpdate) throws RemoteException;
 }
