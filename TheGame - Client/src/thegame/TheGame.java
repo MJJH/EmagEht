@@ -535,7 +535,7 @@ public class TheGame extends Application {
                 bg.setFill(gradient);
                 text.setFill(Color.WHITE);
             });
-
+            
             setOnMouseDragExited(event ->
             {
                 bg.setFill(Color.BLACK);
@@ -547,12 +547,15 @@ public class TheGame extends Application {
                 bg.setFill(Color.DARKGREY);
             });
 
-            setOnMouseReleased(event ->
+            setOnMouseExited(event ->
             {
-                bg.setFill(gradient);
+                bg.setFill(Color.BLACK);
+                text.setFill(Color.DARKGREY);
+                
+                
             });
+         }
         }
-    }
 
     private static class MenuBox extends VBox {
 
