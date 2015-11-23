@@ -61,6 +61,7 @@ public class Block extends MapObject {
         playing.removeMapObject(this);
     }
     
+    @Override
     public void createSkin()
     {
         skin = type.skin;

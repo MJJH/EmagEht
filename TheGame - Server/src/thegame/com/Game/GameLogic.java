@@ -11,6 +11,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.BasicPublisher;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -152,14 +154,31 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     {
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map, this);
         map.addMapObject(player);
-        return player;
+        Player toSend = null;
+        try
+        {
+             toSend = (Player) player.clone();
+             toSend.setMap(null);
+        } catch (CloneNotSupportedException ex)
+        {
+            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return toSend;
     }
 
     @Override
     public synchronized void addToUpdate(MapObject update) throws RemoteException
     {
-        map.addToUpdate(update);
-        publisher.inform(this, "ServerUpdate", "addToUpdateServer", update);
+        try
+        {
+            MapObject toSend = (MapObject) update.clone();
+            toSend.setMap(null);
+            map.addToUpdate(update);
+            publisher.inform(this, "ServerUpdate", "addToUpdateServer", toSend);
+        } catch (CloneNotSupportedException ex)
+        {
+            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -183,7 +202,15 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public void updateMapObject(MapObject toUpdate) throws RemoteException
     {
-        publisher.inform(this, "ServerUpdate", "updateMapObject", toUpdate);
-        map.updateMapObject(toUpdate);
+        try
+        {
+            MapObject toSend = (MapObject)toUpdate.clone();
+            toSend.setMap(null);
+            publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
+            map.updateMapObject(toUpdate);
+        } catch (CloneNotSupportedException ex)
+        {
+            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

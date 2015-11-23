@@ -36,15 +36,27 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         {
             return;
         }
+        if(!(evt.getNewValue() instanceof MapObject))
+        {
+            return;
+        }
+        MapObject toChange = (MapObject) evt.getNewValue();
+        toChange.setMap(map);
+        
+        if (toChange.getSkin() == null)
+            {
+                toChange.createSkin();
+            }
+        
         switch((String)evt.getOldValue()){
             case "addMapObject":
-                map.addMapObject((MapObject)evt.getNewValue());
+                map.addMapObject(toChange);
                 break;
             case "removeMapObject":
-                map.removeMapObject((MapObject)evt.getNewValue());
+                map.removeMapObject(toChange);
                 break;
             case "updateMapObject":
-                map.updateMapObject((MapObject)evt.getNewValue());
+                map.updateMapObject(toChange);
                 break;
         }
         

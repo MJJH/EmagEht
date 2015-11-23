@@ -27,7 +27,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float height;
     protected float width;
     protected float solid;
-    protected final Map playing;
+    protected Map playing;
 
     public boolean debug = false;
 
@@ -420,12 +420,12 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     }
 
     public abstract void hit(Tool used, sides hitDirection);
-    
+
     public int getID()
     {
         return id;
     }
-    
+
     @Override
     public boolean equals(Object o)
     {
@@ -442,5 +442,15 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     {
         int hash = 7;
         return hash;
+    }
+
+    public void setMap(Map set)
+    {
+        this.playing = set;
+    }
+
+    public void createSkin()
+    {
+
     }
 }

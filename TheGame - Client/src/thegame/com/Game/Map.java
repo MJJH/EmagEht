@@ -108,7 +108,7 @@ public class Map implements Serializable {
         blocksLock = new ReentrantLock();
     }
 
-    public void loadAfterRecieve()
+    public void loadAfterRecieve(iGameLogic gameLogic, Account myAccount)
     {
         for (int y = 0; y < height - 1; y++)
         {
@@ -137,6 +137,8 @@ public class Map implements Serializable {
         enemiesLock = new ReentrantLock();
         playersLock = new ReentrantLock();
         blocksLock = new ReentrantLock();
+        this.gameLogic = gameLogic;
+        this.myAccount = myAccount;
     }
 
     public List<Player> getPlayers()
@@ -316,7 +318,7 @@ public class Map implements Serializable {
             }
         } else if (update instanceof Player)
         {
-            if (!((Player) objects).getName().equals(myAccount.getUsername()))
+            if (!((Player) update).getName().equals(myAccount.getUsername()))
             {
                 objectsLock.lock();
                 try
@@ -507,7 +509,6 @@ public class Map implements Serializable {
         {
             for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
             {
-
                 MapObject key = entrySet.getKey();
                 boolean value = entrySet.getValue().get();
                 gameLogic.updateMapObject(key);

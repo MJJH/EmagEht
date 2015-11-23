@@ -278,6 +278,10 @@ public class TheGame extends Application {
             } else
             {
                 g.beginPath();
+                if(draw.getSkin() == null)
+                {
+                    System.out.println(draw.getClass() + " has no skin (ID: "+draw.getID()+")");
+                }
                 g.drawImage(draw.getSkin().show(), x, y);
                 g.closePath();
             }
@@ -373,7 +377,8 @@ public class TheGame extends Application {
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
             me = gameLogic.joinPlayer(myAccount);
             play = gameLogic.getMap();
-            play.loadAfterRecieve();
+            play.loadAfterRecieve(gameLogic, myAccount);
+             me.setMap(play);
             listener = new UpdateListener(play, myAccount);
             gameLogic.addListener(listener, "ServerUpdate");
         } catch (RemoteException | NotBoundException ex)
