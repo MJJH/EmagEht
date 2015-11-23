@@ -33,6 +33,7 @@ public class Image extends Skin {
         this.width = width;
         
         parts = new HashMap<>();
+        this.image = new WritableImage(width, height);
     }
     
     public Image(int height, int width, String path) {
@@ -79,6 +80,28 @@ public class Image extends Skin {
         this.image = new WritableImage(i.getPixelReader(), px, py, width, height);
     }
     
+    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py) throws IOException {
+        if(px + iwidth > width || py + iheight > height)
+            throw new IllegalArgumentException("Part '"+name+"' does not fit in Image");
+        
+        BufferedImage bI;
+        bI = ImageIO.read(new File(path));
+        
+        javafx.scene.image.Image i = SwingFXUtils.toFXImage(bI.getSubimage(ix, iy, iwidth, iheight), null);
+        
+        PixelWriter edit = image.getPixelWriter();
+        PixelReader read = i.getPixelReader();
+        
+        for(int y = 0; y < iheight; y++) {
+            for(int x = 0; x < iwidth; x++) {
+                Color c = read.getColor(x, y);
+                edit.setColor(px + x, py + y, c);
+            }
+        }
+        
+        parts.put(name, i);
+    }
+    
     public void recolour(Color[] colors) {
         PixelWriter edit = image.getPixelWriter();
         PixelReader read = image.getPixelReader();
@@ -100,6 +123,14 @@ public class Image extends Skin {
     public javafx.scene.image.Image show() {
         return image;
         
+    }
+    
+    public int getHeight() {
+        return height;
+    }
+    
+    public int getWidth() {
+        return width;
     }
     
 }
