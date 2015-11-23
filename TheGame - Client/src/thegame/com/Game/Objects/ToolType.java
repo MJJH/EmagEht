@@ -8,7 +8,8 @@ import java.io.Serializable;
  * @author Martijn
  */
 public class ToolType implements Serializable{
-
+    private static final long serialVersionUID = 6522685098267757690L;
+    
     public String name;
     public int strength;
     public float speed;

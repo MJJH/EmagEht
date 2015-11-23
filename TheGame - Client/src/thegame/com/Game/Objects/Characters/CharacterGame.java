@@ -1,11 +1,11 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
-import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import thegame.com.Game.Objects.*;
+import thegame.shared.iGameLogic;
 
 /**
  *
@@ -42,7 +42,7 @@ public abstract class CharacterGame extends MapObject {
      * @param width, Width of the in game character
      * @param map
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map) throws RemoteException
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map)
     {
         super(x, y, skin, height, width, 1, map);
         this.name = name;
@@ -341,36 +341,6 @@ public abstract class CharacterGame extends MapObject {
     public java.util.Map<MapObject, Integer> getBackpackMap()
     {
         return backpack;
-    }
-
-    public boolean useTool(float x, float y)
-    {
-        MapObject click = playing.GetTile(x, y, this);
-        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed)
-        {
-            if (!(click instanceof Block))
-            {
-                if (!((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
-                {
-                    return false;
-                }
-            }
-
-            click.hit(holding, direction);
-            used = System.currentTimeMillis();
-            return true;
-        } /*else if (click == null)
-        {
-            Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
-            if(holding.type.range >= distance(block))
-            {
-                playing.addBlock(block, Math.round(x), Math.round(y));
-                return true;
-            }
-            return false;
-        }*/
-
-        return false;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects;
 
-import java.rmi.RemoteException;
+import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
 /**
@@ -9,7 +9,8 @@ import thegame.com.Game.Map;
  * @author Martijn
  */
 public class Tool extends MapObject{
-
+    private static final long serialVersionUID = 6529585098267757690L;
+    
     public final ToolType type;
 
     /**
@@ -17,11 +18,11 @@ public class Tool extends MapObject{
      *
      * @param type the type of this tool (sword, hatchet, etc)
      * @param map the map this tool is used on
-     * @throws java.rmi.RemoteException
+     * @param gameLogic
      */
-    public Tool(ToolType type, Map map) throws RemoteException
+    public Tool(ToolType type, Map map, GameLogic gameLogic)
     {
-        super(type.skin, type.height, type.width, map);
+        super(type.height, type.width, map, gameLogic);
         this.type = type;
     }
 

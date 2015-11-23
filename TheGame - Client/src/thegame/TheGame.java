@@ -64,17 +64,16 @@ import thegame.shared.iGameLogic;
  * @author laurens
  */
 public class TheGame extends Application {
+
     private Account myAccount;
     private Map play;
     private Player me;
     private Scene scene;
-    
+
     // SERVER
     private Registry server;
     private UpdateListener listener;
     public iGameLogic gameLogic;
-    
-    
 
     private List<KeyCode> keys = new ArrayList<>();
 
@@ -111,8 +110,10 @@ public class TheGame extends Application {
             } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
             {
                 keys.remove(event.getCode());
-                if(event.getCode() == KeyCode.W)
+                if (event.getCode() == KeyCode.W)
+                {
                     me.stopJump();
+                }
             }
         } else
         {
@@ -120,7 +121,7 @@ public class TheGame extends Application {
             {
                 if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
-                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX()+5, play.getSpawnY(), null, 1, 1, play));
+                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, play));
                 }
                 if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
@@ -144,7 +145,7 @@ public class TheGame extends Application {
 
             double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
 
-            me.useTool((float) clickX, (float) clickY);
+            me.useTool((float) clickX, (float) clickY, gameLogic);
         }
     };
     private Stage stages;
@@ -284,9 +285,10 @@ public class TheGame extends Application {
             } else
             {
                 g.beginPath();
-                if(draw.getSkin() == null)
+                if (draw.getSkin() == null)
                 {
-                    System.out.println(draw.getClass() + " has no skin (ID: "+draw.getID()+")");
+                    draw.createSkin();
+                    System.out.println(draw.getClass() + " has no skin (ID: " + draw.getID() + ", "+ ((Block)draw) + ")");
                 }
                 g.drawImage(draw.getSkin().show(), x, y);
                 g.closePath();
@@ -382,9 +384,9 @@ public class TheGame extends Application {
             Random rand = new Random();
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
             me = gameLogic.joinPlayer(myAccount);
-            play = gameLogic.getMap();
-            play.loadAfterRecieve(gameLogic, myAccount);
-             me.setMap(play);
+            play = (Map) gameLogic.getMap();
+            play.loadAfterRecieve(gameLogic, myAccount, me);
+            me.setMap(play);
             listener = new UpdateListener(play, myAccount);
             gameLogic.addListener(listener, "ServerUpdate");
         } catch (RemoteException | NotBoundException ex)
@@ -545,7 +547,7 @@ public class TheGame extends Application {
                 bg.setFill(gradient);
                 text.setFill(Color.WHITE);
             });
-            
+
             setOnMouseDragExited(event ->
             {
                 bg.setFill(Color.BLACK);
@@ -561,11 +563,10 @@ public class TheGame extends Application {
             {
                 bg.setFill(Color.BLACK);
                 text.setFill(Color.DARKGREY);
-                
-                
+
             });
-         }
         }
+    }
 
     private static class MenuBox extends VBox {
 

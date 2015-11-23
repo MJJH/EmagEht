@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javax.transaction.xa.XAException;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.MapObject;
+import thegame.shared.iGameLogic;
 
 
 
@@ -82,5 +86,22 @@ public class Player extends CharacterGame {
         }
         
         return ret;
+    }
+    
+    public boolean useTool(float x, float y, iGameLogic gameLogic)
+    {
+        if (System.currentTimeMillis() - used >= holding.type.speed)
+        {
+            try
+            {
+                return gameLogic.useTool(this, x, y);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        }
+
+        return false;
     }
 }

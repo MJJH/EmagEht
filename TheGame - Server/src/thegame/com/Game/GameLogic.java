@@ -41,7 +41,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         });
 
         map = new Map(publisher, this);
-        
+
         Timer update = new Timer("update");
         update.schedule(new TimerTask() {
 
@@ -152,13 +152,13 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public Player joinPlayer(Account account) throws RemoteException
     {
-        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), null, 1, 1, map, this);
+        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 2, map, this);
         map.addMapObject(player);
         Player toSend = null;
         try
         {
-             toSend = (Player) player.clone();
-             toSend.setMap(null);
+            toSend = (Player) player.clone();
+            toSend.setMap(null);
         } catch (CloneNotSupportedException ex)
         {
             Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
@@ -169,6 +169,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public synchronized void addToUpdate(MapObject update) throws RemoteException
     {
+        update.setMap(map);
         try
         {
             MapObject toSend = (MapObject) update.clone();
@@ -190,6 +191,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public void addObject(MapObject add) throws RemoteException
     {
+        add.setMap(map);
         map.addMapObject(add);
     }
 
@@ -202,9 +204,10 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public void updateMapObject(MapObject toUpdate) throws RemoteException
     {
+        toUpdate.setMap(map);
         try
         {
-            MapObject toSend = (MapObject)toUpdate.clone();
+            MapObject toSend = (MapObject) toUpdate.clone();
             toSend.setMap(null);
             publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
             map.updateMapObject(toUpdate);
@@ -212,5 +215,19 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         {
             Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public boolean useTool(Player me, float x, float y) throws RemoteException
+    {
+        for (Player player : map.getPlayers())
+        {
+            if (player.equals(me))
+            {
+                return player.useTool(x, y);
+            }
+        }
+        
+        return false;
     }
 }

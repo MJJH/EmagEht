@@ -22,14 +22,12 @@ public class Block extends MapObject {
      * @param type The type of the block
      * @param x the X-coordinate of its location
      * @param y the Y- coordinate of its location
-     * @param solid A Float representing its liquefide state.
      * @param map
      * @param gameLogic
-     * @throws java.rmi.RemoteException
      */
-    public Block(BlockType type, float x, float y, Map map, GameLogic gameLogic) throws RemoteException
+    public Block(BlockType type, float x, float y, Map map, GameLogic gameLogic)
     {
-        super(x, y, type.skin, 1.0f, 1.0f, type.solid, map, gameLogic);
+        super(x, y, 1.0f, 1.0f, type.solid, map, gameLogic);
         this.type = type;
     }
 

@@ -1,6 +1,5 @@
 package thegame.com.Game.Objects;
 
-import display.Skin;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
     protected float yPosition;
     protected float hSpeed;
     protected float vSpeed;
-    protected transient Skin skin;
     protected float height;
     protected float width;
     protected float solid;
@@ -45,17 +43,15 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
      *
      * @param x the horizontal position of this object
      * @param y the vertical position of this object
-     * @param skin the texture of this object
      * @param height the height of this object
      * @param width the width of this object
      * @param solid the density of this object
      * @param map the map that this is on
      * @param gameLogic
      */
-    public MapObject(float x, float y, Skin skin, float height, float width, float solid, Map map, GameLogic gameLogic)
+    public MapObject(float x, float y, float height, float width, float solid, Map map, GameLogic gameLogic)
     {
         this.playing = map;
-        this.skin = skin;
         this.setX(x);
         this.setY(y);
         this.setH(height);
@@ -74,18 +70,24 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
     /**
      * Create a new MapObject without position and density
      *
-     * @param skin
      * @param height
      * @param width
      * @param map
-     * @throws java.rmi.RemoteException
+     * @param gameLogic
      */
-    public MapObject(Skin skin, float height, float width, Map map) throws RemoteException
+    public MapObject(float height, float width, Map map, GameLogic gameLogic)
     {
-        this.skin = skin;
         this.playing = map;
         this.setH(height);
         this.setW(width);
+        
+        try
+        {
+            id = gameLogic.getMapObjectID();
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(MapObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -406,16 +408,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
     public float getSY()
     {
         return vSpeed;
-    }
-
-    /**
-     * Get skin
-     *
-     * @return skin
-     */
-    public Skin getSkin()
-    {
-        return skin;
     }
 
     public float distance(MapObject to)

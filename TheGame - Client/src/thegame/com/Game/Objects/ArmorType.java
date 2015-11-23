@@ -1,7 +1,6 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
-import javafx.scene.image.Image;
 
 
 /**
@@ -16,7 +15,7 @@ public class ArmorType {
     public final Skin skin;
     public final bodyPart bodypart;
 
-    public enum bodyPart { HEAD, TORSO, LEGS, FEED }
+    public enum bodyPart { HELMET, CHESTPLATE, GREAVES, BOOTS, SHIELD }
 
     /**
      * Initiates an instance of this class with the following attributes

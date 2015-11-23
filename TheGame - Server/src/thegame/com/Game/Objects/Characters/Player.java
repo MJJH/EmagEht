@@ -1,18 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Skin;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import javafx.scene.image.Image;
-import javax.transaction.xa.XAException;
 import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.MapObject;
-
-
 
 /**
  *
@@ -34,15 +23,14 @@ public class Player extends CharacterGame {
      * @param attacks, Attacks of the player
      * @param x, X-coordinate of the player
      * @param y, Y-coordinate of the player
-     * @param skin, Skin of the player
      * @param height, height of the player
      * @param width, width of the player
      * @param map
      * @param gameLogic
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map, GameLogic gameLogic)
     {
-        super(name, hp, skills, x, y, skin, height, width, map, gameLogic);
+        super(name, hp, skills, x, y, height, width, map, gameLogic);
     }
 
     /**

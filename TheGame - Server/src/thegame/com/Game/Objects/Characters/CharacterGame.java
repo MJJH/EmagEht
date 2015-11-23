@@ -1,7 +1,5 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Skin;
-import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +19,6 @@ public abstract class CharacterGame extends MapObject {
     protected float solid;
 
     protected Tool holding;
-    protected long used;
 
     protected sides direction;
 
@@ -39,27 +36,23 @@ public abstract class CharacterGame extends MapObject {
      * @param skills, Arraylist of the skills that the character got
      * @param x, X-Coordinate of the in game character
      * @param y, Y-Coordinate of the in game character
-     * @param skin, Skin that the in game character got
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      * @param map
      * @param gameLogic
-     * @throws java.rmi.RemoteException
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map, GameLogic gameLogic)
     {
-        super(x, y, skin, height, width, 1, map, gameLogic);
+        super(x, y, height, width, 1, map, gameLogic);
         this.name = name;
         this.hp = 100;
         this.skills = skills;
         backpack = new HashMap();
         armor = new HashMap();
         direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
-        Tool equip = new Tool(test, map);
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
+        Tool equip = new Tool(test, map, gameLogic);
         equipTool(equip);
-
-        used = System.currentTimeMillis();
     }
 
     public void walkRight()
@@ -350,7 +343,7 @@ public abstract class CharacterGame extends MapObject {
     public boolean useTool(float x, float y)
     {
         MapObject click = playing.GetTile(x, y, this);
-        if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed)
+        if (click != null && holding != null && holding.type.range >= distance(click))
         {
             if (!(click instanceof Block))
             {
@@ -361,7 +354,6 @@ public abstract class CharacterGame extends MapObject {
             }
 
             click.hit(holding, direction);
-            used = System.currentTimeMillis();
             return true;
         } /*else if (click == null)
         {

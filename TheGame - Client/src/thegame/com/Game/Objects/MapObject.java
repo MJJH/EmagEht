@@ -2,7 +2,6 @@ package thegame.com.Game.Objects;
 
 import display.Skin;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -66,9 +65,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param height
      * @param width
      * @param map
-     * @throws java.rmi.RemoteException
      */
-    public MapObject(Skin skin, float height, float width, Map map) throws RemoteException
+    public MapObject(Skin skin, float height, float width, Map map)
     {
         this.skin = skin;
         this.playing = map;
@@ -417,10 +415,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         
         Rectangle r1 = new Rectangle(xPosition, yPosition, width, height);
         Rectangle r2 = new Rectangle(mo.getX(), mo.getY(), mo.getW(), mo.getH());
-        
-        if(r2.getX() == 4 && r2.getY() == 21) {
-            System.err.println("");
-        }
         
         boolean right = (r2.getX() >= r1.getX() && r2.getX() <= r1.getX() + r1.getWidth());
         boolean left  = (r2.getX() + r2.getWidth() >= r1.getX() && r2.getX() + r2.getWidth() <= r1.getX() + r1.getWidth());

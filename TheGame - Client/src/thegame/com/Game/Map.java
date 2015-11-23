@@ -49,6 +49,7 @@ public class Map implements Serializable {
     private transient ExecutorService threadPool;
 
     private transient Account myAccount;
+    private transient Player me;
     private transient iGameLogic gameLogic;
     private transient ReentrantLock toUpdateLock;
     private transient ReentrantLock objectsLock;
@@ -73,7 +74,7 @@ public class Map implements Serializable {
      * @param toUpdate
      * @param players
      */
-    public Map(int height, int width, int teamlifes, int time, Array[] seasons, int level, int spawnX, int spawnY, List<Block> blocks, List<MapObject> objects, List<Enemy> enemies, List<Player> players, List<MapObject> toUpdate, Account myAccount, iGameLogic gameLogic)
+    public Map(int height, int width, int teamlifes, int time, Array[] seasons, int level, int spawnX, int spawnY, List<Block> blocks, List<MapObject> objects, List<Enemy> enemies, List<Player> players, List<MapObject> toUpdate, Account myAccount, iGameLogic gameLogic, Player me)
     {
         this.height = height;
         this.width = width;
@@ -90,6 +91,7 @@ public class Map implements Serializable {
         this.blocks = new Block[height][width];
         this.myAccount = myAccount;
         this.gameLogic = gameLogic;
+        this.me = me;
 
         for (Block block : blocks)
         {
@@ -108,7 +110,7 @@ public class Map implements Serializable {
         blocksLock = new ReentrantLock();
     }
 
-    public void loadAfterRecieve(iGameLogic gameLogic, Account myAccount)
+    public void loadAfterRecieve(iGameLogic gameLogic, Account myAccount, Player me)
     {
         for (int y = 0; y < height - 1; y++)
         {
@@ -139,6 +141,7 @@ public class Map implements Serializable {
         blocksLock = new ReentrantLock();
         this.gameLogic = gameLogic;
         this.myAccount = myAccount;
+        this.me = me;
     }
 
     public List<Player> getPlayers()
@@ -318,7 +321,7 @@ public class Map implements Serializable {
             }
         } else if (update instanceof Player)
         {
-            if (!((Player) update).getName().equals(myAccount.getUsername()))
+            if (!update.equals(me))
             {
                 objectsLock.lock();
                 try
@@ -382,18 +385,22 @@ public class Map implements Serializable {
                 {
                     continue;
                 }
-                if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                {
                     return mo;
+                }
 
             }
 
             int bx = (int) Math.floor(x);
             int by = (int) Math.ceil(y);
             MapObject mo = blocks[by][bx];
-            
-            if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
                 return mo;
-            
+            }
+
         } catch (Exception e)
         {
         }
@@ -408,11 +415,23 @@ public class Map implements Serializable {
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
-        
-        if(startX < 0) startX = 0;
-        if(startY < 0) startY = 0;
-        if(endX > width) endX = width;
-        if(endY > height) endY = height;
+
+        if (startX < 0)
+        {
+            startX = 0;
+        }
+        if (startY < 0)
+        {
+            startY = 0;
+        }
+        if (endX > width)
+        {
+            endX = width;
+        }
+        if (endY > height)
+        {
+            endY = height;
+        }
 
         blocksLock.lock();
         try
@@ -466,20 +485,19 @@ public class Map implements Serializable {
         {
             for (MapObject update : toUpdate)
             {
-                updateResults.put(update, threadPool.submit(update));
+                if(!updateResults.containsKey(update))
+                    updateResults.put(update, threadPool.submit(update));
             }
-        } finally
-        {
-            toUpdateLock.unlock();
-        }
 
-        try
-        {
             for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
             {
                 MapObject key = entrySet.getKey();
                 boolean value = entrySet.getValue().get();
-                gameLogic.updateMapObject(key);
+
+                if (key == me)
+                {
+                    gameLogic.updateMapObject(key);
+                }
 
                 if (value)
                 {
@@ -487,31 +505,24 @@ public class Map implements Serializable {
                     {
                         for (MapObject toUpdateMO : collision.getValue())
                         {
-                            toUpdateLock.lock();
-                            try
+                            if (!(toUpdateMO instanceof Block))
                             {
-                                toUpdate.add(toUpdateMO);
-                            } finally
-                            {
-                                toUpdateLock.unlock();
+                                //toUpdate.add(toUpdateMO);
                             }
                         }
                     }
                 } else
                 {
-                    toUpdateLock.lock();
-                    try
-                    {
-                        toUpdate.remove(key);
-                    } finally
-                    {
-                        toUpdateLock.unlock();
-                    }
+                    toUpdate.remove(key);
                 }
             }
         } catch (InterruptedException | ExecutionException | RemoteException ex)
         {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+
+        } finally
+        {
+            toUpdateLock.unlock();
         }
 
     }

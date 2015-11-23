@@ -144,7 +144,7 @@ public class Map implements Serializable {
                 y--;
             }
 
-            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, null, 1, 1, this, gameLogic));
+            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this, gameLogic));
 
         } catch (IOException ex)
         {
@@ -233,14 +233,6 @@ public class Map implements Serializable {
             {
                 blocksLock.unlock();
             }
-            toUpdateLock.lock();
-            try
-            {
-                toUpdate.remove(removeObject);
-            } finally
-            {
-                toUpdateLock.unlock();
-            }
         } else if (removeObject instanceof Enemy)
         {
             objectsLock.lock();
@@ -258,14 +250,6 @@ public class Map implements Serializable {
             } finally
             {
                 enemiesLock.unlock();
-            }
-            toUpdateLock.lock();
-            try
-            {
-                toUpdate.remove(removeObject);
-            } finally
-            {
-                toUpdateLock.unlock();
             }
         } else if (removeObject instanceof Player)
         {
@@ -285,16 +269,17 @@ public class Map implements Serializable {
             {
                 playersLock.unlock();
             }
-            toUpdateLock.lock();
-            try
-            {
-                toUpdate.remove(removeObject);
-            } finally
-            {
-                toUpdateLock.unlock();
-            }
         }
-        
+
+        toUpdateLock.lock();
+        try
+        {
+            toUpdate.remove(removeObject);
+        } finally
+        {
+            toUpdateLock.unlock();
+        }
+
         removeObject.setMap(null);
         publisher.inform(this, "ServerUpdate", "removeMapObject", removeObject);
     }
@@ -364,18 +349,22 @@ public class Map implements Serializable {
                 {
                     continue;
                 }
-                if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                {
                     return mo;
+                }
 
             }
 
             int bx = (int) Math.floor(x);
             int by = (int) Math.ceil(y);
             MapObject mo = blocks[by][bx];
-            
-            if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
                 return mo;
-            
+            }
+
         } catch (Exception e)
         {
         }
@@ -390,11 +379,23 @@ public class Map implements Serializable {
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
-        
-        if(startX < 0) startX = 0;
-        if(startY < 0) startY = 0;
-        if(endX > width) endX = width;
-        if(endY > height) endY = height;
+
+        if (startX < 0)
+        {
+            startX = 0;
+        }
+        if (startY < 0)
+        {
+            startY = 0;
+        }
+        if (endX > width)
+        {
+            endX = width;
+        }
+        if (endY > height)
+        {
+            endY = height;
+        }
 
         blocksLock.lock();
         try
@@ -474,7 +475,7 @@ public class Map implements Serializable {
 
             for (MapObject update : toUpdate)
             {
-                if (!(update instanceof Player))
+                if (!(update instanceof Player) && !updateResults.containsKey(update))
                 {
                     updateResults.put(update, threadPool.submit(update));
                 }
@@ -484,43 +485,35 @@ public class Map implements Serializable {
             {
                 MapObject key = entrySet.getKey();
 
-                try
+                boolean value = entrySet.getValue().get();
+                MapObject toSend = (MapObject) key.clone();
+                toSend.setMap(null);
+                
+                publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
+
+                if ((key instanceof Enemy))
                 {
-                    boolean value = entrySet.getValue().get();
-                    try
-                    {
-                        MapObject toSend = (MapObject) key.clone();
-                        toSend.setMap(null);
-                        publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
-                    } catch (CloneNotSupportedException ex)
-                    {
-                        Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    continue;
+                }
 
-                    if ((key instanceof Enemy))
+                if (value)
+                {
+                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
                     {
-                        continue;
-                    }
-
-                    if (value)
-                    {
-                        for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
+                        for (MapObject toUpdateMO : collision.getValue())
                         {
-                            for (MapObject toUpdateMO : collision.getValue())
-                            {
-                                toUpdate.add(toUpdateMO);
-
-                            }
+                            if(!(toUpdateMO instanceof Block))
+                            toUpdate.add(toUpdateMO);
                         }
-                    } else
-                    {
-                        toUpdate.remove(key);
                     }
-                } catch (InterruptedException | ExecutionException ex)
+                } else
                 {
-                    Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+                    toUpdate.remove(key);
                 }
             }
+        } catch (InterruptedException | ExecutionException | CloneNotSupportedException ex)
+        {
+            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         } finally
         {
             toUpdateLock.unlock();

@@ -1,7 +1,5 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Skin;
-import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.List;
 import thegame.com.Game.GameLogic;
@@ -25,16 +23,14 @@ public class Enemy extends CharacterGame {
      * @param skills, Skills that the enemy has
      * @param x, X- Coordinate of the enemy
      * @param y, Y- Coordinate of the enemy
-     * @param skin, Skin that the enemy has
      * @param height, Height of the enemy
      * @param width, Width of the enemy
      * @param map
      * @param gameLogic
-     * @throws java.rmi.RemoteException
      */
-    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, Map map, GameLogic gameLogic) throws RemoteException
+    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map, GameLogic gameLogic)
     {
-        super(name, hp, skills, x, y, skin, height, width, map, gameLogic);
+        super(name, hp, skills, x, y, height, width, map, gameLogic);
     }
 
     @Override

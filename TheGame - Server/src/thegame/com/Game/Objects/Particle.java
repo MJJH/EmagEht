@@ -29,11 +29,10 @@ public class Particle extends MapObject {
      * @param map
      * @param count the ammount of this object
      * @param gameLogic
-     * @throws java.rmi.RemoteException
      */
-    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count, GameLogic gameLogic) throws RemoteException
+    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count, GameLogic gameLogic)
     {
-        super(x, y, object.getSkin(), height, width, 0, map, gameLogic);
+        super(x, y, height, width, 0, map, gameLogic);
         setObject(object);
         this.count = count;
     }
