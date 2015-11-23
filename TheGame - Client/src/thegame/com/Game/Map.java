@@ -496,7 +496,8 @@ public class Map implements Serializable {
 
                 if (key == me)
                 {
-                    gameLogic.updateMapObject(key);
+                    //gameLogic.updateMapObject(key);
+                    gameLogic.movePlayer(me.getID(), me.getX(),me.getY());
                 }
 
                 if (value)

@@ -523,6 +523,8 @@ public class Map implements Serializable {
 
     public void addToUpdate(MapObject toUpdateMO)
     {
+        if(toUpdate.contains(toUpdateMO)) return;
+        
         toUpdateLock.lock();
         try
         {

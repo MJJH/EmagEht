@@ -230,4 +230,20 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         
         return false;
     }
+
+    @Override
+    public void movePlayer(int id, float x, float y) throws RemoteException
+    {
+        for (Player player : map.getPlayers())
+        {
+            if (player.getID() == id)
+            {
+                player.setCords(x,y);
+                float[] toSend = {id,x,y};
+                
+                publisher.inform(this, "ServerUpdate", "movePlayer", toSend);
+                return;
+            }
+        }
+    }
 }

@@ -69,4 +69,10 @@ public class Player extends CharacterGame {
         
         return false;
     }
+
+    public void setCords(float x, float y)
+    {
+        xPosition = x;
+        yPosition = y;
+    }
 }
