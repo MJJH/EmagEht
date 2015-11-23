@@ -293,7 +293,7 @@ public abstract class MapObject {
         collision.put(sides.CENTER, new ArrayList<>());
 
         
-        List<MapObject> mos = playing.getObjects((int) Math.round(xPosition - 1), 
+        List<MapObject> mos = playing.getBlocksAndObjects((int) Math.round(xPosition - 1), 
                                                 (int) Math.round(yPosition - height - 1), 
                                                 (int) Math.round(xPosition + width + 1), 
                                                 (int) Math.round(yPosition + 1));

@@ -25,9 +25,9 @@ public class Block extends MapObject {
      * @param map
      * @throws java.rmi.RemoteException
      */
-    public Block(BlockType type, float x, float y, float solid, Map map) throws RemoteException
+public Block(BlockType type, float x, float y,  Map map)
     {
-        super(x, y, type.skin, 1.0f, 1.0f, solid, map);
+        super(x, y, type.skin, 1.0f, 1.0f, type.solid, map);
         this.type = type;
     }
 

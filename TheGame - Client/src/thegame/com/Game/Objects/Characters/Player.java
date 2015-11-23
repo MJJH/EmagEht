@@ -75,6 +75,12 @@ public class Player extends CharacterGame {
         if(moveV(collision))
             ret = true;
         
+        while(!collision.get(sides.CENTER).isEmpty()) {
+            yPosition++;
+            collision = collision();
+            ret = true;
+        }
+        
         return ret;
     }
 }

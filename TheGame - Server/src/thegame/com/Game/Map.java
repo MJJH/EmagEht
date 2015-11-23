@@ -114,26 +114,28 @@ public class Map implements Serializable {
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, this, gameLogic);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, this, gameLogic);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, this, gameLogic);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, this, gameLogic);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, this, gameLogic);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, this, gameLogic);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, this, gameLogic);
                             break;
+                        case 'b':
+                            blocks[y][x] = new Block(BlockType.Wood, x, y, this, gameLogic);
                     }
 
                     x++;
@@ -350,7 +352,7 @@ public class Map implements Serializable {
         return height;
     }
 
-    public MapObject GetTile(float x, float y, MapObject self, boolean relative)
+    public MapObject GetTile(float x, float y, MapObject self)
     {
         // Find in blocks
         try
@@ -362,49 +364,18 @@ public class Map implements Serializable {
                 {
                     continue;
                 }
+                if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                    return mo;
 
-                if (relative)
-                {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
-                    {
-                        return mo;
-                    }
-                } else
-                {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH())
-                    {
-                        return mo;
-                    }
-                }
             }
 
             int bx = (int) Math.floor(x);
-            int by;
-            if (relative)
-            {
-                by = (int) Math.floor(y);
-            } else
-            {
-                by = (int) Math.ceil(y);
-            }
-
-            Block found = blocks[by][bx];
-
-            if (relative)
-            {
-                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            } else
-            {
-                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            }
+            int by = (int) Math.ceil(y);
+            MapObject mo = blocks[by][bx];
+            
+            if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                return mo;
+            
         } catch (Exception e)
         {
         }
@@ -415,35 +386,54 @@ public class Map implements Serializable {
     {
         List<MapObject> ret = new ArrayList<>();
 
-        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+        if (startX >= endX || startY >= endY)
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
+        
+        if(startX < 0) startX = 0;
+        if(startY < 0) startY = 0;
+        if(endX > width) endX = width;
+        if(endY > height) endY = height;
 
-        for (int y = startY; y < endY; y++)
+        blocksLock.lock();
+        try
         {
-            for (int x = startX; x < endX; x++)
+            for (int y = startY; y < endY; y++)
             {
-                try
+                for (int x = startX; x < endX; x++)
                 {
-                    Block cur = blocks[y][x];
-
-                    if (cur != null)
+                    try
                     {
-                        ret.add(cur);
+                        Block cur = blocks[y][x];
+
+                        if (cur != null)
+                        {
+                            ret.add(cur);
+                        }
+                    } catch (Exception e)
+                    {
                     }
-                } catch (Exception e)
-                {
                 }
             }
+        } finally
+        {
+            blocksLock.unlock();
         }
 
-        for (MapObject mo : objects)
+        objectsLock.lock();
+        try
         {
-            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
+            for (MapObject mo : objects)
             {
-                ret.add(mo);
+                if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
+                {
+                    ret.add(mo);
+                }
             }
+        } finally
+        {
+            objectsLock.unlock();
         }
 
         return ret;

@@ -370,81 +370,49 @@ public class Map implements Serializable {
         return height;
     }
 
-    public MapObject GetTile(float x, float y, MapObject self, boolean relative)
+    public MapObject GetTile(float x, float y, MapObject self)
     {
         // Find in blocks
         try
         {
-            objectsLock.lock();
-            try
-            {
-                for (MapObject mo : objects)
-                {
-                    if (mo.equals(self) || mo.getS() == 0)
-                    {
-                        continue;
-                    }
 
-                    if (relative)
-                    {
-                        if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
-                        {
-                            return mo;
-                        }
-                    } else
-                    {
-                        if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH())
-                        {
-                            return mo;
-                        }
-                    }
-                }
-            } finally
+            for (MapObject mo : objects)
             {
-                objectsLock.unlock();
+                if (mo.equals(self) || mo.getS() == 0)
+                {
+                    continue;
+                }
+                if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                    return mo;
+
             }
 
             int bx = (int) Math.floor(x);
-            int by;
-            if (relative)
-            {
-                by = (int) Math.floor(y);
-            } else
-            {
-                by = (int) Math.ceil(y);
-            }
-
-            Block found = blocks[by][bx];
-
-            if (relative)
-            {
-                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            } else
-            {
-                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            }
+            int by = (int) Math.ceil(y);
+            MapObject mo = blocks[by][bx];
+            
+            if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                return mo;
+            
         } catch (Exception e)
         {
         }
         return null;
     }
 
-    public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
+    public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<>();
 
-        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+        if (startX >= endX || startY >= endY)
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
+        
+        if(startX < 0) startX = 0;
+        if(startY < 0) startY = 0;
+        if(endX > width) endX = width;
+        if(endY > height) endY = height;
 
         blocksLock.lock();
         try

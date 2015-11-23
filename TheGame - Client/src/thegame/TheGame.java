@@ -110,6 +110,8 @@ public class TheGame extends Application {
             } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
             {
                 keys.remove(event.getCode());
+                if(event.getCode() == KeyCode.W)
+                    me.stopJump();
             }
         } else
         {
@@ -123,7 +125,7 @@ public class TheGame extends Application {
                 {
                     float x = Math.round(me.getX());
                     float y = Math.round(me.getY()) - 1;
-                    Block block = new Block(BlockType.Dirt, x, y, 1, play);
+                    Block block = new Block(BlockType.Dirt, x, y, play);
                     play.addMapObject(block);
                 }
             } catch (RemoteException e)
@@ -356,7 +358,7 @@ public class TheGame extends Application {
         }
 
         // Ask the map for the blocks and objects that should be drawn in this area.
-        return play.getObjects(startX, startY, endX, endY);
+        return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
 
     /**

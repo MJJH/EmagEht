@@ -27,9 +27,9 @@ public class Block extends MapObject {
      * @param gameLogic
      * @throws java.rmi.RemoteException
      */
-    public Block(BlockType type, float x, float y, float solid, Map map, GameLogic gameLogic) throws RemoteException
+    public Block(BlockType type, float x, float y, Map map, GameLogic gameLogic) throws RemoteException
     {
-        super(x, y, type.skin, 1.0f, 1.0f, solid, map, gameLogic);
+        super(x, y, type.skin, 1.0f, 1.0f, type.solid, map, gameLogic);
         this.type = type;
     }
 

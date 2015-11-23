@@ -66,7 +66,7 @@ public class Player extends CharacterGame {
     @Override
     public Boolean call() 
     {
-        EnumMap<sides, List<MapObject>> collision = collision();
+        /*EnumMap<sides, List<MapObject>> collision = collision();
         Boolean ret = false;
         if(fall(collision))
             ret = true;
@@ -77,6 +77,8 @@ public class Player extends CharacterGame {
         if(moveV(collision))
             ret = true;
         
-        return ret;
+        return ret;*/
+        
+        return false;
     }
 }

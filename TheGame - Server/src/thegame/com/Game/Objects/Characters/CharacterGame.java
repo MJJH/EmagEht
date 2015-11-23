@@ -28,6 +28,8 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected java.util.Map<MapObject, Integer> backpack;
+    
+    protected boolean jumping = false;
 
     /**
      * This constructor creates a new in game character.
@@ -53,7 +55,7 @@ public abstract class CharacterGame extends MapObject {
         backpack = new HashMap();
         armor = new HashMap();
         direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 1.5f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
 
@@ -62,11 +64,16 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkRight()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.RIGHT;
+        
+        if(!c.get(sides.RIGHT).isEmpty())
+            return;
+        
         if (hSpeed < 0)
         {
             hSpeed = 0.4f;
-        } else if (hSpeed < 0.4)
+        } else if (hSpeed < 1)
         {
             hSpeed += 0.4;
         }
@@ -76,11 +83,16 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkLeft()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.LEFT;
+        
+        if(!c.get(sides.LEFT).isEmpty())
+            return;
+        
         if (hSpeed > 0)
         {
             hSpeed = -0.4f;
-        } else if (hSpeed > -0.4)
+        } else if (hSpeed > -1)
         {
             hSpeed -= 0.4;
         }
@@ -91,14 +103,26 @@ public abstract class CharacterGame extends MapObject {
     public void jump()
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if (!c.get(sides.BOTTOM).isEmpty())
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
         {
-            vSpeed = 0.6f;
+            jumping = true;
+            vSpeed += 0.2f;
+        
+            if(vSpeed >= 0.8f) {
+                vSpeed = 0.8f;
+                jumping = false;
+            }
         }
         
         playing.addToUpdate(this);
     }
 
+    public void stopJump() {
+        jumping = false;
+        
+        playing.addToUpdate(this);
+    }
+        
     public void knockBack(int kb, sides hitDirection)
     {
         switch (hitDirection)
@@ -325,7 +349,7 @@ public abstract class CharacterGame extends MapObject {
 
     public boolean useTool(float x, float y)
     {
-        MapObject click = playing.GetTile(x, y, this, false);
+        MapObject click = playing.GetTile(x, y, this);
         if (click != null && holding != null && holding.type.range >= distance(click) && System.currentTimeMillis() - used >= holding.type.speed)
         {
             if (!(click instanceof Block))

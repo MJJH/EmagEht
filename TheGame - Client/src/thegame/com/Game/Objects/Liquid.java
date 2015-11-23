@@ -25,9 +25,9 @@ public class Liquid extends Block {
      * @param solid     the density of this object
      */
     
-    public Liquid(BlockType blockType, float volume, float x, float y, float solid, Map map) throws RemoteException
+    public Liquid(BlockType blockType, float volume, float x, float y, Map map) throws RemoteException
     {
-        super(blockType, x, y, solid, map);
+        super(blockType, x, y, map);
         this.volume = volume;
     }
     

@@ -197,7 +197,7 @@ public class Map {
         return null;
     }
 
-    public List<MapObject> getObjects(int startX, int startY, int endX, int endY)
+    public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY)
     {
         List<MapObject> ret = new ArrayList<MapObject>();
 
