@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import java.io.IOException;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -159,7 +160,7 @@ public class TheGame extends Application {
 
     }
 
-    private void draw(GraphicsContext g)
+    private void draw(GraphicsContext g) throws IOException
     {
         float pX = me.getX();
         float pY = me.getY();
@@ -243,13 +244,16 @@ public class TheGame extends Application {
                 g.beginPath();
                 if (draw instanceof Player)
                 {
-                    g.setFill(Color.BLACK);
+                InputStream is = Files.newInputStream(Paths.get("src/resources//testplayer.png"));
+                Image img = new Image(is);
+                g.drawImage(img, x, y,width,height);  
+                //g.setFill(Color.BLACK);
                 } else if (draw instanceof Enemy)
                 {
                     g.setFill(Color.RED);
                 }
-                g.rect(x, y, width, height);
-                g.fill();
+                //g.rect(x, y, width, height);
+                //g.fill();
 
                 // ARROW
                 double[] xPoints = new double[3];
@@ -273,8 +277,8 @@ public class TheGame extends Application {
                         break;
                 }
 
-                g.setFill(Color.GREEN);
-                g.fillPolygon(xPoints, yPoints, 3);
+               // g.setFill(Color.GREEN);
+               //g.fillPolygon(xPoints, yPoints, 3);
 
                 g.closePath();
             } else
@@ -431,7 +435,11 @@ public class TheGame extends Application {
                 fps++;
                 delta += currentTime - lastTime;
 
-                draw(gc);
+                try {
+                    draw(gc);
+                } catch (IOException ex) {
+                    Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 if (delta > ONE_SECOND)
                 {
