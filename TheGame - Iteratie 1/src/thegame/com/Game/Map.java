@@ -79,26 +79,28 @@ public class Map {
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, this);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, this);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, this);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, this);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, this);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, this);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, 1, this);
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, this);
                             break;
+                        case 'b':
+                            blocks[y][x] = new Block(BlockType.Wood, x, y, this);
                     }
 
                     x++;
@@ -165,7 +167,7 @@ public class Map {
         return height;
     }
 
-    public MapObject GetTile(float x, float y, MapObject self, boolean relative)
+    public MapObject GetTile(float x, float y, MapObject self)
     {
         // Find in blocks
         try
@@ -177,49 +179,18 @@ public class Map {
                 {
                     continue;
                 }
+                if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                    return mo;
 
-                if (relative)
-                {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f >= mo.getY() && y + .001f <= mo.getY() + mo.getH())
-                    {
-                        return mo;
-                    }
-                } else
-                {
-                    if (x + .001f >= mo.getX() && x + .001f <= mo.getX() + mo.getW() && y + .001f <= mo.getY() && y + .001f >= mo.getY() - mo.getH())
-                    {
-                        return mo;
-                    }
-                }
             }
 
             int bx = (int) Math.floor(x);
-            int by;
-            if (relative)
-            {
-                by = (int) Math.floor(y);
-            } else
-            {
-                by = (int) Math.ceil(y);
-            }
-
-            Block found = blocks[by][bx];
-
-            if (relative)
-            {
-                if (x >= bx && x <= bx + found.getW() && y >= by && y <= by + found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            } else
-            {
-                if (x >= bx && x <= bx + found.getW() && y <= by && y >= by - found.getH())
-                {
-                    found.debug = true;
-                    return found;
-                }
-            }
+            int by = (int) Math.ceil(y);
+            MapObject mo = blocks[by][bx];
+            
+            if(mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                return mo;
+            
         } catch (Exception e)
         {
         }
@@ -230,10 +201,15 @@ public class Map {
     {
         List<MapObject> ret = new ArrayList<MapObject>();
 
-        if (startX < 0 || startY < 0 || endX > width || endY > height || startX >= endX || startY >= endY)
+        if (startX >= endX || startY >= endY)
         {
             throw new IllegalArgumentException("Wrong start and end parameters given");
         }
+        
+        if(startX < 0) startX = 0;
+        if(startY < 0) startY = 0;
+        if(endX > width) endX = width;
+        if(endY > height) endY = height;
 
         for (int y = startY; y < endY; y++)
         {

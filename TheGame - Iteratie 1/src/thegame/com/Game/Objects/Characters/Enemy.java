@@ -69,7 +69,6 @@ public class Enemy extends CharacterGame {
                                 jump();
                             }
                         }
-                        collision.get(sides.LEFT).get(0).hit(holding, sides.LEFT);
                         // COLLISION RIGHT
                     } else if (collision.get(sides.RIGHT).size() > 0)
                     {
@@ -117,6 +116,11 @@ public class Enemy extends CharacterGame {
         fall(collision);
         moveH(collision);
         moveV(collision);
+        
+        while(!collision.get(sides.CENTER).isEmpty()) {
+            yPosition++;
+            collision = collision();
+        }
     }
 
 }

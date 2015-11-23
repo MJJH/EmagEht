@@ -17,12 +17,11 @@ public class Block extends MapObject {
      * @param type The type of the block
      * @param x the X-coordinate of its location
      * @param y the Y- coordinate of its location
-     * @param solid A Float representing its liquefide state.
      * @param map
      */
-    public Block(BlockType type, float x, float y, float solid, Map map)
+    public Block(BlockType type, float x, float y,  Map map)
     {
-        super(x, y, type.skin, 1.0f, 1.0f, solid, map);
+        super(x, y, type.skin, 1.0f, 1.0f, type.solid, map);
         this.type = type;
     }
 

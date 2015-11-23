@@ -65,5 +65,10 @@ public class Player extends CharacterGame {
         fall(collision);
         moveH(collision);
         moveV(collision);
+        
+        while(!collision.get(sides.CENTER).isEmpty()) {
+            yPosition++;
+            collision = collision();
+        }
     }
 }

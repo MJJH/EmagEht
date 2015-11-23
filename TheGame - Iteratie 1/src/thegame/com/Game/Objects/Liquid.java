@@ -18,14 +18,11 @@ public class Liquid extends Block {
      * @param volume    the volume of the liquid still in this block
      * @param x         the horizontal position of this object
      * @param y         the vertical position of this object
-     * @param height    the height of this object
-     * @param width     the width of this object
-     * @param solid     the density of this object
      */
     
-    public Liquid(BlockType blockType, float volume, float x, float y, float solid, Map map)
+    public Liquid(BlockType blockType, float volume, float x, float y, Map map)
     {
-        super(blockType, x, y, solid, map);
+        super(blockType, x, y, map);
         this.volume = volume;
     }
     
