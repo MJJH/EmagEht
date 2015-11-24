@@ -379,7 +379,7 @@ public class TheGame extends Application {
     {
         try
         {
-            server = LocateRegistry.getRegistry(config.port);
+            server = LocateRegistry.getRegistry(config.ip, config.port);
             gameLogic = (iGameLogic) server.lookup(config.bindName);
             Random rand = new Random();
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
@@ -503,13 +503,13 @@ public class TheGame extends Application {
 
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
-
-        MenuItem startThegame = new MenuItem("SINGLE PLAYER");
-        startThegame.setOnMouseClicked(event -> startagame(stages));
+        
+        MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
+        startMultiPlayer.setOnMouseClicked(event -> startagame(stages));
 
         MenuBox menu = new MenuBox(
-                startThegame,
-                new MenuItem("MULTIPLAYER [soon]"),
+                new MenuItem("SINGLE PLAYER [soon]"),
+                startMultiPlayer,
                 new MenuItem("CHARACTERS [soon]"),
                 new MenuItem("OPTIONS [soon]"),
                 itemExit);
