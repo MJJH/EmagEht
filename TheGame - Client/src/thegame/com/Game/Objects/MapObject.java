@@ -473,6 +473,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     public void createSkin()
     {
-
+        // code for skin
     }
 }

@@ -61,7 +61,7 @@ public interface iGameLogic extends IRemotePublisher {
     
     public void updateMapObject(MapObject toUpdate) throws RemoteException;
     
-    public boolean useTool (Player me, float x, float y) throws RemoteException;
+    public boolean useTool (int id, float x, float y) throws RemoteException;
 
-    public void movePlayer(int id, float x, float y) throws RemoteException;
+    public void sendMyLoc(int id, float x, float y) throws RemoteException;
 }

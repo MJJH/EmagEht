@@ -21,9 +21,7 @@ public class Block extends MapObject {
      * @param type The type of the block
      * @param x the X-coordinate of its location
      * @param y the Y- coordinate of its location
-     * @param solid A Float representing its liquefide state.
      * @param map
-     * @throws java.rmi.RemoteException
      */
 public Block(BlockType type, float x, float y,  Map map)
     {

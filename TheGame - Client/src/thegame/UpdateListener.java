@@ -39,11 +39,14 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         }
         if (!(evt.getNewValue() instanceof MapObject))
         {
-            float[] playerArray = (float[]) evt.getNewValue();
-            int id = (int) playerArray[0];
-            float x = playerArray[1];
-            float y = playerArray[2];
-            updatePlayer(id, x, y);
+            switch((String) evt.getOldValue()){
+                case "sendPlayerLoc":
+                    updatePlayer((float[]) evt.getNewValue());
+                    break;
+                case "removeMapObject":
+                    removeMapObject((int[]) evt.getNewValue());
+                    break;
+            }
             return;
         }
         MapObject toChange = (MapObject) evt.getNewValue();
@@ -66,11 +69,14 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
                 map.updateMapObject(toChange);
                 break;
         }
-
     }
 
-    private void updatePlayer(int id, float x, float y)
+    private void updatePlayer(float [] playerArray)
     {
+        int id = (int) playerArray[0];
+        float x = playerArray[1];
+        float y = playerArray[2];
+
         for (Player player : map.getPlayers())
         {
             if (player.getID() == id)
@@ -79,5 +85,15 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
                 return;
             }
         }
+    }
+
+    private void removeMapObject(int[] a)
+    {
+        int type = a[0];
+        int id = a[1];
+        int x = a[2];
+        int y = a[3];
+        
+        map.removeMapObject(type, id, x, y);
     }
 }

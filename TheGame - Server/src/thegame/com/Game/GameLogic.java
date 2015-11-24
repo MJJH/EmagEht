@@ -218,11 +218,11 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public boolean useTool(Player me, float x, float y) throws RemoteException
+    public boolean useTool(int id, float x, float y) throws RemoteException
     {
         for (Player player : map.getPlayers())
         {
-            if (player.equals(me))
+            if (player.getID() == id)
             {
                 return player.useTool(x, y);
             }
@@ -232,16 +232,17 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public void movePlayer(int id, float x, float y) throws RemoteException
+    public void sendMyLoc(int id, float x, float y) throws RemoteException
     {
         for (Player player : map.getPlayers())
         {
             if (player.getID() == id)
             {
+                if(player.getX() == x && player.getY() == y) return;
                 player.setCords(x,y);
                 float[] toSend = {id,x,y};
                 
-                publisher.inform(this, "ServerUpdate", "movePlayer", toSend);
+                publisher.inform(this, "ServerUpdate", "sendPlayerLoc", toSend);
                 return;
             }
         }

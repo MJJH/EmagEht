@@ -94,7 +94,7 @@ public class Player extends CharacterGame {
         {
             try
             {
-                return gameLogic.useTool(this, x, y);
+                return gameLogic.useTool(id, x, y);
             } catch (RemoteException ex)
             {
                 Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);

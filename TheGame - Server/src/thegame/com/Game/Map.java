@@ -221,8 +221,10 @@ public class Map implements Serializable {
 
     public void removeMapObject(MapObject removeObject)
     {
+        int type = 0;
         if (removeObject instanceof Block)
         {
+            type = 1;
             blocksLock.lock();
             try
             {
@@ -235,6 +237,7 @@ public class Map implements Serializable {
             }
         } else if (removeObject instanceof Enemy)
         {
+            type = 2;
             objectsLock.lock();
             try
             {
@@ -253,6 +256,7 @@ public class Map implements Serializable {
             }
         } else if (removeObject instanceof Player)
         {
+            type = 3;
             objectsLock.lock();
             try
             {
@@ -279,9 +283,12 @@ public class Map implements Serializable {
         {
             toUpdateLock.unlock();
         }
-
-        removeObject.setMap(null);
-        publisher.inform(this, "ServerUpdate", "removeMapObject", removeObject);
+        int[] toDelete = new int[4];
+        toDelete[0] = type;
+        toDelete[1] = removeObject.getID();
+        toDelete[2] = (int)removeObject.getX();
+        toDelete[3] = (int)removeObject.getY();
+        publisher.inform(this, "ServerUpdate", "removeMapObject", toDelete);
     }
 
     public void updateMapObject(MapObject update)
