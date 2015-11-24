@@ -19,6 +19,7 @@ public enum config {
     }
     
     public static String bindName = "gameLogic";
-    public static String ip = "127.0.0.1";
+    //public static String ip = "192.168.1.101";
+    public static String ip = "localhost";
     public static int port = 1099;
 }
