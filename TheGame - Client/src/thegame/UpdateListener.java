@@ -23,11 +23,13 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
 
     private Map map;
     private Account myAccount;
+    private Player me;
 
     public UpdateListener(Map map, Account myAccount) throws RemoteException
     {
         this.map = map;
         this.myAccount = myAccount;
+        this.me = me;
     }
 
     @Override

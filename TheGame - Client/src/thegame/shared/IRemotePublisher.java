@@ -2,6 +2,7 @@ package thegame.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import thegame.com.Game.Objects.Characters.Player;
 
 /**
  *
@@ -15,9 +16,10 @@ public interface IRemotePublisher extends Remote {
      * @param listener Object implementing IRemotePropertyListener that wants to
      * subscribe to a property
      * @param property Property that listener wants to subscribe to
+     * @param listenerPlayer
      * @throws RemoteException
      */
-    void addListener(IRemotePropertyListener listener, String property) throws RemoteException;
+    void addListener(IRemotePropertyListener listener, String property, Player listenerPlayer) throws RemoteException;
 
     /**
      * Unsubscribe a listener from a property

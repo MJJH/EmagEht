@@ -41,6 +41,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         });
 
         map = new Map(publisher, this);
+        publisher.registerMap(map);
 
         Timer update = new Timer("update");
         update.schedule(new TimerTask() {
@@ -54,9 +55,9 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public void addListener(IRemotePropertyListener listener, String property) throws RemoteException
+    public void addListener(IRemotePropertyListener listener, String property, Player listenerPlayer) throws RemoteException
     {
-        publisher.addListener(listener, property);
+        publisher.addListener(listener, property, listenerPlayer);
     }
 
     @Override

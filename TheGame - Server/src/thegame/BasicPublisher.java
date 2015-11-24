@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.shared.IRemotePropertyListener;
+import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.Player;
+import thegame.com.Game.Objects.MapObject;
 
 /**
  * @author Frank Peeters
@@ -14,6 +17,8 @@ import thegame.shared.IRemotePropertyListener;
  * machine;
  */
 public class BasicPublisher {
+    private Map map;
+    private final HashMap<IRemotePropertyListener, Player> playerListenersTable;
 
     /**
      * de listeners die onder de null-String staan geregistreerd zijn listeners
@@ -34,6 +39,7 @@ public class BasicPublisher {
      * propertylisteners bij die zich op alle properties hebben geabonneerd.
      *
      * @param properties
+     * @param map
      */
     public BasicPublisher(String[] properties)
     {
@@ -44,6 +50,8 @@ public class BasicPublisher {
             listenersTable.put(s, new HashSet<>());
         }
         setPropertiesString();
+        
+        playerListenersTable = new HashMap<>();
     }
 
     /**
@@ -54,12 +62,15 @@ public class BasicPublisher {
      * @param property mag null zijn, dan abonneert listener zich op alle
      * properties; property moet wel een eigenschap zijn waarop je je kunt
      * abonneren
+     * @param listenerPlayer
      */
-    public void addListener(IRemotePropertyListener listener, String property)
+    public void addListener(IRemotePropertyListener listener, String property, Player listenerPlayer)
     {
         checkInBehalfOfProgrammer(property);
 
         listenersTable.get(property).add(listener);
+        listenerPlayer.setMap(map);
+        playerListenersTable.put(listener, listenerPlayer);
     }
 
     /**
@@ -131,7 +142,10 @@ public class BasicPublisher {
             } catch (RemoteException ex)
             {
                 removeListener(listener, null);
-                Logger.getLogger(BasicPublisher.class.getName()).log(Level.SEVERE, null, ex);
+                MapObject removePlayer = playerListenersTable.get(listener);
+                map.removeMapObject(removePlayer);
+                playerListenersTable.remove(listener);
+                System.out.println("Connection to "+((Player)removePlayer).getName()+" has been lost");
             }
 
         }
@@ -221,5 +235,10 @@ public class BasicPublisher {
     public Iterator<String> getProperties()
     {
         return listenersTable.keySet().iterator();
+    }
+
+    public void registerMap(Map map)
+    {
+        this.map = map;
     }
 }

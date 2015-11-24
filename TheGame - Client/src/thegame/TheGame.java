@@ -146,6 +146,7 @@ public class TheGame extends Application {
             double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
 
             me.useTool((float) clickX, (float) clickY, gameLogic);
+            play.addToUpdate(me);
         }
     };
     private Stage stages;
@@ -387,8 +388,9 @@ public class TheGame extends Application {
             play = (Map) gameLogic.getMap();
             play.loadAfterRecieve(gameLogic, myAccount, me);
             me.setMap(play);
+            play.addToUpdate(me);
             listener = new UpdateListener(play, myAccount);
-            gameLogic.addListener(listener, "ServerUpdate");
+            gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);

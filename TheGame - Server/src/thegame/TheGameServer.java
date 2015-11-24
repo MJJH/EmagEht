@@ -8,9 +8,7 @@ package thegame;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
 import javafx.application.Application;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import thegame.com.Game.GameLogic;
 
