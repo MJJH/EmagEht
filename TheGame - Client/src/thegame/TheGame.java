@@ -286,11 +286,6 @@ public class TheGame extends Application {
             } else
             {
                 g.beginPath();
-                if (draw.getSkin() == null)
-                {
-                    draw.createSkin();
-                    System.out.println(draw.getClass() + " has no skin (ID: " + draw.getID() + ", "+ ((Block)draw) + ")");
-                }
                 g.drawImage(draw.getSkin().show(), x, y);
                 g.closePath();
             }

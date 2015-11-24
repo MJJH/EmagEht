@@ -112,9 +112,9 @@ public class Map implements Serializable {
 
     public void loadAfterRecieve(iGameLogic gameLogic, Account myAccount, Player me)
     {
-        for (int y = 0; y < height - 1; y++)
+        for (int y = 0; y < height; y++)
         {
-            for (int x = 0; x < width - 1; x++)
+            for (int x = 0; x < width; x++)
             {
                 try
                 {

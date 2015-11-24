@@ -17,6 +17,7 @@ import thegame.com.Game.Objects.MapObject;
  * machine;
  */
 public class BasicPublisher {
+
     private Map map;
     private final HashMap<IRemotePropertyListener, Player> playerListenersTable;
 
@@ -50,7 +51,7 @@ public class BasicPublisher {
             listenersTable.put(s, new HashSet<>());
         }
         setPropertiesString();
-        
+
         playerListenersTable = new HashMap<>();
     }
 
@@ -131,9 +132,20 @@ public class BasicPublisher {
             }
         }
 
+        int id = 0;
+        if (newValue instanceof float[] && oldValue instanceof String)
+        {
+            id = Math.round(((float[]) newValue)[0]);
+        }
+
         for (IRemotePropertyListener listener : alertable)
         {
 
+            if (id != 0 && ((String)oldValue).equals("sendPlayerLoc") && playerListenersTable.get(listener).getID() == id)
+            {
+                continue;
+            }
+            
             PropertyChangeEvent evt = new PropertyChangeEvent(
                     source, property, oldValue, newValue);
             try
@@ -145,7 +157,7 @@ public class BasicPublisher {
                 MapObject removePlayer = playerListenersTable.get(listener);
                 map.removeMapObject(removePlayer);
                 playerListenersTable.remove(listener);
-                System.out.println("Connection to "+((Player)removePlayer).getName()+" has been lost");
+                System.out.println("Connection to " + ((Player) removePlayer).getName() + " has been lost");
             }
 
         }

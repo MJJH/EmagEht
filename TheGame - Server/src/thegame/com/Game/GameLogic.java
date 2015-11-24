@@ -29,7 +29,7 @@ import thegame.shared.iGameLogic;
 public class GameLogic extends UnicastRemoteObject implements iGameLogic {
 
     private Map map;
-    public static BasicPublisher publisher;
+    public BasicPublisher publisher;
     private int mapObjectID;
 
     public GameLogic() throws RemoteException
@@ -228,7 +228,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
                 return player.useTool(x, y);
             }
         }
-        
+
         return false;
     }
 
@@ -239,10 +239,16 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         {
             if (player.getID() == id)
             {
-                if(player.getX() == x && player.getY() == y) return;
-                player.setCords(x,y);
-                float[] toSend = {id,x,y};
-                
+                if (player.getX() == x && player.getY() == y)
+                {
+                    return;
+                }
+                player.setCords(x, y);
+                float[] toSend =
+                {
+                    id, x, y
+                };
+
                 publisher.inform(this, "ServerUpdate", "sendPlayerLoc", toSend);
                 return;
             }
