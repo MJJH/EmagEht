@@ -221,6 +221,15 @@ public class Map implements Serializable {
 
     public void removeMapObject(MapObject removeObject)
     {
+        toUpdateLock.lock();
+        try
+        {
+            toUpdate.remove(removeObject);
+        } finally
+        {
+            toUpdateLock.unlock();
+        }
+        
         int type = 0;
         if (removeObject instanceof Block)
         {
@@ -274,15 +283,7 @@ public class Map implements Serializable {
                 playersLock.unlock();
             }
         }
-
-        toUpdateLock.lock();
-        try
-        {
-            toUpdate.remove(removeObject);
-        } finally
-        {
-            toUpdateLock.unlock();
-        }
+        
         int[] toDelete = new int[4];
         toDelete[0] = type;
         toDelete[1] = removeObject.getID();
