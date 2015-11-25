@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import thegame.BasicPublisher;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -306,10 +307,50 @@ public class Map implements Serializable {
 
     public MapObject GetTile(float x, float y, MapObject self)
     {
-        // Find in blocks
+        // Find in enemies
+        enemiesLock.lock();
+        try{
+            for (Enemy mo : enemies)
+            {
+                if (mo.equals(self) || mo.getS() == 0)
+                {
+                    continue;
+                }
+                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                {
+                    return mo;
+                }
+            }
+        }
+        finally
+        {
+            enemiesLock.unlock();
+        }
+        
+        // Find in players
+        playersLock.lock();
+        try{
+            for (Player mo : players)
+            {
+                if (mo.equals(self) || mo.getS() == 0)
+                {
+                    continue;
+                }
+                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+                {
+                    return mo;
+                }
+            }
+        }
+        finally
+        {
+            playersLock.unlock();
+        }
+        
+        // Find in objects
+        objectsLock.lock();
         try
         {
-
             for (MapObject mo : objects)
             {
                 if (mo.equals(self) || mo.getS() == 0)
@@ -320,9 +361,16 @@ public class Map implements Serializable {
                 {
                     return mo;
                 }
-
             }
+        } finally
+        {
+            objectsLock.unlock();
+        }
 
+        // Find in blocks
+        blocksLock.lock();
+        try
+        {
             int bx = (int) Math.floor(x);
             int by = (int) Math.ceil(y);
             MapObject mo = blocks[by][bx];
@@ -334,7 +382,11 @@ public class Map implements Serializable {
 
         } catch (Exception e)
         {
+        } finally
+        {
+            blocksLock.unlock();
         }
+        
         return null;
     }
 
@@ -486,8 +538,7 @@ public class Map implements Serializable {
                 MapObject toSend = (MapObject) key.clone();
                 toSend.setMap(null);
 
-                publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
-
+                //publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
                 if ((key instanceof Enemy))
                 {
                     continue;
@@ -570,5 +621,29 @@ public class Map implements Serializable {
     List<MapObject> getToUpdate()
     {
         return toUpdate;
+    }
+
+    public void sendUpdateHP(int type, int id, int hp)
+    {
+        int[] toSend =
+        {
+            type, id, hp
+        };
+        publisher.inform(this, "ServerUpdate", "updateHP", toSend);
+    }
+
+    public void sendRespawn(int id, float xPosition, float yPosition)
+    {
+        float[] toSend =
+        {
+            id, xPosition, yPosition
+        };
+        publisher.inform(this, "ServerUpdate", "respawnPlayer", toSend);
+    }
+
+    public void sendKnockBack(int id, float hSpeed, float vSpeed)
+    {
+        float[] toSend = {id,hSpeed,vSpeed};
+        publisher.inform(this, "ServerUpdate", "knockBackPlayer", toSend);
     }
 }

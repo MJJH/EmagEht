@@ -56,9 +56,4 @@ public class Particle extends MapObject {
         // Fall And Maybe go in 
     }
 
-    @Override
-    public void hit(Tool use, sides hitDirection)
-    {
-    }
-
 }

@@ -121,14 +121,14 @@ public class TheGame extends Application {
             {
                 if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
-                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, play));
+                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
                 }
                 if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
                     float x = Math.round(me.getX());
                     float y = Math.round(me.getY()) - 1;
                     Block block = new Block(BlockType.Dirt, x, y, play);
-                    play.addMapObject(block);
+                    gameLogic.addObject(block);
                 }
             } catch (RemoteException e)
             {
@@ -384,7 +384,7 @@ public class TheGame extends Application {
             play.loadAfterRecieve(gameLogic, myAccount, me);
             me.setMap(play);
             play.addToUpdate(me);
-            listener = new UpdateListener(play, myAccount);
+            listener = new UpdateListener(play, myAccount, me);
             gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {

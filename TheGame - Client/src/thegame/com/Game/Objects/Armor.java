@@ -36,7 +36,4 @@ public class Armor extends MapObject {
 
     @Override
     public Boolean call() {return false;}
-
-    @Override
-    public void hit(Tool use, sides hitDirection) {}
 }

@@ -12,8 +12,9 @@ import thegame.com.Game.Objects.*;
  * @author Laurens Adema
  */
 public abstract class CharacterGame extends MapObject {
+
     private static final long serialVersionUID = 5539685098267757690L;
-    
+
     protected int hp;
     protected final String name;
     protected float solid;
@@ -25,7 +26,7 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected java.util.Map<MapObject, Integer> backpack;
-    
+
     protected boolean jumping = false;
 
     /**
@@ -59,10 +60,12 @@ public abstract class CharacterGame extends MapObject {
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.RIGHT;
-        
-        if(!c.get(sides.RIGHT).isEmpty())
+
+        if (!c.get(sides.RIGHT).isEmpty())
+        {
             return;
-        
+        }
+
         if (hSpeed < 0)
         {
             hSpeed = 0.4f;
@@ -70,7 +73,7 @@ public abstract class CharacterGame extends MapObject {
         {
             hSpeed += 0.4;
         }
-        
+
         playing.addToUpdate(this);
     }
 
@@ -78,10 +81,12 @@ public abstract class CharacterGame extends MapObject {
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.LEFT;
-        
-        if(!c.get(sides.LEFT).isEmpty())
+
+        if (!c.get(sides.LEFT).isEmpty())
+        {
             return;
-        
+        }
+
         if (hSpeed > 0)
         {
             hSpeed = -0.4f;
@@ -89,7 +94,7 @@ public abstract class CharacterGame extends MapObject {
         {
             hSpeed -= 0.4;
         }
-        
+
         playing.addToUpdate(this);
     }
 
@@ -100,22 +105,24 @@ public abstract class CharacterGame extends MapObject {
         {
             jumping = true;
             vSpeed += 0.2f;
-        
-            if(vSpeed >= 0.8f) {
+
+            if (vSpeed >= 0.8f)
+            {
                 vSpeed = 0.8f;
                 jumping = false;
             }
         }
-        
+
         playing.addToUpdate(this);
     }
 
-    public void stopJump() {
+    public void stopJump()
+    {
         jumping = false;
-        
+
         playing.addToUpdate(this);
     }
-        
+
     public void knockBack(int kb, sides hitDirection)
     {
         switch (hitDirection)
@@ -129,8 +136,8 @@ public abstract class CharacterGame extends MapObject {
                 vSpeed = kb;
                 break;
         }
-        
-        playing.addToUpdate(this);
+
+        playing.sendKnockBack(getID(), hSpeed, vSpeed);
     }
 
     /**
@@ -264,8 +271,19 @@ public abstract class CharacterGame extends MapObject {
         } else if (hp <= 0)
         {
             hp = 0;
-            System.err.println("Ik ben dood!");
         }
+
+        int type = 0;
+        if (this instanceof Player)
+        {
+            type = 1;
+        }
+        if (this instanceof Enemy)
+        {
+            type = 2;
+        }
+
+        playing.sendUpdateHP(type, getID(), hp);
 
         return hp;
     }
@@ -356,15 +374,15 @@ public abstract class CharacterGame extends MapObject {
             click.hit(holding, direction);
             return true;
         } /*else if (click == null)
-        {
-            Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
-            if(holding.type.range >= distance(block))
-            {
-                playing.addBlock(block, Math.round(x), Math.round(y));
-                return true;
-            }
-            return false;
-        }*/
+         {
+         Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
+         if(holding.type.range >= distance(block))
+         {
+         playing.addBlock(block, Math.round(x), Math.round(y));
+         return true;
+         }
+         return false;
+         }*/
 
         return false;
     }
@@ -377,8 +395,6 @@ public abstract class CharacterGame extends MapObject {
             return;
         }
 
-        System.out.println("You hit me!");
-
         float armorStats = 0;
         for (Armor c : armor.values())
         {
@@ -387,13 +403,13 @@ public abstract class CharacterGame extends MapObject {
 
         if (updateHP((int) Math.ceil(used.type.strength - (used.type.strength * (armorStats / 100)))) == 0)
         {
-            if(this instanceof Player)
+            if (this instanceof Player)
             {
                 this.xPosition = playing.getSpawnX();
                 this.yPosition = playing.getSpawnY();
                 updateHP(-100);
-            }
-            else
+                playing.sendRespawn(getID(), xPosition, yPosition);
+            } else
             {
                 playing.removeMapObject(this);
             }

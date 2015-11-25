@@ -119,23 +119,6 @@ public abstract class CharacterGame extends MapObject {
         playing.addToUpdate(this);
     }
 
-    public void knockBack(int kb, sides hitDirection)
-    {
-        switch (hitDirection)
-        {
-            case LEFT:
-                hSpeed = -kb * 2;
-                vSpeed = kb;
-                break;
-            case RIGHT:
-                hSpeed = kb * 2;
-                vSpeed = kb;
-                break;
-        }
-        
-        playing.addToUpdate(this);
-    }
-
     /**
      * This method will let you add an object to your backpack.
      *
@@ -254,23 +237,11 @@ public abstract class CharacterGame extends MapObject {
     /**
      * This method changes the hp of the in game character
      *
-     * @param change the ammount to change
-     * @return the new HP
+     * @param change the new hp
      */
-    public int updateHP(int change)
+    public void updateHP(int change)
     {
-        hp -= change;
-
-        if (hp > 100)
-        {
-            hp = 100;
-        } else if (hp <= 0)
-        {
-            hp = 0;
-            System.err.println("Ik ben dood!");
-        }
-
-        return hp;
+        hp = change;
     }
 
     /**
@@ -341,43 +312,6 @@ public abstract class CharacterGame extends MapObject {
     public java.util.Map<MapObject, Integer> getBackpackMap()
     {
         return backpack;
-    }
-
-    @Override
-    public void hit(Tool used, sides hitDirection)
-    {
-        if (used.type.type != ToolType.toolType.SWORD && used.type.type != ToolType.toolType.FLINT)
-        {
-            return;
-        }
-
-        System.out.println("You hit me!");
-
-        float armorStats = 0;
-        for (Armor c : armor.values())
-        {
-            armorStats += c.getArmorType().multiplier;
-        }
-
-        if (updateHP((int) Math.ceil(used.type.strength - (used.type.strength * (armorStats / 100)))) == 0)
-        {
-            if(this instanceof Player)
-            {
-                this.xPosition = playing.getSpawnX();
-                this.yPosition = playing.getSpawnY();
-                updateHP(-100);
-            }
-            else
-            {
-                playing.removeMapObject(this);
-            }
-        } else
-        {
-            if (used.type.kb > 0)
-            {
-                knockBack(used.type.kb, hitDirection);
-            }
-        }
     }
 
     public sides getDirection()

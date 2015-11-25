@@ -30,9 +30,4 @@ public class Tool extends MapObject {
         return false;
     }
 
-    @Override
-    public void hit(Tool use, sides hitDirection)
-    {
-    }
-
 }

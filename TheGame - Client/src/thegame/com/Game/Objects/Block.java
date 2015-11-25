@@ -53,13 +53,6 @@ public Block(BlockType type, float x, float y,  Map map)
     }
 
     @Override
-    public void hit(Tool use, sides hitDirection)
-    {
-        interaction = true;
-        playing.removeMapObject(this);
-    }
-    
-    @Override
     public void createSkin()
     {
         skin = type.skin;

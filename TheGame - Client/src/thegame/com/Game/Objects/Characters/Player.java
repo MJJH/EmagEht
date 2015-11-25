@@ -110,4 +110,11 @@ public class Player extends CharacterGame {
         xPosition = x;
         yPosition = y;
     }
+
+    public void knockBack(float hSpeed, float vSpeed)
+    {
+        this.hSpeed = hSpeed;
+        this.vSpeed = vSpeed;
+        playing.addToUpdate(this);
+    }
 }

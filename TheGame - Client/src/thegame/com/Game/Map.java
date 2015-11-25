@@ -158,6 +158,18 @@ public class Map implements Serializable {
             playersLock.unlock();
         }
     }
+    
+    public List<Enemy> getEnemies()
+    {
+        enemiesLock.lock();
+        try
+        {
+            return enemies;
+        } finally
+        {
+            enemiesLock.unlock();
+        }
+    }
 
     public void addMapObject(MapObject mo)
     {
@@ -584,5 +596,10 @@ public class Map implements Serializable {
     public Account getAccount()
     {
         return myAccount;
+    }
+
+    public Player getMe()
+    {
+        return me;
     }
 }
