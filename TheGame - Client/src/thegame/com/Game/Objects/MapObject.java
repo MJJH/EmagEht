@@ -441,8 +441,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         }        
     }
 
-    public abstract void hit(Tool used, sides hitDirection);
-
     public int getID()
     {
         return id;

@@ -113,6 +113,7 @@ public class Player extends CharacterGame {
         xPosition = x;
         yPosition = y;
     }
+<<<<<<< HEAD
     
     @Override
     public Skin getSkin() {
@@ -174,5 +175,13 @@ public class Player extends CharacterGame {
         } catch (IOException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
+=======
+
+    public void knockBack(float hSpeed, float vSpeed)
+    {
+        this.hSpeed = hSpeed;
+        this.vSpeed = vSpeed;
+        playing.addToUpdate(this);
+>>>>>>> origin/master
     }
 }

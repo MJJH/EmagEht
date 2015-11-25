@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
@@ -25,7 +26,7 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
     private Account myAccount;
     private Player me;
 
-    public UpdateListener(Map map, Account myAccount) throws RemoteException
+    public UpdateListener(Map map, Account myAccount, Player me) throws RemoteException
     {
         this.map = map;
         this.myAccount = myAccount;
@@ -41,12 +42,22 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         }
         if (!(evt.getNewValue() instanceof MapObject))
         {
-            switch((String) evt.getOldValue()){
+            switch ((String) evt.getOldValue())
+            {
                 case "sendPlayerLoc":
                     updatePlayer((float[]) evt.getNewValue());
                     break;
                 case "removeMapObject":
                     removeMapObject((int[]) evt.getNewValue());
+                    break;
+                case "updateHP":
+                    updateHP((int[]) evt.getNewValue());
+                    break;
+                case "respawnPlayer":
+                    respawnPlayer((float[]) evt.getNewValue());
+                    break;
+                case "knockBackPlayer":
+                    knockBackPlayer((float[]) evt.getNewValue());
                     break;
             }
             return;
@@ -73,7 +84,7 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         }
     }
 
-    private void updatePlayer(float [] playerArray)
+    private void updatePlayer(float[] playerArray)
     {
         int id = (int) playerArray[0];
         float x = playerArray[1];
@@ -95,7 +106,76 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         int id = a[1];
         int x = a[2];
         int y = a[3];
-        
+
         map.removeMapObject(type, id, x, y);
+    }
+
+    private void updateHP(int[] i)
+    {
+        int type = i[0];
+        int id = i[1];
+        int hp = i[2];
+
+        switch (type)
+        {
+            case 1:
+                //Player
+                for (Player player : map.getPlayers())
+                {
+                    if (player.getID() == id)
+                    {
+                        player.updateHP(hp);
+                        return;
+                    }
+                }
+                break;
+            case 2:
+                //Enemy
+                for (Enemy enemy : map.getEnemies())
+                {
+                    if (enemy.getID() == id)
+                    {
+                        enemy.updateHP(hp);
+                        return;
+                    }
+                }
+                break;
+        }
+    }
+
+    private void respawnPlayer(float[] f)
+    {
+        int id = Math.round(f[0]);
+        float x = f[1];
+        float y = f[2];
+        
+        for (Player player : map.getPlayers())
+        {
+            if (player.getID() == id)
+            {
+                player.setCords(x, y);
+                if(player == me)
+                {
+                    map.addToUpdate(player);
+                }
+                return;
+            }
+        }
+    }
+
+    private void knockBackPlayer(float[] f)
+    {
+        int id = Math.round(f[0]);
+        float hSpeed = f[1];
+        float vSpeed = f[2];
+
+        for (Player player : map.getPlayers())
+        {
+            if (player.getID() == id)
+            {
+                player.knockBack(hSpeed, vSpeed);
+                return;
+            }
+        }
     }
 }

@@ -30,6 +30,7 @@ public class Tool extends MapObject {
         return false;
     }
 
+<<<<<<< HEAD
     @Override
     public void hit(Tool use, sides hitDirection)
     {
@@ -40,4 +41,6 @@ public class Tool extends MapObject {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+=======
+>>>>>>> origin/master
 }
