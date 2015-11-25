@@ -24,8 +24,6 @@ import javax.imageio.ImageIO;
 public class Image extends Skin {
 
     private WritableImage image;
-    private int height;
-    private int width;
     private Map<String, javafx.scene.image.Image> parts;
     
     public Image(int height, int width) {
@@ -80,7 +78,7 @@ public class Image extends Skin {
         this.image = new WritableImage(i.getPixelReader(), px, py, width, height);
     }
     
-    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py) throws IOException {
+    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py, boolean transparant) throws IOException {
         if(px + iwidth > width || py + iheight > height)
             throw new IllegalArgumentException("Part '"+name+"' does not fit in Image");
         
@@ -95,6 +93,11 @@ public class Image extends Skin {
         for(int y = 0; y < iheight; y++) {
             for(int x = 0; x < iwidth; x++) {
                 Color c = read.getColor(x, y);
+                
+                if(transparant && (int) Math.round(c.getRed()* 255) / 32 == 7)
+                    continue;
+              
+                
                 edit.setColor(px + x, py + y, c);
             }
         }
@@ -110,12 +113,34 @@ public class Image extends Skin {
         
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                int b = (int) Math.round((read.getColor(x, y).getBlue() * 255) / 32);
-                if(colors.length - 1 < b || colors[b] != null) {
-                   edit.setColor(x, y, colors[b]);
+                if(read.getColor(x, y).getOpacity() < 1)
+                    continue;
+                
+                int r = (int) Math.round((read.getColor(x, y).getRed()* 255) / 32);
+                if(colors.length > r && colors[r] != null) {
+                   edit.setColor(x, y, colors[r]);
                 }
             }
         }
+    }
+    
+    public void flipHorizontal() {
+        PixelWriter edit = image.getPixelWriter();
+        PixelReader read = image.getPixelReader();
+        
+        
+        WritableImage writableImage 
+                = new WritableImage(width, height);
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+         
+        for (int y = 0; y < height; y++){
+            for (int x = 0; x < width; x++){
+                Color color = read.getColor(x, y);
+                pixelWriter.setColor(width - x - 1, y, color);
+            }
+        }
+        
+        image = writableImage;
     }
     
     
@@ -123,14 +148,6 @@ public class Image extends Skin {
     public javafx.scene.image.Image show() {
         return image;
         
-    }
-    
-    public int getHeight() {
-        return height;
-    }
-    
-    public int getWidth() {
-        return width;
     }
     
 }

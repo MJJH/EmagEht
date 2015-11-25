@@ -153,7 +153,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     @Override
     public Player joinPlayer(Account account) throws RemoteException
     {
-        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 2, map, this);
+        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map, this);
         map.addMapObject(player);
         Player toSend = null;
         try

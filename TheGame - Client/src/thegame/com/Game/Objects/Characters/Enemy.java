@@ -35,4 +35,9 @@ public class Enemy extends CharacterGame {
 
     @Override
     public Boolean call(){return false;}
+
+    @Override
+    public void createSkin() {
+        return;
+    }
 }

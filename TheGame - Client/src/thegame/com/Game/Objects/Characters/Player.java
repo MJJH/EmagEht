@@ -1,6 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Skin;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javax.transaction.xa.XAException;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Block;
@@ -27,6 +29,7 @@ public class Player extends CharacterGame {
     private int spawnX;
     private int spawnY;
     
+    private HashMap<String, Skin> skins;
 
     /**
      * This constructor will create an player
@@ -109,5 +112,67 @@ public class Player extends CharacterGame {
     {
         xPosition = x;
         yPosition = y;
+    }
+    
+    @Override
+    public Skin getSkin() {
+        if(skins == null)
+            return null;
+        
+        if(direction == sides.RIGHT)
+            return skins.get("standRight");
+        else
+            return skins.get("standLeft");
+    }
+
+    @Override
+    public void createSkin() {
+        
+        try {
+            skins = new HashMap<>();
+            display.Image i = new display.Image(43, 24);
+            String pathname = "src/resources//player.png";
+            i.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
+            i.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
+            i.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
+            i.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
+            i.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true);
+            i.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
+            
+            i.recolour(new Color[]{ 
+                new Color(0, 0, 0, 1), 
+                new Color(0.52, 0.30, 0.13, 1), 
+                new Color(0.72, 0.41, 0.19, 1), 
+                new Color(0.84, 0.58, 0.39, 1), 
+                new Color(0.89, 0.71, 0.58, 1), 
+                new Color(1, 0, 0, 1)
+            });
+            
+            skins.put("standRight", i);
+            
+            display.Image i2 = new display.Image(43, 24);
+            i2.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
+            i2.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
+            i2.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
+            i2.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
+            i2.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true);
+            i2.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
+            
+            i2.recolour(new Color[]{ 
+                new Color(0, 0, 0, 1), 
+                new Color(0.52, 0.30, 0.13, 1), 
+                new Color(0.72, 0.41, 0.19, 1), 
+                new Color(0.84, 0.58, 0.39, 1), 
+                new Color(0.89, 0.71, 0.58, 1), 
+                new Color(1, 0, 0, 1)
+            });
+            
+            i2.flipHorizontal();
+            
+            skins.put("standLeft", i2);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

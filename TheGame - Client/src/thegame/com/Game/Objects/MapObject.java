@@ -471,8 +471,5 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.playing = set;
     }
 
-    public void createSkin()
-    {
-        // code for skin
-    }
+    public abstract void createSkin();
 }

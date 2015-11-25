@@ -61,4 +61,9 @@ public class Particle extends MapObject {
     {
     }
 
+    @Override
+    public void createSkin() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

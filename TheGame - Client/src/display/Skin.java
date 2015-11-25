@@ -10,5 +10,16 @@ package display;
  * @author Martijn
  */
 public abstract class Skin{
+    protected int height;
+    protected int width;
+    
     public abstract javafx.scene.image.Image show();
+    
+    public int getHeight() { 
+        return height;
+    }
+    
+    public int getWidth() {
+        return width;
+    }
 }

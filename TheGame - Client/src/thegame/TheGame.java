@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import display.Skin;
 import java.io.IOException;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -237,58 +238,27 @@ public class TheGame extends Application {
                 y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
             }
 
-            if (draw instanceof Player || draw instanceof Enemy)
-            {
-                float width = config.block.val * draw.getW();
-                float height = config.block.val * draw.getH();
+            g.beginPath();
 
-                // CHARACTER
-                g.beginPath();
-                if (draw instanceof Player)
-                {
-                InputStream is = Files.newInputStream(Paths.get("src/resources//testplayer.png"));
-                Image img = new Image(is);
-                g.drawImage(img, x, y,width,height);  
-                //g.setFill(Color.BLACK);
-                } else if (draw instanceof Enemy)
-                {
-                    g.setFill(Color.RED);
-                }
-                //g.rect(x, y, width, height);
-                //g.fill();
+            if(draw.getSkin() == null) 
+                draw.createSkin();
 
-                // ARROW
-                double[] xPoints = new double[3];
-                double[] yPoints = new double[3];
-                CharacterGame enemy = (CharacterGame) draw;
-                yPoints[0] = y + (height / 2);
-                yPoints[1] = y;
-                yPoints[2] = y + height;
+            Skin s = draw.getSkin();
 
-                switch (enemy.getDirection())
-                {
-                    case LEFT:
-                        xPoints[0] = x;
-                        xPoints[1] = x + width;
-                        xPoints[2] = x + width;
-                        break;
-                    case RIGHT:
-                        xPoints[0] = x + width;
-                        xPoints[1] = x;
-                        xPoints[2] = x;
-                        break;
-                }
-
-               // g.setFill(Color.GREEN);
-               //g.fillPolygon(xPoints, yPoints, 3);
-
-                g.closePath();
-            } else
-            {
-                g.beginPath();
-                g.drawImage(draw.getSkin().show(), x, y);
-                g.closePath();
+            if(s == null) {
+                g.setFill(Color.RED);
+                g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);
+            } else {
+                float divX = ((draw.getW() * config.block.val) - s.getWidth()) / 2;
+                float divY = ((draw.getH() * config.block.val) - s.getHeight());
+                /*g.setFill(Color.GREEN);
+                g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
+                
+                g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
+
+            g.closePath();
+            
         }
 
         /*
