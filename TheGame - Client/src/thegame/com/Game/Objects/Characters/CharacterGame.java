@@ -68,10 +68,10 @@ public abstract class CharacterGame extends MapObject {
         
         if (hSpeed < 0)
         {
-            hSpeed = 0.4f;
-        } else if (hSpeed < 1)
+            hSpeed = 0.1f;
+        } else if (hSpeed < 0.5)
         {
-            hSpeed += 0.4;
+            hSpeed += 0.1;
         }
         
         playing.addToUpdate(this);
@@ -87,10 +87,10 @@ public abstract class CharacterGame extends MapObject {
         
         if (hSpeed > 0)
         {
-            hSpeed = -0.4f;
-        } else if (hSpeed > -1)
+            hSpeed = -0.1f;
+        } else if (hSpeed > -0.5)
         {
-            hSpeed -= 0.4;
+            hSpeed -= 0.1;
         }
         
         playing.addToUpdate(this);

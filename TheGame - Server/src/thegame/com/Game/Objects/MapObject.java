@@ -141,7 +141,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
         List<MapObject> found;
         
         if(hSpeed > 0) {
-            hSpeed -= 0.2f;
+            hSpeed -= 0.05f;
             if(hSpeed <= 0)
                 hSpeed = 0;
             
@@ -166,7 +166,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
                 return true;
             }
         } else if(hSpeed < 0) {
-            hSpeed += 0.2f;
+            hSpeed += 0.05f;
             if(hSpeed >= 0)
                 hSpeed = 0;
             

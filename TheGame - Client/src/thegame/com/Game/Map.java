@@ -465,7 +465,8 @@ public class Map implements Serializable {
                     {
                         Block cur = blocks[y][x];
 
-                        if (cur != null)
+                        if (cur != null && 
+                                (cur.getX() + cur.getW() > startX && cur.getX() < endX && cur.getY() - cur.getH() > startY && cur.getY() < endY))
                         {
                             ret.add(cur);
                         }

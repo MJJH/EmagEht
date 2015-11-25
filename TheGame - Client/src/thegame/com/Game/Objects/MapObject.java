@@ -125,7 +125,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         List<MapObject> found;
         
         if(hSpeed > 0) {
-            hSpeed -= 0.2f;
+            hSpeed -= 0.05f;
             if(hSpeed <= 0)
                 hSpeed = 0;
             
@@ -150,7 +150,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                 return true;
             }
         } else if(hSpeed < 0) {
-            hSpeed += 0.2f;
+            hSpeed += 0.05f;
             if(hSpeed >= 0)
                 hSpeed = 0;
             
@@ -318,13 +318,13 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         collision.put(sides.CENTER, new ArrayList<>());
 
         
-        List<MapObject> mos = playing.getBlocksAndObjects((int) Math.round(xPosition - 1), 
-                                                (int) Math.round(yPosition - height - 1), 
+        List<MapObject> mos = playing.getBlocksAndObjects((int) Math.round(xPosition - 2), 
+                                                (int) Math.round(yPosition - height - 3), 
                                                 (int) Math.round(xPosition + width + 1), 
-                                                (int) Math.round(yPosition + 1));
+                                                (int) Math.round(yPosition + 2));
         
         for(MapObject mo : mos) {
-            if(mo.equals(this))
+            if(mo == this)
                 continue;
             
             List<sides> found = this.collision(mo);
