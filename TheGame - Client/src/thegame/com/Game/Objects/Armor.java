@@ -36,15 +36,9 @@ public class Armor extends MapObject {
 
     @Override
     public Boolean call() {return false;}
-<<<<<<< HEAD
-
-    @Override
-    public void hit(Tool use, sides hitDirection) {}
 
     @Override
     public void createSkin() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-=======
->>>>>>> origin/master
 }

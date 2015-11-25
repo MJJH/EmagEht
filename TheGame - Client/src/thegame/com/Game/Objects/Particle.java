@@ -56,17 +56,8 @@ public class Particle extends MapObject {
         // Fall And Maybe go in 
     }
 
-<<<<<<< HEAD
-    @Override
-    public void hit(Tool use, sides hitDirection)
-    {
-    }
-
     @Override
     public void createSkin() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-=======
->>>>>>> origin/master
 }
