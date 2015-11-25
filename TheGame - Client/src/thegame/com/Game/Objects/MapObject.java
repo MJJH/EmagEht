@@ -189,13 +189,32 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             found = collision.get(sides.TOP);
             if(found.isEmpty()) {
                 setY(yPosition + vSpeed);
+                
+                found = collision.get(sides.TOP);
+                if(!found.isEmpty()) {
+                   float minY = -1;
+                    for(MapObject mo : found) {
+                    
+                    if(minY == -1 || mo.getY() < minY)
+                        minY = mo.getY() - mo.getH();
+                    }
+
+                    if(minY == -1) {
+                        setY(yPosition + vSpeed);
+                        return true;
+                    }
+
+                    vSpeed = 0;
+                    setY(minY); 
+                }
+                
                 return true;
             } else {
                 float minY = -1;
                 for(MapObject mo : found) {
                     
                     if(minY == -1 || mo.getY() < minY)
-                        minY = mo.getY();
+                        minY = mo.getY() - mo.getH();
                 }
                 
                 if(minY == -1) {
@@ -204,7 +223,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                 }
                 
                 vSpeed = 0;
-                setY(minY - height);
+                setY(minY);
                 return true;
             }
         } else if(vSpeed < 0) {
@@ -421,9 +440,9 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         boolean top   = (r2.getY() - r2.getHeight() <= r1.getY() && r2.getY() - r2.getHeight() >= r1.getY() - r1.getHeight());
         boolean bott  = (r2.getY() >= r1.getY() - r1.getHeight() && r2.getY() <= r1.getY());
         
-       if((right || left) && (top || bott)){
+       if(right || left || top || bott){
         ArrayList<sides> ret = new ArrayList<>();
-        if(bott && top && left && right)
+        if((bott && top) && (left && right))
             ret.add(sides.CENTER);
 
         if(right && !(mo.getY() - mo.getH() >= yPosition || mo.getY() <= yPosition - height))
