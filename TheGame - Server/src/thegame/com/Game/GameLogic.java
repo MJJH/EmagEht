@@ -152,7 +152,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public Player joinPlayer(Account account, IRemotePropertyListener listener) throws RemoteException
+    public Player joinPlayer(Account account) throws RemoteException
     {
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map, this);
         map.addMapObject(player);
@@ -165,7 +165,6 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         {
             Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        publisher.addListener(listener, "ServerUpdate", player);
         return toSend;
     }
 
@@ -235,7 +234,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public void sendMyLoc(int id, float x, float y) throws RemoteException
+    public void sendMyLoc(int id, float x, float y, int direction) throws RemoteException
     {
         for (Player player : map.getPlayers())
         {
@@ -246,9 +245,15 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
                     return;
                 }
                 player.setCords(x, y);
+                MapObject.sides directionSide = MapObject.sides.RIGHT;
+                if (direction == 0)
+                {
+                    directionSide = MapObject.sides.LEFT;
+                }
+                player.setDirection(directionSide);
                 float[] toSend =
                 {
-                    id, x, y
+                    id, x, y, direction
                 };
 
                 publisher.inform(this, "ServerUpdate", "sendPlayerLoc", toSend);

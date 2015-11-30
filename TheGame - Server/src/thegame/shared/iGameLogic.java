@@ -50,7 +50,7 @@ public interface iGameLogic extends IRemotePublisher {
 
     public List<Block> getBlocks() throws RemoteException;
     
-    public Player joinPlayer(Account account, IRemotePropertyListener listener) throws RemoteException;
+    public Player joinPlayer(Account account) throws RemoteException;
     
     public void addToUpdate (MapObject update) throws RemoteException;
     
@@ -64,7 +64,7 @@ public interface iGameLogic extends IRemotePublisher {
     
     public boolean useTool (int id, float x, float y) throws RemoteException;
 
-    public void sendMyLoc(int id, float x, float y) throws RemoteException;
+    public void sendMyLoc(int id, float x, float y, int direction) throws RemoteException;
 
     public void sendMessage(Message chatMessage) throws RemoteException;
 }

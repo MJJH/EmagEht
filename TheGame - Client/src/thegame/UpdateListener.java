@@ -6,7 +6,6 @@
 package thegame;
 
 import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import thegame.com.Game.Map;
@@ -21,15 +20,17 @@ import thegame.shared.IRemotePropertyListener;
  *
  * @author laure
  */
-public class UpdateListener extends UnicastRemoteObject implements IRemotePropertyListener, Serializable {
+public class UpdateListener extends UnicastRemoteObject implements IRemotePropertyListener {
 
-    private Map map;
-    private Account myAccount;
-    private Player me;
+    private transient Map map;
+    private transient Account myAccount;
+    private transient Player me;
 
-    public UpdateListener(Account myAccount) throws RemoteException
+    public UpdateListener(Map map, Account myAccount, Player me) throws RemoteException
     {
+        this.map = map;
         this.myAccount = myAccount;
+        this.me = me;
     }
 
     @Override
@@ -43,15 +44,14 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         if (evt.getNewValue() instanceof Message)
         {
             Message chatMessage = (Message) evt.getNewValue();
-            
+
             switch ((String) evt.getOldValue())
             {
                 case "sendGameChatMessage":
                     System.out.println(chatMessage.getSender().getUsername() + ": " + chatMessage.getText());
                     break;
             }
-        }
-        else if (evt.getNewValue() instanceof MapObject)
+        } else if (evt.getNewValue() instanceof MapObject)
         {
             MapObject toChange = (MapObject) evt.getNewValue();
             toChange.setMap(map);
@@ -101,12 +101,18 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         int id = (int) playerArray[0];
         float x = playerArray[1];
         float y = playerArray[2];
+        MapObject.sides direction = MapObject.sides.RIGHT;
+        if (playerArray[3] == 0)
+        {
+            direction = MapObject.sides.LEFT;
+        }
 
         for (Player player : map.getPlayers())
         {
             if (player.getID() == id)
             {
                 player.setCords(x, y);
+                player.setDirection(direction);
                 return;
             }
         }
@@ -189,11 +195,5 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
                 return;
             }
         }
-    }
-
-    void loadAfterConnect(Player me, Map play)
-    {
-        this.me = me;
-        this.map = play;
     }
 }

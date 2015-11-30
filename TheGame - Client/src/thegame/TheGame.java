@@ -8,10 +8,7 @@ package thegame;
 import display.Skin;
 import java.io.IOException;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.NotBoundException;
@@ -27,17 +24,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.text.FontWeight;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
@@ -50,13 +42,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
-import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.iGameLogic;
@@ -92,6 +80,9 @@ public class TheGame extends Application {
     private long lastTime = 0;
     private int fps = 0;
     private double delta = 0;
+    
+    //SJET
+    private boolean sjeton = false;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
@@ -136,6 +127,10 @@ public class TheGame extends Application {
                 {
                     Message chatMessage = new Message(myAccount, "test");
                     gameLogic.sendMessage(chatMessage);
+                }
+                if( event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    sjeton = !sjeton;
                 }
             } catch (RemoteException e)
             {
@@ -229,7 +224,7 @@ public class TheGame extends Application {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-
+           
         for (MapObject draw : view)
         {
             float x;
@@ -266,10 +261,16 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-
             g.closePath();
 
         }
+                    if(sjeton == true)
+            {
+                g.beginPath();
+                g.setFill(Color.BLACK);
+                g.fillRect(scene.getWidth() - 300, scene.getHeight() - 300, 300, 300);
+                g.closePath();
+            }
 
         /*
          // Calibration lines
@@ -343,14 +344,6 @@ public class TheGame extends Application {
         return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args)
-    {
-        launch(args);
-    }
-
     public void startagame(Stage primaryStage)
     {
         try
@@ -359,14 +352,14 @@ public class TheGame extends Application {
             gameLogic = (iGameLogic) server.lookup(config.bindName);
             Random rand = new Random();
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
-            listener = new UpdateListener(myAccount);
-            me = gameLogic.joinPlayer(myAccount, listener);
+            me = gameLogic.joinPlayer(myAccount);
             play = (Map) gameLogic.getMap();
-            listener.loadAfterConnect(me, play);
             play.loadAfterRecieve(gameLogic, myAccount, me);
             me.setMap(play);
             play.addToUpdate(me);
             //gameLogic.addListener(listener, "ServerUpdate", me);
+            listener = new UpdateListener(play, myAccount, me);
+            gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
@@ -448,12 +441,10 @@ public class TheGame extends Application {
                 {
                     me.walkRight();
                 }
-
                 if (keys.contains(KeyCode.W))
                 {
                     me.jump();
                 }
-
                 play.update();
             }
         }, 0, 1000 / 60);
@@ -499,93 +490,12 @@ public class TheGame extends Application {
 
         return root;
     }
-
-    private static class MenuItem extends StackPane {
-
-        public MenuItem(String name)
-        {
-            LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[]
-            {
-                new Stop(0, Color.DARKVIOLET),
-                new Stop(0.1, Color.BLACK),
-                new Stop(0.9, Color.BLACK),
-                new Stop(01, Color.DARKVIOLET)
-            });
-
-            Rectangle bg = new Rectangle(200, 30);
-            bg.setOpacity(0.4);
-
-            Text text = new Text(name);
-            text.setFill(Color.DARKGREY);
-            text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 22));
-
-            setAlignment(Pos.CENTER);
-            getChildren().addAll(bg, text);
-
-            setOnMouseEntered(event ->
-            {
-                bg.setFill(gradient);
-                text.setFill(Color.WHITE);
-            });
-
-            setOnMouseDragExited(event ->
-            {
-                bg.setFill(Color.BLACK);
-                text.setFill(Color.DARKGREY);
-            });
-
-            setOnMousePressed(event ->
-            {
-                bg.setFill(Color.DARKGREY);
-            });
-
-            setOnMouseExited(event ->
-            {
-                bg.setFill(Color.BLACK);
-                text.setFill(Color.DARKGREY);
-
-            });
-        }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args)
+    {
+        launch(args);
     }
-
-    private static class MenuBox extends VBox {
-
-        public MenuBox(MenuItem... items)
-        {
-            getChildren().add(createSeparator());
-
-            for (MenuItem item : items)
-            {
-                getChildren().addAll(item, createSeparator());
-            }
-        }
-
-        private Line createSeparator()
-        {
-            Line sep = new Line();
-            sep.setEndX(200);
-            sep.setStroke(Color.DARKGREY);
-            return sep;
-        }
-
-    }
-
-    private static class Title extends StackPane {
-
-        public Title(String name)
-        {
-            Rectangle bg = new Rectangle(250, 60);
-            bg.setStroke(Color.WHITE);
-            bg.setStrokeWidth(2);
-            bg.setFill(null);
-
-            Text text = new Text(name);
-            text.setFill(Color.WHITE);
-            text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 50));
-
-            setAlignment(Pos.CENTER);
-            getChildren().addAll(bg, text);
-        }
-    }
-
 }

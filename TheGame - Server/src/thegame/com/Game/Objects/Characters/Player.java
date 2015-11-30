@@ -75,4 +75,9 @@ public class Player extends CharacterGame {
         xPosition = x;
         yPosition = y;
     }
+
+    public void setDirection(sides directionSide)
+    {
+        direction = directionSide;
+    }
 }
