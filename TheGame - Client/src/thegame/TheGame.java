@@ -45,6 +45,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.iGameLogic;
@@ -59,7 +60,7 @@ public class TheGame extends Application {
     private Map play;
     private Player me;
     private Scene scene;
-
+    private Image img;
     // SERVER
     private Registry server;
     private UpdateListener listener;
@@ -153,19 +154,24 @@ public class TheGame extends Application {
     };
     private Stage stages;
 
-    @Override
-    public void start(Stage primaryStage)
+   @Override
+    public void start(Stage primaryStage) throws IOException
     {
         Scene scene = new Scene(createContent());
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
         stages = primaryStage;
+        
+        InputStream hartje = Files.newInputStream(Paths.get("src/resources//Hearts.png"));
+        
+        img = new Image(hartje);     
 
     }
 
     private void draw(GraphicsContext g) throws IOException
     {
+       
         float pX = me.getX();
         float pY = me.getY();
         float pW = me.getW();
@@ -188,7 +194,7 @@ public class TheGame extends Application {
         dx = 0;
         dy = 0;
 
-        // once the player's center is on the middle
+         // once the player's center is on the middle
         if ((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2)
         {
             // DX will be the center of the map
@@ -224,20 +230,41 @@ public class TheGame extends Application {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-           
+        
+        
+        
         for (MapObject draw : view)
         {
             float x;
             float y;
             if (!draw.equals(me))
             {
+                 
                 x = (draw.getX() + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
             } else
             {
+                
                 x = (pX + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
             }
+       
+           
+           if(draw instanceof CharacterGame && draw != me)
+           {
+           CharacterGame character = (CharacterGame) draw;
+           g.strokeRect(x - 3, y - 10, 24.0f, 5.0f);
+           g.setFill(Color.RED);
+           g.fillRect(x -2 , y - 9, 22.0f , 3.0f);
+           g.setFill(Color.GREEN);
+           int hp = character.getHP(); 
+           int maxhp= character.getMaxHP();
+           double breedte = (double) hp/maxhp;
+           breedte = breedte * 22;
+           g.fillRect(x -2 , y - 9, breedte , 3.0f);
+
+           }
+     
 
             g.beginPath();
 
@@ -261,16 +288,52 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-            g.closePath();
-
+        
+        
+        g.closePath();
+       
         }
-                    if(sjeton == true)
+        
+            //draw black background
+            Color c=new Color(0f,0f,0f,.1f );
+
+            g.setFill(c);
+            g.fillRect(scene.getWidth() - 123.5, scene.getY() -4  , 108f, 60.0f);
+
+             //draw hearth
+            int teamlevens = 4;
+            for (int i = 0; i < teamlevens; i++) 
             {
-                g.beginPath();
-                g.setFill(Color.BLACK);
-                g.fillRect(scene.getWidth() - 300, scene.getHeight() - 300, 300, 300);
-                g.closePath();
-            }
+            //g.drawImage(img, ((scene.getWidth() - 135) +(25 * i)), 32 ,87,92);
+            g.drawImage(img, ((scene.getWidth() - 134) +(25 * i)), scene.getY() + 15, 87,92); 
+
+
+            } 
+             
+             
+             g.setFill(Color.WHITE);
+             g.fillText("Team Lifes", scene.getWidth() - 105, scene.getY() + 10);
+            
+            g.beginPath();
+            //g.strokeRect(scene.getWidth() - 120, scene.getY() - 6, 102.0f, 13.0f);
+            g.strokeRect(scene.getWidth() - 120, scene.getY() + 39, 102.0f, 13.0f);
+
+            g.setFill(Color.RED);
+            //g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, 100.0f , 11.0f);
+            g.fillRect(scene.getWidth() - 119 , scene.getY() + 40, 100.0f , 11.0f);
+
+            g.setFill(Color.GREEN);
+            int hp = me.getHP(); 
+            int maxhp= me.getMaxHP();
+            double breedte = (double) hp/maxhp;
+            breedte = breedte * 100;
+           // g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, breedte , 11.0f);
+            g.fillRect(scene.getWidth() - 119 , scene.getY() + 40, breedte , 11.0f);
+
+            g.closePath(); 
+            
+
+        
 
         /*
          // Calibration lines
