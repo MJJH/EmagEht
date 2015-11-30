@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * This class contains code for the party. 
  * @author laure
  */
-public class Party extends UnicastRemoteObject{
+public class Party{
 
     private int id;
     private final ArrayList<Account> members;

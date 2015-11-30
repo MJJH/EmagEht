@@ -154,34 +154,18 @@ public class GameLogic implements iGameLogic {
     @Override
     public Player joinPlayer(Account account) throws RemoteException
     {
+        System.out.println(account.getUsername() + " is trying to join.");
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map, this);
         map.addMapObject(player);
-        Player toSend = null;
-        try
-        {
-            toSend = (Player) player.clone();
-            toSend.setMap(null);
-        } catch (CloneNotSupportedException ex)
-        {
-            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return toSend;
+        return player;
     }
 
     @Override
     public synchronized void addToUpdate(MapObject update) throws RemoteException
     {
         update.setMap(map);
-        try
-        {
-            MapObject toSend = (MapObject) update.clone();
-            toSend.setMap(null);
-            map.addToUpdate(update);
-            publisher.inform(this, "ServerUpdate", "addToUpdateServer", toSend);
-        } catch (CloneNotSupportedException ex)
-        {
-            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        map.addToUpdate(update);
+        publisher.inform(this, "ServerUpdate", "addToUpdateServer", update);
     }
 
     @Override
@@ -207,16 +191,8 @@ public class GameLogic implements iGameLogic {
     public void updateMapObject(MapObject toUpdate) throws RemoteException
     {
         toUpdate.setMap(map);
-        try
-        {
-            MapObject toSend = (MapObject) toUpdate.clone();
-            toSend.setMap(null);
-            publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
-            map.updateMapObject(toUpdate);
-        } catch (CloneNotSupportedException ex)
-        {
-            Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        publisher.inform(this, "ServerUpdate", "updateMapObject", toUpdate);
+        map.updateMapObject(toUpdate);
     }
 
     @Override

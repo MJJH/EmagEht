@@ -72,6 +72,7 @@ public class BasicPublisher {
         listenersTable.get(property).add(listener);
         listenerPlayer.setMap(map);
         playerListenersTable.put(listener, listenerPlayer);
+        System.out.println(listenerPlayer.getName() + " has joined the game.");
     }
 
     /**

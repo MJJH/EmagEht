@@ -160,15 +160,7 @@ public class Map implements Serializable {
 
     public void addMapObject(MapObject mo)
     {
-        try
-        {
-            MapObject toSend = (MapObject) mo.clone();
-            toSend.setMap(null);
-            publisher.inform(this, "ServerUpdate", "addMapObject", toSend);
-        } catch (CloneNotSupportedException ex)
-        {
-            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        publisher.inform(this, "ServerUpdate", "addMapObject", mo);
 
         if (mo instanceof Enemy)
         {
@@ -309,7 +301,8 @@ public class Map implements Serializable {
     {
         // Find in enemies
         enemiesLock.lock();
-        try{
+        try
+        {
             for (Enemy mo : enemies)
             {
                 if (mo.equals(self) || mo.getS() == 0)
@@ -321,15 +314,15 @@ public class Map implements Serializable {
                     return mo;
                 }
             }
-        }
-        finally
+        } finally
         {
             enemiesLock.unlock();
         }
-        
+
         // Find in players
         playersLock.lock();
-        try{
+        try
+        {
             for (Player mo : players)
             {
                 if (mo.equals(self) || mo.getS() == 0)
@@ -341,12 +334,11 @@ public class Map implements Serializable {
                     return mo;
                 }
             }
-        }
-        finally
+        } finally
         {
             playersLock.unlock();
         }
-        
+
         // Find in objects
         objectsLock.lock();
         try
@@ -386,7 +378,7 @@ public class Map implements Serializable {
         {
             blocksLock.unlock();
         }
-        
+
         return null;
     }
 
@@ -535,10 +527,8 @@ public class Map implements Serializable {
                 MapObject key = entrySet.getKey();
 
                 boolean value = entrySet.getValue().get();
-                MapObject toSend = (MapObject) key.clone();
-                toSend.setMap(null);
 
-                //publisher.inform(this, "ServerUpdate", "updateMapObject", toSend);
+                //publisher.inform(this, "ServerUpdate", "updateMapObject", value);
                 if ((key instanceof Enemy))
                 {
                     continue;
@@ -561,7 +551,7 @@ public class Map implements Serializable {
                     toUpdate.remove(key);
                 }
             }
-        } catch (InterruptedException | ExecutionException | CloneNotSupportedException ex)
+        } catch (InterruptedException | ExecutionException ex)
         {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         } finally
@@ -643,7 +633,10 @@ public class Map implements Serializable {
 
     public void sendKnockBack(int id, float hSpeed, float vSpeed)
     {
-        float[] toSend = {id,hSpeed,vSpeed};
+        float[] toSend =
+        {
+            id, hSpeed, vSpeed
+        };
         publisher.inform(this, "ServerUpdate", "knockBackPlayer", toSend);
     }
 }

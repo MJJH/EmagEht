@@ -17,7 +17,7 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public abstract class MapObject implements Callable<Boolean>, Serializable, Cloneable {
+public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     private static final long serialVersionUID = 6529685098267757690L;
 
@@ -494,10 +494,5 @@ public abstract class MapObject implements Callable<Boolean>, Serializable, Clon
     public void setMap(Map set)
     {
         this.playing = set;
-    }
-    
-    @Override
-    public Object clone() throws CloneNotSupportedException{
-        return super.clone();
     }
 }
