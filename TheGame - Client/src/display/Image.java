@@ -5,6 +5,9 @@
  */
 package display;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -148,6 +151,45 @@ public class Image extends Skin {
     public javafx.scene.image.Image show() {
         return image;
         
+    }
+
+    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py, boolean transparant, int angle) throws IOException {
+        if(px + iwidth > width || py + iheight > height)
+            throw new IllegalArgumentException("Part '"+name+"' does not fit in Image");
+        
+        BufferedImage bI = ImageIO.read(new File(path));
+        bI = bI.getSubimage(ix, iy, iwidth, iheight);
+ 
+        double rad = Math.toRadians((angle+360)%360);
+        
+        int w = (int) Math.ceil(Math.abs(iwidth * Math.sin(rad)) + Math.abs(iheight * Math.cos(rad)));
+        int h = (int) Math.ceil(Math.abs(iwidth * Math.cos(rad)) + Math.abs(iheight * Math.sin(rad)));
+        BufferedImage sI = new BufferedImage(w, h, bI.getType());
+        
+        
+        Graphics2D g = sI.createGraphics();
+        g.rotate(rad, iwidth/2, 0);
+        g.drawImage(bI, null, 0, 0);
+        
+        
+        javafx.scene.image.Image i = SwingFXUtils.toFXImage(sI, null);
+        
+        PixelWriter edit = image.getPixelWriter();
+        PixelReader read = i.getPixelReader();
+        
+        for(int y = 0; y < h; y++) {
+            for(int x = 0; x < w; x++) {
+                Color c = read.getColor(x, y);
+                
+                if(transparant && (int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
+                    continue;
+              
+                
+                edit.setColor(px + x, py + y, c);
+            }
+        }
+        
+        parts.put(name, i);
     }
     
 }

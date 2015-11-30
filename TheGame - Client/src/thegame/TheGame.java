@@ -366,7 +366,7 @@ public class TheGame extends Application {
             play.loadAfterRecieve(gameLogic, myAccount, me);
             me.setMap(play);
             play.addToUpdate(me);
-            gameLogic.addListener(listener, "ServerUpdate", me);
+            //gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {
             Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);

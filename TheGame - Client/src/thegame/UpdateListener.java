@@ -35,6 +35,7 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException
     {
+        if(map == null || myAccount == null || me == null) return;
         if (evt.getOldValue() == null || !(evt.getOldValue() instanceof String))
         {
             return;

@@ -23,6 +23,11 @@ public class Animation extends Skin {
         this.frames = frames;
         current = 0;
         length = frameLength;
+        
+        if(!frames.isEmpty()) {
+            this.height = frames.get(0).getHeight();
+            this.width = frames.get(0).getWidth();
+        }
     }
     
     public Animation(int frameLength) {
@@ -39,11 +44,21 @@ public class Animation extends Skin {
     public void addFrame(Image frame) {
         frames.add(frame);
         current = 0;
+        
+        if(!frames.isEmpty()) {
+            this.height = frames.get(0).getHeight();
+            this.width = frames.get(0).getWidth();
+        }
     }
     
     public void addFrame(Image frame, int position) {
         frames.add(position, frame);
         current = 0;
+        
+        if(!frames.isEmpty()) {
+            this.height = frames.get(0).getHeight();
+            this.width = frames.get(0).getWidth();
+        }
     }
     
     @Override
