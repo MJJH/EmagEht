@@ -8,6 +8,7 @@ package thegame;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import thegame.com.Game.GameLogic;
@@ -30,6 +31,7 @@ public class TheGameServer extends Application {
             registry = LocateRegistry.createRegistry(config.port);
             registry.rebind(config.bindName, gameLogic);
             System.out.println("Server gestart");
+            UnicastRemoteObject.exportObject(gameLogic, 1100);
         } catch (RemoteException ex)
         {
             gameLogic = null;

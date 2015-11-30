@@ -27,7 +27,7 @@ import thegame.shared.iGameLogic;
  *
  * @author laure
  */
-public class GameLogic extends UnicastRemoteObject implements iGameLogic {
+public class GameLogic implements iGameLogic {
 
     private Map map;
     public BasicPublisher publisher;

@@ -15,6 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -422,6 +423,7 @@ public class TheGame extends Application {
             play.addToUpdate(me);
             //gameLogic.addListener(listener, "ServerUpdate", me);
             listener = new UpdateListener(play, myAccount, me);
+            UnicastRemoteObject.exportObject(listener, 1101);
             gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {

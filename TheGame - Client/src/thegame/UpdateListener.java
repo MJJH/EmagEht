@@ -20,7 +20,7 @@ import thegame.shared.IRemotePropertyListener;
  *
  * @author laure
  */
-public class UpdateListener extends UnicastRemoteObject implements IRemotePropertyListener {
+public class UpdateListener implements IRemotePropertyListener {
 
     private transient Map map;
     private transient Account myAccount;
