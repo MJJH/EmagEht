@@ -14,6 +14,7 @@ import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Message;
 
 /**
  *
@@ -64,4 +65,6 @@ public interface iGameLogic extends IRemotePublisher {
     public boolean useTool (int id, float x, float y) throws RemoteException;
 
     public void sendMyLoc(int id, float x, float y) throws RemoteException;
+
+    public void sendMessage(Message chatMessage) throws RemoteException;
 }

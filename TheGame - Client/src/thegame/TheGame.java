@@ -58,6 +58,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Message;
 import thegame.shared.iGameLogic;
 
 /**
@@ -131,10 +132,15 @@ public class TheGame extends Application {
                     Block block = new Block(BlockType.Dirt, x, y, play);
                     gameLogic.addObject(block);
                 }
+                if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_RELEASED)
+                {
+                    Message chatMessage = new Message(myAccount, "test");
+                    gameLogic.sendMessage(chatMessage);
+                }
             } catch (RemoteException e)
             {
+                System.out.println(e.getMessage());
             }
-
         }
     };
 
@@ -240,25 +246,29 @@ public class TheGame extends Application {
 
             g.beginPath();
 
-            if(draw.getSkin() == null) 
+            if (draw.getSkin() == null)
+            {
                 draw.createSkin();
+            }
 
             Skin s = draw.getSkin();
 
-            if(s == null) {
+            if (s == null)
+            {
                 g.setFill(Color.RED);
                 g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);
-            } else {
+            } else
+            {
                 float divX = ((draw.getW() * config.block.val) - s.getWidth()) / 2;
                 float divY = ((draw.getH() * config.block.val) - s.getHeight());
                 /*g.setFill(Color.GREEN);
-                g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
-                
+                 g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
+
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
 
             g.closePath();
-            
+
         }
 
         /*
@@ -404,9 +414,11 @@ public class TheGame extends Application {
                 fps++;
                 delta += currentTime - lastTime;
 
-                try {
+                try
+                {
                     draw(gc);
-                } catch (IOException ex) {
+                } catch (IOException ex)
+                {
                     Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -470,7 +482,7 @@ public class TheGame extends Application {
 
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
-        
+
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
         startMultiPlayer.setOnMouseClicked(event -> startagame(stages));
 

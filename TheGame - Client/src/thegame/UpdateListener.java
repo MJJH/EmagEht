@@ -14,6 +14,7 @@ import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Message;
 import thegame.shared.IRemotePropertyListener;
 
 /**
@@ -40,7 +41,40 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         {
             return;
         }
-        if (!(evt.getNewValue() instanceof MapObject))
+        if (evt.getNewValue() instanceof Message)
+        {
+            Message chatMessage = (Message) evt.getNewValue();
+            
+            switch ((String) evt.getOldValue())
+            {
+                case "sendGameChatMessage":
+                    System.out.println(chatMessage.getSender().getUsername() + ": " + chatMessage.getText());
+                    break;
+            }
+        }
+        else if (evt.getNewValue() instanceof MapObject)
+        {
+            MapObject toChange = (MapObject) evt.getNewValue();
+            toChange.setMap(map);
+
+            if (toChange.getSkin() == null)
+            {
+                toChange.createSkin();
+            }
+
+            switch ((String) evt.getOldValue())
+            {
+                case "addMapObject":
+                    map.addMapObject(toChange);
+                    break;
+                case "removeMapObject":
+                    map.removeMapObject(toChange);
+                    break;
+                case "updateMapObject":
+                    map.updateMapObject(toChange);
+                    break;
+            }
+        } else if (!(evt.getNewValue() instanceof MapObject))
         {
             switch ((String) evt.getOldValue())
             {
@@ -60,27 +94,6 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
                     knockBackPlayer((float[]) evt.getNewValue());
                     break;
             }
-            return;
-        }
-        MapObject toChange = (MapObject) evt.getNewValue();
-        toChange.setMap(map);
-
-        if (toChange.getSkin() == null)
-        {
-            toChange.createSkin();
-        }
-
-        switch ((String) evt.getOldValue())
-        {
-            case "addMapObject":
-                map.addMapObject(toChange);
-                break;
-            case "removeMapObject":
-                map.removeMapObject(toChange);
-                break;
-            case "updateMapObject":
-                map.updateMapObject(toChange);
-                break;
         }
     }
 
@@ -148,13 +161,13 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         int id = Math.round(f[0]);
         float x = f[1];
         float y = f[2];
-        
+
         for (Player player : map.getPlayers())
         {
             if (player.getID() == id)
             {
                 player.setCords(x, y);
-                if(player == me)
+                if (player == me)
                 {
                     map.addToUpdate(player);
                 }
