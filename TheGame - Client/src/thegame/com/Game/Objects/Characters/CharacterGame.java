@@ -17,7 +17,7 @@ public abstract class CharacterGame extends MapObject {
     protected int hp;
     protected final String name;
     protected float solid;
-
+    protected int maxHP;
     protected Tool holding;
     protected long used;
 
@@ -241,8 +241,14 @@ public abstract class CharacterGame extends MapObject {
      */
     public void updateHP(int change)
     {
-        hp = change;
+        hp = hp - change;
     }
+    
+    public int getMaxHP()
+    {
+        return 100;
+    }
+    
 
     /**
      * This method gets the current hp
