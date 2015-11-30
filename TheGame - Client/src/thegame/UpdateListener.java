@@ -21,11 +21,11 @@ import thegame.shared.IRemotePropertyListener;
  *
  * @author laure
  */
-public class UpdateListener extends UnicastRemoteObject implements IRemotePropertyListener, Serializable {
+public class UpdateListener extends UnicastRemoteObject implements IRemotePropertyListener {
 
-    private Map map;
-    private Account myAccount;
-    private Player me;
+    private transient Map map;
+    private transient Account myAccount;
+    private transient Player me;
 
     public UpdateListener(Map map, Account myAccount, Player me) throws RemoteException
     {
