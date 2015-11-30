@@ -318,4 +318,9 @@ public abstract class CharacterGame extends MapObject {
     {
         return direction;
     }
+    
+    public void setDirection(sides direction)
+    {
+        this.direction = direction;
+    }
 }

@@ -142,7 +142,7 @@ public class Map implements Serializable {
         this.gameLogic = gameLogic;
         this.myAccount = myAccount;
         this.me = me;
-        
+
         players.remove(me);
         players.add(me);
     }
@@ -158,7 +158,7 @@ public class Map implements Serializable {
             playersLock.unlock();
         }
     }
-    
+
     public List<Enemy> getEnemies()
     {
         enemiesLock.lock();
@@ -465,8 +465,8 @@ public class Map implements Serializable {
                     {
                         Block cur = blocks[y][x];
 
-                        if (cur != null && 
-                                (cur.getX() + cur.getW() > startX && cur.getX() < endX && cur.getY() - cur.getH() > startY && cur.getY() < endY))
+                        if (cur != null
+                                && (cur.getX() + cur.getW() > startX && cur.getX() < endX && cur.getY() - cur.getH() > startY && cur.getY() < endY))
                         {
                             ret.add(cur);
                         }
@@ -551,7 +551,12 @@ public class Map implements Serializable {
                 if (key == me)
                 {
                     //gameLogic.updateMapObject(key);
-                    gameLogic.sendMyLoc(me.getID(), me.getX(), me.getY());
+                    int direction = 1;
+                    if (me.getDirection() == MapObject.sides.LEFT)
+                    {
+                        direction = 0;
+                    }
+                    gameLogic.sendMyLoc(me.getID(), me.getX(), me.getY(), direction);
                 }
 
                 if (value)

@@ -234,7 +234,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public void sendMyLoc(int id, float x, float y) throws RemoteException
+    public void sendMyLoc(int id, float x, float y, int direction) throws RemoteException
     {
         for (Player player : map.getPlayers())
         {
@@ -245,9 +245,15 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
                     return;
                 }
                 player.setCords(x, y);
+                MapObject.sides directionSide = MapObject.sides.RIGHT;
+                if (direction == 0)
+                {
+                    directionSide = MapObject.sides.LEFT;
+                }
+                player.setDirection(directionSide);
                 float[] toSend =
                 {
-                    id, x, y
+                    id, x, y, direction
                 };
 
                 publisher.inform(this, "ServerUpdate", "sendPlayerLoc", toSend);

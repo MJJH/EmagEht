@@ -133,7 +133,7 @@ public class BasicPublisher {
         }
 
         int id = 0;
-        if (newValue instanceof float[] && oldValue instanceof String)
+        if (newValue instanceof float[] && oldValue instanceof String && ((String)oldValue).equals("sendPlayerLoc"))
         {
             id = Math.round(((float[]) newValue)[0]);
         }

@@ -6,7 +6,6 @@
 package thegame;
 
 import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import thegame.com.Game.Map;
@@ -44,15 +43,14 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         if (evt.getNewValue() instanceof Message)
         {
             Message chatMessage = (Message) evt.getNewValue();
-            
+
             switch ((String) evt.getOldValue())
             {
                 case "sendGameChatMessage":
                     System.out.println(chatMessage.getSender().getUsername() + ": " + chatMessage.getText());
                     break;
             }
-        }
-        else if (evt.getNewValue() instanceof MapObject)
+        } else if (evt.getNewValue() instanceof MapObject)
         {
             MapObject toChange = (MapObject) evt.getNewValue();
             toChange.setMap(map);
@@ -102,12 +100,18 @@ public class UpdateListener extends UnicastRemoteObject implements IRemoteProper
         int id = (int) playerArray[0];
         float x = playerArray[1];
         float y = playerArray[2];
+        MapObject.sides direction = MapObject.sides.RIGHT;
+        if (playerArray[3] == 0)
+        {
+            direction = MapObject.sides.LEFT;
+        }
 
         for (Player player : map.getPlayers())
         {
             if (player.getID() == id)
             {
                 player.setCords(x, y);
+                player.setDirection(direction);
                 return;
             }
         }

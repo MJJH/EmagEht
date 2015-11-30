@@ -64,7 +64,7 @@ public interface iGameLogic extends IRemotePublisher {
     
     public boolean useTool (int id, float x, float y) throws RemoteException;
 
-    public void sendMyLoc(int id, float x, float y) throws RemoteException;
+    public void sendMyLoc(int id, float x, float y, int direction) throws RemoteException;
 
     public void sendMessage(Message chatMessage) throws RemoteException;
 }
