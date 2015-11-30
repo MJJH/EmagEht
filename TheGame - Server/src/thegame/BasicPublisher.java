@@ -3,8 +3,6 @@ package thegame;
 import java.beans.*;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import thegame.shared.IRemotePropertyListener;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
@@ -40,7 +38,6 @@ public class BasicPublisher {
      * propertylisteners bij die zich op alle properties hebben geabonneerd.
      *
      * @param properties
-     * @param map
      */
     public BasicPublisher(String[] properties)
     {

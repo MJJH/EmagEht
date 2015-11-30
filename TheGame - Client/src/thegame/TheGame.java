@@ -359,12 +359,13 @@ public class TheGame extends Application {
             gameLogic = (iGameLogic) server.lookup(config.bindName);
             Random rand = new Random();
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
-            me = gameLogic.joinPlayer(myAccount);
+            listener = new UpdateListener(myAccount);
+            me = gameLogic.joinPlayer(myAccount, listener);
             play = (Map) gameLogic.getMap();
+            listener.loadAfterConnect(me, play);
             play.loadAfterRecieve(gameLogic, myAccount, me);
             me.setMap(play);
             play.addToUpdate(me);
-            listener = new UpdateListener(play, myAccount, me);
             gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {
