@@ -152,7 +152,7 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
     }
 
     @Override
-    public Player joinPlayer(Account account, IRemotePropertyListener listener) throws RemoteException
+    public Player joinPlayer(Account account) throws RemoteException
     {
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map, this);
         map.addMapObject(player);
@@ -165,7 +165,6 @@ public class GameLogic extends UnicastRemoteObject implements iGameLogic {
         {
             Logger.getLogger(GameLogic.class.getName()).log(Level.SEVERE, null, ex);
         }
-        publisher.addListener(listener, "ServerUpdate", player);
         return toSend;
     }
 
