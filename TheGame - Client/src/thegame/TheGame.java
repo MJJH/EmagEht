@@ -80,6 +80,9 @@ public class TheGame extends Application {
     private long lastTime = 0;
     private int fps = 0;
     private double delta = 0;
+    
+    //SJET
+    private boolean sjeton = false;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
@@ -124,6 +127,10 @@ public class TheGame extends Application {
                 {
                     Message chatMessage = new Message(myAccount, "test");
                     gameLogic.sendMessage(chatMessage);
+                }
+                if( event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    sjeton = !sjeton;
                 }
             } catch (RemoteException e)
             {
@@ -217,7 +224,7 @@ public class TheGame extends Application {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-
+           
         for (MapObject draw : view)
         {
             float x;
@@ -254,10 +261,16 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-
             g.closePath();
 
         }
+                    if(sjeton == true)
+            {
+                g.beginPath();
+                g.setFill(Color.BLACK);
+                g.fillRect(scene.getWidth() - 300, scene.getHeight() - 300, 300, 300);
+                g.closePath();
+            }
 
         /*
          // Calibration lines
@@ -427,12 +440,10 @@ public class TheGame extends Application {
                 {
                     me.walkRight();
                 }
-
                 if (keys.contains(KeyCode.W))
                 {
                     me.jump();
                 }
-
                 play.update();
             }
         }, 0, 1000 / 60);
