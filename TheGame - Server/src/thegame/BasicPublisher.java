@@ -2,6 +2,7 @@ package thegame;
 
 import java.beans.*;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,7 +73,9 @@ public class BasicPublisher {
         listenersTable.get(property).add(listener);
         listenerPlayer.setMap(map);
         playerListenersTable.put(listener, listenerPlayer);
-        System.out.println(listenerPlayer.getName() + " has joined the game.");
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+        System.out.println(sdf.format(cal.getTime()) + " " + listenerPlayer.getName() + " has joined the game.");
     }
 
     /**
@@ -134,7 +137,7 @@ public class BasicPublisher {
         }
 
         int id = 0;
-        if (newValue instanceof float[] && oldValue instanceof String && ((String)oldValue).equals("sendPlayerLoc"))
+        if (newValue instanceof float[] && oldValue instanceof String && ((String) oldValue).equals("sendPlayerLoc"))
         {
             id = Math.round(((float[]) newValue)[0]);
         }
@@ -142,11 +145,11 @@ public class BasicPublisher {
         for (IRemotePropertyListener listener : alertable)
         {
 
-            if (id != 0 && ((String)oldValue).equals("sendPlayerLoc") && playerListenersTable.get(listener).getID() == id)
+            if (id != 0 && ((String) oldValue).equals("sendPlayerLoc") && playerListenersTable.get(listener).getID() == id)
             {
                 continue;
             }
-            
+
             PropertyChangeEvent evt = new PropertyChangeEvent(
                     source, property, oldValue, newValue);
             try
@@ -158,7 +161,9 @@ public class BasicPublisher {
                 MapObject removePlayer = playerListenersTable.get(listener);
                 map.removeMapObject(removePlayer);
                 playerListenersTable.remove(listener);
-                System.out.println("Connection to " + ((Player) removePlayer).getName() + " has been lost");
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                System.out.println(sdf.format(cal.getTime()) + " Connection to " + ((Player) removePlayer).getName() + " has been lost");
             }
 
         }

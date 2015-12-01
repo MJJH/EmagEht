@@ -96,7 +96,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     @Override
     public abstract Boolean call();
 
-    private void setX(float x)
+    protected void setX(float x)
     {
         if (x >= 0 && x + width < playing.getWidth())
         {
@@ -114,14 +114,18 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         }
     }
 
-    private void setY(float y)
+    protected void setY(float y)
     {
-        if (y >= 0 && y < playing.getHeight())
+        if (y > height && y < playing.getHeight())
         {
             this.yPosition = y;
-        } else
+        } else if (y <= height)
         {
-            this.yPosition = 0;
+            this.yPosition = height;
+            vSpeed = 0;
+        } else 
+        {
+            this.yPosition = playing.getHeight();
             vSpeed = 0;
         }
     }

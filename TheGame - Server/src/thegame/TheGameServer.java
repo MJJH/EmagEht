@@ -5,10 +5,17 @@
  */
 package thegame;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import thegame.com.Game.GameLogic;
@@ -26,10 +33,29 @@ public class TheGameServer extends Application {
     {
         try
         {
+            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
+                @Override
+                public Socket createSocket(String host, int port)
+                        throws IOException
+                {
+                    Socket socket = new Socket();
+                    socket.setSoTimeout(config.timeOutTime);
+                    socket.setSoLinger(false, 0);
+                    socket.connect(new InetSocketAddress(host, port), config.timeOutTime);
+                    return socket;
+                }
+
+                @Override
+                public ServerSocket createServerSocket(int port)
+                        throws IOException
+                {
+                    return new ServerSocket(port);
+                }
+            });
             gameLogic = new GameLogic();
             System.out.println("Selected port is " + config.reachGameLogicPort);
             System.setProperty("java.rmi.server.hostname", config.ip);
-            registry = LocateRegistry.createRegistry(config.reachGameLogicPort);
+            registry = LocateRegistry.createRegistry(config.reachGameLogicPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
             registry.rebind(config.bindName, gameLogic);
             System.out.println("Server gestart");
             UnicastRemoteObject.exportObject(gameLogic, config.talkBackGameLogicPort);
@@ -38,6 +64,9 @@ public class TheGameServer extends Application {
             gameLogic = null;
             registry = null;
             System.out.println(ex.getMessage());
+        } catch (IOException ex)
+        {
+            Logger.getLogger(TheGameServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -55,7 +84,7 @@ public class TheGameServer extends Application {
         primaryStage.setWidth(100);
         primaryStage.setHeight(100);
         primaryStage.show();
-        
+
         startServer();
         primaryStage.setOnCloseRequest(event ->
         {

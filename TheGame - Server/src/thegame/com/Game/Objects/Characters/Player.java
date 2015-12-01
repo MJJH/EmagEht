@@ -72,8 +72,8 @@ public class Player extends CharacterGame {
 
     public void setCords(float x, float y)
     {
-        xPosition = x;
-        yPosition = y;
+        setY(y);
+        setX(x);
     }
 
     public void setDirection(sides directionSide)

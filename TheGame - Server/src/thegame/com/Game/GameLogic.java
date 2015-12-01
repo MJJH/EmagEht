@@ -8,6 +8,8 @@ package thegame.com.Game;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -154,7 +156,9 @@ public class GameLogic implements iGameLogic {
     @Override
     public Player joinPlayer(Account account) throws RemoteException
     {
-        System.out.println(account.getUsername() + " is trying to join.");
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+        System.out.println(sdf.format(cal.getTime()) + " " + account.getUsername() + " is trying to join.");
         Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map, this);
         map.addMapObject(player);
         return player;
