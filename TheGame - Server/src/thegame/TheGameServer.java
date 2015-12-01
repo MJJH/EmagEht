@@ -27,12 +27,12 @@ public class TheGameServer extends Application {
         try
         {
             gameLogic = new GameLogic();
-            System.out.println("Selected port is " + config.port);
-            System.setProperty("java.rmi.server.hostname", "84.24.141.120");
-            registry = LocateRegistry.createRegistry(config.port);
+            System.out.println("Selected port is " + config.reachGameLogicPort);
+            System.setProperty("java.rmi.server.hostname", config.ip);
+            registry = LocateRegistry.createRegistry(config.reachGameLogicPort);
             registry.rebind(config.bindName, gameLogic);
             System.out.println("Server gestart");
-            UnicastRemoteObject.exportObject(gameLogic, 1100);
+            UnicastRemoteObject.exportObject(gameLogic, config.talkBackGameLogicPort);
         } catch (RemoteException ex)
         {
             gameLogic = null;

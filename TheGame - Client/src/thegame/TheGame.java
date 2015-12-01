@@ -412,7 +412,7 @@ public class TheGame extends Application {
     {
         try
         {
-            server = LocateRegistry.getRegistry(config.ip, config.port);
+            server = LocateRegistry.getRegistry(config.ip, config.reachGameLogicPort);
             gameLogic = (iGameLogic) server.lookup(config.bindName);
             Random rand = new Random();
             myAccount = new Account(Integer.toString(rand.nextInt(1000)));
@@ -423,7 +423,7 @@ public class TheGame extends Application {
             play.addToUpdate(me);
             //gameLogic.addListener(listener, "ServerUpdate", me);
             listener = new UpdateListener(play, myAccount, me);
-            UnicastRemoteObject.exportObject(listener, 1101);
+            UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
             gameLogic.addListener(listener, "ServerUpdate", me);
         } catch (RemoteException | NotBoundException ex)
         {

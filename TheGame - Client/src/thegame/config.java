@@ -18,8 +18,9 @@ public enum config {
         this.val = val;
     }
     
-    public static String bindName = "//192.168.1.101:1099/gameLogic";
-    //public static String ip = "192.168.1.136";
     public static String ip = "84.24.141.120";
-    public static int port = 1099;
+    public static String bindName = "//" + ip + ":1099/gameLogic";
+    public static int reachGameLogicPort = 1099;
+    public static int talkBackGameLogicPort = 1100;
+    public static int updateListenerPort = 1101;
 }
