@@ -28,6 +28,7 @@ public class TheGameServer extends Application {
         {
             gameLogic = new GameLogic();
             System.out.println("Selected port is " + config.port);
+            System.setProperty("java.rmi.server.hostname", "84.24.141.120");
             registry = LocateRegistry.createRegistry(config.port);
             registry.rebind(config.bindName, gameLogic);
             System.out.println("Server gestart");
