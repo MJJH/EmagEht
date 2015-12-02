@@ -55,68 +55,43 @@ public class Image extends Skin {
         repaint();
     }
     
-    public void addPart(String name, String path, iTexture texture) throws IOException {
-       /*
-        
-        BufferedImage bI;
-        bI = ImageIO.read(new File(path));
-        
-        javafx.scene.image.Image i = SwingFXUtils.toFXImage(bI.getSubimage(ix, iy, iwidth, iheight), null);
-        
-        PixelWriter edit = image.getPixelWriter();
-        PixelReader read = i.getPixelReader();
-        
-        for(int y = 0; y < iheight; y++) {
-            for(int x = 0; x < iwidth; x++) {
-                Color c = read.getColor(x, y);
-                
-                if(transparant && (int) Math.round(c.getRed()* 255) / 32 == 7)
-                    continue;
-              
-                
-                edit.setColor(px + x, py + y, c);
-            }
+    public void recolour(Color[] colors) {
+        for(PartImage pi : parts.values()) {
+            pi.recolors = colors;
         }
-        
-        parts.put(name, i);*/
+        repaint();
     }
     
-    public void recolour(Color[] colors) {/*
-        PixelWriter edit = image.getPixelWriter();
-        PixelReader read = image.getPixelReader();
-        
-        if(colors == null) return;
-        
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                if(read.getColor(x, y).getOpacity() < 1)
-                    continue;
-                
-                int r = (int) Math.round((read.getColor(x, y).getRed()* 255) / 32);
-                if(colors.length > r && colors[r] != null) {
-                   edit.setColor(x, y, colors[r]);
-                }
-            }
-        }*/
+    public void recolour(Parts p, Color[] colors) {
+        if(parts.containsValue(p))
+            parts.get(p).recolors = colors;
+        repaint();
     }
     
-    public void flipHorizontal() {/*
-        PixelWriter edit = image.getPixelWriter();
-        PixelReader read = image.getPixelReader();
-        
-        
-        WritableImage writableImage 
-                = new WritableImage(width, height);
-        PixelWriter pixelWriter = writableImage.getPixelWriter();
-         
-        for (int y = 0; y < height; y++){
-            for (int x = 0; x < width; x++){
-                Color color = read.getColor(x, y);
-                pixelWriter.setColor(width - x - 1, y, color);
-            }
+    public void flipHorizontal() {
+        for(PartImage pi : parts.values()) {
+            pi.hFlip = !pi.hFlip;
         }
-        
-        image = writableImage;*/
+        repaint();
+    }
+    
+    public void flipHorizontal(Parts p) {
+        if(parts.containsValue(p))
+            parts.get(p).hFlip = !parts.get(p).hFlip;
+        repaint();
+    }
+    
+    public void flipVertical() {
+        for(PartImage pi : parts.values()) {
+            pi.vFlip = !pi.vFlip;
+        }
+        repaint();
+    }
+    
+    public void flipVorizontal(Parts p) {
+        if(parts.containsValue(p))
+            parts.get(p).vFlip = !parts.get(p).vFlip;
+        repaint();
     }
     
     
@@ -142,7 +117,24 @@ public class Image extends Skin {
                     if((int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
                         continue;
                     
-                    pw.setColor(x + pi.x, y + pi.y, c);
+                    int r = (int) Math.round((c.getRed()* 255) / 32);
+                    
+                    if(pi.recolors.length > r && pi.recolors[r] != null) {
+                       c = pi.recolors[r];
+                    }
+                    
+                    int paintX = x + pi.x;
+                    int paintY = y + pi.y;
+                    
+                    if(pi.hFlip) {
+                        paintX = width - paintX - 1;
+                    }
+                    if(pi.vFlip) {
+                        paintY = height - paintY - 1;
+                    }
+                    
+                    
+                    pw.setColor(paintX, paintY, c);
                 }
             }
         }

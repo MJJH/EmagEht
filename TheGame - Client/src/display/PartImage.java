@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
  */
 public class PartImage {
     public final javafx.scene.image.Image image;
-    public final Color[] recolors;
+    public Color[] recolors;
     public final int x;
     public final int y;
     

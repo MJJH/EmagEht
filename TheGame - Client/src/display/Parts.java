@@ -16,7 +16,7 @@ public enum Parts implements iTexture {
     playerFrontArm(Part.FRONTARM, Type.BODY, 0, 16, 8, 19),
     playerBackArm(Part.BACKARM, Type.BODY, 9, 16, 8, 17),
     playerBackLeg(Part.BACKLEG, Type.BODY, 0, 36, 12, 15),
-    playerFrontLeg(Part.FRONTLEG, Type.BODY, 13, 36, 12, 19),
+    playerFrontLeg(Part.FRONTLEG, Type.BODY, 13, 36, 12, 15),
     
     // Clothes
     helmetHigh(Part.HEAD, Type.ARMOR, 0, 54, 16, 21),

@@ -451,11 +451,23 @@ public class Player extends CharacterGame {
         try
         {
             skins = new HashMap<>();
+            Color[] h = new Color[]
+            {
+                new Color(0, 0, 0, 1),
+                new Color(0.26, 0.15, 0.065, 1),
+                new Color(0.36, 0.205, 0.095, 1),
+                new Color(0.42, 0.29, 0.195, 1),
+                new Color(0.445, 0.355, 0.29, 1),
+                new Color(1, 1, 1, 1)
+            };
             
-            Skin d = new Image(Sets.player);
+            Image d = new Image(Sets.player);
+            d.recolour(h);
             skins.put("standRight", d);
 
-            Skin d2 = new Image(Sets.player);
+            Image d2 = new Image(Sets.player);
+            d2.flipHorizontal();
+            d2.recolour(h);
             skins.put("standLeft", d2);
 
         } catch (IOException ex)
