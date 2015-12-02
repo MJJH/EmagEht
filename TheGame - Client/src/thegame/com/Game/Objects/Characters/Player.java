@@ -129,8 +129,8 @@ public class Player extends CharacterGame {
     @Override
     public void createSkin() {
         
-        try {
-            skins = new HashMap<>();
+       /* try {
+            /*skins = new HashMap<>();
             display.Image i = new display.Image(43, 24);
             String pathname = "src/resources//player.png";
             i.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
@@ -289,7 +289,7 @@ public class Player extends CharacterGame {
             
         } catch (IOException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     public void knockBack(float hSpeed, float vSpeed)
