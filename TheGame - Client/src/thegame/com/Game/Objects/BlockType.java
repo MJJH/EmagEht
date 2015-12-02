@@ -73,18 +73,18 @@ public enum BlockType {
      * @return @throws IOException
      */
     public Skin createSkin()
-    {
+    {/*
         try {
             if(name == "Wood") {
-                display.Image test = new display.Image(20, 20, "src/resources/mapping.png", 100, 0, 20, 20);
+                //display.Image test = new display.Image(20, 20, "src/resources/mapping.png", 100, 0, 20, 20);
                 //test.recolour(colors);
                 return test;
             } else
-                return new display.Image(20, 20, "src/resources/mapping.png", imageX, imageY, 20, 20);
+                //return new display.Image(20, 20, "src/resources/mapping.png", imageX, imageY, 20, 20);
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-        
+        */
         return null;
     }
 }
