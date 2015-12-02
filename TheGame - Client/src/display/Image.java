@@ -27,63 +27,35 @@ import javax.imageio.ImageIO;
 public class Image extends Skin {
 
     private WritableImage image;
-    private Map<String, javafx.scene.image.Image> parts;
+    private Map<Parts, PartImage> parts;
     
-    public Image(int height, int width) {
-        this.height = height;
-        this.width = width;
-        
-        parts = new HashMap<>();
-        this.image = new WritableImage(width, height);
-    }
-    
-    public Image(int height, int width, String path) {
-        this.height = height;
-        this.width = width;
-        
-        parts = new HashMap<>();
-        
-        javafx.scene.image.Image i = new javafx.scene.image.Image(path);
-        
-        parts.put("background", i);
-        
-        this.image = new WritableImage(i.getPixelReader(), width, height);
-    }
-    
-    public Image(int height, int width, String path, int ix, int iy, int iwidth, int iheight) throws IOException {
-        this.height = height;
-        this.width = width;
+    public Image(int height, int width, iTexture texture) throws IOException {
+        this.height = texture.getHeight();
+        this.width = texture.getWidth();
         
         parts = new HashMap<>();
         
         BufferedImage bI;
-        bI = ImageIO.read(new File(path));
+        bI = ImageIO.read(new File(iTexture.path));
+        javafx.scene.image.Image i;
         
-        javafx.scene.image.Image i = SwingFXUtils.toFXImage(bI.getSubimage(ix, iy, iwidth, iheight), null);
-        
-        parts.put("background", i);
-        
-        this.image = new WritableImage(i.getPixelReader(), width, height);
+        if(texture instanceof Parts) {
+            Parts t = (Parts) texture;
+            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            parts.put(t, new PartImage(i, 0, 0));
+        } else if(texture instanceof Sets) {
+            Sets s = (Sets) texture;
+            for(CombineParts cp : s.parts) {
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                parts.put(cp.part, new PartImage(i, cp.x, cp.y));
+            }
+        }
+            
+        repaint();
     }
     
-    public Image(int height, int width, String path, int ix, int iy, int iwidth, int iheight, int px, int py) throws IOException {
-        this.height = height;
-        this.width = width;
-        
-        parts = new HashMap<>();
-        
-        BufferedImage bI;
-        bI = ImageIO.read(new File(path));
-        
-        javafx.scene.image.Image i = SwingFXUtils.toFXImage(bI.getSubimage(ix, iy, iwidth, iheight), null);
-        
-        parts.put("background", i);
-        this.image = new WritableImage(i.getPixelReader(), px, py, width, height);
-    }
-    
-    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py, boolean transparant) throws IOException {
-        if(px + iwidth > width || py + iheight > height)
-            throw new IllegalArgumentException("Part '"+name+"' does not fit in Image");
+    public void addPart(String name, String path, iTexture texture) throws IOException {
+       /*
         
         BufferedImage bI;
         bI = ImageIO.read(new File(path));
@@ -105,10 +77,10 @@ public class Image extends Skin {
             }
         }
         
-        parts.put(name, i);
+        parts.put(name, i);*/
     }
     
-    public void recolour(Color[] colors) {
+    public void recolour(Color[] colors) {/*
         PixelWriter edit = image.getPixelWriter();
         PixelReader read = image.getPixelReader();
         
@@ -124,10 +96,10 @@ public class Image extends Skin {
                    edit.setColor(x, y, colors[r]);
                 }
             }
-        }
+        }*/
     }
     
-    public void flipHorizontal() {
+    public void flipHorizontal() {/*
         PixelWriter edit = image.getPixelWriter();
         PixelReader read = image.getPixelReader();
         
@@ -143,7 +115,7 @@ public class Image extends Skin {
             }
         }
         
-        image = writableImage;
+        image = writableImage;*/
     }
     
     
@@ -152,44 +124,10 @@ public class Image extends Skin {
         return image;
         
     }
-
-    public void addPart(String name, String path, int ix, int iy, int iwidth, int iheight, int px, int py, boolean transparant, int angle) throws IOException {
-        if(px + iwidth > width || py + iheight > height)
-            throw new IllegalArgumentException("Part '"+name+"' does not fit in Image");
+    
+    private void repaint() 
+    {
         
-        BufferedImage bI = ImageIO.read(new File(path));
-        bI = bI.getSubimage(ix, iy, iwidth, iheight);
- 
-        double rad = Math.toRadians((angle+360)%360);
-        
-        int w = (int) Math.ceil(Math.abs(iwidth * Math.sin(rad)) + Math.abs(iheight * Math.cos(rad)));
-        int h = (int) Math.ceil(Math.abs(iwidth * Math.cos(rad)) + Math.abs(iheight * Math.sin(rad)));
-        BufferedImage sI = new BufferedImage(w, h, bI.getType());
-        
-        
-        Graphics2D g = sI.createGraphics();
-        g.rotate(rad, iwidth/2, 0);
-        g.drawImage(bI, null, 0, 0);
-        
-        
-        javafx.scene.image.Image i = SwingFXUtils.toFXImage(sI, null);
-        
-        PixelWriter edit = image.getPixelWriter();
-        PixelReader read = i.getPixelReader();
-        
-        for(int y = 0; y < h; y++) {
-            for(int x = 0; x < w; x++) {
-                Color c = read.getColor(x, y);
-                
-                if(transparant && (int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
-                    continue;
-              
-                
-                edit.setColor(px + x, py + y, c);
-            }
-        }
-        
-        parts.put(name, i);
     }
     
 }
