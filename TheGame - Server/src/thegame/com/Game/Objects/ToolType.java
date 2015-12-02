@@ -19,7 +19,7 @@ public class ToolType implements Serializable{
     public float width;
     public toolType type; 
     
-    public enum toolType { PICKAXE, AXE, SWORD, SHOVEL, FLINT }
+    public enum toolType implements Serializable{ PICKAXE, AXE, SWORD, SHOVEL, FLINT }
     
     /**
      *

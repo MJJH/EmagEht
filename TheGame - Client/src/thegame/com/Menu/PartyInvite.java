@@ -1,5 +1,6 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Date;
  *
  * @author laure
  */
-public class PartyInvite {
+public class PartyInvite implements Serializable{
     private final Date datetime;
     private final Party party;
     private final Account account;

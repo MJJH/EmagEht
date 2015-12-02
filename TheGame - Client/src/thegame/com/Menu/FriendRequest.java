@@ -1,10 +1,12 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
+
 /**
  * Contains methods to accept or decline friend requests
  * @author robin
  */
-public class FriendRequest {
+public class FriendRequest implements Serializable{
 
     private int id;
     private final Account accountSource;

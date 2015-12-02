@@ -48,7 +48,7 @@ public class Map implements Serializable {
     private List<Enemy> enemies;
     private List<Player> players;
 
-    private List<MapObject> toUpdate;
+    private transient List<MapObject> toUpdate;
 
     private transient ExecutorService threadPool;
     private transient GameLogic gameLogic;

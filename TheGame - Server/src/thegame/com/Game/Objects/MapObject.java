@@ -29,11 +29,11 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float height;
     protected float width;
     protected float solid;
-    protected Map playing;
+    protected transient Map playing;
 
     public boolean debug = false;
 
-    public enum sides {
+    public enum sides implements Serializable{
 
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }

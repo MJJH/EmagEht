@@ -10,25 +10,7 @@ import thegame.com.Game.Map;
 public class Tool extends MapObject {
     private static final long serialVersionUID = 6529585098267757690L;
 
-    public final ToolType type;
-
-    /**
-     * Create a usable tool
-     *
-     * @param type the type of this tool (sword, hatchet, etc)
-     * @param map the map this tool is used on
-     */
-    public Tool(ToolType type, Map map)
-    {
-        super(type.skin, type.height, type.width, map);
-        this.type = type;
-    }
-
-    @Override
-    public Boolean call()
-    {
-        return false;
-    }
+    public ToolType type;
 
     @Override
     public void createSkin() {

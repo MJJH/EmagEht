@@ -32,10 +32,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -82,7 +82,7 @@ public class TheGame extends Application {
     private long lastTime = 0;
     private int fps = 0;
     private double delta = 0;
-    
+
     //SJET
     private boolean sjeton = false;
 
@@ -116,21 +116,23 @@ public class TheGame extends Application {
             {
                 if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
-                    gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
+                    //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
                 }
                 if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
-                    float x = Math.round(me.getX());
-                    float y = Math.round(me.getY()) - 1;
-                    Block block = new Block(BlockType.Dirt, x, y, play);
-                    gameLogic.addObject(block);
+                    /*
+                     float x = Math.round(me.getX());
+                     float y = Math.round(me.getY()) - 1;
+                     Block block = new Block(BlockType.Dirt, x, y, play);
+                     gameLogic.addObject(block);
+                     */
                 }
                 if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_RELEASED)
                 {
                     Message chatMessage = new Message(myAccount, "test");
                     gameLogic.sendMessage(chatMessage);
                 }
-                if( event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
+                if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
                     sjeton = !sjeton;
                 }
@@ -150,29 +152,32 @@ public class TheGame extends Application {
             double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
 
             me.useTool((float) clickX, (float) clickY, gameLogic);
-            play.addToUpdate(me);
         }
     };
     private Stage stages;
 
-   @Override
+    @Override
     public void start(Stage primaryStage) throws IOException
     {
+        primaryStage.setOnCloseRequest(event ->
+        {
+            System.exit(0);
+        });
         Scene scene = new Scene(createContent());
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
         stages = primaryStage;
-        
+
         InputStream hartje = Files.newInputStream(Paths.get("src/resources//Hearts.png"));
-        
-        img = new Image(hartje);     
+
+        img = new Image(hartje);
 
     }
 
     private void draw(GraphicsContext g) throws IOException
     {
-       
+
         float pX = me.getX();
         float pY = me.getY();
         float pW = me.getW();
@@ -195,7 +200,7 @@ public class TheGame extends Application {
         dx = 0;
         dy = 0;
 
-         // once the player's center is on the middle
+        // once the player's center is on the middle
         if ((pX + pW / 2) * config.block.val > scene.getWidth() / 2 && (pX + pW / 2) * config.block.val < playW * config.block.val - scene.getWidth() / 2)
         {
             // DX will be the center of the map
@@ -231,41 +236,37 @@ public class TheGame extends Application {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (playH - blockVertical + 2) * config.block.val * 2;
         }
-        
-        
-        
+
         for (MapObject draw : view)
         {
             float x;
             float y;
             if (!draw.equals(me))
             {
-                 
+
                 x = (draw.getX() + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (draw.getY() + startY) * config.block.val) + dy;
             } else
             {
-                
+
                 x = (pX + startX) * config.block.val - dx;
                 y = ((float) scene.getHeight() - (pY + startY) * config.block.val) + dy;
             }
-       
-           
-           if(draw instanceof CharacterGame && draw != me)
-           {
-           CharacterGame character = (CharacterGame) draw;
-           g.strokeRect(x - 3, y - 10, 24.0f, 5.0f);
-           g.setFill(Color.RED);
-           g.fillRect(x -2 , y - 9, 22.0f , 3.0f);
-           g.setFill(Color.GREEN);
-           int hp = character.getHP(); 
-           int maxhp= character.getMaxHP();
-           double breedte = (double) hp/maxhp;
-           breedte = breedte * 22;
-           g.fillRect(x -2 , y - 9, breedte , 3.0f);
 
-           }
-     
+            if (draw instanceof CharacterGame && draw != me)
+            {
+                CharacterGame character = (CharacterGame) draw;
+                g.strokeRect(x - 3, y - 10, 24.0f, 5.0f);
+                g.setFill(Color.RED);
+                g.fillRect(x - 2, y - 9, 22.0f, 3.0f);
+                g.setFill(Color.GREEN);
+                int hp = character.getHP();
+                int maxhp = character.getMaxHP();
+                double breedte = (double) hp / maxhp;
+                breedte = breedte * 22;
+                g.fillRect(x - 2, y - 9, breedte, 3.0f);
+
+            }
 
             g.beginPath();
 
@@ -289,52 +290,46 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-        
-        
-        g.closePath();
-       
+
+            g.closePath();
+
         }
-        
-            //draw black background
-            Color c=new Color(0f,0f,0f,.1f );
 
-            g.setFill(c);
-            g.fillRect(scene.getWidth() - 123.5, scene.getY() -4  , 108f, 60.0f);
+        //draw black background
+        Color c = new Color(0f, 0f, 0f, .1f);
 
-             //draw hearth
-            int teamlevens = 4;
-            for (int i = 0; i < teamlevens; i++) 
-            {
+        g.setFill(c);
+        g.fillRect(scene.getWidth() - 123.5, scene.getY() - 4, 108f, 60.0f);
+
+        //draw hearth
+        int teamlevens = 4;
+        for (int i = 0; i < teamlevens; i++)
+        {
             //g.drawImage(img, ((scene.getWidth() - 135) +(25 * i)), 32 ,87,92);
-            g.drawImage(img, ((scene.getWidth() - 134) +(25 * i)), scene.getY() + 15, 87,92); 
+            g.drawImage(img, ((scene.getWidth() - 134) + (25 * i)), scene.getY() + 15, 87, 92);
 
+        }
 
-            } 
-             
-             
-             g.setFill(Color.WHITE);
-             g.fillText("Team Lifes", scene.getWidth() - 105, scene.getY() + 10);
-            
-            g.beginPath();
-            //g.strokeRect(scene.getWidth() - 120, scene.getY() - 6, 102.0f, 13.0f);
-            g.strokeRect(scene.getWidth() - 120, scene.getY() + 39, 102.0f, 13.0f);
+        g.setFill(Color.WHITE);
+        g.fillText("Team Lifes", scene.getWidth() - 105, scene.getY() + 10);
 
-            g.setFill(Color.RED);
-            //g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, 100.0f , 11.0f);
-            g.fillRect(scene.getWidth() - 119 , scene.getY() + 40, 100.0f , 11.0f);
+        g.beginPath();
+        //g.strokeRect(scene.getWidth() - 120, scene.getY() - 6, 102.0f, 13.0f);
+        g.strokeRect(scene.getWidth() - 120, scene.getY() + 39, 102.0f, 13.0f);
 
-            g.setFill(Color.GREEN);
-            int hp = me.getHP(); 
-            int maxhp= me.getMaxHP();
-            double breedte = (double) hp/maxhp;
-            breedte = breedte * 100;
-           // g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, breedte , 11.0f);
-            g.fillRect(scene.getWidth() - 119 , scene.getY() + 40, breedte , 11.0f);
+        g.setFill(Color.RED);
+        //g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, 100.0f , 11.0f);
+        g.fillRect(scene.getWidth() - 119, scene.getY() + 40, 100.0f, 11.0f);
 
-            g.closePath(); 
-            
+        g.setFill(Color.GREEN);
+        int hp = me.getHP();
+        int maxhp = me.getMaxHP();
+        double breedte = (double) hp / maxhp;
+        breedte = breedte * 100;
+        // g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, breedte , 11.0f);
+        g.fillRect(scene.getWidth() - 119, scene.getY() + 40, breedte, 11.0f);
 
-        
+        g.closePath();
 
         /*
          // Calibration lines
@@ -408,28 +403,38 @@ public class TheGame extends Application {
         return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
 
+    private void connectToServer(Stage primaryStage)
+    {
+        Thread updateListenerThread = new Thread(() ->
+        {
+            try
+            {
+                server = LocateRegistry.getRegistry(config.ip, config.reachGameLogicPort);
+                gameLogic = (iGameLogic) server.lookup(config.bindName);
+                Random rand = new Random();
+                myAccount = new Account(Integer.toString(rand.nextInt(1000)));
+                me = gameLogic.joinPlayer(myAccount);
+                play = (Map) gameLogic.getMap();
+                play.loadAfterRecieve(gameLogic, myAccount, me);
+                me.setMap(play);
+                me.setToUpdate(true);
+                listener = new UpdateListener(play, myAccount, me);
+                UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
+                gameLogic.addListener(listener, "ServerUpdate", me);
+                Platform.runLater(() ->
+                {
+                    startagame(primaryStage);
+                });
+            } catch (RemoteException | NotBoundException ex)
+            {
+                Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, "updateListenerThread");
+        updateListenerThread.start();
+    }
+
     public void startagame(Stage primaryStage)
     {
-        try
-        {
-            server = LocateRegistry.getRegistry(config.ip, config.reachGameLogicPort);
-            gameLogic = (iGameLogic) server.lookup(config.bindName);
-            Random rand = new Random();
-            myAccount = new Account(Integer.toString(rand.nextInt(1000)));
-            me = gameLogic.joinPlayer(myAccount);
-            play = (Map) gameLogic.getMap();
-            play.loadAfterRecieve(gameLogic, myAccount, me);
-            me.setMap(play);
-            play.addToUpdate(me);
-            //gameLogic.addListener(listener, "ServerUpdate", me);
-            listener = new UpdateListener(play, myAccount, me);
-            UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
-            gameLogic.addListener(listener, "ServerUpdate", me);
-        } catch (RemoteException | NotBoundException ex)
-        {
-            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         offsetBlocks = 4;
 
         StackPane root = new StackPane();
@@ -455,11 +460,6 @@ public class TheGame extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        primaryStage.setOnCloseRequest(event ->
-        {
-            System.exit(0);
-        });
 
         // Update screen when animationtimer says it is possible
         lastTime = System.nanoTime();
@@ -499,6 +499,16 @@ public class TheGame extends Application {
             @Override
             public void run()
             {
+                play.update();
+            }
+        }, 0, 1000 / 60);
+        
+        Timer movement = new Timer("movement");
+        update.schedule(new TimerTask() {
+
+            @Override
+            public void run()
+            {
                 if (keys.contains(KeyCode.A))
                 {
                     me.walkLeft();
@@ -510,7 +520,6 @@ public class TheGame extends Application {
                 {
                     me.jump();
                 }
-                play.update();
             }
         }, 0, 1000 / 60);
     }
@@ -541,7 +550,7 @@ public class TheGame extends Application {
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
-        startMultiPlayer.setOnMouseClicked(event -> startagame(stages));
+        startMultiPlayer.setOnMouseClicked(event -> connectToServer(stages));
 
         MenuBox menu = new MenuBox(
                 new MenuItem("SINGLE PLAYER [soon]"),
@@ -555,7 +564,7 @@ public class TheGame extends Application {
 
         return root;
     }
-    
+
     /**
      * @param args the command line arguments
      */

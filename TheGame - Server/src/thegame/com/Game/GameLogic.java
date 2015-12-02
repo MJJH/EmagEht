@@ -5,19 +5,12 @@
  */
 package thegame.com.Game;
 
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import thegame.BasicPublisher;
-import thegame.com.Game.Objects.Block;
-import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
@@ -31,9 +24,9 @@ import thegame.shared.iGameLogic;
  */
 public class GameLogic implements iGameLogic {
 
-    private Map map;
-    public BasicPublisher publisher;
-    private int mapObjectID;
+    private transient Map map;
+    public transient BasicPublisher publisher;
+    private transient int mapObjectID;
 
     public GameLogic() throws RemoteException
     {
@@ -67,90 +60,6 @@ public class GameLogic implements iGameLogic {
     public void removeListener(IRemotePropertyListener listener, String property) throws RemoteException
     {
         publisher.removeListener(listener, property);
-    }
-
-    @Override
-    public int getHeight() throws RemoteException
-    {
-        return map.getHeight();
-    }
-
-    @Override
-    public int getWidth() throws RemoteException
-    {
-        return map.getWidth();
-    }
-
-    @Override
-    public int getTeamLifes() throws RemoteException
-    {
-        return map.getTeamLifes();
-    }
-
-    @Override
-    public int getTime() throws RemoteException
-    {
-        return map.getTime();
-    }
-
-    @Override
-    public Array[] getSeasons()
-    {
-        return map.getSeasons();
-    }
-
-    @Override
-    public int getLevel()
-    {
-        return map.getLevel();
-    }
-
-    @Override
-    public int getSpawnX()
-    {
-        return map.getSpawnX();
-    }
-
-    @Override
-    public int getSpawnY()
-    {
-        return map.getSpawnY();
-    }
-
-    @Override
-    public List<MapObject> getObjects()
-    {
-        return map.getObjects();
-    }
-
-    @Override
-    public List<Enemy> getEnemies()
-    {
-        return map.getEnemies();
-    }
-
-    @Override
-    public List<Player> getPlayers()
-    {
-        return map.getPlayers();
-    }
-
-    @Override
-    public List<MapObject> getToUpdate()
-    {
-        return map.getToUpdate();
-    }
-
-    @Override
-    public List<MapObject> getBlocksAndObjects(int startX, int startY, int endX, int endY) throws RemoteException
-    {
-        return map.getBlocksAndObjects(startX, startY, endX, endY);
-    }
-
-    @Override
-    public List<Block> getBlocks() throws RemoteException
-    {
-        return map.getBlocks();
     }
 
     @Override

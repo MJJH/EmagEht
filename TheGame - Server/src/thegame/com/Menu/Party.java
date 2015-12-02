@@ -1,5 +1,6 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * This class contains code for the party. 
  * @author laure
  */
-public class Party{
+public class Party implements Serializable{
 
     private int id;
     private final ArrayList<Account> members;
@@ -19,7 +20,7 @@ public class Party{
      * This method creates a party with the owner as member and owner.
      * @param owner
      */
-    public Party(Account owner)throws RemoteException
+    public Party(Account owner)
     {
         this.owner = owner;
         members = new ArrayList();

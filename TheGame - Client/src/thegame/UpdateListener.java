@@ -7,7 +7,6 @@ package thegame;
 
 import java.beans.PropertyChangeEvent;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
@@ -174,7 +173,7 @@ public class UpdateListener implements IRemotePropertyListener {
                 player.setCords(x, y);
                 if (player == me)
                 {
-                    map.addToUpdate(player);
+                    me.setToUpdate(true);
                 }
                 return;
             }
@@ -189,7 +188,7 @@ public class UpdateListener implements IRemotePropertyListener {
 
         for (Player player : map.getPlayers())
         {
-            if (player.getID() == id)
+            if (player.getID() == id && player == me)
             {
                 player.knockBack(hSpeed, vSpeed);
                 return;

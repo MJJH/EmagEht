@@ -15,8 +15,7 @@ public abstract class CharacterGame extends MapObject {
     private static final long serialVersionUID = 5539685098267757690L;
     
     protected int hp;
-    protected final String name;
-    protected float solid;
+    protected String name;
     protected int maxHP;
     protected Tool holding;
     protected long used;
@@ -28,96 +27,6 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<MapObject, Integer> backpack;
     
     protected boolean jumping = false;
-
-    /**
-     * This constructor creates a new in game character.
-     *
-     * @param name, Name of the character
-     * @param hp, HP of the character
-     * @param skills, Arraylist of the skills that the character got
-     * @param x, X-Coordinate of the in game character
-     * @param y, Y-Coordinate of the in game character
-     * @param skin, Skin that the in game character got
-     * @param height, Height of the in game character
-     * @param width, Width of the in game character
-     * @param map
-     */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, Skin skin, float height, float width, thegame.com.Game.Map map)
-    {
-        super(x, y, skin, height, width, 1, map);
-        this.name = name;
-        this.hp = 100;
-        this.skills = skills;
-        backpack = new HashMap();
-        armor = new HashMap();
-        direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, null, 1, 1);
-        Tool equip = new Tool(test, map);
-        equipTool(equip);
-
-        used = System.currentTimeMillis();
-    }
-
-    public void walkRight()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        direction = sides.RIGHT;
-        
-        if(!c.get(sides.RIGHT).isEmpty())
-            return;
-        
-        if (hSpeed < 0)
-        {
-            hSpeed = 0.1f;
-        } else if (hSpeed < 0.5)
-        {
-            hSpeed += 0.1;
-        }
-        
-        playing.addToUpdate(this);
-    }
-
-    public void walkLeft()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        direction = sides.LEFT;
-        
-        if(!c.get(sides.LEFT).isEmpty())
-            return;
-        
-        if (hSpeed > 0)
-        {
-            hSpeed = -0.1f;
-        } else if (hSpeed > -0.5)
-        {
-            hSpeed -= 0.1;
-        }
-        
-        playing.addToUpdate(this);
-    }
-
-    public void jump()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
-        {
-            jumping = true;
-            vSpeed += 0.2f;
-        
-            if(vSpeed >= 0.8f) {
-                vSpeed = 0.8f;
-                jumping = false;
-            }
-        }
-        
-        playing.addToUpdate(this);
-    }
-    
-    public void stopJump() {
-        jumping = false;
-        
-        playing.addToUpdate(this);
-    }
 
     /**
      * This method will let you add an object to your backpack.
@@ -237,11 +146,11 @@ public abstract class CharacterGame extends MapObject {
     /**
      * This method changes the hp of the in game character
      *
-     * @param change the new hp
+     * @param newHP the new hp
      */
-    public void updateHP(int change)
+    public void updateHP(int newHP)
     {
-        hp = hp - change;
+        hp = newHP;
     }
     
     public int getMaxHP()
