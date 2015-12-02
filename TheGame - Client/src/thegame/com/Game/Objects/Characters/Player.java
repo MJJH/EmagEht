@@ -1,6 +1,8 @@
 package thegame.com.Game.Objects.Characters;
 
 import display.Animation;
+import display.Image;
+import display.Sets;
 import display.Skin;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -449,168 +451,11 @@ public class Player extends CharacterGame {
         try
         {
             skins = new HashMap<>();
-            display.Image i = new display.Image(43, 24);
-            String pathname = "src/resources//player.png";
-            i.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -40);
-            i.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i3 = new display.Image(43, 24);
-            i3.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i3.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i3.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i3.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i3.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -50);
-            i3.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i3.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i4 = new display.Image(43, 24);
-            i4.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i4.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i4.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i4.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i4.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -40);
-            i4.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i4.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i5 = new display.Image(43, 24);
-            i5.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i5.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i5.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i5.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i5.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -30);
-            i5.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i5.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            Animation d = new Animation(3);
-            d.addFrame(i);
-            d.addFrame(i3);
-            d.addFrame(i4);
-            d.addFrame(i5);
+            
+            Skin d = new Image(Sets.player);
             skins.put("standRight", d);
 
-            display.Image i6 = new display.Image(43, 24);
-            i6.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i6.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i6.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i6.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i6.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -40);
-            i6.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i6.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i7 = new display.Image(43, 24);
-            i7.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i7.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i7.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i7.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i7.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -50);
-            i7.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i7.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i8 = new display.Image(43, 24);
-            i8.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i8.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i8.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i8.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i8.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -40);
-            i8.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i8.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            display.Image i9 = new display.Image(43, 24);
-            i9.addPart("legBehind", pathname, 0, 36, 12, 15, 8, 28, true);
-            i9.addPart("armBehind", pathname, 9, 16, 8, 17, 16, 12, true);
-            i9.addPart("torso", pathname, 17, 0, 14, 16, 4, 12, true);
-            i9.addPart("legFront", pathname, 13, 36, 11, 15, 3, 28, true);
-            i9.addPart("armFront", pathname, 0, 16, 8, 19, 0, 12, true, -30);
-            i9.addPart("head", pathname, 0, 0, 15, 15, 4, 0, true);
-
-            i9.recolour(new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.52, 0.30, 0.13, 1),
-                new Color(0.72, 0.41, 0.19, 1),
-                new Color(0.84, 0.58, 0.39, 1),
-                new Color(0.89, 0.71, 0.58, 1),
-                new Color(1, 0, 0, 1)
-            });
-
-            Animation d2 = new Animation(3);
-            i6.flipHorizontal();
-            i7.flipHorizontal();
-            i8.flipHorizontal();
-            i9.flipHorizontal();
-
-            d2.addFrame(i6);
-            d2.addFrame(i7);
-            d2.addFrame(i8);
-            d2.addFrame(i9);
+            Skin d2 = new Image(Sets.player);
             skins.put("standLeft", d2);
 
         } catch (IOException ex)

@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.PixelReader;
@@ -29,11 +30,11 @@ public class Image extends Skin {
     private WritableImage image;
     private Map<Parts, PartImage> parts;
     
-    public Image(int height, int width, iTexture texture) throws IOException {
+    public Image(iTexture texture) throws IOException {
         this.height = texture.getHeight();
         this.width = texture.getWidth();
         
-        parts = new HashMap<>();
+        parts = new LinkedHashMap<>();
         
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
@@ -127,7 +128,24 @@ public class Image extends Skin {
     
     private void repaint() 
     {
+        image = new WritableImage(width, height);
+        PixelWriter pw = image.getPixelWriter();
+        PixelReader pr;
         
+        for(PartImage pi : parts.values()) {
+            pr = pi.image.getPixelReader();
+            
+            for(int y = 0; y < pi.image.getHeight(); y++) {
+                for(int x = 0; x < pi.image.getWidth(); x++) {
+                    Color c = pr.getColor(x, y);
+                    
+                    if((int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
+                        continue;
+                    
+                    pw.setColor(x + pi.x, y + pi.y, c);
+                }
+            }
+        }
     }
     
 }
