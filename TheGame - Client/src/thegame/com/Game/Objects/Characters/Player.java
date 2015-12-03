@@ -43,10 +43,10 @@ public class Player extends CharacterGame {
 
         if (hSpeed < 0)
         {
-            hSpeed = 0.1f;
-        } else if (hSpeed < 0.5)
+            hSpeed = 0.075f;
+        } else if (hSpeed < 0.3)
         {
-            hSpeed += 0.1;
+            hSpeed += 0.075f;
         }
 
         setToUpdate(true);
@@ -64,10 +64,10 @@ public class Player extends CharacterGame {
 
         if (hSpeed > 0)
         {
-            hSpeed = -0.1f;
-        } else if (hSpeed > -0.5)
+            hSpeed = -0.075f;
+        } else if (hSpeed > -0.3)
         {
-            hSpeed -= 0.1;
+            hSpeed -= 0.075f;
         }
 
         setToUpdate(true);
@@ -79,11 +79,11 @@ public class Player extends CharacterGame {
         if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
         {
             jumping = true;
-            vSpeed += 0.2f;
+            vSpeed += 0.05f;
 
-            if (vSpeed >= 0.8f)
+            if (vSpeed >= 0.3f)
             {
-                vSpeed = 0.8f;
+                vSpeed = 0.3f;
                 jumping = false;
             }
         }
@@ -102,7 +102,7 @@ public class Player extends CharacterGame {
     {
         if (collision.get(sides.BOTTOM).isEmpty() && vSpeed > -1)
         {
-            vSpeed -= .1f;
+            vSpeed -= .025f;
             return true;
         }
         return false;
@@ -114,7 +114,7 @@ public class Player extends CharacterGame {
 
         if (hSpeed > 0)
         {
-            hSpeed -= 0.05f;
+            hSpeed -= 0.04f;
             if (hSpeed <= 0)
             {
                 hSpeed = 0;
@@ -148,7 +148,7 @@ public class Player extends CharacterGame {
             }
         } else if (hSpeed < 0)
         {
-            hSpeed += 0.05f;
+            hSpeed += 0.04f;
             if (hSpeed >= 0)
             {
                 hSpeed = 0;
@@ -245,6 +245,7 @@ public class Player extends CharacterGame {
             }
         } else if (vSpeed < 0)
         {
+            this.stopJump();
             found = collision.get(sides.BOTTOM);
             if (found.isEmpty())
             {
