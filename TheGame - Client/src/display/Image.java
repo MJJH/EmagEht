@@ -55,6 +55,10 @@ public class Image extends Skin {
         repaint();
     }
     
+    public Map<Parts, PartImage> getParts() {
+        return parts;
+    }
+    
     public void recolour(Color[] colors) {
         for(PartImage pi : parts.values()) {
             pi.recolors = colors;

@@ -14,6 +14,6 @@ public class Block extends MapObject {
     @Override
     public void createSkin()
     {
-        skin = type.skin;
+        skin = type.createSkin();
     }
 }
