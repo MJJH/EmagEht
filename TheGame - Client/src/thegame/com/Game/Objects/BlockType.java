@@ -83,7 +83,7 @@ public enum BlockType {
     public final ToolType.toolType reqTool;
     public final float solid;
     
-    public final iTexture skin;
+    public Skin skin;
     public final Color[] colors;
 
     /**
@@ -102,22 +102,15 @@ public enum BlockType {
         this.reqTool = req;
         this.solid = solid;
         this.colors = colors;
-        this.skin = skin;
-    }
-    
-
-    /**
-     *
-     * @return @throws IOException
-     */
-    public Skin createSkin()
-    {
+        
+        
+        display.Image i;
         try {
-            display.Image i = new display.Image(skin);
+            i = new display.Image(skin);
             i.recolour(colors);
-            return i;
+            this.skin = i;
         } catch (IOException ex) {
-            return null;
+            Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

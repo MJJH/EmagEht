@@ -67,7 +67,7 @@ public class Map implements Serializable {
      */
     public Map(BasicPublisher publisher, GameLogic gameLogic)
     {
-        width = 300;
+        width = 500;
         height = 100;
 
         objects = new ArrayList<>();
