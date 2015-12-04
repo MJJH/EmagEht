@@ -3,7 +3,7 @@ package thegame.com.Game.Objects.Characters;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
-import thegame.com.Game.GameLogic;
+import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
 
@@ -42,9 +42,9 @@ public abstract class CharacterGame extends MapObject {
      * @param map
      * @param gameLogic
      */
-    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map, GameLogic gameLogic)
+    public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
-        super(x, y, height, width, 1, map, gameLogic);
+        super(x, y, height, width, 1, map);
         this.name = name;
         this.hp = 100;
         this.skills = skills;
@@ -52,7 +52,7 @@ public abstract class CharacterGame extends MapObject {
         armor = new HashMap();
         direction = sides.RIGHT;
         ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
-        Tool equip = new Tool(test, map, gameLogic);
+        Tool equip = new Tool(test, map);
         equipTool(equip);
     }
 
@@ -123,22 +123,7 @@ public abstract class CharacterGame extends MapObject {
         playing.addToUpdate(this);
     }
 
-    public void knockBack(int kb, sides hitDirection)
-    {
-        switch (hitDirection)
-        {
-            case LEFT:
-                hSpeed = -kb * 2;
-                vSpeed = kb;
-                break;
-            case RIGHT:
-                hSpeed = kb * 2;
-                vSpeed = kb;
-                break;
-        }
-
-        playing.sendKnockBack(getID(), hSpeed, vSpeed);
-    }
+    public abstract void knockBack(int kb, sides hitDirection);
 
     /**
      * This method will let you add an object to your backpack.
@@ -261,32 +246,7 @@ public abstract class CharacterGame extends MapObject {
      * @param change the ammount to change
      * @return the new HP
      */
-    public int updateHP(int change)
-    {
-        hp -= change;
-
-        if (hp > 100)
-        {
-            hp = 100;
-        } else if (hp <= 0)
-        {
-            hp = 0;
-        }
-
-        int type = 0;
-        if (this instanceof Player)
-        {
-            type = 1;
-        }
-        if (this instanceof Enemy)
-        {
-            type = 2;
-        }
-
-        playing.sendUpdateHP(type, getID(), hp);
-
-        return hp;
-    }
+    public abstract int updateHP(int change);
 
     /**
      * This method gets the current hp
@@ -408,7 +368,6 @@ public abstract class CharacterGame extends MapObject {
                 this.xPosition = playing.getSpawnX();
                 this.yPosition = playing.getSpawnY();
                 updateHP(-100);
-                playing.sendRespawn(getID(), xPosition, yPosition);
             } else
             {
                 playing.removeMapObject(this);

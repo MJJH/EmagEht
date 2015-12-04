@@ -7,7 +7,8 @@ import java.io.IOException;
  *
  * @author Mark
  */
-public enum BlockType {    
+public enum BlockType {
+
     Dirt("Dirt", 5, 3, 0, 0, ToolType.toolType.SHOVEL, 1),
     Sand("Sand", 5, 3, 20, 20, ToolType.toolType.SHOVEL, 1),
     Stone("Stone", 25, 3, 0, 20, ToolType.toolType.PICKAXE, 1),
@@ -16,9 +17,8 @@ public enum BlockType {
     Tin("Tin", 40, 3, 20, 40, ToolType.toolType.PICKAXE, 1),
     Iron("Iron", 60, 3, 0, 80, ToolType.toolType.PICKAXE, 1),
     Obsidian("Obsidian", 120, 3, 20, 80, ToolType.toolType.PICKAXE, 1),
-    
     Wood("Wood", 10, 0, 0, 100, ToolType.toolType.AXE, 0);
-    
+
     public final String name;
     public final int strength;
     public final int reqToolLvl;
@@ -36,7 +36,8 @@ public enum BlockType {
      * @param btx
      * @param bty
      */
-    BlockType(String name, int strength, int reqLvl, int btx, int bty, ToolType.toolType req, float solid) {
+    BlockType(String name, int strength, int reqLvl, int btx, int bty, ToolType.toolType req, float solid)
+    {
         this.name = name;
         this.strength = strength;
         this.reqToolLvl = reqLvl;

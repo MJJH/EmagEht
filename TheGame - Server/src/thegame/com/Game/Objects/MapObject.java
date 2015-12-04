@@ -1,15 +1,11 @@
 package thegame.com.Game.Objects;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.shape.Rectangle;
-import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 
 /**
@@ -47,9 +43,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param width the width of this object
      * @param solid the density of this object
      * @param map the map that this is on
-     * @param gameLogic
      */
-    public MapObject(float x, float y, float height, float width, float solid, Map map, GameLogic gameLogic)
+    public MapObject(float x, float y, float height, float width, float solid, Map map)
     {
         this.playing = map;
         this.setX(x);
@@ -57,14 +52,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.setH(height);
         this.setW(width);
         this.setS(solid);
-
-        try
-        {
-            id = gameLogic.getMapObjectID();
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(MapObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.id = map.getMapObjectID();
     }
 
     /**
@@ -73,21 +61,13 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param height
      * @param width
      * @param map
-     * @param gameLogic
      */
-    public MapObject(float height, float width, Map map, GameLogic gameLogic)
+    public MapObject(float height, float width, Map map)
     {
         this.playing = map;
         this.setH(height);
         this.setW(width);
-        
-        try
-        {
-            id = gameLogic.getMapObjectID();
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(MapObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.id = map.getMapObjectID();
     }
 
     /**

@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
-import thegame.com.Game.GameLogic;
+import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 
 /**
@@ -8,15 +8,16 @@ import thegame.com.Game.Map;
  * @author laure
  */
 public class Player extends CharacterGame {
+
     private static final long serialVersionUID = 6629685098267757690L;
     private boolean connected;
     private int spawnX;
     private int spawnY;
-    
 
     /**
      * This constructor will create an player
-     * @param character, 
+     *
+     * @param character,
      * @param name, Name of the player
      * @param hp, HP of the player
      * @param skills, Skills of the player
@@ -26,11 +27,13 @@ public class Player extends CharacterGame {
      * @param height, height of the player
      * @param width, width of the player
      * @param map
-     * @param gameLogic
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map, GameLogic gameLogic)
+    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map)
     {
-        super(name, hp, skills, x, y, height, width, map, gameLogic);
+        super(name, hp, skills, x, y, height, width, map);
+        
+        spawnX = playing.getSpawnX();
+        spawnY = playing.getSpawnY();
     }
 
     /**
@@ -50,23 +53,23 @@ public class Player extends CharacterGame {
         // TODO - implement Player.LevelUp
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
-    public Boolean call() 
+    public Boolean call()
     {
         /*EnumMap<sides, List<MapObject>> collision = collision();
-        Boolean ret = false;
-        if(fall(collision))
-            ret = true;
+         Boolean ret = false;
+         if(fall(collision))
+         ret = true;
         
-        if(moveH(collision))
-            ret = true;
+         if(moveH(collision))
+         ret = true;
         
-        if(moveV(collision))
-            ret = true;
+         if(moveV(collision))
+         ret = true;
         
-        return ret;*/
-        
+         return ret;*/
+
         return false;
     }
 
@@ -79,5 +82,44 @@ public class Player extends CharacterGame {
     public void setDirection(sides directionSide)
     {
         direction = directionSide;
+    }
+
+    @Override
+    public void knockBack(int kb, sides hitDirection)
+    {
+        float newHSpeed = 0;
+        float newVSpeed = 0;
+
+        switch (hitDirection)
+        {
+            case LEFT:
+                newHSpeed = -kb * 2;
+                newVSpeed = kb;
+                break;
+            case RIGHT:
+                newHSpeed = kb * 2;
+                newVSpeed = kb;
+                break;
+        }
+
+        playing.getGameServerToClientHandler().knockBackPlayer(this, newHSpeed, newVSpeed);
+    }
+
+    @Override
+    public int updateHP(int change)
+    {
+        hp -= change;
+
+        if (hp > 100)
+        {
+            hp = 100;
+        } else if (hp <= 0)
+        {
+            hp = 0;
+        }
+
+        playing.getGameServerToClientHandler().updateHealthPlayer(this);
+        
+        return hp;
     }
 }

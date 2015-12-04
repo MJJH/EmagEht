@@ -2,7 +2,6 @@ package thegame.com.Game.Objects.Characters;
 
 import java.util.EnumMap;
 import java.util.List;
-import thegame.com.Game.GameLogic;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
 
@@ -12,6 +11,7 @@ import thegame.com.Game.Objects.MapObject;
  * @author Nick Bijmoer
  */
 public class Enemy extends CharacterGame {
+
     private static final long serialVersionUID = 6729685098267757690L;
     private final float distanceX = 30;
     private final float distanceY = 10;
@@ -26,11 +26,10 @@ public class Enemy extends CharacterGame {
      * @param height, Height of the enemy
      * @param width, Width of the enemy
      * @param map
-     * @param gameLogic
      */
-    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map, GameLogic gameLogic)
+    public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
-        super(name, hp, skills, x, y, height, width, map, gameLogic);
+        super(name, hp, skills, x, y, height, width, map);
     }
 
     @Override
@@ -42,8 +41,8 @@ public class Enemy extends CharacterGame {
 
         for (Player player : players)
         {
-            float playerX = player.getX() + (player.getW()/2);
-            float playerY = player.getY() + (player.getH()/2);
+            float playerX = player.getX() + (player.getW() / 2);
+            float playerY = player.getY() + (player.getH() / 2);
 
             if ((xPosition - distanceX) < playerX && (xPosition + distanceX) > playerX)
             {
@@ -117,22 +116,61 @@ public class Enemy extends CharacterGame {
         }
 
         Boolean ret = false;
-        if(fall(collision))
+        if (fall(collision))
+        {
             ret = true;
-        
-        if(moveH(collision))
+        }
+
+        if (moveH(collision))
+        {
             ret = true;
-        
-        if(moveV(collision))
+        }
+
+        if (moveV(collision))
+        {
             ret = true;
-        
-        while(!collision.get(sides.CENTER).isEmpty()) {
+        }
+
+        while (!collision.get(sides.CENTER).isEmpty())
+        {
             yPosition++;
             collision = collision();
             ret = true;
         }
-        
+
         return ret;
+    }
+
+    @Override
+    public void knockBack(int kb, sides hitDirection)
+    {
+        switch (hitDirection)
+        {
+            case LEFT:
+                hSpeed = -kb * 2;
+                vSpeed = kb;
+                break;
+            case RIGHT:
+                hSpeed = kb * 2;
+                vSpeed = kb;
+                break;
+        }
+    }
+
+    @Override
+    public int updateHP(int change)
+    {
+        hp -= change;
+
+        if (hp > 100)
+        {
+            hp = 100;
+        } else if (hp <= 0)
+        {
+            hp = 0;
+        }
+
+        return hp;
     }
 
 }

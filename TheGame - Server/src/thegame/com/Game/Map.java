@@ -1,5 +1,6 @@
 package thegame.com.Game;
 
+import thegame.GameClientToServerHandler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,10 +17,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import thegame.BasicPublisher;
+import thegame.GameServerToClientHandler;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
-import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -33,7 +33,7 @@ public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
 
-    private int id;
+    private int mapObjectID;
     private int height;
     private int width;
     private int teamlifes;
@@ -51,8 +51,8 @@ public class Map implements Serializable {
     private transient List<MapObject> toUpdate;
 
     private transient ExecutorService threadPool;
-    private transient GameLogic gameLogic;
-    private transient BasicPublisher publisher;
+    private transient GameClientToServerHandler gameClientToServerHandler;
+    private transient GameServerToClientHandler gameServerToClientHandler;
     private transient ReentrantLock toUpdateLock;
     private transient ReentrantLock objectsLock;
     private transient ReentrantLock enemiesLock;
@@ -62,10 +62,10 @@ public class Map implements Serializable {
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      *
-     * @param publisher
-     * @param gameLogic
+     * @param gameServerToClientHandler
+     * @param gameClientToServerHandler
      */
-    public Map(BasicPublisher publisher, GameLogic gameLogic)
+    public Map(GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
     {
         width = 500;
         height = 100;
@@ -77,8 +77,8 @@ public class Map implements Serializable {
         blocks = new Block[height][width];
 
         threadPool = Executors.newCachedThreadPool();
-        this.gameLogic = gameLogic;
-        this.publisher = publisher;
+        this.gameClientToServerHandler = gameClientToServerHandler;
+        this.gameServerToClientHandler = gameServerToClientHandler;
         toUpdateLock = new ReentrantLock();
         objectsLock = new ReentrantLock();
         enemiesLock = new ReentrantLock();
@@ -90,7 +90,7 @@ public class Map implements Serializable {
     /**
      *
      */
-    public void generateMap()
+    private void generateMap()
     {
 
         int y = height - 1;
@@ -115,28 +115,28 @@ public class Map implements Serializable {
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Dirt, x, y, this);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Stone, x, y, this);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Sand, x, y, this);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, this);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Coal, x, y, this);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Tin, x, y, this);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Iron, x, y, this);
                             break;
                         case 'b':
-                            blocks[y][x] = new Block(BlockType.Wood, x, y, this, gameLogic);
+                            blocks[y][x] = new Block(BlockType.Wood, x, y, this);
                     }
 
                     x++;
@@ -145,12 +145,17 @@ public class Map implements Serializable {
                 y--;
             }
 
-            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this, gameLogic));
+            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));
 
         } catch (IOException ex)
         {
             System.err.println(ex.getMessage());
         }
+    }
+    
+    public GameServerToClientHandler getGameServerToClientHandler()
+    {
+        return gameServerToClientHandler;
     }
 
     public List<Player> getPlayers()
@@ -158,9 +163,77 @@ public class Map implements Serializable {
         return players;
     }
 
+    /**
+     * Handles the redirect to the next map.
+     */
+    public void NextLevel()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getMapObjectID()
+    {
+        return mapObjectID++;
+    }
+
+    public int getSpawnX()
+    {
+        return spawnX;
+    }
+
+    public int getSpawnY()
+    {
+        return spawnY;
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
+    }
+
+    int getTeamLifes()
+    {
+        return teamlifes;
+    }
+
+    int getTime()
+    {
+        return time;
+    }
+
+    Array[] getSeasons()
+    {
+        return seasons;
+    }
+
+    int getLevel()
+    {
+        return level;
+    }
+
+    List<MapObject> getObjects()
+    {
+        return objects;
+    }
+
+    List<Enemy> getEnemies()
+    {
+        return enemies;
+    }
+
+    List<MapObject> getToUpdate()
+    {
+        return toUpdate;
+    }
+
     public void addMapObject(MapObject mo)
     {
-        publisher.inform(this, "ServerUpdate", "addMapObject", mo);
+        gameServerToClientHandler.addMapObject(mo);
 
         if (mo instanceof Enemy)
         {
@@ -245,56 +318,7 @@ public class Map implements Serializable {
             }
         }
 
-        int[] toDelete = new int[4];
-        toDelete[0] = type;
-        toDelete[1] = removeObject.getID();
-        toDelete[2] = (int) removeObject.getX();
-        toDelete[3] = (int) removeObject.getY();
-        publisher.inform(this, "ServerUpdate", "removeMapObject", toDelete);
-    }
-
-    public void updateMapObject(MapObject update)
-    {
-        if (update instanceof Player)
-        {
-            playersLock.lock();
-            try
-            {
-                players.remove((Player) update);
-                players.add((Player) update);
-            } finally
-            {
-                playersLock.unlock();
-            }
-        }
-    }
-
-    /**
-     * Handles the redirect to the next map.
-     */
-    public void NextLevel()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public int getSpawnX()
-    {
-        return spawnX;
-    }
-
-    public int getSpawnY()
-    {
-        return spawnY;
-    }
-
-    public int getWidth()
-    {
-        return width;
-    }
-
-    public int getHeight()
-    {
-        return height;
+        gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
     }
 
     public MapObject GetTile(float x, float y, MapObject self)
@@ -481,29 +505,21 @@ public class Map implements Serializable {
         return ret;
     }
 
-    public List<Block> getBlocks()
+    public void addToUpdate(MapObject toUpdateMO)
     {
-        List<Block> ret = new ArrayList<>();
-
-        for (int y = 0; y < height - 1; y++)
+        if (toUpdate.contains(toUpdateMO))
         {
-            for (int x = 0; x < width - 1; x++)
-            {
-                try
-                {
-                    Block cur = blocks[y][x];
-
-                    if (cur != null)
-                    {
-                        ret.add(cur);
-                    }
-                } catch (Exception e)
-                {
-                }
-            }
+            return;
         }
 
-        return ret;
+        toUpdateLock.lock();
+        try
+        {
+            toUpdate.add(toUpdateMO);
+        } finally
+        {
+            toUpdateLock.unlock();
+        }
     }
 
     public void update()
@@ -559,84 +575,5 @@ public class Map implements Serializable {
             toUpdateLock.unlock();
         }
 
-    }
-
-    public void addToUpdate(MapObject toUpdateMO)
-    {
-        if (toUpdate.contains(toUpdateMO))
-        {
-            return;
-        }
-
-        toUpdateLock.lock();
-        try
-        {
-            toUpdate.add(toUpdateMO);
-        } finally
-        {
-            toUpdateLock.unlock();
-        }
-    }
-
-    int getTeamLifes()
-    {
-        return teamlifes;
-    }
-
-    int getTime()
-    {
-        return time;
-    }
-
-    Array[] getSeasons()
-    {
-        return seasons;
-    }
-
-    int getLevel()
-    {
-        return level;
-    }
-
-    List<MapObject> getObjects()
-    {
-        return objects;
-    }
-
-    List<Enemy> getEnemies()
-    {
-        return enemies;
-    }
-
-    List<MapObject> getToUpdate()
-    {
-        return toUpdate;
-    }
-
-    public void sendUpdateHP(int type, int id, int hp)
-    {
-        int[] toSend =
-        {
-            type, id, hp
-        };
-        publisher.inform(this, "ServerUpdate", "updateHP", toSend);
-    }
-
-    public void sendRespawn(int id, float xPosition, float yPosition)
-    {
-        float[] toSend =
-        {
-            id, xPosition, yPosition
-        };
-        publisher.inform(this, "ServerUpdate", "respawnPlayer", toSend);
-    }
-
-    public void sendKnockBack(int id, float hSpeed, float vSpeed)
-    {
-        float[] toSend =
-        {
-            id, hSpeed, vSpeed
-        };
-        publisher.inform(this, "ServerUpdate", "knockBackPlayer", toSend);
     }
 }

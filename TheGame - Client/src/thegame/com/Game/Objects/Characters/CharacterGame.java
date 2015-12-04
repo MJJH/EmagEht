@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import thegame.com.Game.Objects.*;
-import thegame.shared.iGameLogic;
+import thegame.shared.IGameClientToServer;
 
 /**
  *
@@ -151,6 +151,12 @@ public abstract class CharacterGame extends MapObject {
     public void updateHP(int newHP)
     {
         hp = newHP;
+        
+        if(this instanceof Player && this == playing.getMe() && hp == 0)
+        {
+            setX(((Player)this).getSpawnX());
+            setY(((Player)this).getSpawnY());
+        }
     }
     
     public int getMaxHP()

@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects;
 
 import java.rmi.RemoteException;
-import thegame.com.Game.GameLogic;
+import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 
 /**
@@ -9,8 +9,9 @@ import thegame.com.Game.Map;
  * @author Mark
  */
 public class Block extends MapObject {
+
     private static final long serialVersionUID = 5529685098267757690L;
-    
+
     private int damage;
     private BlockType type;
 
@@ -23,11 +24,10 @@ public class Block extends MapObject {
      * @param x the X-coordinate of its location
      * @param y the Y- coordinate of its location
      * @param map
-     * @param gameLogic
      */
-    public Block(BlockType type, float x, float y, Map map, GameLogic gameLogic)
+    public Block(BlockType type, float x, float y, Map map)
     {
-        super(x, y, 1.0f, 1.0f, type.solid, map, gameLogic);
+        super(x, y, 1.0f, 1.0f, type.solid, map);
         this.type = type;
     }
 

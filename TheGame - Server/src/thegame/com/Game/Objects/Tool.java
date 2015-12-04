@@ -1,6 +1,6 @@
 package thegame.com.Game.Objects;
 
-import thegame.com.Game.GameLogic;
+import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 
 /**
@@ -18,11 +18,10 @@ public class Tool extends MapObject{
      *
      * @param type the type of this tool (sword, hatchet, etc)
      * @param map the map this tool is used on
-     * @param gameLogic
      */
-    public Tool(ToolType type, Map map, GameLogic gameLogic)
+    public Tool(ToolType type, Map map)
     {
-        super(type.height, type.width, map, gameLogic);
+        super(type.height, type.width, map);
         this.type = type;
     }
 

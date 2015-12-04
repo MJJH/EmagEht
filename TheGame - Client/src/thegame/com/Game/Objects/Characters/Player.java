@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
-import thegame.shared.iGameLogic;
+import thegame.shared.IGameClientToServer;
 
 /**
  *
@@ -406,7 +406,7 @@ public class Player extends CharacterGame {
         setToUpdate(newToUpdate);
     }
 
-    public void useTool(float x, float y, iGameLogic gameLogic)
+    public void useTool(float x, float y, IGameClientToServer gameLogic)
     {
         if (System.currentTimeMillis() - used >= holding.type.speed)
         {
@@ -510,5 +510,15 @@ public class Player extends CharacterGame {
     {
         // TODO - implement Player.LevelUp
         throw new UnsupportedOperationException();
+    }
+
+    float getSpawnX()
+    {
+        return spawnX;
+    }
+
+    float getSpawnY()
+    {
+        return spawnY;
     }
 }

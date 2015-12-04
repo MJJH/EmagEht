@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import thegame.com.Game.GameLogic;
 
 /**
  *
@@ -27,12 +26,13 @@ import thegame.com.Game.GameLogic;
 public class TheGameServer extends Application {
 
     private Registry registry = null;
-    private GameLogic gameLogic = null;
+    private GameClientToServerHandler gameClientToServerHandler = null;
 
     public void startServer()
     {
         try
         {
+            /*
             RMISocketFactory.setSocketFactory(new RMISocketFactory() {
                 @Override
                 public Socket createSocket(String host, int port)
@@ -52,16 +52,17 @@ public class TheGameServer extends Application {
                     return new ServerSocket(port);
                 }
             });
-            gameLogic = new GameLogic();
+            */
+            gameClientToServerHandler = new GameClientToServerHandler();
             System.out.println("Selected port is " + config.reachGameLogicPort);
             System.setProperty("java.rmi.server.hostname", config.ip);
             registry = LocateRegistry.createRegistry(config.reachGameLogicPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
-            registry.rebind(config.bindName, gameLogic);
+            registry.rebind(config.bindName, gameClientToServerHandler);
             System.out.println("Server gestart");
-            UnicastRemoteObject.exportObject(gameLogic, config.talkBackGameLogicPort);
+            UnicastRemoteObject.exportObject(gameClientToServerHandler, config.talkBackGameLogicPort);
         } catch (RemoteException ex)
         {
-            gameLogic = null;
+            gameClientToServerHandler = null;
             registry = null;
             System.out.println(ex.getMessage());
         } catch (IOException ex)

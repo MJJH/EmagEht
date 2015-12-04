@@ -49,7 +49,7 @@ import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
-import thegame.shared.iGameLogic;
+import thegame.shared.IGameClientToServer;
 
 /**
  *
@@ -64,8 +64,8 @@ public class TheGame extends Application {
     private Image img;
     // SERVER
     private Registry server;
-    private UpdateListener listener;
-    public iGameLogic gameLogic;
+    private GameServerToClientListener listener;
+    public IGameClientToServer gameClientToServer;
 
     private List<KeyCode> keys = new ArrayList<>();
 
@@ -124,13 +124,13 @@ public class TheGame extends Application {
                      float x = Math.round(me.getX());
                      float y = Math.round(me.getY()) - 1;
                      Block block = new Block(BlockType.Dirt, x, y, play);
-                     gameLogic.addObject(block);
+                     gameServerToClient.addObject(block);
                      */
                 }
                 if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_RELEASED)
                 {
                     Message chatMessage = new Message(myAccount, "test");
-                    gameLogic.sendMessage(chatMessage);
+                    gameClientToServer.sendGameChatMessage(chatMessage);
                 }
                 if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
@@ -151,7 +151,7 @@ public class TheGame extends Application {
 
             double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
 
-            me.useTool((float) clickX, (float) clickY, gameLogic);
+            me.useTool((float) clickX, (float) clickY, gameClientToServer);
         }
     };
     private Stage stages;
@@ -161,6 +161,16 @@ public class TheGame extends Application {
     {
         primaryStage.setOnCloseRequest(event ->
         {
+            if(gameClientToServer != null && listener != null)
+            {
+                try
+                {
+                    gameClientToServer.leavePlayer(listener);
+                } catch (RemoteException ex)
+                {
+                    Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             System.exit(0);
         });
         Scene scene = new Scene(createContent());
@@ -410,17 +420,17 @@ public class TheGame extends Application {
             try
             {
                 server = LocateRegistry.getRegistry(config.ip, config.reachGameLogicPort);
-                gameLogic = (iGameLogic) server.lookup(config.bindName);
+                gameClientToServer = (IGameClientToServer) server.lookup(config.bindName);
                 Random rand = new Random();
                 myAccount = new Account(Integer.toString(rand.nextInt(1000)));
-                me = gameLogic.joinPlayer(myAccount);
-                play = (Map) gameLogic.getMap();
-                play.loadAfterRecieve(gameLogic, myAccount, me);
+                listener = new GameServerToClientListener();
+                UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
+                me = gameClientToServer.joinPlayer(myAccount, listener);
+                play = (Map) gameClientToServer.getMap();
+                listener.loadAfterRecieve(myAccount, play, me);
+                play.loadAfterRecieve(gameClientToServer, myAccount, me);
                 me.setMap(play);
                 me.setToUpdate(true);
-                listener = new UpdateListener(play, myAccount, me);
-                UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
-                gameLogic.addListener(listener, "ServerUpdate", me);
                 Platform.runLater(() ->
                 {
                     startagame(primaryStage);

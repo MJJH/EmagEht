@@ -15,7 +15,7 @@ import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
-import thegame.shared.iGameLogic;
+import thegame.shared.IGameClientToServer;
 
 /**
  * The class for the map of the game.
@@ -45,13 +45,13 @@ public class Map implements Serializable {
 
     private transient Account myAccount;
     private transient Player me;
-    private transient iGameLogic gameLogic;
+    private transient IGameClientToServer gameLogic;
     private transient ReentrantLock objectsLock;
     private transient ReentrantLock enemiesLock;
     private transient ReentrantLock playersLock;
     private transient ReentrantLock blocksLock;
 
-    public void loadAfterRecieve(iGameLogic gameLogic, Account myAccount, Player me)
+    public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me)
     {
         for (int y = 0; y < height; y++)
         {
@@ -434,7 +434,7 @@ public class Map implements Serializable {
                 {
                     direction = 0;
                 }
-                gameLogic.sendMyLoc(me.getID(), me.getX(), me.getY(), direction);
+                gameLogic.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
             }
         } catch (RemoteException ex)
         {
