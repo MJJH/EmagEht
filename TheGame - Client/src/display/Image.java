@@ -38,7 +38,7 @@ public class Image extends Skin {
         
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
-        javafx.scene.image.Image i;
+        WritableImage i;
         
         if(texture instanceof Parts) {
             Parts t = (Parts) texture;

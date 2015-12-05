@@ -5,6 +5,7 @@
  */
 package display;
 
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 /**
@@ -12,7 +13,7 @@ import javafx.scene.paint.Color;
  * @author Martijn
  */
 public class PartImage {
-    public final javafx.scene.image.Image image;
+    public WritableImage image;
     public Color[] recolors;
     public final int x;
     public final int y;
@@ -20,7 +21,7 @@ public class PartImage {
     public boolean hFlip = false;
     public boolean vFlip = false;
     
-    public PartImage(javafx.scene.image.Image i, int x, int y) {
+    public PartImage(WritableImage i, int x, int y) {
         this.image = i;
         this.x = x;
         this.y = y;

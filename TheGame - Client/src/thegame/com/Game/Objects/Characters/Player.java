@@ -4,6 +4,7 @@ import display.Animation;
 import display.Image;
 import display.Sets;
 import display.Skin;
+import display.iTexture;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -464,7 +465,11 @@ public class Player extends CharacterGame {
             
             Image d = new Image(Sets.player);
             d.recolour(h);
-            skins.put("standRight", d);
+            
+            Animation a = new Animation(d, 4);
+            a.addFrameByPart(iTexture.Part.FRONTARM, 20);
+            
+            skins.put("standRight", a);
 
             Image d2 = new Image(Sets.player);
             d2.flipHorizontal();
