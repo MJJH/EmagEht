@@ -37,11 +37,14 @@ import thegame.com.Game.Objects.MapObject;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
@@ -135,6 +138,8 @@ public class TheGame extends Application {
                 if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
                     sjeton = !sjeton;
+                    Stage stage = openSjetWindows();
+                    stage.show();
                 }
             } catch (RemoteException e)
             {
@@ -574,7 +579,37 @@ public class TheGame extends Application {
 
         return root;
     }
-
+    
+    public Stage openSjetWindows()
+    {
+        javafx.scene.control.TextArea output = new javafx.scene.control.TextArea();
+        javafx.scene.control.TextField input = new javafx.scene.control.TextField();
+        
+        Stage stage  = new Stage();
+        stage.setMaxHeight(500);
+        stage.setMaxWidth(400);
+        stage.setResizable(true);
+        
+        Group root = new Group();
+        stage.setScene(new Scene(root));
+        
+        VBox box = new VBox();
+        box.setPadding(new Insets(1));
+        box.setSpacing(8.0);
+        root.getChildren().add(box);
+        
+        output.setMinSize(350, 400);
+        output.setDisable(false);
+        output.setEditable(false);
+        output.setFocusTraversable(false);
+        box.getChildren().add(output);
+        
+        input.setFocusTraversable(false);
+        input.setMinSize(350, 30);
+        box.getChildren().add(input);
+        return stage;
+    }
+    
     /**
      * @param args the command line arguments
      */
