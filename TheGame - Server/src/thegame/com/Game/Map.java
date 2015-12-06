@@ -524,6 +524,7 @@ public class Map implements Serializable {
 
     public void update()
     {
+        List<MapObject> toSend = new ArrayList<>();
         toUpdateLock.lock();
 
         try
@@ -544,19 +545,20 @@ public class Map implements Serializable {
 
                 boolean value = entrySet.getValue().get();
 
-                //publisher.inform(this, "ServerUpdate", "updateMapObject", value);
                 if ((key instanceof Enemy))
                 {
+                    toSend.add(key);
                     continue;
                 }
 
                 if (value)
                 {
+                    toSend.add(key);
                     for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
                     {
                         for (MapObject toUpdateMO : collision.getValue())
                         {
-                            if (!(toUpdateMO instanceof Block))
+                            if (!(toUpdateMO instanceof Block) && !(toUpdateMO instanceof Player))
                             {
                                 toUpdate.add(toUpdateMO);
                             }
@@ -567,6 +569,7 @@ public class Map implements Serializable {
                     toUpdate.remove(key);
                 }
             }
+            gameServerToClientHandler.updateObjects(toSend);
         } catch (InterruptedException | ExecutionException ex)
         {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);

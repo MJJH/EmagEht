@@ -8,6 +8,7 @@ package thegame.shared;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.EventListener;
+import java.util.List;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Message;
 
@@ -28,4 +29,6 @@ public interface IGameServerToClientListener extends Remote, EventListener {
     public void removeMapObject(int id, int type, float x, float y) throws RemoteException;
 
     public void addMapObject(MapObject mo) throws RemoteException;
+
+    public void updateObjects(List<MapObject> toSend) throws RemoteException;
 }

@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,6 +170,22 @@ public class GameServerToClientHandler {
                 leavePlayer(listener);
             }
             break;
+        }
+    }
+
+    public void updateObjects(List<MapObject> toSend)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            try
+            {
+                listener.updateObjects(toSend);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                leavePlayer(listener);
+            }
         }
     }
 }

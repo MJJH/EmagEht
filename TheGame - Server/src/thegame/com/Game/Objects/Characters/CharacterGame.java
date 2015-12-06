@@ -40,7 +40,6 @@ public abstract class CharacterGame extends MapObject {
      * @param height, Height of the in game character
      * @param width, Width of the in game character
      * @param map
-     * @param gameLogic
      */
     public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
@@ -56,73 +55,7 @@ public abstract class CharacterGame extends MapObject {
         equipTool(equip);
     }
 
-    public void walkRight()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        direction = sides.RIGHT;
-
-        if (!c.get(sides.RIGHT).isEmpty())
-        {
-            return;
-        }
-
-        if (hSpeed < 0)
-        {
-            hSpeed = 0.1f;
-        } else if (hSpeed < 0.5)
-        {
-            hSpeed += 0.1;
-        }
-
-        playing.addToUpdate(this);
-    }
-
-    public void walkLeft()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        direction = sides.LEFT;
-
-        if (!c.get(sides.LEFT).isEmpty())
-        {
-            return;
-        }
-
-        if (hSpeed > 0)
-        {
-            hSpeed = -0.1f;
-        } else if (hSpeed > -0.5)
-        {
-            hSpeed -= 0.1;
-        }
-
-        playing.addToUpdate(this);
-    }
-
-    public void jump()
-    {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
-        {
-            jumping = true;
-            vSpeed += 0.2f;
-
-            if (vSpeed >= 0.8f)
-            {
-                vSpeed = 0.8f;
-                jumping = false;
-            }
-        }
-
-        playing.addToUpdate(this);
-    }
-
-    public void stopJump()
-    {
-        jumping = false;
-
-        playing.addToUpdate(this);
-    }
-
+    
     public abstract void knockBack(int kb, sides hitDirection);
 
     /**

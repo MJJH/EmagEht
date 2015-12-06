@@ -31,6 +31,65 @@ public class Enemy extends CharacterGame {
     {
         super(name, hp, skills, x, y, height, width, map);
     }
+    
+    public void walkRight()
+    {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
+        direction = sides.RIGHT;
+
+        if (!c.get(sides.RIGHT).isEmpty())
+        {
+            return;
+        }
+
+        if (hSpeed < 0)
+        {
+            hSpeed = 0.1f;
+        } else if (hSpeed < 0.5)
+        {
+            hSpeed += 0.1;
+        }
+    }
+
+    public void walkLeft()
+    {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
+        direction = sides.LEFT;
+
+        if (!c.get(sides.LEFT).isEmpty())
+        {
+            return;
+        }
+
+        if (hSpeed > 0)
+        {
+            hSpeed = -0.1f;
+        } else if (hSpeed > -0.5)
+        {
+            hSpeed -= 0.1;
+        }
+    }
+
+    public void jump()
+    {
+        EnumMap<MapObject.sides, List<MapObject>> c = collision();
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
+        {
+            jumping = true;
+            vSpeed += 0.2f;
+
+            if (vSpeed >= 0.8f)
+            {
+                vSpeed = 0.8f;
+                jumping = false;
+            }
+        }
+    }
+
+    public void stopJump()
+    {
+        jumping = false;
+    }
 
     @Override
     public Boolean call()

@@ -5,8 +5,8 @@
  */
 package thegame;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.List;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -106,5 +106,14 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             return;
         }
         map.addMapObject(mo);
+    }
+
+    @Override
+    public void updateObjects(List<MapObject> toSend) throws RemoteException
+    {
+        for(MapObject mo : toSend)
+        {
+            map.updateMapObject(mo);
+        }
     }
 }

@@ -286,6 +286,7 @@ public class Map implements Serializable {
             blocksLock.lock();
             try
             {
+                 update.createSkin();
                 blocks[(int) update.getY()][(int) update.getX()] = (Block) update;
             } catch (Exception e)
             {
@@ -298,25 +299,16 @@ public class Map implements Serializable {
             enemiesLock.lock();
             try
             {
-                enemies.remove((Enemy) update);
-                enemies.add((Enemy) update);
+                for(Enemy enemy : enemies)
+                {
+                    if(enemy == update)
+                    {
+                        enemy.update((Enemy)update);
+                    }
+                }
             } finally
             {
                 enemiesLock.unlock();
-            }
-        } else if (update instanceof Player)
-        {
-            if (!update.equals(me))
-            {
-                playersLock.lock();
-                try
-                {
-                    players.remove((Player) update);
-                    players.add((Player) update);
-                } finally
-                {
-                    playersLock.unlock();
-                }
             }
         }
     }
