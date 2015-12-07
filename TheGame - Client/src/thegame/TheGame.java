@@ -92,14 +92,17 @@ public class TheGame extends Application {
     private boolean sjeton = false;
     private String chatline;
     private Font font;
+    
+    private boolean inventory = false;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
-        if ((event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A )&& !sjeton)
+        if (!sjeton)
         {
             if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
             {
-                keys.add(event.getCode());
+                if(event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
+                    keys.add(event.getCode());
 
                 if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
                 {
@@ -109,6 +112,17 @@ public class TheGame extends Application {
                 {
                     keys.remove(KeyCode.A);
                 }
+                if (event.getCode() == KeyCode.T)
+                {
+                    sjeton = true;
+                    chatline = "";
+                    //Stage stage = openSjetWindow();
+                    //stage.show();
+                }
+                if(event.getCode() == KeyCode.E)
+                {
+                    inventory = !inventory;
+                }
             } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
             {
                 keys.remove(event.getCode());
@@ -117,6 +131,19 @@ public class TheGame extends Application {
                     me.stopJump();
                 }
             }
+            if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
+                }
+                if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    /*
+                     float x = Math.round(me.getX());
+                     float y = Math.round(me.getY()) - 1;
+                     Block block = new Block(BlockType.Dirt, x, y, play);
+                     gameServerToClient.addObject(block);
+                     */
+                }
         } else if(sjeton)
         {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
@@ -130,7 +157,7 @@ public class TheGame extends Application {
                     {
                         System.err.println(e.getMessage());
                     }
-                    sjeton = !sjeton;
+                    sjeton = false;
                 }
             if (event.getCode() == KeyCode.BACK_SPACE && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
@@ -147,30 +174,6 @@ public class TheGame extends Application {
             {
                 chatline += event.getText();
             }
-        }
-        else
-        {
-                if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
-                {
-                    //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
-                }
-                if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
-                {
-                    /*
-                     float x = Math.round(me.getX());
-                     float y = Math.round(me.getY()) - 1;
-                     Block block = new Block(BlockType.Dirt, x, y, play);
-                     gameServerToClient.addObject(block);
-                     */
-                }
-
-                if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
-                {
-                    sjeton = !sjeton;
-                    chatline = "";
-                    //Stage stage = openSjetWindow();
-                    //stage.show();
-                }
         }
     };
 
@@ -334,71 +337,8 @@ public class TheGame extends Application {
             
             g.closePath();          
         }
-
-        //draw black background
-        Color c = new Color(0f, 0f, 0f, .1f);
-
-        g.setFill(c);
-        g.fillRect(scene.getWidth() - 123.5, scene.getY() - 4, 108f, 60.0f);
-
-        //draw hearth
-        int teamlevens = 4;
-        for (int i = 0; i < teamlevens; i++)
-        {
-            //g.drawImage(img, ((scene.getWidth() - 135) +(25 * i)), 32 ,87,92);
-            g.drawImage(img, ((scene.getWidth() - 134) + (25 * i)), scene.getY() + 15, 87, 92);
-
-        }
-
-        g.setFill(Color.WHITE);
-        g.fillText("Team Lifes", scene.getWidth() - 105, scene.getY() + 10);
-
-        g.beginPath();
-        //g.strokeRect(scene.getWidth() - 120, scene.getY() - 6, 102.0f, 13.0f);
-        g.strokeRect(scene.getWidth() - 120, scene.getY() + 39, 102.0f, 13.0f);
-
-        g.setFill(Color.RED);
-        //g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, 100.0f , 11.0f);
-        g.fillRect(scene.getWidth() - 119, scene.getY() + 40, 100.0f, 11.0f);
-
-        g.setFill(Color.GREEN);
-        int hp = me.getHP();
-        int maxhp = me.getMaxHP();
-        double breedte = (double) hp / maxhp;
-        breedte = breedte * 100;
-        // g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, breedte , 11.0f);
-        g.fillRect(scene.getWidth() - 119, scene.getY() + 40, breedte, 11.0f);
-
-        g.closePath();
         
-        if(sjeton)
-        {
-            g.beginPath();
-            g.setFill(new Color(0f, 0f, 0f, .1f));
-            int RectHeight = 250;
-            int RectWidth = 300;
-            g.fillRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight);
-            g.closePath();
-            g.beginPath();
-            g.setStroke(Color.WHITE);
-            int textPosition = 10;
-            List<Message> chatMessages = play.getChatMessages();
-            if(chatMessages.size() < 15 )
-            {
-                for(Message message : chatMessages)
-                {
-                    g.strokeText(message.getText(), 15, (scene.getHeight() - RectHeight) + textPosition);
-                    textPosition += 15;
-                }
-            }
-            else
-            {
-                chatMessages.remove(0);
-            }
-            g.strokeText(chatline, 15, scene.getHeight() -15);
-            g.closePath();
-        }
-        
+        drawGUI(g);
         
          // Calibration lines
          g.setLineWidth(1);
@@ -507,7 +447,7 @@ public class TheGame extends Application {
 
         StackPane root = new StackPane();
 
-        scene = new Scene(root, 1400, 800, Color.LIGHTBLUE);
+        scene = new Scene(root, 860, 600, Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
 
@@ -639,5 +579,114 @@ public class TheGame extends Application {
     public static void main(String[] args)
     {
         launch(args);
+    }
+
+    private void drawGUI(GraphicsContext g) {
+        
+        //draw black background
+        Color background = new Color(0f, 0f, 0f, .4f);
+        
+        if(inventory) {
+            /*g.setFill(background);
+            g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
+            g.beginPath();
+            g.setFill(background);
+            g.setStroke(Color.WHITE);
+            // Inventory
+            for(int y=0; y<3; y++) {
+                for(int x=0; x<10; x++) {
+                    g.fillRoundRect(10+50*x, 10+50*y, 40, 40, 5, 5);
+                    g.strokeRoundRect(10 + 50*x, 10+50*y, 40, 40, 5, 5);
+                    
+                }
+            }
+            
+            // Armor
+            for(int y=0; y<4; y++) {
+                g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+                g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+            }
+            g.closePath();
+        }
+        
+        // Tool
+        g.beginPath();
+            g.setFill(background);
+            g.setStroke(Color.WHITE);
+            g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+            g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+        g.closePath();
+
+        g.beginPath();
+        g.setFill(background);
+        
+        g.fillRoundRect(scene.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
+        g.setStroke(Color.WHITE);
+        g.strokeRoundRect(scene.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
+        
+        //draw hearth
+        int teamlevens = 4;
+        for (int i = 0; i < teamlevens; i++)
+        {
+            //g.drawImage(img, ((scene.getWidth() - 135) +(25 * i)), 32 ,87,92);
+            g.drawImage(img, ((scene.getWidth() - 128) + (21 * i)), 25);
+
+        }
+
+        g.setFill(Color.WHITE);
+        g.setFont(Font.font("monospaced", 11));
+        g.fillText("Team Lifes", scene.getWidth() - 105, 21);
+
+        g.setStroke(Color.BLACK);
+        g.beginPath();
+        //g.strokeRect(scene.getWidth() - 120, scene.getY() - 6, 102.0f, 13.0f);
+        g.strokeRect(scene.getWidth() - 121, 50, 102.0f, 13.0f);
+
+        g.setFill(Color.RED);
+        //g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, 100.0f , 11.0f);
+        g.fillRect(scene.getWidth() - 120, 51, 100.0f, 11.0f);
+
+        g.setFill(Color.GREEN);
+        int hp = me.getHP();
+        int maxhp = me.getMaxHP();
+        double breedte = (double) hp / maxhp;
+        breedte = breedte * 100;
+        // g.fillRect(scene.getWidth() - 119 , scene.getY() - 5, breedte , 11.0f);
+        g.fillRect(scene.getWidth() - 120, 51, breedte, 11.0f);
+
+        g.closePath();
+        
+        if(sjeton)
+        {
+            g.beginPath();
+            g.setFill(background);
+            g.setStroke(Color.WHITE);
+            int RectHeight = 250;
+            int RectWidth = 300;
+            g.fillRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+            g.strokeRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+            g.closePath();
+            g.beginPath();
+            g.setStroke(Color.WHITE);
+            int textPosition = 10;
+            List<Message> chatMessages = play.getChatMessages();
+            if(chatMessages.size() < 15 )
+            {
+                for(Message message : chatMessages)
+                {
+                    g.setFont(Font.font("monospaced", 11));
+                    g.strokeText(message.getText(), 15, (scene.getHeight() - RectHeight) + textPosition);
+                    textPosition += 15;
+                }
+            }
+            else
+            {
+                chatMessages.remove(0);
+            }
+            g.setFont(Font.font("monospaced", 11));
+            g.strokeText(chatline, 15, scene.getHeight() -15);
+            g.closePath();
+        }
+        
     }
 }
