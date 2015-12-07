@@ -15,6 +15,7 @@ import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
 
 /**
@@ -50,6 +51,7 @@ public class Map implements Serializable {
     private transient ReentrantLock enemiesLock;
     private transient ReentrantLock playersLock;
     private transient ReentrantLock blocksLock;
+    private transient List<Message> chatMessages;
 
     public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me)
     {
@@ -85,6 +87,8 @@ public class Map implements Serializable {
 
         players.remove(me);
         players.add(me);
+        
+        chatMessages = new ArrayList<>();
     }
 
     public List<Player> getPlayers()
@@ -432,5 +436,15 @@ public class Map implements Serializable {
         {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void addChatMessage(Message message)
+    {
+        chatMessages.add(message);
+    }
+    
+    public List getChatMessages()
+    {
+        return chatMessages;
     }
 }

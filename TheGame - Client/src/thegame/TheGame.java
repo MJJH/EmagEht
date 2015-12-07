@@ -46,6 +46,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
@@ -88,10 +89,11 @@ public class TheGame extends Application {
 
     //SJET
     private boolean sjeton = false;
+    private String chatline;     
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
-        if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
+        if ((event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A )&& !sjeton)
         {
             if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
             {
@@ -113,10 +115,32 @@ public class TheGame extends Application {
                     me.stopJump();
                 }
             }
-        } else
+        } else if(sjeton)
         {
-            try
+            if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    Message chatMessage = new Message(myAccount, chatline);
+                    try
+                    {
+                        gameClientToServer.sendGameChatMessage(chatMessage);   
+                    }
+                    catch(RemoteException e)
+                    {
+                        System.err.println(e.getMessage());
+                    }
+                    sjeton = !sjeton;
+                }
+            if (event.getCode() == KeyCode.BACK_SPACE && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
+                chatline = chatline.substring(0, chatline.length() - 1);
+            }
+            if(event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                chatline += event.getText();
+            }
+        }
+        else
+        {
                 if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
                     //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
@@ -130,21 +154,14 @@ public class TheGame extends Application {
                      gameServerToClient.addObject(block);
                      */
                 }
-                if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_RELEASED)
-                {
-                    Message chatMessage = new Message(myAccount, "test");
-                    gameClientToServer.sendGameChatMessage(chatMessage);
-                }
+
                 if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
                 {
                     sjeton = !sjeton;
-                    Stage stage = openSjetWindows();
-                    stage.show();
+                    chatline = "";
+                    //Stage stage = openSjetWindow();
+                    //stage.show();
                 }
-            } catch (RemoteException e)
-            {
-                System.out.println(e.getMessage());
-            }
         }
     };
 
@@ -305,9 +322,8 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-
-            g.closePath();
-
+            
+            g.closePath();          
         }
 
         //draw black background
@@ -345,7 +361,28 @@ public class TheGame extends Application {
         g.fillRect(scene.getWidth() - 119, scene.getY() + 40, breedte, 11.0f);
 
         g.closePath();
-
+        
+        if(sjeton)
+            {
+                g.beginPath();
+                g.setFill(Color.rgb(175, 175, 175, 0.6));
+                int RectHeight = 250;
+                int RectWidth = 600;
+                g.fillRect(0, scene.getHeight() - RectHeight, RectWidth, RectHeight);
+                g.closePath();
+                g.beginPath();
+                g.setStroke(Color.BLUE);
+                int textPosition = 15;
+                List<Message> chatMessages = play.getChatMessages();
+                for(Message message : chatMessages)
+                {
+                    g.strokeText(message.getText(), 0, (scene.getHeight() - RectHeight)+textPosition);
+                    textPosition += 15;
+                }
+                g.strokeText(chatline, 10, scene.getHeight() -10);
+                g.closePath();
+            }  
+        
         
          // Calibration lines
          g.setLineWidth(1);
@@ -578,36 +615,6 @@ public class TheGame extends Application {
         root.getChildren().addAll(title, menu);
 
         return root;
-    }
-    
-    public Stage openSjetWindows()
-    {
-        javafx.scene.control.TextArea output = new javafx.scene.control.TextArea();
-        javafx.scene.control.TextField input = new javafx.scene.control.TextField();
-        
-        Stage stage  = new Stage();
-        stage.setMaxHeight(500);
-        stage.setMaxWidth(400);
-        stage.setResizable(true);
-        
-        Group root = new Group();
-        stage.setScene(new Scene(root));
-        
-        VBox box = new VBox();
-        box.setPadding(new Insets(1));
-        box.setSpacing(8.0);
-        root.getChildren().add(box);
-        
-        output.setMinSize(350, 400);
-        output.setDisable(false);
-        output.setEditable(false);
-        output.setFocusTraversable(false);
-        box.getChildren().add(output);
-        
-        input.setFocusTraversable(false);
-        input.setMinSize(350, 30);
-        box.getChildren().add(input);
-        return stage;
     }
     
     /**

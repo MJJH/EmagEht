@@ -34,7 +34,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     @Override
     public void sendGameChatMessage(Message message) throws RemoteException
     {
-        System.out.println(message.getSender().getUsername() + ": " + message.getText());
+        map.addChatMessage(message);
     }
 
     @Override
