@@ -18,6 +18,7 @@ public enum config {
         this.val = val;
     }
     
+    //public static String ip = "192.168.1.136";
     //public static String ip = "84.24.141.120";
     public static String ip = "localhost";
     public static String bindName = "//" + ip + ":1099/gameLogic";

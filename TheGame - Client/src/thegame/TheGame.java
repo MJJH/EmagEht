@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import display.IntColor;
 import display.Skin;
 import java.io.IOException;
 import javafx.scene.Scene;
@@ -622,8 +623,31 @@ public class TheGame extends Application {
             
             // Armor
             for(int y=0; y<4; y++) {
-                g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
-                g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+                try {
+                    g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+                    g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+                    display.Image i;
+                    switch(y) {
+                        case 0:
+                            i=new display.Image(display.Parts.Shield);
+                            break;
+                        case 1:
+                            i=new display.Image(display.Sets.legArmor);
+                            break;
+                        case 2:
+                            i=new display.Image(display.Sets.bodyArmor);
+                            break;
+                        default:
+                            i=new display.Image(display.Sets.SpikeHelmet);
+                    }
+                    i.recolour(new Color[] { Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE });
+                    
+                    g.drawImage(i.show(), scene.getWidth() - 50 + (40-i.getWidth())/2, scene.getHeight() - 100 - 50*y + (40-i.getHeight())/2);
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }
             g.closePath();
         }
