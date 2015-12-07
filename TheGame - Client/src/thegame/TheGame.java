@@ -170,9 +170,28 @@ public class TheGame extends Application {
             {
                 
             }
-            if(event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() <70)
+            if(event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() < 44)
             {
-                chatline += event.getText();
+                if(event.isShiftDown())
+                {
+                    String tempString = event.getCode().getName();
+                    if(!tempString.equals("Shift"))
+                    {
+                        tempString = event.getCode().getName();
+                        if(tempString.equalsIgnoreCase("Slash"))
+                        {
+                            chatline += "?";
+                        }
+                        else
+                        {
+                            chatline += event.getCode().getName();
+                        }
+                    }
+                }
+                else
+                {
+                    chatline += event.getText();
+                }
             }
         }
     };
