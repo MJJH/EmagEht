@@ -46,6 +46,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.Block;
@@ -89,7 +90,8 @@ public class TheGame extends Application {
 
     //SJET
     private boolean sjeton = false;
-    private String chatline;     
+    private String chatline;
+    private Font font;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
@@ -132,9 +134,16 @@ public class TheGame extends Application {
                 }
             if (event.getCode() == KeyCode.BACK_SPACE && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
-                chatline = chatline.substring(0, chatline.length() - 1);
+                if(chatline.length() > 0)
+                {
+                    chatline = chatline.substring(0, chatline.length() - 1);  
+                }
             }
-            if(event.getEventType() == KeyEvent.KEY_PRESSED)
+            if(event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                
+            }
+            if(event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() <70)
             {
                 chatline += event.getText();
             }
@@ -363,25 +372,32 @@ public class TheGame extends Application {
         g.closePath();
         
         if(sjeton)
+        {
+            g.beginPath();
+            g.setFill(new Color(0f, 0f, 0f, .1f));
+            int RectHeight = 250;
+            int RectWidth = 300;
+            g.fillRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight);
+            g.closePath();
+            g.beginPath();
+            g.setStroke(Color.WHITE);
+            int textPosition = 10;
+            List<Message> chatMessages = play.getChatMessages();
+            if(chatMessages.size() < 15 )
             {
-                g.beginPath();
-                g.setFill(Color.rgb(175, 175, 175, 0.6));
-                int RectHeight = 250;
-                int RectWidth = 600;
-                g.fillRect(0, scene.getHeight() - RectHeight, RectWidth, RectHeight);
-                g.closePath();
-                g.beginPath();
-                g.setStroke(Color.BLUE);
-                int textPosition = 15;
-                List<Message> chatMessages = play.getChatMessages();
                 for(Message message : chatMessages)
                 {
-                    g.strokeText(message.getText(), 0, (scene.getHeight() - RectHeight)+textPosition);
+                    g.strokeText(message.getText(), 15, (scene.getHeight() - RectHeight) + textPosition);
                     textPosition += 15;
                 }
-                g.strokeText(chatline, 10, scene.getHeight() -10);
-                g.closePath();
-            }  
+            }
+            else
+            {
+                chatMessages.remove(0);
+            }
+            g.strokeText(chatline, 15, scene.getHeight() -15);
+            g.closePath();
+        }
         
         
          // Calibration lines
