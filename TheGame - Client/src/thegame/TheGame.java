@@ -576,12 +576,16 @@ public class TheGame extends Application {
 
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
-
+        
+        
+        MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
+        SinglePlayer.setOnMouseClicked(event -> beginstart(stages));
+        
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
         startMultiPlayer.setOnMouseClicked(event -> connectToServer(stages));
 
         MenuBox menu = new MenuBox(
-                new MenuItem("SINGLE PLAYER [soon]"),
+                SinglePlayer,
                 startMultiPlayer,
                 new MenuItem("CHARACTERS [soon]"),
                 new MenuItem("OPTIONS [soon]"),
@@ -732,4 +736,16 @@ public class TheGame extends Application {
         }
         
     }
+
+    private void beginstart(Stage stages) {
+         StackPane root = new StackPane();
+        
+        Scene scene = new Scene(root, 300, 250);
+        
+        stages.setTitle("Loading Screen");
+        stages.setScene(scene);
+        stages.show();    
+    }
+    
+    
 }
