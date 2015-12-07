@@ -1,9 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
-import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
 

@@ -31,7 +31,7 @@ public class Enemy extends CharacterGame {
     {
         super(name, hp, skills, x, y, height, width, map);
     }
-    
+
     public void walkRight()
     {
         EnumMap<MapObject.sides, List<MapObject>> c = collision();
@@ -129,7 +129,7 @@ public class Enemy extends CharacterGame {
                                 jump();
                             }
                         }
-                        collision.get(sides.LEFT).get(0).hit(holding, sides.LEFT);
+                        //collision.get(sides.LEFT).get(0).hit(holding, sides.LEFT);
                         // COLLISION RIGHT
                     } else if (collision.get(sides.RIGHT).size() > 0)
                     {

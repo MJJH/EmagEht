@@ -301,7 +301,7 @@ public class Map implements Serializable {
             {
                 for(Enemy enemy : enemies)
                 {
-                    if(enemy == update)
+                    if(enemy.getID() == update.getID())
                     {
                         enemy.update((Enemy)update);
                     }

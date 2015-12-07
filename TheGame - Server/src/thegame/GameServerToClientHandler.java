@@ -49,8 +49,8 @@ public class GameServerToClientHandler {
     public void leavePlayer(IGameServerToClientListener listener)
     {
         MapObject removePlayer = playerListenersTable.get(listener);
-        playerListenersTable.remove(listener);
         map.removeMapObject(removePlayer);
+        playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
         System.out.println(sdf.format(cal.getTime()) + " Connection to " + ((Player) removePlayer).getName() + " has been lost");

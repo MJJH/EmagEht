@@ -17,7 +17,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     private static final long serialVersionUID = 6529685098267757690L;
 
-    private int id;
+    protected int id;
     protected float xPosition;
     protected float yPosition;
     protected float hSpeed;
@@ -529,8 +529,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     @Override
     public int hashCode()
     {
-        int hash = 7;
-        return hash;
+        return id;
     }
 
     public void setMap(Map set)

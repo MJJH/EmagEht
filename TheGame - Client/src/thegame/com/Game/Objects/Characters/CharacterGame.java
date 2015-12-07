@@ -1,19 +1,16 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Skin;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import thegame.com.Game.Objects.*;
-import thegame.shared.IGameClientToServer;
 
 /**
  *
  * @author Laurens Adema
  */
 public abstract class CharacterGame extends MapObject {
+
     private static final long serialVersionUID = 5539685098267757690L;
-    
+
     protected int hp;
     protected String name;
     protected int maxHP;
@@ -25,7 +22,7 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected java.util.Map<MapObject, Integer> backpack;
-    
+
     protected boolean jumping = false;
 
     /**
@@ -151,19 +148,18 @@ public abstract class CharacterGame extends MapObject {
     public void updateHP(int newHP)
     {
         hp = newHP;
-        
-        if(this instanceof Player && this == playing.getMe() && hp == 0)
+
+        if (this instanceof Player && this == playing.getMe() && hp == 0)
         {
-            setX(((Player)this).getSpawnX());
-            setY(((Player)this).getSpawnY());
+            setX(((Player) this).getSpawnX());
+            setY(((Player) this).getSpawnY());
         }
     }
-    
+
     public int getMaxHP()
     {
         return 100;
     }
-    
 
     /**
      * This method gets the current hp
@@ -239,7 +235,7 @@ public abstract class CharacterGame extends MapObject {
     {
         return direction;
     }
-    
+
     public void setDirection(sides direction)
     {
         this.direction = direction;

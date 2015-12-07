@@ -152,7 +152,7 @@ public class Map implements Serializable {
             System.err.println(ex.getMessage());
         }
     }
-    
+
     public GameServerToClientHandler getGameServerToClientHandler()
     {
         return gameServerToClientHandler;
@@ -545,7 +545,7 @@ public class Map implements Serializable {
 
                 boolean value = entrySet.getValue().get();
 
-                if ((key instanceof Enemy))
+                if (key instanceof Enemy)
                 {
                     toSend.add(key);
                     continue;
@@ -577,6 +577,5 @@ public class Map implements Serializable {
         {
             toUpdateLock.unlock();
         }
-
     }
 }
