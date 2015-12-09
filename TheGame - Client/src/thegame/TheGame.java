@@ -147,10 +147,6 @@ public class TheGame extends Application {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
                 Message chatMessage = new Message(myAccount, chatline);
-                if(!chatMessage.getSender().getUsername().equals(myAccount.getUsername()))
-                {
-                    notification = true;
-                }
                 try
                 {
                     gameClientToServer.sendGameChatMessage(chatMessage);
@@ -727,8 +723,12 @@ public class TheGame extends Application {
             g.setStroke(Color.WHITE);
             int textPosition = 10;
             List<Message> chatMessages = play.getChatMessages();
-            if(chatMessages.size() < 15 )
+            if(chatMessages.size() < 15)
             {
+                if(!chatMessages.isEmpty() && !(chatMessages.get(chatMessages.size() -1)).getSender().getUsername().equals(myAccount.getUsername()))
+                {
+                    notification = true;
+                }
                 for(Message message : chatMessages)
                 {
                     g.setFont(Font.font("monospaced", 11));
