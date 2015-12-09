@@ -85,6 +85,8 @@ public class TheGame extends Application {
 
     //SJET
     private boolean sjeton = false;
+    private boolean notification = false;
+    private Timer notificationTimer;
     private String chatline;
     private Font font;
 
@@ -139,11 +141,16 @@ public class TheGame extends Application {
                  gameServerToClient.addObject(block);
                  */
             }
-        } else if (sjeton)
+        } 
+        else if (sjeton)
         {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
                 Message chatMessage = new Message(myAccount, chatline);
+                if(!chatMessage.getSender().getUsername().equals(myAccount.getUsername()))
+                {
+                    notification = true;
+                }
                 try
                 {
                     gameClientToServer.sendGameChatMessage(chatMessage);
@@ -227,7 +234,8 @@ public class TheGame extends Application {
         InputStream hartje = Files.newInputStream(Paths.get("src/resources//Hearts.png"));
 
         img = new Image(hartje);
-
+        
+        notificationTimer = new Timer();
     }
 
     private void draw(GraphicsContext g) throws IOException
@@ -704,13 +712,14 @@ public class TheGame extends Application {
 
         g.closePath();
 
-        if (sjeton)
+        //Chat
+        if(sjeton)
         {
             g.beginPath();
             g.setFill(background);
             g.setStroke(Color.WHITE);
             int RectHeight = 250;
-            int RectWidth = 300;
+            int RectWidth = 400;
             g.fillRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
             g.strokeRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
             g.closePath();
@@ -718,23 +727,44 @@ public class TheGame extends Application {
             g.setStroke(Color.WHITE);
             int textPosition = 10;
             List<Message> chatMessages = play.getChatMessages();
-            if (chatMessages.size() < 15)
+            if(chatMessages.size() < 15 )
             {
-                for (Message message : chatMessages)
+                for(Message message : chatMessages)
                 {
                     g.setFont(Font.font("monospaced", 11));
-                    g.strokeText(message.getText(), 15, (scene.getHeight() - RectHeight) + textPosition);
+                    g.strokeText((message.getSender().getUsername() + ": " + message.getText()), 15, (scene.getHeight() - RectHeight) + textPosition);
                     textPosition += 15;
                 }
-            } else
+            }
+            else
             {
                 chatMessages.remove(0);
             }
             g.setFont(Font.font("monospaced", 11));
-            g.strokeText(chatline, 15, scene.getHeight() - 15);
+            g.strokeText(chatline, 15, scene.getHeight() -15);
             g.closePath();
         }
-
+        
+        //Chat Notification
+        if(notification)
+        {
+            notificationTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    notification = false;
+                }
+            }, 3000);
+            g.beginPath();
+            g.setFill(background);
+            g.setStroke(Color.WHITE);
+            int RectHeight = 40;
+            int RectWidth = 225;
+            g.fillRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+            g.strokeRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+            g.setFont(Font.font("monospaced", 16));
+            g.strokeText("You have new messages", 15, (scene.getHeight() - ((RectHeight)/2) - 10));
+            g.closePath();
+        }
     }
 
     private void loadingScreen(Stage stages)
