@@ -569,7 +569,10 @@ public class Map implements Serializable {
                     toUpdate.remove(key);
                 }
             }
-            gameServerToClientHandler.updateObjects(toSend);
+            if(!toSend.isEmpty())
+            {
+                gameServerToClientHandler.updateObjects(toSend);
+            }
         } catch (InterruptedException | ExecutionException ex)
         {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);

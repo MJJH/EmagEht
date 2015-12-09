@@ -65,8 +65,6 @@ public class TheGameServer extends Application {
             gameClientToServerHandler = null;
             registry = null;
             System.out.println(ex.getMessage());
-        } catch (IOException ex)
-        {
             Logger.getLogger(TheGameServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

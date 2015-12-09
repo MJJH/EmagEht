@@ -7,12 +7,13 @@ package thegame;
 
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -25,12 +26,18 @@ import thegame.shared.IGameServerToClientListener;
  */
 public class GameServerToClientHandler {
 
-    private Map map;
-    private final HashMap<IGameServerToClientListener, Player> playerListenersTable;
+    private transient Map map;
+    private transient final HashMap<IGameServerToClientListener, Player> playerListenersTable;
+    private transient final List<IGameServerToClientListener> connectionLossTable;
+    private transient final List<IGameServerToClientListener> isSending;
+    private transient ExecutorService threadPoolSend;
 
     public GameServerToClientHandler()
     {
         playerListenersTable = new HashMap<>();
+        connectionLossTable = new ArrayList<>();
+        isSending = new ArrayList<>();
+        threadPoolSend = Executors.newCachedThreadPool();
     }
 
     public void registerMap(Map map)
@@ -49,6 +56,7 @@ public class GameServerToClientHandler {
     public void leavePlayer(IGameServerToClientListener listener)
     {
         MapObject removePlayer = playerListenersTable.get(listener);
+        connectionLossTable.add(listener);
         map.removeMapObject(removePlayer);
         playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
@@ -61,44 +69,69 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            try
+            if (connectionLossTable.contains(listener))
             {
-                listener.sendGameChatMessage(message);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
+                continue;
             }
+            Player player = entry.getValue();
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.sendGameChatMessage(message);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not sendGameChatMessage(" + message.getSender().getUsername() + ": " + message.getText() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
         }
     }
 
     public void updatePlayer(Player toSendPlayer)
     {
-        int direction = 1;
-        if (toSendPlayer.getDirection() == MapObject.sides.LEFT)
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
-            for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener) || isSending.contains(listener))
             {
-                IGameServerToClientListener listener = entry.getKey();
-                Player player = entry.getValue();
+                continue;
+            }
+            Player player = entry.getValue();
 
-                if (toSendPlayer == player)
+            if (toSendPlayer == player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                int direction = 1;
+                if (toSendPlayer.getDirection() == MapObject.sides.LEFT)
                 {
-                    continue;
+                    direction = 0;
                 }
-
                 try
                 {
+                    isSending.add(listener);
                     listener.updatePlayer(toSendPlayer.getID(), toSendPlayer.getX(), toSendPlayer.getY(), direction);
                 } catch (RemoteException ex)
                 {
-                    Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not updatePlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-            }
-            direction = 0;
+                isSending.remove(listener);
+            });
         }
-
     }
 
     public void addMapObject(MapObject mo)
@@ -106,14 +139,28 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            try
+            if (connectionLossTable.contains(listener))
             {
-                listener.addMapObject(mo);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
+                continue;
             }
+            Player player = entry.getValue();
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.addMapObject(mo);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not addMapObject(" + mo.getID() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
         }
     }
 
@@ -122,14 +169,27 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            try
+            if (connectionLossTable.contains(listener))
             {
-                listener.removeMapObject(id, type, x, y);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
+                continue;
             }
+            Player player = entry.getValue();
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.removeMapObject(id, type, x, y);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not removeMapObject(" + id + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
         }
     }
 
@@ -138,14 +198,27 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            try
+            if (connectionLossTable.contains(listener))
             {
-                listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
+                continue;
             }
+            Player player = entry.getValue();
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not updateHealthPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
         }
     }
 
@@ -154,6 +227,10 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
             Player player = entry.getValue();
 
             if (toSendPlayer != player)
@@ -161,14 +238,22 @@ public class GameServerToClientHandler {
                 continue;
             }
 
-            try
+            threadPoolSend.submit(() ->
             {
-                listener.knockBackPlayer(hSpeed, vSpeed);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
-            }
+                try
+                {
+                    isSending.add(listener);
+                    listener.knockBackPlayer(hSpeed, vSpeed);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not knockBackPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
             break;
         }
     }
@@ -178,14 +263,27 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            try
+            if (connectionLossTable.contains(listener) || isSending.contains(listener))
             {
-                listener.updateObjects(toSend);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                leavePlayer(listener);
+                continue;
             }
+            Player player = entry.getValue();
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.updateObjects(toSend);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not updateObjects(" + toSend.toString() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
         }
     }
 }

@@ -38,20 +38,14 @@ import thegame.com.Game.Objects.MapObject;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import thegame.com.Game.Objects.Block;
-import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
@@ -93,7 +87,7 @@ public class TheGame extends Application {
     private boolean sjeton = false;
     private String chatline;
     private Font font;
-    
+
     private boolean inventory = false;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
@@ -102,8 +96,10 @@ public class TheGame extends Application {
         {
             if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
             {
-                if(event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
+                if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
+                {
                     keys.add(event.getCode());
+                }
 
                 if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
                 {
@@ -117,10 +113,8 @@ public class TheGame extends Application {
                 {
                     sjeton = true;
                     chatline = "";
-                    //Stage stage = openSjetWindow();
-                    //stage.show();
                 }
-                if(event.getCode() == KeyCode.E)
+                if (event.getCode() == KeyCode.E)
                 {
                     inventory = !inventory;
                 }
@@ -133,63 +127,60 @@ public class TheGame extends Application {
                 }
             }
             if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
-                {
-                    //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
-                }
-                if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
-                {
-                    /*
-                     float x = Math.round(me.getX());
-                     float y = Math.round(me.getY()) - 1;
-                     Block block = new Block(BlockType.Dirt, x, y, play);
-                     gameServerToClient.addObject(block);
-                     */
-                }
-        } else if(sjeton)
+            {
+                //gameLogic.addObject(new Enemy("Loser", 100, null, play.getSpawnX() + 5, play.getSpawnY(), null, 1, 1, null));
+            }
+            if (event.getCode() == KeyCode.DIGIT2 && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                /*
+                 float x = Math.round(me.getX());
+                 float y = Math.round(me.getY()) - 1;
+                 Block block = new Block(BlockType.Dirt, x, y, play);
+                 gameServerToClient.addObject(block);
+                 */
+            }
+        } else if (sjeton)
         {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                Message chatMessage = new Message(myAccount, chatline);
+                try
                 {
-                    Message chatMessage = new Message(myAccount, chatline);
-                    try
-                    {
-                        gameClientToServer.sendGameChatMessage(chatMessage);   
-                    }
-                    catch(RemoteException e)
-                    {
-                        System.err.println(e.getMessage());
-                    }
-                    sjeton = false;
+                    gameClientToServer.sendGameChatMessage(chatMessage);
+                } catch (RemoteException e)
+                {
+                    System.err.println(e.getMessage());
                 }
+                sjeton = false;
+            }
             if (event.getCode() == KeyCode.BACK_SPACE && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
-                if(chatline.length() > 0)
+                if (chatline.length() > 0)
                 {
-                    chatline = chatline.substring(0, chatline.length() - 1);  
+                    chatline = chatline.substring(0, chatline.length() - 1);
                 }
             }
-            if(event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED)
+            if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
-                
+
             }
-            if(event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() < 44)
+            if (event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() < 44)
             {
-                if(event.isShiftDown())
+                if (event.isShiftDown())
                 {
                     String tempString = event.getCode().getName();
-                    if(!tempString.equals("Shift"))
+                    if (!tempString.equals("Shift"))
                     {
                         tempString = event.getCode().getName();
-                        if(tempString.equalsIgnoreCase("Slash"))
+                        if (tempString.equalsIgnoreCase("Slash"))
                         {
                             chatline += "?";
-                        }
-                        else
+                        } else
                         {
                             chatline += event.getCode().getName();
                         }
                     }
-                }
-                else
+                } else
                 {
                     chatline += event.getText();
                 }
@@ -215,7 +206,7 @@ public class TheGame extends Application {
     {
         primaryStage.setOnCloseRequest(event ->
         {
-            if(gameClientToServer != null && listener != null)
+            if (gameClientToServer != null && listener != null)
             {
                 try
                 {
@@ -354,18 +345,18 @@ public class TheGame extends Application {
 
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             }
-            
-            g.closePath();          
+
+            g.closePath();
         }
-        
+
         drawGUI(g);
-        
-         // Calibration lines
-         g.setLineWidth(1);
-         g.setStroke(Color.rgb(0, 0, 0, 0.2));
-         g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
-         g.strokeLine(0, scene.getHeight()/ 2, scene.getWidth(), scene.getHeight() / 2);
-         
+
+        // Calibration lines
+        g.setLineWidth(1);
+        g.setStroke(Color.rgb(0, 0, 0, 0.2));
+        g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
+        g.strokeLine(0, scene.getHeight() / 2, scene.getWidth(), scene.getHeight() / 2);
+
     }
 
     private void clear(GraphicsContext g)
@@ -433,6 +424,7 @@ public class TheGame extends Application {
 
     private void connectToServer(Stage primaryStage)
     {
+        loadingScreen(stages);
         Thread updateListenerThread = new Thread(() ->
         {
             try
@@ -467,7 +459,7 @@ public class TheGame extends Application {
 
         StackPane root = new StackPane();
 
-        scene = new Scene(root, 860, 600, Color.LIGHTBLUE);
+        scene = new Scene(root, stages.getWidth(), stages.getHeight(), Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
 
@@ -530,7 +522,7 @@ public class TheGame extends Application {
                 play.update();
             }
         }, 0, 1000 / 60);
-        
+
         Timer movement = new Timer("movement");
         update.schedule(new TimerTask() {
 
@@ -555,32 +547,31 @@ public class TheGame extends Application {
     private Parent createContent()
     {
         Pane root = new Pane();
-
-        root.setPrefSize(860, 600);
-
+        root.setPrefSize(1280, 720);
+        
+        /*
         try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
         {
             ImageView img = new ImageView(new Image(is));
             img.setFitWidth(860);
             img.setFitHeight(600);
             root.getChildren().add(img);
-
         } catch (Exception e)
         {
             System.out.println("Couldnt load image");
         }
-
+        */ 
+        
         Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
 
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
-        
-        
+
         MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
-        SinglePlayer.setOnMouseClicked(event -> beginstart(stages));
-        
+        SinglePlayer.setOnMouseClicked(event -> loadingScreen(stages));
+
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
         startMultiPlayer.setOnMouseClicked(event -> connectToServer(stages));
 
@@ -596,7 +587,7 @@ public class TheGame extends Application {
 
         return root;
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -605,72 +596,83 @@ public class TheGame extends Application {
         launch(args);
     }
 
-    private void drawGUI(GraphicsContext g) {
-        
+    private void drawGUI(GraphicsContext g)
+    {
+
         //draw black background
         Color background = new Color(0f, 0f, 0f, .4f);
-        
-        if(inventory) {
+
+        if (inventory)
+        {
             /*g.setFill(background);
-            g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
+             g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
             g.beginPath();
             g.setFill(background);
             g.setStroke(Color.WHITE);
             // Inventory
-            for(int y=0; y<3; y++) {
-                for(int x=0; x<10; x++) {
-                    g.fillRoundRect(10+50*x, 10+50*y, 40, 40, 5, 5);
-                    g.strokeRoundRect(10 + 50*x, 10+50*y, 40, 40, 5, 5);
-                    
+            for (int y = 0; y < 3; y++)
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
+                    g.strokeRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
+
                 }
             }
-            
+
             // Armor
-            for(int y=0; y<4; y++) {
-                try {
-                    g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
-                    g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50*y, 40, 40, 5, 5);
+            for (int y = 0; y < 4; y++)
+            {
+                try
+                {
+                    g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
+                    g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
                     display.Image i;
-                    switch(y) {
+                    switch (y)
+                    {
                         case 0:
-                            i=new display.Image(display.Parts.Shield);
+                            i = new display.Image(display.Parts.Shield);
                             break;
                         case 1:
-                            i=new display.Image(display.Sets.legArmor);
+                            i = new display.Image(display.Sets.legArmor);
                             break;
                         case 2:
-                            i=new display.Image(display.Sets.bodyArmor);
+                            i = new display.Image(display.Sets.bodyArmor);
                             break;
                         default:
-                            i=new display.Image(display.Sets.SpikeHelmet);
+                            i = new display.Image(display.Sets.SpikeHelmet);
                     }
-                    i.recolour(new Color[] { Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE });
-                    
-                    g.drawImage(i.show(), scene.getWidth() - 50 + (40-i.getWidth())/2, scene.getHeight() - 100 - 50*y + (40-i.getHeight())/2);
-                    
-                } catch (IOException ex) {
+                    i.recolour(new Color[]
+                    {
+                        Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE
+                    });
+
+                    g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 100 - 50 * y + (40 - i.getHeight()) / 2);
+
+                } catch (IOException ex)
+                {
                     Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
             g.closePath();
         }
-        
+
         // Tool
         g.beginPath();
-            g.setFill(background);
-            g.setStroke(Color.WHITE);
-            g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
-            g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+        g.setFill(background);
+        g.setStroke(Color.WHITE);
+        g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+        g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
         g.closePath();
 
         g.beginPath();
         g.setFill(background);
-        
+
         g.fillRoundRect(scene.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(scene.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
-        
+
         //draw hearth
         int teamlevens = 4;
         for (int i = 0; i < teamlevens; i++)
@@ -702,8 +704,8 @@ public class TheGame extends Application {
         g.fillRect(scene.getWidth() - 120, 51, breedte, 11.0f);
 
         g.closePath();
-        
-        if(sjeton)
+
+        if (sjeton)
         {
             g.beginPath();
             g.setFill(background);
@@ -717,35 +719,34 @@ public class TheGame extends Application {
             g.setStroke(Color.WHITE);
             int textPosition = 10;
             List<Message> chatMessages = play.getChatMessages();
-            if(chatMessages.size() < 15 )
+            if (chatMessages.size() < 15)
             {
-                for(Message message : chatMessages)
+                for (Message message : chatMessages)
                 {
                     g.setFont(Font.font("monospaced", 11));
                     g.strokeText(message.getText(), 15, (scene.getHeight() - RectHeight) + textPosition);
                     textPosition += 15;
                 }
-            }
-            else
+            } else
             {
                 chatMessages.remove(0);
             }
             g.setFont(Font.font("monospaced", 11));
-            g.strokeText(chatline, 15, scene.getHeight() -15);
+            g.strokeText(chatline, 15, scene.getHeight() - 15);
             g.closePath();
         }
-        
+
     }
 
-    private void beginstart(Stage stages) {
-         StackPane root = new StackPane();
-        
-        Scene scene = new Scene(root, 300, 250);
-        
+    private void loadingScreen(Stage stages)
+    {
+        StackPane root = new StackPane();
+
+        Scene scene = new Scene(root, stages.getWidth(), stages.getHeight());
+
         stages.setTitle("Loading Screen");
         stages.setScene(scene);
-        stages.show();    
+        stages.show();
     }
-    
-    
+
 }
