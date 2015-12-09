@@ -440,7 +440,6 @@ public class TheGame extends Application {
                 listener.loadAfterRecieve(myAccount, play, me);
                 play.loadAfterRecieve(gameClientToServer, myAccount, me);
                 me.setMap(play);
-                me.setToUpdate(true);
                 Platform.runLater(() ->
                 {
                     startagame(primaryStage);

@@ -126,7 +126,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
         if (hSpeed > 0)
         {
-            hSpeed -= 0.05f;
+            hSpeed -= 0.04f;
             if (hSpeed <= 0)
             {
                 hSpeed = 0;
@@ -136,6 +136,29 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             if (found.isEmpty())
             {
                 setX(xPosition + hSpeed);
+
+                found = collision().get(sides.RIGHT);
+                if (!found.isEmpty())
+                {
+                    float minX = -1;
+                    for (MapObject mo : found)
+                    {
+                        if (minX == -1 || mo.getX() < minX)
+                        {
+                            minX = mo.getX();
+                        }
+                    }
+
+                    if (minX == -1)
+                    {
+                        setX(xPosition + hSpeed);
+                        return true;
+                    }
+
+                    hSpeed = 0;
+                    setX(minX);
+                }
+
                 return true;
             } else
             {
@@ -160,7 +183,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             }
         } else if (hSpeed < 0)
         {
-            hSpeed += 0.05f;
+            hSpeed += 0.04f;
             if (hSpeed >= 0)
             {
                 hSpeed = 0;
@@ -170,6 +193,30 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             if (found.isEmpty())
             {
                 setX(xPosition + hSpeed);
+
+                found = collision().get(sides.LEFT);
+                if (!found.isEmpty())
+                {
+                    float maxX = -1;
+                    for (MapObject mo : found)
+                    {
+
+                        if (maxX == -1 || mo.getX() + mo.getW() > maxX)
+                        {
+                            maxX = mo.getX() + mo.getW();
+                        }
+                    }
+
+                    if (maxX == -1)
+                    {
+                        setX(xPosition + hSpeed);
+                        return true;
+                    }
+
+                    hSpeed = 0;
+                    setX(maxX);
+                }
+
                 return true;
             } else
             {
@@ -209,7 +256,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             {
                 setY(yPosition + vSpeed);
 
-                found = collision.get(sides.TOP);
+                found = collision().get(sides.TOP);
                 if (!found.isEmpty())
                 {
                     float minY = -1;
@@ -484,7 +531,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         if (right || left || top || bott)
         {
             ArrayList<sides> ret = new ArrayList<>();
-            if ((bott && top) && (left && right))
+            if (bott && top && left && right)
             {
                 ret.add(sides.CENTER);
             }

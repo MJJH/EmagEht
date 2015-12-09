@@ -93,11 +93,11 @@ public class Player extends CharacterGame {
         switch (hitDirection)
         {
             case LEFT:
-                newHSpeed = -kb * 2;
+                newHSpeed = -kb;
                 newVSpeed = kb;
                 break;
             case RIGHT:
-                newHSpeed = kb * 2;
+                newHSpeed = kb;
                 newVSpeed = kb;
                 break;
         }

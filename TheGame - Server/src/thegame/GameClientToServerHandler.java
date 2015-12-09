@@ -46,7 +46,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
     @Override
     public Player joinPlayer(Account account, IGameServerToClientListener listener) throws RemoteException
     {
-        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2, 1, map);
+        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2f, 1f, map);
         map.addMapObject(player);
         gameServerToClientHandler.joinPlayer(listener, player);
         return player;

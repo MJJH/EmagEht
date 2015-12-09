@@ -46,6 +46,10 @@ public class Block extends MapObject {
     {
         if (interaction)
         {
+            if(damage > type.strength)
+            {
+                playing.removeMapObject(this);
+            }
             interaction = false;
             return true;
         } else
@@ -57,8 +61,9 @@ public class Block extends MapObject {
     @Override
     public void hit(Tool use, sides hitDirection)
     {
+        damage += use.type.strength;
         interaction = true;
-        playing.removeMapObject(this);
+        playing.addToUpdate(this);
     }
 
 }

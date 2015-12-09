@@ -14,6 +14,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.MapObject.sides;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
@@ -87,7 +88,7 @@ public class Map implements Serializable {
 
         players.remove(me);
         players.add(me);
-        
+
         chatMessages = new ArrayList<>();
     }
 
@@ -290,7 +291,7 @@ public class Map implements Serializable {
             blocksLock.lock();
             try
             {
-                 update.createSkin();
+                update.createSkin();
                 blocks[(int) update.getY()][(int) update.getX()] = (Block) update;
             } catch (Exception e)
             {
@@ -303,11 +304,11 @@ public class Map implements Serializable {
             enemiesLock.lock();
             try
             {
-                for(Enemy enemy : enemies)
+                for (Enemy enemy : enemies)
                 {
-                    if(enemy.getID() == update.getID())
+                    if (enemy.getID() == update.getID())
                     {
-                        enemy.update((Enemy)update);
+                        enemy.update((Enemy) update);
                     }
                 }
             } finally
@@ -421,15 +422,20 @@ public class Map implements Serializable {
     {
         try
         {
-            if (me.getToUpdate())
-            {
-                me.update();
+            float oldX = me.getX();
+            float oldY = me.getY();
+            sides oldSide = me.getDirection();
 
-                int direction = 1;
-                if (me.getDirection() == MapObject.sides.LEFT)
-                {
-                    direction = 0;
-                }
+            me.update();
+
+            int direction = 1;
+            if (me.getDirection() == MapObject.sides.LEFT)
+            {
+                direction = 0;
+            }
+
+            if (oldX != me.getX() || oldY != me.getY() || oldSide != me.getDirection())
+            {
                 gameLogic.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
             }
         } catch (RemoteException ex)
@@ -437,12 +443,12 @@ public class Map implements Serializable {
             Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void addChatMessage(Message message)
     {
         chatMessages.add(message);
     }
-    
+
     public List getChatMessages()
     {
         return chatMessages;

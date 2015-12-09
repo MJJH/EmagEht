@@ -49,8 +49,6 @@ public class Player extends CharacterGame {
         {
             hSpeed += 0.075f;
         }
-
-        setToUpdate(true);
     }
 
     public void walkLeft()
@@ -70,8 +68,6 @@ public class Player extends CharacterGame {
         {
             hSpeed -= 0.075f;
         }
-
-        setToUpdate(true);
     }
 
     public void jump()
@@ -88,15 +84,11 @@ public class Player extends CharacterGame {
                 jumping = false;
             }
         }
-
-        setToUpdate(true);
     }
 
     public void stopJump()
     {
         jumping = false;
-
-        setToUpdate(true);
     }
 
     private boolean fall(EnumMap<sides, List<MapObject>> collision)
@@ -125,6 +117,23 @@ public class Player extends CharacterGame {
             if (found.isEmpty())
             {
                 setX(xPosition + hSpeed);
+
+                found = collision().get(sides.RIGHT);
+                if (!found.isEmpty())
+                {
+                    float minX = -1;
+                    for (MapObject mo : found)
+                    {
+                        if (minX == -1 || mo.getX() < minX)
+                        {
+                            minX = mo.getX();
+                        }
+                    }
+
+                    hSpeed = 0;
+                    setX(minX - width);
+                }
+
                 return true;
             } else
             {
@@ -159,6 +168,30 @@ public class Player extends CharacterGame {
             if (found.isEmpty())
             {
                 setX(xPosition + hSpeed);
+
+                found = collision().get(sides.LEFT);
+                if (!found.isEmpty())
+                {
+                    float maxX = -1;
+                    for (MapObject mo : found)
+                    {
+
+                        if (maxX == -1 || mo.getX() + mo.getW() > maxX)
+                        {
+                            maxX = mo.getX() + mo.getW();
+                        }
+                    }
+
+                    if (maxX == -1)
+                    {
+                        setX(xPosition + hSpeed);
+                        return true;
+                    }
+
+                    hSpeed = 0;
+                    setX(maxX);
+                }
+
                 return true;
             } else
             {
@@ -170,12 +203,6 @@ public class Player extends CharacterGame {
                     {
                         maxX = mo.getX() + mo.getW();
                     }
-                }
-
-                if (maxX == -1)
-                {
-                    setX(xPosition + hSpeed);
-                    return true;
                 }
 
                 hSpeed = 0;
@@ -198,7 +225,7 @@ public class Player extends CharacterGame {
             {
                 setY(yPosition + vSpeed);
 
-                found = collision.get(sides.TOP);
+                found = collision().get(sides.TOP);
                 if (!found.isEmpty())
                 {
                     float minY = -1;
@@ -209,12 +236,6 @@ public class Player extends CharacterGame {
                         {
                             minY = mo.getY() - mo.getH();
                         }
-                    }
-
-                    if (minY == -1)
-                    {
-                        setY(yPosition + vSpeed);
-                        return true;
                     }
 
                     vSpeed = 0;
@@ -263,12 +284,6 @@ public class Player extends CharacterGame {
                         {
                             maxY = mo.getY() + height;
                         }
-                    }
-
-                    if (maxY == -1)
-                    {
-                        setY(yPosition + vSpeed);
-                        return true;
                     }
 
                     vSpeed = 0;
@@ -356,7 +371,7 @@ public class Player extends CharacterGame {
         if (right || left || top || bott)
         {
             ArrayList<sides> ret = new ArrayList<>();
-            if ((bott && top) && (left && right))
+            if (bott && top && left && right)
             {
                 ret.add(sides.CENTER);
             }
@@ -389,22 +404,27 @@ public class Player extends CharacterGame {
     {
         EnumMap<sides, List<MapObject>> collision = collision();
         Boolean newToUpdate = false;
-        if(fall(collision))
+        if (fall(collision))
+        {
             newToUpdate = true;
-        
-        if(moveH(collision))
+        }
+
+        if (moveH(collision))
+        {
             newToUpdate = true;
-        
-        if(moveV(collision))
+        }
+
+        if (moveV(collision))
+        {
             newToUpdate = true;
-        
-        while(!collision.get(sides.CENTER).isEmpty()) {
+        }
+
+        while (!collision.get(sides.CENTER).isEmpty())
+        {
             yPosition++;
             collision = collision();
             newToUpdate = true;
         }
-        
-        setToUpdate(newToUpdate);
     }
 
     public void useTool(float x, float y, IGameClientToServer gameLogic)
@@ -415,7 +435,7 @@ public class Player extends CharacterGame {
             {
                 if (gameLogic.useTool(id, x, y))
                 {
-                    setToUpdate(true);
+                    //feedback
                 }
             } catch (RemoteException ex)
             {
@@ -462,13 +482,13 @@ public class Player extends CharacterGame {
                 new Color(0.445, 0.355, 0.29, 1),
                 new Color(1, 1, 1, 1)
             };
-            
+
             Image d = new Image(Sets.player);
             d.recolour(h);
-            
+
             Animation a = new Animation(d, 4);
             a.addFrameByPart(iTexture.Part.FRONTARM, 20);
-            
+
             skins.put("standRight", a);
 
             Image d2 = new Image(Sets.player);
@@ -486,17 +506,6 @@ public class Player extends CharacterGame {
     {
         this.hSpeed = hSpeed;
         this.vSpeed = vSpeed;
-        setToUpdate(true);
-    }
-
-    public boolean getToUpdate()
-    {
-        return toUpdate;
-    }
-
-    public void setToUpdate(boolean value)
-    {
-        toUpdate = value;
     }
 
     /**

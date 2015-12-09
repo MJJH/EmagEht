@@ -541,9 +541,11 @@ public class Map implements Serializable {
 
             for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
             {
+                toUpdateLock.unlock();
                 MapObject key = entrySet.getKey();
 
                 boolean value = entrySet.getValue().get();
+                toUpdateLock.lock();
 
                 if (key instanceof Enemy)
                 {
