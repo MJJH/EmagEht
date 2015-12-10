@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import display.Frame;
 import display.IntColor;
 import display.Skin;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import sun.plugin.javascript.navig.JSType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
@@ -68,7 +70,7 @@ public class TheGame extends Application {
     public IGameClientToServer gameClientToServer;
 
     private List<KeyCode> keys = new ArrayList<>();
-
+    private SplashScreen splash;
     // MAP
     private float dx;
     private float dy;
@@ -203,6 +205,7 @@ public class TheGame extends Application {
         }
     };
     private Stage stages;
+    public boolean LoadingDone;
 
     @Override
     public void start(Stage primaryStage) throws IOException
@@ -426,8 +429,9 @@ public class TheGame extends Application {
         return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
 
-    private void connectToServer(Stage primaryStage)
+    private void connectToServer(Stage primaryStage) throws InterruptedException
     {
+        
         loadingScreen(stages);
         Thread updateListenerThread = new Thread(() ->
         {
@@ -436,20 +440,34 @@ public class TheGame extends Application {
                 server = LocateRegistry.getRegistry(config.ip, config.reachGameLogicPort);
                 gameClientToServer = (IGameClientToServer) server.lookup(config.bindName);
                 Random rand = new Random();
+                splash.countTill(25);
+                Thread.sleep(500);
                 myAccount = new Account(Integer.toString(rand.nextInt(1000)));
                 listener = new GameServerToClientListener();
                 UnicastRemoteObject.exportObject(listener, config.updateListenerPort);
+                splash.countTill(50);
+                Thread.sleep(500);
                 me = gameClientToServer.joinPlayer(myAccount, listener);
                 play = (Map) gameClientToServer.getMap();
                 listener.loadAfterRecieve(myAccount, play, me);
+                splash.countTill(75);
+                Thread.sleep(500);
                 play.loadAfterRecieve(gameClientToServer, myAccount, me);
                 me.setMap(play);
+                splash.countTill(100);
+                Thread.sleep(1000);
                 Platform.runLater(() ->
                 {
+                    
+                    
                     startagame(primaryStage);
+                    
+                    
                 });
             } catch (RemoteException | NotBoundException ex)
             {
+                Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
                 Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }, "updateListenerThread");
@@ -573,10 +591,18 @@ public class TheGame extends Application {
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
         MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
-        SinglePlayer.setOnMouseClicked(event -> loadingScreen(stages));
+        SinglePlayer.setOnMouseClicked(event -> {
+            loadingScreen(stages);
+        });
 
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
-        startMultiPlayer.setOnMouseClicked(event -> connectToServer(stages));
+        startMultiPlayer.setOnMouseClicked(event -> {
+            try {
+                connectToServer(stages);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         MenuBox menu = new MenuBox(
                 SinglePlayer,
@@ -767,15 +793,16 @@ public class TheGame extends Application {
         }
     }
 
-    private void loadingScreen(Stage stages)
-    {
-        StackPane root = new StackPane();
-
-        Scene scene = new Scene(root, stages.getWidth(), stages.getHeight());
-
-        stages.setTitle("Loading Screen");
-        stages.setScene(scene);
-        stages.show();
+    private void loadingScreen(Stage stage)
+    {       
+        try {
+        splash = new SplashScreen();
+        splash.SplashScreen();
+        } catch (Exception e) {
+        }
+        
     }
+    
+    
 
 }
