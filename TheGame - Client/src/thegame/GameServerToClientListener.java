@@ -111,6 +111,10 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     @Override
     public void updateObjects(List<MapObject> toSend) throws RemoteException
     {
+        if (map == null || me == null)
+        {
+            return;
+        }
         for(MapObject mo : toSend)
         {
             map.updateMapObject(mo);
