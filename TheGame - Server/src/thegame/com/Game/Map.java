@@ -145,7 +145,7 @@ public class Map implements Serializable {
                 y--;
             }
 
-            //addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));
+            addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));
 
         } catch (IOException ex)
         {

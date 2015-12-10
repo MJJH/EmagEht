@@ -44,10 +44,10 @@ public class Enemy extends CharacterGame {
 
         if (hSpeed < 0)
         {
-            hSpeed = 0.1f;
-        } else if (hSpeed < 0.5)
+            hSpeed = 0.05f;
+        } else if (hSpeed < 0.25)
         {
-            hSpeed += 0.1;
+            hSpeed += 0.05;
         }
     }
 
@@ -63,10 +63,10 @@ public class Enemy extends CharacterGame {
 
         if (hSpeed > 0)
         {
-            hSpeed = -0.1f;
-        } else if (hSpeed > -0.5)
+            hSpeed = -0.05f;
+        } else if (hSpeed > -0.25)
         {
-            hSpeed -= 0.1;
+            hSpeed -= 0.05;
         }
     }
 
@@ -76,11 +76,11 @@ public class Enemy extends CharacterGame {
         if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
         {
             jumping = true;
-            vSpeed += 0.2f;
+            vSpeed += 0.1f;
 
-            if (vSpeed >= 0.8f)
+            if (vSpeed >= 0.4f)
             {
-                vSpeed = 0.8f;
+                vSpeed = 0.4f;
                 jumping = false;
             }
         }

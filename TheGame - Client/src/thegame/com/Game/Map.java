@@ -76,6 +76,21 @@ public class Map implements Serializable {
                 }
             }
         }
+        
+        for(MapObject object : objects)
+        {
+            object.setMap(this);
+        }
+        
+        for(Player player : players)
+        {
+            player.setMap(this);
+        }
+        
+        for(Enemy enemy : enemies)
+        {
+            enemy.setMap(this);
+        }
 
         playerUpdateThread = Executors.newFixedThreadPool(1);
         objectsLock = new ReentrantLock();

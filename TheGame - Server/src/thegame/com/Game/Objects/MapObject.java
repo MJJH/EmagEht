@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.Enemy;
 
 /**
  * An object that can be drawn on the map
@@ -149,14 +150,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                         }
                     }
 
-                    if (minX == -1)
-                    {
-                        setX(xPosition + hSpeed);
-                        return true;
-                    }
-
                     hSpeed = 0;
-                    setX(minX);
+                    setX(minX - width);
                 }
 
                 return true;
@@ -230,12 +225,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                     }
                 }
 
-                if (maxX == -1)
-                {
-                    setX(xPosition + hSpeed);
-                    return true;
-                }
-
                 hSpeed = 0;
                 setX(maxX);
                 return true;
@@ -269,12 +258,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                         }
                     }
 
-                    if (minY == -1)
-                    {
-                        setY(yPosition + vSpeed);
-                        return true;
-                    }
-
                     vSpeed = 0;
                     setY(minY);
                 }
@@ -304,6 +287,11 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             }
         } else if (vSpeed < 0)
         {
+            if (this instanceof Enemy)
+            {
+                ((Enemy) this).stopJump();
+            }
+
             found = collision.get(sides.BOTTOM);
             if (found.isEmpty())
             {
@@ -320,12 +308,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
                         {
                             maxY = mo.getY() + height;
                         }
-                    }
-
-                    if (maxY == -1)
-                    {
-                        setY(yPosition + vSpeed);
-                        return true;
                     }
 
                     vSpeed = 0;
