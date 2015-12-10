@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.GameServerToClientHandler;
@@ -49,15 +48,12 @@ public class Map implements Serializable {
     private List<Player> players;
 
     private transient List<MapObject> toUpdate;
+    private transient final List<MapObject> toAdd;
+    private transient final List<MapObject> toRemove;
 
     private transient ExecutorService threadPool;
     private transient GameClientToServerHandler gameClientToServerHandler;
     private transient GameServerToClientHandler gameServerToClientHandler;
-    private transient ReentrantLock toUpdateLock;
-    private transient ReentrantLock objectsLock;
-    private transient ReentrantLock enemiesLock;
-    private transient ReentrantLock playersLock;
-    private transient ReentrantLock blocksLock;
 
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
@@ -74,16 +70,13 @@ public class Map implements Serializable {
         players = new ArrayList<>();
         enemies = new ArrayList<>();
         toUpdate = new ArrayList<>();
+        toAdd = new ArrayList<>();
+        toRemove = new ArrayList<>();
         blocks = new Block[height][width];
 
         threadPool = Executors.newCachedThreadPool();
         this.gameClientToServerHandler = gameClientToServerHandler;
         this.gameServerToClientHandler = gameServerToClientHandler;
-        toUpdateLock = new ReentrantLock();
-        objectsLock = new ReentrantLock();
-        enemiesLock = new ReentrantLock();
-        playersLock = new ReentrantLock();
-        blocksLock = new ReentrantLock();
         generateMap();
     }
 
@@ -233,174 +226,125 @@ public class Map implements Serializable {
 
     public void addMapObject(MapObject mo)
     {
-        gameServerToClientHandler.addMapObject(mo);
-
-        if (mo instanceof Enemy)
-        {
-            enemiesLock.lock();
-            try
-            {
-                enemies.add((Enemy) mo);
-            } finally
-            {
-                enemiesLock.unlock();
-            }
-            addToUpdate(mo);
-        } else if (mo instanceof Block)
-        {
-            blocksLock.lock();
-            try
-            {
-                blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
-            } finally
-            {
-                blocksLock.unlock();
-            }
-        } else if (mo instanceof Player)
-        {
-            playersLock.lock();
-            try
-            {
-                players.add((Player) mo);
-            } finally
-            {
-                playersLock.unlock();
-            }
-        }
+        toAdd.add(mo);
     }
 
-    public void removeMapObject(MapObject removeObject)
+    public void runAddMapObject()
     {
-        try
+        for (MapObject mo : toAdd)
         {
-            
-        int type = 0;
-        if (removeObject instanceof Block)
-        {
-            type = 1;
-        }
-        if (removeObject instanceof Enemy)
-        {
-            type = 2;
-        }
-        if (removeObject instanceof Player)
-        {
-            type = 3;
-        }
-        gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+            gameServerToClientHandler.addMapObject(mo);
 
-        toUpdateLock.lock();
-        try
-        {
-            toUpdate.remove(removeObject);
-        } finally
-        {
-            toUpdateLock.unlock();
-        }
-
-        if (removeObject instanceof Block)
-        {
-            blocksLock.lock();
-            try
+            if (mo instanceof Enemy)
             {
-                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-            } catch (Exception e)
+                enemies.add((Enemy) mo);
+                addToUpdate(mo);
+            } else if (mo instanceof Block)
             {
-            } finally
+                blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
+            } else if (mo instanceof Player)
             {
-                blocksLock.unlock();
+                players.add((Player) mo);
+            } else
+            {
+                objects.add(mo);
             }
-        } else if (removeObject instanceof Enemy)
+        }
+        toAdd.clear();
+    }
+
+    public void removeMapObject(MapObject removeMapObject)
+    {
+        toRemove.add(removeMapObject);
+    }
+
+    public void runRemoveMapObjects()
+    {
+        for (MapObject removeObject : toRemove)
         {
-            enemiesLock.lock();
-            try
+            int type = 0;
+            if (removeObject instanceof Block)
+            {
+                type = 1;
+            }
+            if (removeObject instanceof Enemy)
+            {
+                type = 2;
+            }
+            if (removeObject instanceof Player)
+            {
+                type = 3;
+            }
+            gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+
+            toUpdate.remove(removeObject);
+
+            if (removeObject instanceof Block)
+            {
+                try
+                {
+                    blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+                } catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                }
+            } else if (removeObject instanceof Enemy)
             {
                 enemies.remove((Enemy) removeObject);
-            } finally
-            {
-                enemiesLock.unlock();
-            }
-        } else if (removeObject instanceof Player)
-        {
-            playersLock.lock();
-            try
+            } else if (removeObject instanceof Player)
             {
                 players.remove((Player) removeObject);
-            } finally
+            } else
             {
-                playersLock.unlock();
+                objects.remove(removeObject);
             }
         }
-        } catch (Exception e)
-        {
-            System.err.println(e.getMessage());
-        }
+        toRemove.clear();
     }
 
     public MapObject GetTile(float x, float y, MapObject self)
     {
         // Find in enemies
-        enemiesLock.lock();
-        try
+
+        for (Enemy mo : enemies)
         {
-            for (Enemy mo : enemies)
+            if (mo.equals(self) || mo.getS() == 0)
             {
-                if (mo.equals(self) || mo.getS() == 0)
-                {
-                    continue;
-                }
-                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
-                {
-                    return mo;
-                }
+                continue;
             }
-        } finally
-        {
-            enemiesLock.unlock();
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
         }
 
         // Find in players
-        playersLock.lock();
-        try
+        for (Player mo : players)
         {
-            for (Player mo : players)
+            if (mo.equals(self) || mo.getS() == 0)
             {
-                if (mo.equals(self) || mo.getS() == 0)
-                {
-                    continue;
-                }
-                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
-                {
-                    return mo;
-                }
+                continue;
             }
-        } finally
-        {
-            playersLock.unlock();
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
         }
 
         // Find in objects
-        objectsLock.lock();
-        try
+        for (MapObject mo : objects)
         {
-            for (MapObject mo : objects)
+            if (mo.equals(self) || mo.getS() == 0)
             {
-                if (mo.equals(self) || mo.getS() == 0)
-                {
-                    continue;
-                }
-                if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
-                {
-                    return mo;
-                }
+                continue;
             }
-        } finally
-        {
-            objectsLock.unlock();
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
         }
 
         // Find in blocks
-        blocksLock.lock();
         try
         {
             int bx = (int) Math.floor(x);
@@ -414,11 +358,7 @@ public class Map implements Serializable {
 
         } catch (Exception e)
         {
-        } finally
-        {
-            blocksLock.unlock();
         }
-
         return null;
     }
 
@@ -448,74 +388,46 @@ public class Map implements Serializable {
             endY = height;
         }
 
-        blocksLock.lock();
-        try
+        for (int y = startY; y < endY; y++)
         {
-            for (int y = startY; y < endY; y++)
+            for (int x = startX; x < endX; x++)
             {
-                for (int x = startX; x < endX; x++)
+                try
                 {
-                    try
-                    {
-                        Block cur = blocks[y][x];
+                    Block cur = blocks[y][x];
 
-                        if (cur != null)
-                        {
-                            ret.add(cur);
-                        }
-                    } catch (Exception e)
+                    if (cur != null)
                     {
+                        ret.add(cur);
                     }
+                } catch (Exception e)
+                {
                 }
             }
-        } finally
-        {
-            blocksLock.unlock();
         }
 
-        objectsLock.lock();
-        try
+        for (MapObject mo : objects)
         {
-            for (MapObject mo : objects)
+            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
             {
-                if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
-                {
-                    ret.add(mo);
-                }
+                ret.add(mo);
             }
-        } finally
-        {
-            objectsLock.unlock();
         }
 
-        enemiesLock.lock();
-        try
+        for (Enemy enemy : enemies)
         {
-            for (Enemy enemy : enemies)
+            if (enemy.getX() + enemy.getW() > startX && enemy.getX() < endX && enemy.getY() - enemy.getH() > startY && enemy.getY() < endY)
             {
-                if (enemy.getX() + enemy.getW() > startX && enemy.getX() < endX && enemy.getY() - enemy.getH() > startY && enemy.getY() < endY)
-                {
-                    ret.add(enemy);
-                }
+                ret.add(enemy);
             }
-        } finally
-        {
-            enemiesLock.unlock();
         }
 
-        playersLock.lock();
-        try
+        for (Player player : players)
         {
-            for (Player player : players)
+            if (player.getX() + player.getW() > startX && player.getX() < endX && player.getY() - player.getH() > startY && player.getY() < endY)
             {
-                if (player.getX() + player.getW() > startX && player.getX() < endX && player.getY() - player.getH() > startY && player.getY() < endY)
-                {
-                    ret.add(player);
-                }
+                ret.add(player);
             }
-        } finally
-        {
-            playersLock.unlock();
         }
 
         return ret;
@@ -528,40 +440,45 @@ public class Map implements Serializable {
             return;
         }
 
-        toUpdateLock.lock();
-        try
-        {
-            toUpdate.add(toUpdateMO);
-        } finally
-        {
-            toUpdateLock.unlock();
-        }
+        toUpdate.add(toUpdateMO);
     }
 
     public void update()
     {
-        List<MapObject> toSend = new ArrayList<>();
-        toUpdateLock.lock();
-
-        try
+        synchronized (toAdd)
         {
-            HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
-
-            for (MapObject update : toUpdate)
+            if (toAdd.size() > 0)
             {
-                if (!(update instanceof Player) && !updateResults.containsKey(update))
-                {
-                    updateResults.put(update, threadPool.submit(update));
-                }
+                runAddMapObject();
             }
-
-            for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
+        }
+        synchronized (toRemove)
+        {
+            if (toRemove.size() > 0)
             {
-                toUpdateLock.unlock();
+                runRemoveMapObjects();
+            }
+        }
+
+        List<MapObject> toSend = new ArrayList<>();
+
+        HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
+
+        for (MapObject update : toUpdate)
+        {
+            if (!(update instanceof Player) && !updateResults.containsKey(update))
+            {
+                updateResults.put(update, threadPool.submit(update));
+            }
+        }
+
+        for (java.util.Map.Entry<MapObject, Future<Boolean>> entrySet : updateResults.entrySet())
+        {
+            try
+            {
                 MapObject key = entrySet.getKey();
 
                 boolean value = entrySet.getValue().get();
-                toUpdateLock.lock();
 
                 if (key instanceof Enemy)
                 {
@@ -586,17 +503,14 @@ public class Map implements Serializable {
                 {
                     toUpdate.remove(key);
                 }
-            }
-            if (!toSend.isEmpty())
+            } catch (InterruptedException | ExecutionException ex)
             {
-                gameServerToClientHandler.updateObjects(toSend);
+                Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (InterruptedException | ExecutionException ex)
+        }
+        if (!toSend.isEmpty())
         {
-            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
-        } finally
-        {
-            toUpdateLock.unlock();
+            gameServerToClientHandler.updateObjects(toSend);
         }
     }
 }
