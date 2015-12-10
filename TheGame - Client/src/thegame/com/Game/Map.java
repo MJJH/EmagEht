@@ -48,10 +48,6 @@ public class Map implements Serializable {
     private transient Account myAccount;
     private transient Player me;
     private transient IGameClientToServer gameLogic;
-    private transient ReentrantLock objectsLock;
-    private transient ReentrantLock enemiesLock;
-    private transient ReentrantLock playersLock;
-    private transient ReentrantLock blocksLock;
     private transient List<Message> chatMessages;
 
     public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me)
@@ -76,27 +72,23 @@ public class Map implements Serializable {
                 }
             }
         }
-        
-        for(MapObject object : objects)
+
+        for (MapObject object : objects)
         {
             object.setMap(this);
         }
-        
-        for(Player player : players)
+
+        for (Player player : players)
         {
             player.setMap(this);
         }
-        
-        for(Enemy enemy : enemies)
+
+        for (Enemy enemy : enemies)
         {
             enemy.setMap(this);
         }
 
         playerUpdateThread = Executors.newFixedThreadPool(1);
-        objectsLock = new ReentrantLock();
-        enemiesLock = new ReentrantLock();
-        playersLock = new ReentrantLock();
-        blocksLock = new ReentrantLock();
         this.gameLogic = gameLogic;
         this.myAccount = myAccount;
         this.me = me;
@@ -109,26 +101,12 @@ public class Map implements Serializable {
 
     public List<Player> getPlayers()
     {
-        playersLock.lock();
-        try
-        {
-            return players;
-        } finally
-        {
-            playersLock.unlock();
-        }
+        return players;
     }
 
     public List<Enemy> getEnemies()
     {
-        enemiesLock.lock();
-        try
-        {
-            return enemies;
-        } finally
-        {
-            enemiesLock.unlock();
-        }
+        return enemies;
     }
 
     /**
@@ -173,34 +151,13 @@ public class Map implements Serializable {
     {
         if (mo instanceof Enemy)
         {
-            enemiesLock.lock();
-            try
-            {
-                enemies.add((Enemy) mo);
-            } finally
-            {
-                enemiesLock.unlock();
-            }
+            enemies.add((Enemy) mo);
         } else if (mo instanceof Block)
         {
-            blocksLock.lock();
-            try
-            {
-                blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
-            } finally
-            {
-                blocksLock.unlock();
-            }
+            blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
         } else if (mo instanceof Player)
         {
-            playersLock.lock();
-            try
-            {
-                players.add((Player) mo);
-            } finally
-            {
-                playersLock.unlock();
-            }
+            players.add((Player) mo);
         }
     }
 
@@ -208,37 +165,18 @@ public class Map implements Serializable {
     {
         if (removeObject instanceof Block)
         {
-            blocksLock.lock();
             try
             {
                 blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
             } catch (Exception e)
             {
-            } finally
-            {
-                blocksLock.unlock();
             }
-
         } else if (removeObject instanceof Enemy)
         {
-            enemiesLock.lock();
-            try
-            {
-                enemies.remove((Enemy) removeObject);
-            } finally
-            {
-                enemiesLock.unlock();
-            }
+            enemies.remove((Enemy) removeObject);
         } else if (removeObject instanceof Player)
         {
-            playersLock.lock();
-            try
-            {
-                players.remove((Player) removeObject);
-            } finally
-            {
-                playersLock.unlock();
-            }
+            players.remove((Player) removeObject);
         }
     }
 
@@ -249,52 +187,32 @@ public class Map implements Serializable {
         {
             case 1:
                 //delete block
-                blocksLock.lock();
-                try
-                {
-                    blocks[y][x] = null;
-                } finally
-                {
-                    blocksLock.unlock();
-                }
+                blocks[y][x] = null;
                 break;
             case 2:
                 //delete enemy
-                enemiesLock.lock();
-                try
+
+                for (Enemy enemy : enemies)
                 {
-                    for (Enemy enemy : enemies)
+                    if (enemy.getID() == id)
                     {
-                        if (enemy.getID() == id)
-                        {
-                            removeObject = enemy;
-                            break;
-                        }
+                        removeObject = enemy;
+                        break;
                     }
-                    enemies.remove((Enemy) removeObject);
-                } finally
-                {
-                    enemiesLock.unlock();
                 }
+                enemies.remove((Enemy) removeObject);
                 break;
             case 3:
                 // delete player
-                playersLock.lock();
-                try
+                for (Player player : players)
                 {
-                    for (Player player : players)
+                    if (player.getID() == id)
                     {
-                        if (player.getID() == id)
-                        {
-                            removeObject = player;
-                            break;
-                        }
+                        removeObject = player;
+                        break;
                     }
-                    players.remove((Player) removeObject);
-                } finally
-                {
-                    playersLock.unlock();
                 }
+                players.remove((Player) removeObject);
                 break;
         }
     }
@@ -303,32 +221,21 @@ public class Map implements Serializable {
     {
         if (update instanceof Block)
         {
-            blocksLock.lock();
             try
             {
                 update.createSkin();
                 blocks[(int) update.getY()][(int) update.getX()] = (Block) update;
             } catch (Exception e)
             {
-            } finally
-            {
-                blocksLock.unlock();
             }
         } else if (update instanceof Enemy)
         {
-            enemiesLock.lock();
-            try
+            for (Enemy enemy : enemies)
             {
-                for (Enemy enemy : enemies)
+                if (enemy.getID() == update.getID())
                 {
-                    if (enemy.getID() == update.getID())
-                    {
-                        enemy.update((Enemy) update);
-                    }
+                    enemy.update((Enemy) update);
                 }
-            } finally
-            {
-                enemiesLock.unlock();
             }
         }
     }
@@ -359,75 +266,46 @@ public class Map implements Serializable {
             endY = height;
         }
 
-        blocksLock.lock();
-        try
+        for (int y = startY; y < endY; y++)
         {
-            for (int y = startY; y < endY; y++)
+            for (int x = startX; x < endX; x++)
             {
-                for (int x = startX; x < endX; x++)
+                try
                 {
-                    try
-                    {
-                        Block cur = blocks[y][x];
+                    Block cur = blocks[y][x];
 
-                        if (cur != null
-                                && (cur.getX() + cur.getW() >= startX && cur.getX() <= endX && cur.getY() - cur.getH() >= startY && cur.getY() <= endY))
-                        {
-                            ret.add(cur);
-                        }
-                    } catch (Exception e)
+                    if (cur != null
+                            && (cur.getX() + cur.getW() >= startX && cur.getX() <= endX && cur.getY() - cur.getH() >= startY && cur.getY() <= endY))
                     {
+                        ret.add(cur);
                     }
+                } catch (Exception e)
+                {
                 }
             }
-        } finally
-        {
-            blocksLock.unlock();
         }
 
-        objectsLock.lock();
-        try
+        for (MapObject mo : objects)
         {
-            for (MapObject mo : objects)
+            if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
             {
-                if (mo.getX() + mo.getW() > startX && mo.getX() < endX && mo.getY() - mo.getH() > startY && mo.getY() < endY)
-                {
-                    ret.add(mo);
-                }
+                ret.add(mo);
             }
-        } finally
-        {
-            objectsLock.unlock();
         }
 
-        enemiesLock.lock();
-        try
+        for (Enemy enemy : enemies)
         {
-            for (Enemy enemy : enemies)
+            if (enemy.getX() + enemy.getW() > startX && enemy.getX() < endX && enemy.getY() - enemy.getH() > startY && enemy.getY() < endY)
             {
-                if (enemy.getX() + enemy.getW() > startX && enemy.getX() < endX && enemy.getY() - enemy.getH() > startY && enemy.getY() < endY)
-                {
-                    ret.add(enemy);
-                }
+                ret.add(enemy);
             }
-        } finally
-        {
-            enemiesLock.unlock();
         }
-
-        playersLock.lock();
-        try
+        for (Player player : players)
         {
-            for (Player player : players)
+            if (player.getX() + player.getW() > startX && player.getX() < endX && player.getY() - player.getH() > startY && player.getY() < endY)
             {
-                if (player.getX() + player.getW() > startX && player.getX() < endX && player.getY() - player.getH() > startY && player.getY() < endY)
-                {
-                    ret.add(player);
-                }
+                ret.add(player);
             }
-        } finally
-        {
-            playersLock.unlock();
         }
 
         return ret;
@@ -452,10 +330,12 @@ public class Map implements Serializable {
             if (oldX != me.getX() || oldY != me.getY() || oldSide != me.getDirection())
             {
                 gameLogic.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
+
             }
         } catch (RemoteException ex)
         {
-            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Map.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -271,6 +271,24 @@ public class Map implements Serializable {
 
     public void removeMapObject(MapObject removeObject)
     {
+        try
+        {
+            
+        int type = 0;
+        if (removeObject instanceof Block)
+        {
+            type = 1;
+        }
+        if (removeObject instanceof Enemy)
+        {
+            type = 2;
+        }
+        if (removeObject instanceof Player)
+        {
+            type = 3;
+        }
+        gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+
         toUpdateLock.lock();
         try
         {
@@ -280,10 +298,8 @@ public class Map implements Serializable {
             toUpdateLock.unlock();
         }
 
-        int type = 0;
         if (removeObject instanceof Block)
         {
-            type = 1;
             blocksLock.lock();
             try
             {
@@ -296,7 +312,6 @@ public class Map implements Serializable {
             }
         } else if (removeObject instanceof Enemy)
         {
-            type = 2;
             enemiesLock.lock();
             try
             {
@@ -307,7 +322,6 @@ public class Map implements Serializable {
             }
         } else if (removeObject instanceof Player)
         {
-            type = 3;
             playersLock.lock();
             try
             {
@@ -317,8 +331,10 @@ public class Map implements Serializable {
                 playersLock.unlock();
             }
         }
-
-        gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+        } catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 
     public MapObject GetTile(float x, float y, MapObject self)
@@ -571,7 +587,7 @@ public class Map implements Serializable {
                     toUpdate.remove(key);
                 }
             }
-            if(!toSend.isEmpty())
+            if (!toSend.isEmpty())
             {
                 gameServerToClientHandler.updateObjects(toSend);
             }
