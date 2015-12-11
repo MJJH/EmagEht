@@ -30,14 +30,14 @@ public enum Sets implements iTexture {
     // Clothes
     featherHelmet(new ArrayList<CombineParts>() {
         {
-            add(new CombineParts(Parts.helmetEyes, 11, 8));
+            add(new CombineParts(Parts.helmetEyes, 7, 3));
             add(new CombineParts(Parts.helmetFeather, 0, 0));
         } 
     }),
     
     SpikeHelmet(new ArrayList<CombineParts>() {
         {
-            add(new CombineParts(Parts.helmetOpen, 0, 10));
+            add(new CombineParts(Parts.helmetOpen, 0, 4));
             add(new CombineParts(Parts.helmetHorn, 6, 0));
         } 
     }),
