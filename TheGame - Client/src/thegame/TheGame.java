@@ -432,7 +432,8 @@ public class TheGame extends Application {
     private void connectToServer(Stage primaryStage) throws InterruptedException
     {
         
-        loadingScreen(stages);
+        loadingScreen();
+        
         Thread updateListenerThread = new Thread(() ->
         {
             try
@@ -460,7 +461,7 @@ public class TheGame extends Application {
                 {
                     
                     
-                    startagame(primaryStage);
+                    startagame(stages);
                     
                     
                 });
@@ -592,7 +593,6 @@ public class TheGame extends Application {
 
         MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
         SinglePlayer.setOnMouseClicked(event -> {
-            loadingScreen(stages);
         });
 
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
@@ -793,11 +793,25 @@ public class TheGame extends Application {
         }
     }
 
-    private void loadingScreen(Stage stage)
-    {       
+    private void loadingScreen()
+    {   
+        StackPane root = new StackPane();
+
+        Scene scene = new Scene(root, stages.getWidth(), stages.getHeight(), Color.BLACK);
+       
+        stages.setTitle("Loading Screen");
+        stages.setScene(scene);
+        stages.show();
+
+        
+        
+        
         try {
         splash = new SplashScreen();
+        splash.giveSplash(splash);
         splash.SplashScreen();
+        
+        
         } catch (Exception e) {
         }
         

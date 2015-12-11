@@ -40,7 +40,6 @@ public class SplashScreen extends JWindow {
 
     private void createSplash() {
         Container container = getContentPane();
-
         JPanel panel = new JPanel();
         panel.setBorder(new javax.swing.border.EtchedBorder());
         container.add(panel, BorderLayout.CENTER);
@@ -52,7 +51,7 @@ public class SplashScreen extends JWindow {
         progressBar.setMaximum(PROGBAR_MAX);
         container.add(progressBar, BorderLayout.SOUTH);
 
-
+        
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -86,5 +85,11 @@ public class SplashScreen extends JWindow {
     public int returnCount()
     {
        return count;
+    }
+
+   
+
+    void giveSplash(SplashScreen splash) {
+        splashScreen = splash;
     }
 }
