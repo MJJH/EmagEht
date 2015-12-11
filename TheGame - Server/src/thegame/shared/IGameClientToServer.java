@@ -9,6 +9,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
+import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 
@@ -29,4 +30,6 @@ public interface IGameClientToServer extends Remote {
     public void updatePlayer(int id, float x, float y, int direction) throws RemoteException;
 
     public boolean useTool(int id, float x, float y) throws RemoteException;
+    
+    public void pickUpParticle (MapObject particle, int playerID) throws RemoteException;
 }

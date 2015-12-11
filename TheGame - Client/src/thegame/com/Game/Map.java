@@ -47,11 +47,11 @@ public class Map implements Serializable {
 
     private transient Account myAccount;
     private transient Player me;
-    private transient IGameClientToServer gameLogic;
+    private transient IGameClientToServer gameClientToServer;
     private transient thegame.TheGame theGame;
     private transient List<Message> chatMessages;
     
-    public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me, thegame.TheGame theGame)
+    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.TheGame theGame)
     {
         for (int y = 0; y < height; y++)
         {
@@ -90,7 +90,7 @@ public class Map implements Serializable {
         }
 
         playerUpdateThread = Executors.newFixedThreadPool(1);
-        this.gameLogic = gameLogic;
+        this.gameClientToServer = gameClientToServer;
         this.myAccount = myAccount;
         this.me = me;
         this.theGame = theGame;
@@ -160,6 +160,10 @@ public class Map implements Serializable {
         } else if (mo instanceof Player)
         {
             players.add((Player) mo);
+        }
+        else
+        {
+            objects.add(mo);
         }
     }
 
@@ -331,7 +335,7 @@ public class Map implements Serializable {
 
             if (oldX != me.getX() || oldY != me.getY() || oldSide != me.getDirection())
             {
-                gameLogic.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
+                gameClientToServer.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
 
             }
         } catch (RemoteException ex)
@@ -364,5 +368,10 @@ public class Map implements Serializable {
     public List getChatMessages()
     {
         return chatMessages;
+    }
+    
+    public IGameClientToServer getGameClientToServer()
+    {
+        return gameClientToServer;
     }
 }

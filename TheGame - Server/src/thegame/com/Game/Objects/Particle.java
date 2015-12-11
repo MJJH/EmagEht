@@ -13,8 +13,10 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
  */
 public class Particle extends MapObject {
 
+    private static final long serialVersionUID = 5529682098267757690L;
+
     private MapObject object;
-    private final int count;
+    private int count;
 
     /**
      * Create a new particle
@@ -23,17 +25,13 @@ public class Particle extends MapObject {
      * up
      * @param x the horizontal position of this object
      * @param y the vertical position of this object
-     * @param height the height of this object
-     * @param width the width of this object
-     * @param solid the density of this object
      * @param map
-     * @param count the ammount of this object
      */
-    public Particle(MapObject object, int x, int y, int height, int width, float solid, Map map, int count)
+    public Particle(MapObject object, float x, float y, Map map)
     {
-        super(x, y, height, width, 0, map);
+        super(x, y, 0.5f, 0.5f, 0, map);
         setObject(object);
-        this.count = count;
+        this.count = 1;
     }
 
     private void setObject(MapObject object)
@@ -47,6 +45,16 @@ public class Particle extends MapObject {
         {
             this.object = object;
         }
+    }
+
+    public MapObject getObject()
+    {
+        return object;
+    }
+
+    public void addObjectCount()
+    {
+        count++;
     }
 
     @Override

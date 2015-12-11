@@ -10,6 +10,8 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
  */
 public class Particle extends MapObject {
 
+    private static final long serialVersionUID = 5529682098267757690L;
+
     private MapObject object;
     private int count;
 
@@ -29,6 +31,6 @@ public class Particle extends MapObject {
     @Override
     public void createSkin()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //create skin particle
     }
 }

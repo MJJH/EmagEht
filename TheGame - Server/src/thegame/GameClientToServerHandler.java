@@ -108,4 +108,19 @@ public class GameClientToServerHandler implements IGameClientToServer {
             }
         }
     }
+
+    @Override
+    public void pickUpParticle(MapObject particle, int playerID) throws RemoteException
+    {
+        particle.setMap(map);
+        for (Player player : map.getPlayers())
+        {
+            if (player.getID() == playerID)
+            {
+                player.addToBackpack(particle);
+                map.removeMapObject(particle);
+                break;
+            }
+        }
+    }
 }

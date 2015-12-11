@@ -54,7 +54,6 @@ public abstract class CharacterGame extends MapObject {
         equipTool(equip);
     }
 
-    
     public abstract void knockBack(int kb, sides hitDirection);
 
     /**
@@ -66,20 +65,28 @@ public abstract class CharacterGame extends MapObject {
     public boolean addToBackpack(MapObject object)
     {
         int spot = -1;
-        
-        for(int i = 0; i < backpack.length; i++) {
+
+        for (int i = 0; i < backpack.length; i++)
+        {
             List<MapObject> l = backpack[i];
-            if(l == null)
+            if (l == null)
+            {
                 continue;
-            
-            if(!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99) 
+            }
+
+            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
+            {
                 spot = i;
+            }
         }
-        
-        if(spot > -1)
+
+        if (spot > -1)
+        {
             return addToBackpack(object, spot);
-        else
+        } else
+        {
             return addToEmptyBackpack(object);
+        }
     }
 
     /**
@@ -101,10 +108,11 @@ public abstract class CharacterGame extends MapObject {
      */
     public void equipArmor(int spot)
     {
-        if(!backpack[spot].isEmpty() && backpack[spot].get(0) instanceof Armor) {
+        if (!backpack[spot].isEmpty() && backpack[spot].get(0) instanceof Armor)
+        {
             Armor a = (Armor) backpack[spot];
             Armor old = armor.get(a.getArmorType().bodypart);
-            
+
             backpack[spot].clear();
             armor.put(a.getArmorType().bodypart, a);
             addToBackpack(old);
@@ -222,7 +230,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return map of mapobjects
      */
-public List<MapObject>[] getBackpackMap()
+    public List<MapObject>[] getBackpackMap()
     {
         return backpack;
     }
@@ -237,36 +245,58 @@ public List<MapObject>[] getBackpackMap()
         this.direction = direction;
     }
 
-    public boolean addToBackpack(MapObject object, int spot) {
-        if(spot > backpack.length-1)
+    public boolean addToBackpack(MapObject object, int spot)
+    {
+        if (spot > backpack.length - 1)
+        {
             return false;
-        
-        if(backpack[spot] != null && !backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
+        }
+
+        if (backpack[spot] != null && !backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
+        {
             return false;
-        
-        if(backpack[spot] == null || backpack[spot].isEmpty()){
+        }
+
+        if (backpack[spot] == null || backpack[spot].isEmpty())
+        {
             backpack[spot] = new ArrayList<>();
             backpack[spot].add(object);
+            if (this instanceof Player)
+            {
+                playing.getGameServerToClientHandler().addToBackpack(object, spot, (Player) this);
+            }
             return true;
         }
-        
-        if(object instanceof Tool || object instanceof Armor) {
+
+        if (object instanceof Tool || object instanceof Armor)
+        {
             return false;
-        } 
-        
+        }
+
         backpack[spot].add(object);
+        if (this instanceof Player)
+        {
+            playing.getGameServerToClientHandler().addToBackpack(object, spot, (Player) this);
+        }
         return true;
     }
 
-    public boolean addToEmptyBackpack(MapObject object) {
-         for(int i = 0; i < backpack.length; i++) {
-             if(backpack[i] == null || backpack[i].isEmpty()){
+    public boolean addToEmptyBackpack(MapObject object)
+    {
+        for (int i = 0; i < backpack.length; i++)
+        {
+            if (backpack[i] == null || backpack[i].isEmpty())
+            {
                 backpack[i] = new ArrayList<>();
                 backpack[i].add(object);
+                if (this instanceof Player)
+                {
+                    playing.getGameServerToClientHandler().addToEmptyBackpack(object, (Player) this);
+                }
                 return true;
-             }
-         } 
-         return false;
+            }
+        }
+        return false;
     }
 
     public boolean useTool(float x, float y)

@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.Particle;
 import thegame.shared.IGameClientToServer;
 
 /**
@@ -338,6 +339,17 @@ public class Player extends CharacterGame {
             if (mo == this)
             {
                 continue;
+            }
+            
+            if (mo instanceof Particle)
+            {
+                try
+                {
+                    playing.getGameClientToServer().pickUpParticle(mo, getID());
+                } catch (RemoteException ex)
+                {
+                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             List<sides> found = this.collision(mo);

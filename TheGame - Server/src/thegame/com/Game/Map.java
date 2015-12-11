@@ -65,7 +65,7 @@ public class Map implements Serializable {
     {
         width = 500;
         height = 100;
-        
+
         teamlifes = 4;
 
         objects = new ArrayList<>();
@@ -195,17 +195,22 @@ public class Map implements Serializable {
     {
         return teamlifes;
     }
-    
-    public void decreaseLife() {
-        if(teamlifes > 0)
-        teamlifes--;
-    }
-    
-    public void increaseLife() {
-        if(teamlifes < 4)
-        teamlifes++;
+
+    public void decreaseLife()
+    {
+        if (teamlifes > 0)
+        {
+            teamlifes--;
+        }
     }
 
+    public void increaseLife()
+    {
+        if (teamlifes < 4)
+        {
+            teamlifes++;
+        }
+    }
 
     int getTime()
     {
@@ -227,6 +232,22 @@ public class Map implements Serializable {
         return objects;
     }
 
+    public List<MapObject> getObjects(float x, float y, float range)
+    {
+        List<MapObject> toReturn = new ArrayList<>();
+        for (MapObject object : objects)
+        {
+            if (object.getX() >= x - range || object.getX() <= x + range)
+            {
+                if (object.getY() >= y - range || object.getY() <= x + range)   
+                {
+                    toReturn.add(object);
+                }
+            }
+        }
+        return toReturn;
+    }
+
     List<Enemy> getEnemies()
     {
         return enemies;
@@ -239,7 +260,10 @@ public class Map implements Serializable {
 
     public void addMapObject(MapObject mo)
     {
-        toAdd.add(mo);
+        synchronized(toAdd)
+        {
+            toAdd.add(mo);
+        }
     }
 
     public void runAddMapObject()
@@ -268,7 +292,10 @@ public class Map implements Serializable {
 
     public void removeMapObject(MapObject removeMapObject)
     {
-        toRemove.add(removeMapObject);
+        synchronized(toRemove)
+        {
+            toRemove.add(removeMapObject);
+        }
     }
 
     public void runRemoveMapObjects()

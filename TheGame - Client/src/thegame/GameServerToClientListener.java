@@ -120,4 +120,26 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             map.updateMapObject(mo);
         }
     }
+
+    @Override
+    public void addToBackpack(MapObject object, int spot) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        object.setMap(map);
+        me.addToBackpack(object, spot);
+    }
+
+    @Override
+    public void addToEmptyBackpack(MapObject object) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        object.setMap(map);
+        me.addToEmptyBackpack(object);
+    }
 }

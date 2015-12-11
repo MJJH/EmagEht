@@ -31,4 +31,8 @@ public interface IGameServerToClientListener extends Remote, EventListener {
     public void addMapObject(MapObject mo) throws RemoteException;
 
     public void updateObjects(List<MapObject> toSend) throws RemoteException;
+    
+    public void addToBackpack(MapObject object, int spot) throws RemoteException;
+    
+    public void addToEmptyBackpack(MapObject object) throws RemoteException;
 }

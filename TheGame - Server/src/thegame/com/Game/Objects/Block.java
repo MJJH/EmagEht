@@ -48,7 +48,24 @@ public class Block extends MapObject {
         {
             if(damage > type.strength)
             {
+                for (MapObject object : playing.getObjects(xPosition, yPosition,1.1f))
+                {
+                    if(object instanceof Particle)
+                    {
+                        Particle particle = (Particle) object;
+                        if(particle.getObject() instanceof Block)
+                        {
+                            Block block = (Block)particle.getObject();
+                            block.type = type;
+                            particle.addObjectCount();
+                            playing.removeMapObject(this);
+                            return false;
+                        }
+                    }
+                }
+                playing.addMapObject(new Particle(this, xPosition, yPosition, playing));
                 playing.removeMapObject(this);
+                return false;
             }
             interaction = false;
             return true;

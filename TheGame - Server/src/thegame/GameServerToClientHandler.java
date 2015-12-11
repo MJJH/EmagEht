@@ -286,4 +286,76 @@ public class GameServerToClientHandler {
             });
         }
     }
+    
+    public void addToBackpack (MapObject object, int spot, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.addToBackpack(object, spot);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not addToBackpack(" + object.getClass() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
+            break;
+        }
+    }
+    
+    public void addToEmptyBackpack (MapObject object, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    isSending.add(listener);
+                    listener.addToEmptyBackpack(object);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not addToEmptyBackpack(" + object.getClass() + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+                isSending.remove(listener);
+            });
+            break;
+        }
+    }
 }
