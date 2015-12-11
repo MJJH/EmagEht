@@ -149,6 +149,8 @@ public class TheGame extends Application {
         {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
+                if(!chatline.isEmpty())
+                {
                 Message chatMessage = new Message(myAccount, chatline);
                 try
                 {
@@ -156,6 +158,7 @@ public class TheGame extends Application {
                 } catch (RemoteException e)
                 {
                     System.err.println(e.getMessage());
+                }
                 }
                 sjeton = false;
             }
@@ -449,7 +452,7 @@ public class TheGame extends Application {
                 listener.loadAfterRecieve(myAccount, play, me);
                 splash.countTill(75);
                 Thread.sleep(500);
-                play.loadAfterRecieve(gameClientToServer, myAccount, me);
+                play.loadAfterRecieve(gameClientToServer, myAccount, me, this);
                 me.setMap(play);
                 splash.countTill(100);
                 Thread.sleep(1000);
@@ -790,9 +793,9 @@ public class TheGame extends Application {
         g.closePath();
 
         //Chat
-        if(sjeton)
+        if(sjeton || notification)
         {
-            g.beginPath();
+             g.beginPath();
             g.setFill(background);
             g.setStroke(Color.WHITE);
             int RectHeight = 250;
@@ -806,10 +809,6 @@ public class TheGame extends Application {
             List<Message> chatMessages = play.getChatMessages();
             if(chatMessages.size() < 15)
             {
-                if(!chatMessages.isEmpty() && !(chatMessages.get(chatMessages.size() -1)).getSender().getUsername().equals(myAccount.getUsername()))
-                {
-                    notification = true;
-                }
                 for(Message message : chatMessages)
                 {
                     g.setFont(Font.font("monospaced", 11));
@@ -821,30 +820,24 @@ public class TheGame extends Application {
             {
                 chatMessages.remove(0);
             }
-            g.setFont(Font.font("monospaced", 11));
-            g.strokeText(chatline, 15, scene.getHeight() -15);
             g.closePath();
-        }
-        
-        //Chat Notification
-        if(notification)
-        {
-            notificationTimer.schedule(new TimerTask() {
+            if(sjeton || !notification)
+            {
+                g.beginPath();
+                g.setFont(Font.font("monospaced", 11));
+                g.fillRoundRect(12, (scene.getHeight() - 27), RectWidth - 4, 15, 5, 5);
+                g.strokeText(chatline, 15, scene.getHeight() -15);
+                g.closePath();
+            }
+            else if(!sjeton || notification)
+            {
+                notificationTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     notification = false;
                 }
             }, 3000);
-            g.beginPath();
-            g.setFill(background);
-            g.setStroke(Color.WHITE);
-            int RectHeight = 40;
-            int RectWidth = 225;
-            g.fillRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
-            g.strokeRoundRect(10, (scene.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
-            g.setFont(Font.font("monospaced", 16));
-            g.strokeText("You have new messages", 15, (scene.getHeight() - ((RectHeight)/2) - 10));
-            g.closePath();
+            }
         }
     }
 
@@ -857,21 +850,18 @@ public class TheGame extends Application {
         stages.setTitle("Loading Screen");
         stages.setScene(scene);
         stages.show();
-
-        
-        
         
         try {
         splash = new SplashScreen();
         splash.giveSplash(splash);
         splash.SplashScreen();
         
-        
         } catch (Exception e) {
         }
-        
     }
     
-    
-
+    public void chatNotiifcation()
+    {
+        notification = true;
+    }
 }

@@ -48,9 +48,10 @@ public class Map implements Serializable {
     private transient Account myAccount;
     private transient Player me;
     private transient IGameClientToServer gameLogic;
+    private transient thegame.TheGame theGame;
     private transient List<Message> chatMessages;
     
-    public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me)
+    public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me, thegame.TheGame theGame)
     {
         for (int y = 0; y < height; y++)
         {
@@ -92,6 +93,7 @@ public class Map implements Serializable {
         this.gameLogic = gameLogic;
         this.myAccount = myAccount;
         this.me = me;
+        this.theGame = theGame;
 
         players.remove(me);
         players.add(me);
@@ -356,6 +358,7 @@ public class Map implements Serializable {
     public void addChatMessage(Message message)
     {
         chatMessages.add(message);
+        theGame.chatNotiifcation();
     }
 
     public List getChatMessages()
