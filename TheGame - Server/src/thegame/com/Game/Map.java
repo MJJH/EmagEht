@@ -65,6 +65,8 @@ public class Map implements Serializable {
     {
         width = 500;
         height = 100;
+        
+        teamlifes = 4;
 
         objects = new ArrayList<>();
         players = new ArrayList<>();
@@ -193,6 +195,17 @@ public class Map implements Serializable {
     {
         return teamlifes;
     }
+    
+    public void decreaseLife() {
+        if(teamlifes > 0)
+        teamlifes--;
+    }
+    
+    public void increaseLife() {
+        if(teamlifes < 4)
+        teamlifes++;
+    }
+
 
     int getTime()
     {

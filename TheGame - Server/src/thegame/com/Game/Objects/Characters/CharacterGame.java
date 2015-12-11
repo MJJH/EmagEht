@@ -1,6 +1,8 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
 
@@ -22,7 +24,7 @@ public abstract class CharacterGame extends MapObject {
 
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
-    protected java.util.Map<MapObject, Integer> backpack;
+    protected List<MapObject>[] backpack;
 
     protected boolean jumping = false;
 
@@ -44,7 +46,7 @@ public abstract class CharacterGame extends MapObject {
         this.name = name;
         this.hp = 100;
         this.skills = skills;
-        backpack = new HashMap();
+        backpack = new ArrayList[30];
         armor = new HashMap();
         direction = sides.RIGHT;
         ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
@@ -63,34 +65,21 @@ public abstract class CharacterGame extends MapObject {
      */
     public boolean addToBackpack(MapObject object)
     {
-        if (backpack.containsKey(object))
-        {
-            if (object.getClass() == Armor.class || object.getClass() == Tool.class)
-            {
-                backpack.put(object, 1);
-            } else
-            {
-                if (backpack.get(object) < 99)
-                {
-                    backpack.put(object, backpack.get(object) + 1);
-                } else
-                {
-                    return false;
-                }
-            }
-
-        } else
-        {
-            if (backpack.size() < 30)
-            {
-                backpack.put(object, 1);
-            } else
-            {
-                return false;
-            }
+        int spot = -1;
+        
+        for(int i = 0; i < backpack.length; i++) {
+            List<MapObject> l = backpack[i];
+            if(l == null)
+                continue;
+            
+            if(!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99) 
+                spot = i;
         }
-
-        return true;
+        
+        if(spot > -1)
+            return addToBackpack(object, spot);
+        else
+            return addToEmptyBackpack(object);
     }
 
     /**
@@ -99,18 +88,10 @@ public abstract class CharacterGame extends MapObject {
      * @param object, the object you want to drop
      * @return returns the object and value
      */
-    public java.util.Map dropItem(MapObject object)
+    public Particle dropItem(int spot)
     {
-        if (backpack.containsKey(object))
-        {
-            java.util.Map mapMapObject = new HashMap();
-            mapMapObject.put(object, backpack.get(object));
-            backpack.remove(object);
-            return mapMapObject;
-        } else
-        {
-            return null;
-        }
+        //backpack[spot].get(backpack[spot].size()-1);
+        return null;
     }
 
     /**
@@ -118,17 +99,15 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param armorAdd, the armor that you want to wear
      */
-    public void equipArmor(Armor armorAdd)
+    public void equipArmor(int spot)
     {
-        if (armor.containsKey(armorAdd.getArmorType().bodypart))
-        {
-            unequipArmor(armor.get(armorAdd.getArmorType().bodypart));
-            backpack.remove(armorAdd);
-            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
-        } else
-        {
-            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
-            backpack.remove(armorAdd);
+        if(!backpack[spot].isEmpty() && backpack[spot].get(0) instanceof Armor) {
+            Armor a = (Armor) backpack[spot];
+            Armor old = armor.get(a.getArmorType().bodypart);
+            
+            backpack[spot].clear();
+            armor.put(a.getArmorType().bodypart, a);
+            addToBackpack(old);
         }
     }
 
@@ -243,9 +222,51 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return map of mapobjects
      */
-    public java.util.Map<MapObject, Integer> getBackpackMap()
+public List<MapObject>[] getBackpackMap()
     {
         return backpack;
+    }
+
+    public sides getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(sides direction)
+    {
+        this.direction = direction;
+    }
+
+    public boolean addToBackpack(MapObject object, int spot) {
+        if(spot > backpack.length-1)
+            return false;
+        
+        if(backpack[spot] != null && !backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
+            return false;
+        
+        if(backpack[spot] == null || backpack[spot].isEmpty()){
+            backpack[spot] = new ArrayList<>();
+            backpack[spot].add(object);
+            return true;
+        }
+        
+        if(object instanceof Tool || object instanceof Armor) {
+            return false;
+        } 
+        
+        backpack[spot].add(object);
+        return true;
+    }
+
+    public boolean addToEmptyBackpack(MapObject object) {
+         for(int i = 0; i < backpack.length; i++) {
+             if(backpack[i] == null || backpack[i].isEmpty()){
+                backpack[i] = new ArrayList<>();
+                backpack[i].add(object);
+                return true;
+             }
+         } 
+         return false;
     }
 
     public boolean useTool(float x, float y)
@@ -309,10 +330,5 @@ public abstract class CharacterGame extends MapObject {
                 knockBack(used.type.kb, hitDirection);
             }
         }
-    }
-
-    public sides getDirection()
-    {
-        return direction;
     }
 }

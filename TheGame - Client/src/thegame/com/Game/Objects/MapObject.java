@@ -181,6 +181,9 @@ public abstract class MapObject implements Serializable {
      */
     public Skin getSkin()
     {
+        if(skin == null)
+            createSkin();
+        
         return skin;
     }
 

@@ -48,6 +48,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import sun.plugin.javascript.navig.JSType;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
@@ -331,11 +332,6 @@ public class TheGame extends Application {
             }
 
             g.beginPath();
-
-            if (draw.getSkin() == null)
-            {
-                draw.createSkin();
-            }
 
             Skin s = draw.getSkin();
 
@@ -636,15 +632,34 @@ public class TheGame extends Application {
             /*g.setFill(background);
              g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
             g.beginPath();
-            g.setFill(background);
             g.setStroke(Color.WHITE);
+            
+            
             // Inventory
             for (int y = 0; y < 3; y++)
             {
                 for (int x = 0; x < 10; x++)
                 {
+                    g.setFill(background);
                     g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
                     g.strokeRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
+                    
+                    int spot = y*10 + x;
+                    if(me.getBackpackMap()[spot] != null && !me.getBackpackMap()[spot].isEmpty()) {
+                        Skin i = me.getBackpackMap()[spot].get(0).getSkin();
+                        g.setFill(Color.RED);
+                        if(i != null)
+                            g.drawImage(i.show(), 10 + 50 * x + (40 - i.getWidth()) / 2, 10 + 50 * y + (40 - i.getHeight()) / 2);
+                        else 
+                            g.fillRect(10 + 50 * x + 10, 10 + 50 * y + 10, 20, 20);
+                        
+                        if(me.getBackpackMap()[spot].size() > 1) {
+                            g.setFill(Color.WHITE);
+                            g.setFont(Font.font("monospaced", 10));
+                            String t = me.getBackpackMap()[spot].size() + "";
+                            g.fillText(t, 10 + 50 * x + 40 - ((t.length() - 1) * 5) - 8, 10 + 50 * y + 38);
+                        }
+                    }
 
                 }
             }
@@ -654,29 +669,55 @@ public class TheGame extends Application {
             {
                 try
                 {
+                    g.setFill(background);
                     g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
                     g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
                     display.Image i;
+                    
+                    Color[] t = new Color[]
+                    {
+                        new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
+                    };
+                    
                     switch (y)
                     {
                         case 0:
-                            i = new display.Image(display.Parts.Shield);
+                            if(me.getArmor().get(ArmorType.bodyPart.SHIELD) != null)
+                                i = (display.Image) me.getArmor().get(ArmorType.bodyPart.SHIELD).getSkin();
+                            else {
+                                i = new display.Image(display.Parts.Shield);
+                                i.recolour(t);
+                            }
                             break;
                         case 1:
-                            i = new display.Image(display.Sets.legArmor);
+                            if(me.getArmor().get(ArmorType.bodyPart.GREAVES) != null)
+                                i = (display.Image) me.getArmor().get(ArmorType.bodyPart.GREAVES).getSkin();
+                            else {
+                                i = new display.Image(display.Sets.legArmor);
+                                i.recolour(t);
+                            }
                             break;
                         case 2:
-                            i = new display.Image(display.Sets.bodyArmor);
+                            if(me.getArmor().get(ArmorType.bodyPart.CHESTPLATE) != null)
+                                i = (display.Image) me.getArmor().get(ArmorType.bodyPart.CHESTPLATE).getSkin();
+                            else {
+                                i = new display.Image(display.Sets.bodyArmor);
+                                i.recolour(t);
+                            }
                             break;
                         default:
-                            i = new display.Image(display.Sets.SpikeHelmet);
+                            if(me.getArmor().get(ArmorType.bodyPart.HELMET) != null)
+                                i = (display.Image) me.getArmor().get(ArmorType.bodyPart.HELMET).getSkin();
+                            else { 
+                                i = new display.Image(display.Sets.SpikeHelmet);
+                                i.recolour(t);
+                            }
                     }
-                    i.recolour(new Color[]
-                    {
-                        Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE, Color.WHITESMOKE
-                    });
-
-                    g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 100 - 50 * y + (40 - i.getHeight()) / 2);
+                    
+                    if(i == null)
+                        g.fillRect(scene.getWidth() - 50 + 10, scene.getHeight() - 100 - 50*y + 10, 20, 20);
+                    else
+                        g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 100 - 50 * y + (40 - i.getHeight()) / 2);
 
                 } catch (IOException ex)
                 {
@@ -688,11 +729,25 @@ public class TheGame extends Application {
         }
 
         // Tool
-        g.beginPath();
-        g.setFill(background);
-        g.setStroke(Color.WHITE);
-        g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
-        g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+        if(inventory || me.getHolding() != null) {
+            g.beginPath();
+            g.setFill(background);
+            g.setStroke(Color.WHITE);
+            g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+            g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
+            
+            if(me.getHolding() != null) {
+                display.Skin i = me.getHolding().getSkin();
+                g.setFill(Color.RED);
+                if(i == null)
+                    g.fillRect(scene.getWidth() - 50 + 10, scene.getHeight() - 50 + 10, 20, 20);
+                else
+                    g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 50 + (40 - i.getHeight()) / 2);
+            }
+        }
+        
+        
+        
         g.closePath();
 
         g.beginPath();
@@ -703,7 +758,7 @@ public class TheGame extends Application {
         g.strokeRoundRect(scene.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
 
         //draw hearth
-        int teamlevens = 4;
+        int teamlevens = play.getLifes();
         for (int i = 0; i < teamlevens; i++)
         {
             //g.drawImage(img, ((scene.getWidth() - 135) +(25 * i)), 32 ,87,92);

@@ -49,7 +49,7 @@ public class Map implements Serializable {
     private transient Player me;
     private transient IGameClientToServer gameLogic;
     private transient List<Message> chatMessages;
-
+    
     public void loadAfterRecieve(IGameClientToServer gameLogic, Account myAccount, Player me)
     {
         for (int y = 0; y < height; y++)
@@ -337,6 +337,20 @@ public class Map implements Serializable {
             Logger.getLogger(Map.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public int getLifes() {
+        return teamlifes;
+    }
+    
+    public void decreaseLife() {
+        if(teamlifes > 0)
+        teamlifes--;
+    }
+    
+    public void increaseLife() {
+        if(teamlifes < 4)
+        teamlifes++;
     }
 
     public void addChatMessage(Message message)

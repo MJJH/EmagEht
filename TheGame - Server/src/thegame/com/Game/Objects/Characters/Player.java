@@ -2,6 +2,10 @@ package thegame.com.Game.Objects.Characters;
 
 import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Block;
+import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Tool;
+import thegame.com.Game.Objects.ToolType;
 
 /**
  *
@@ -34,6 +38,10 @@ public class Player extends CharacterGame {
         
         spawnX = playing.getSpawnX();
         spawnY = playing.getSpawnY();
+        
+        this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0, 1, 1), playing));
+        for(int c = 0; c < 103; c++)
+            this.addToBackpack(new Block(BlockType.Stone, 0, 0, playing));
     }
 
     /**

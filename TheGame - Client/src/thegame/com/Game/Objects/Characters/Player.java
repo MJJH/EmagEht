@@ -453,17 +453,21 @@ public class Player extends CharacterGame {
     @Override
     public Skin getSkin()
     {
-        if (skins == null)
-        {
-            return null;
-        }
+        try {
+            if (skins == null)
+            {
+                createSkin();
+            }
 
-        if (direction == sides.RIGHT)
-        {
-            return skins.get("standRight");
-        } else
-        {
-            return skins.get("standLeft");
+            if (direction == sides.RIGHT)
+            {
+                return skins.get("standRight");
+            } else
+            {
+                return skins.get("standLeft");
+            }
+        } catch(Exception exc) {
+            return null;
         }
     }
 
