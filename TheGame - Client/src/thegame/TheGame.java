@@ -12,7 +12,7 @@ import java.io.IOException;
 import javafx.scene.Scene;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Paths; 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -78,6 +78,8 @@ public class TheGame extends Application {
     private int startX;
     private int startY;
     private int offsetBlocks;
+    
+    private Sound sound;
 
     // FPS
     private final long ONE_SECOND = 1000000000;
@@ -488,6 +490,8 @@ public class TheGame extends Application {
 
     public void startagame(Stage primaryStage)
     {
+        Sound s = new Sound("");
+        s.loop();
         offsetBlocks = 4;
 
         StackPane root = new StackPane();
