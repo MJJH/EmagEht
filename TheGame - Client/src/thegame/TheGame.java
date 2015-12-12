@@ -94,6 +94,8 @@ public class TheGame extends Application {
     private Font font;
 
     private boolean inventory = false;
+    private AnimationTimer draw;
+    private Timer movement;
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
@@ -514,7 +516,7 @@ public class TheGame extends Application {
 
         // Update screen when animationtimer says it is possible
         lastTime = System.nanoTime();
-        AnimationTimer loop = new AnimationTimer() {
+        draw = new AnimationTimer() {
 
             @Override
             public void handle(long now)
@@ -542,7 +544,7 @@ public class TheGame extends Application {
                 lastTime = currentTime;
             }
         };
-        loop.start();
+        draw.start();
 
         Timer update = new Timer("update");
         update.schedule(new TimerTask() {
@@ -554,7 +556,7 @@ public class TheGame extends Application {
             }
         }, 0, 1000 / 60);
 
-        Timer movement = new Timer("movement");
+        movement = new Timer("movement");
         update.schedule(new TimerTask() {
 
             @Override
@@ -899,6 +901,16 @@ public class TheGame extends Application {
 
     public void connectionLoss()
     {
+        myAccount = null;
+        play = null;
+        me = null;
+        server = null;
+        listener = null;
+        gameClientToServer = null;
+        keys = new ArrayList<>();
+        draw.stop();
+        movement.cancel();
+        
         try
         {
             start(stages);

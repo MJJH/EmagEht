@@ -237,9 +237,12 @@ public class Map implements Serializable {
         List<MapObject> toReturn = new ArrayList<>();
         for (MapObject object : objects)
         {
-            if ((object.getX() >= x - range || object.getX() <= x + range) && (object.getY() >= y - range || object.getY() <= y + range))
+            if (x >= object.getX() - range && x <= object.getX() + range)
             {
-                toReturn.add(object);
+                if (y >= object.getY() - range  && y <= object.getY() + range)
+                {
+                    toReturn.add(object);
+                }
             }
         }
         return toReturn;
