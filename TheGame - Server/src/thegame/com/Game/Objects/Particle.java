@@ -56,6 +56,10 @@ public class Particle extends MapObject {
     {
         count++;
     }
+    public int getObjectCount()
+    {
+        return count;
+    }
 
     @Override
     public Boolean call()

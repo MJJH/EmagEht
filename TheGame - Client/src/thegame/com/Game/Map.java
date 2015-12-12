@@ -220,6 +220,17 @@ public class Map implements Serializable {
                 }
                 players.remove((Player) removeObject);
                 break;
+            case 4:
+                // delete objects
+                for(MapObject object : objects)
+                {
+                    if(object.getID() == id)
+                    {
+                        removeObject = object;
+                    }
+                }
+                objects.remove(removeObject);
+            break;
         }
     }
 

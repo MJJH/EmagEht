@@ -237,12 +237,9 @@ public class Map implements Serializable {
         List<MapObject> toReturn = new ArrayList<>();
         for (MapObject object : objects)
         {
-            if (object.getX() >= x - range || object.getX() <= x + range)
+            if ((object.getX() >= x - range || object.getX() <= x + range) && (object.getY() >= y - range || object.getY() <= y + range))
             {
-                if (object.getY() >= y - range || object.getY() <= x + range)   
-                {
-                    toReturn.add(object);
-                }
+                toReturn.add(object);
             }
         }
         return toReturn;
@@ -260,7 +257,7 @@ public class Map implements Serializable {
 
     public void addMapObject(MapObject mo)
     {
-        synchronized(toAdd)
+        synchronized (toAdd)
         {
             toAdd.add(mo);
         }
@@ -292,7 +289,7 @@ public class Map implements Serializable {
 
     public void removeMapObject(MapObject removeMapObject)
     {
-        synchronized(toRemove)
+        synchronized (toRemove)
         {
             toRemove.add(removeMapObject);
         }
@@ -306,14 +303,15 @@ public class Map implements Serializable {
             if (removeObject instanceof Block)
             {
                 type = 1;
-            }
-            if (removeObject instanceof Enemy)
+            } else if (removeObject instanceof Enemy)
             {
                 type = 2;
-            }
-            if (removeObject instanceof Player)
+            } else if (removeObject instanceof Player)
             {
                 type = 3;
+            } else if (removeObject instanceof MapObject)
+            {
+                type = 4;
             }
             gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
 

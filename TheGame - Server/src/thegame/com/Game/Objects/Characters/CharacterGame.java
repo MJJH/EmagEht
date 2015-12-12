@@ -76,7 +76,20 @@ public abstract class CharacterGame extends MapObject {
 
             if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
             {
-                spot = i;
+                if (l.get(0) instanceof Block && object instanceof Block)
+                {
+                    Block block = (Block) l.get(0);
+                    Block toAddBlock = (Block) object;
+                    if(block.getBlockType().equals(toAddBlock.getBlockType()))
+                    {
+                        spot = i;
+                        break;
+                    }
+                } else
+                {
+                    spot = i;
+                    break;
+                }
             }
         }
 

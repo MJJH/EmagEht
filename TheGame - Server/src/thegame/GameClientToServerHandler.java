@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.Particle;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
@@ -110,14 +111,30 @@ public class GameClientToServerHandler implements IGameClientToServer {
     }
 
     @Override
-    public void pickUpParticle(MapObject particle, int playerID) throws RemoteException
+    public void pickUpParticle(int particleID, float particleX, float particleY, int playerID) throws RemoteException
     {
-        particle.setMap(map);
+        MapObject particleMO = null;
+        for (MapObject mo : map.getObjects(particleX, particleY, 0))
+        {
+            if (mo instanceof Particle)
+            {
+                particleMO = mo;
+                break;
+            }
+        }
+        if (particleMO == null)
+        {
+            return;
+        }
         for (Player player : map.getPlayers())
         {
             if (player.getID() == playerID)
             {
-                player.addToBackpack(particle);
+                Particle particle = (Particle) particleMO;
+                for (int i = 1; i <= particle.getObjectCount(); i++)
+                {
+                    player.addToBackpack(particle.getObject());
+                }
                 map.removeMapObject(particle);
                 break;
             }

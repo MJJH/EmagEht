@@ -31,5 +31,5 @@ public interface IGameClientToServer extends Remote {
 
     public boolean useTool(int id, float x, float y) throws RemoteException;
     
-    public void pickUpParticle (MapObject particle, int playerID) throws RemoteException;
+    public void pickUpParticle (int particleID, float particleX, float particleY, int playerID) throws RemoteException;
 }

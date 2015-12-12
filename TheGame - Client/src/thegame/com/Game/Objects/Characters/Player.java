@@ -340,21 +340,21 @@ public class Player extends CharacterGame {
             {
                 continue;
             }
-            
-            if (mo instanceof Particle)
-            {
-                try
-                {
-                    playing.getGameClientToServer().pickUpParticle(mo, getID());
-                } catch (RemoteException ex)
-                {
-                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
 
             List<sides> found = this.collision(mo);
+
             if (found != null)
             {
+                if (mo instanceof Particle)
+                {
+                    try
+                    {
+                        playing.getGameClientToServer().pickUpParticle(mo.getID(), mo.getX(), mo.getY(), getID());
+                    } catch (RemoteException ex)
+                    {
+                        Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 for (sides s : found)
                 {
                     collision.get(s).add(mo);
@@ -367,7 +367,7 @@ public class Player extends CharacterGame {
 
     public ArrayList<sides> collision(MapObject mo)
     {
-        if (this.solid == 0 || mo.getS() == 0)
+        if ((this.solid == 0 && !(mo instanceof Particle)) || (mo.getS() == 0 && !(mo instanceof Particle)))
         {
             return null;
         }
@@ -465,7 +465,8 @@ public class Player extends CharacterGame {
     @Override
     public Skin getSkin()
     {
-        try {
+        try
+        {
             if (skins == null)
             {
                 createSkin();
@@ -478,7 +479,8 @@ public class Player extends CharacterGame {
             {
                 return skins.get("standLeft");
             }
-        } catch(Exception exc) {
+        } catch (Exception exc)
+        {
             return null;
         }
     }

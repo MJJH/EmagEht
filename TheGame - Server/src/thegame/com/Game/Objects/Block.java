@@ -40,26 +40,33 @@ public class Block extends MapObject {
     {
         return 0;
     }
+    
+    public BlockType getBlockType()
+    {
+        return type;
+    }
 
     @Override
     public Boolean call()
     {
         if (interaction)
         {
-            if(damage > type.strength)
+            if (damage > type.strength)
             {
-                for (MapObject object : playing.getObjects(xPosition, yPosition,1.1f))
+                for (MapObject object : playing.getObjects(xPosition, yPosition, 1.1f))
                 {
-                    if(object instanceof Particle)
+                    if (object instanceof Particle)
                     {
                         Particle particle = (Particle) object;
-                        if(particle.getObject() instanceof Block)
+                        if (particle.getObject() instanceof Block)
                         {
-                            Block block = (Block)particle.getObject();
-                            block.type = type;
-                            particle.addObjectCount();
-                            playing.removeMapObject(this);
-                            return false;
+                            Block block = (Block) particle.getObject();
+                            if (block.type == type)
+                            {
+                                particle.addObjectCount();
+                                playing.removeMapObject(this);
+                                return false;
+                            }
                         }
                     }
                 }
