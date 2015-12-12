@@ -114,15 +114,21 @@ public class GameClientToServerHandler implements IGameClientToServer {
     public void pickUpParticle(int particleID, float particleX, float particleY, int playerID) throws RemoteException
     {
         MapObject particleMO = null;
+        Particle particle = null;
         for (MapObject mo : map.getObjects(particleX, particleY, 0))
         {
             if (mo instanceof Particle)
             {
                 particleMO = mo;
+                particle = (Particle) particleMO;
+                if(particle.getPickedUp())
+                {
+                    return;
+                }
                 break;
             }
         }
-        if (particleMO == null)
+        if (particleMO == null || particle == null)
         {
             return;
         }
@@ -130,11 +136,12 @@ public class GameClientToServerHandler implements IGameClientToServer {
         {
             if (player.getID() == playerID)
             {
-                Particle particle = (Particle) particleMO;
                 for (int i = 1; i <= particle.getObjectCount(); i++)
                 {
+                    
                     player.addToBackpack(particle.getObject());
                 }
+                particle.setPickedUp(true);
                 map.removeMapObject(particle);
                 break;
             }

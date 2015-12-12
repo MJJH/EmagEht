@@ -9,17 +9,36 @@ package display;
  *
  * @author Martijn
  */
-public abstract class Skin{
+public abstract class Skin implements Cloneable {
+
     protected int height;
     protected int width;
-    
+
     public abstract javafx.scene.image.Image show();
-    
-    public int getHeight() { 
+
+    public int getHeight()
+    {
         return height;
     }
-    
-    public int getWidth() {
+
+    public int getWidth()
+    {
         return width;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
+    @Override
+    public Skin clone() throws CloneNotSupportedException
+    {
+        return (Skin) super.clone();
     }
 }

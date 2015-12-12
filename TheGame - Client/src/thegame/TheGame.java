@@ -144,21 +144,24 @@ public class TheGame extends Application {
                  gameServerToClient.addObject(block);
                  */
             }
-        } 
-        else if (sjeton)
+        } else if (sjeton)
         {
             if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
-                if(!chatline.isEmpty())
+                if (!chatline.isEmpty())
                 {
-                Message chatMessage = new Message(myAccount, chatline);
-                try
-                {
-                    gameClientToServer.sendGameChatMessage(chatMessage);
-                } catch (RemoteException e)
-                {
-                    System.err.println(e.getMessage());
-                }
+                    Message chatMessage = new Message(myAccount, chatline);
+                    try
+                    {
+                        gameClientToServer.sendGameChatMessage(chatMessage);
+                    } catch (RemoteException ex)
+                    {
+                        System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                        Platform.runLater(() ->
+                        {
+                            connectionLoss();
+                        });
+                    }
                 }
                 sjeton = false;
             }
@@ -223,7 +226,11 @@ public class TheGame extends Application {
                     gameClientToServer.leavePlayer(listener);
                 } catch (RemoteException ex)
                 {
-                    Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                    Platform.runLater(() ->
+                    {
+                        connectionLoss();
+                    });
                 }
             }
             System.exit(0);
@@ -237,7 +244,7 @@ public class TheGame extends Application {
         InputStream hartje = Files.newInputStream(Paths.get("src/resources//Hearts.png"));
 
         img = new Image(hartje);
-        
+
         notificationTimer = new Timer();
     }
 
@@ -430,9 +437,9 @@ public class TheGame extends Application {
 
     private void connectToServer(Stage primaryStage) throws InterruptedException
     {
-        
+
         loadingScreen();
-        
+
         Thread updateListenerThread = new Thread(() ->
         {
             try
@@ -458,17 +465,20 @@ public class TheGame extends Application {
                 Thread.sleep(1000);
                 Platform.runLater(() ->
                 {
-                    
-                    
+
                     startagame(stages);
-                    
-                    
+
                 });
-            } catch (RemoteException | NotBoundException ex)
+            } catch (NotBoundException | InterruptedException ex)
             {
                 Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RemoteException ex)
+            {
+                System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                Platform.runLater(() ->
+                {
+                    connectionLoss();
+                });
             }
         }, "updateListenerThread");
         updateListenerThread.start();
@@ -569,20 +579,19 @@ public class TheGame extends Application {
     {
         Pane root = new Pane();
         root.setPrefSize(1280, 720);
-        
+
         /*
-        try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
-        {
-            ImageView img = new ImageView(new Image(is));
-            img.setFitWidth(860);
-            img.setFitHeight(600);
-            root.getChildren().add(img);
-        } catch (Exception e)
-        {
-            System.out.println("Couldnt load image");
-        }
-        */ 
-        
+         try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
+         {
+         ImageView img = new ImageView(new Image(is));
+         img.setFitWidth(860);
+         img.setFitHeight(600);
+         root.getChildren().add(img);
+         } catch (Exception e)
+         {
+         System.out.println("Couldnt load image");
+         }
+         */
         Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
@@ -591,14 +600,18 @@ public class TheGame extends Application {
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
         MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
-        SinglePlayer.setOnMouseClicked(event -> {
+        SinglePlayer.setOnMouseClicked(event ->
+        {
         });
 
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
-        startMultiPlayer.setOnMouseClicked(event -> {
-            try {
+        startMultiPlayer.setOnMouseClicked(event ->
+        {
+            try
+            {
                 connectToServer(stages);
-            } catch (InterruptedException ex) {
+            } catch (InterruptedException ex)
+            {
                 Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
@@ -636,8 +649,7 @@ public class TheGame extends Application {
              g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
             g.beginPath();
             g.setStroke(Color.WHITE);
-            
-            
+
             // Inventory
             for (int y = 0; y < 3; y++)
             {
@@ -646,17 +658,22 @@ public class TheGame extends Application {
                     g.setFill(background);
                     g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
                     g.strokeRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
-                    
-                    int spot = y*10 + x;
-                    if(me.getBackpackMap()[spot] != null && !me.getBackpackMap()[spot].isEmpty()) {
+
+                    int spot = y * 10 + x;
+                    if (me.getBackpackMap()[spot] != null && !me.getBackpackMap()[spot].isEmpty())
+                    {
                         Skin i = me.getBackpackMap()[spot].get(0).getSkin();
                         g.setFill(Color.RED);
-                        if(i != null)
+                        if (i != null)
+                        {
                             g.drawImage(i.show(), 10 + 50 * x + (40 - i.getWidth()) / 2, 10 + 50 * y + (40 - i.getHeight()) / 2);
-                        else 
+                        } else
+                        {
                             g.fillRect(10 + 50 * x + 10, 10 + 50 * y + 10, 20, 20);
-                        
-                        if(me.getBackpackMap()[spot].size() > 1) {
+                        }
+
+                        if (me.getBackpackMap()[spot].size() > 1)
+                        {
                             g.setFill(Color.WHITE);
                             g.setFont(Font.font("monospaced", 10));
                             String t = me.getBackpackMap()[spot].size() + "";
@@ -676,51 +693,62 @@ public class TheGame extends Application {
                     g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
                     g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
                     display.Image i;
-                    
+
                     Color[] t = new Color[]
                     {
                         new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
                     };
-                    
+
                     switch (y)
                     {
                         case 0:
-                            if(me.getArmor().get(ArmorType.bodyPart.SHIELD) != null)
+                            if (me.getArmor().get(ArmorType.bodyPart.SHIELD) != null)
+                            {
                                 i = (display.Image) me.getArmor().get(ArmorType.bodyPart.SHIELD).getSkin();
-                            else {
+                            } else
+                            {
                                 i = new display.Image(display.Parts.Shield);
                                 i.recolour(t);
                             }
                             break;
                         case 1:
-                            if(me.getArmor().get(ArmorType.bodyPart.GREAVES) != null)
+                            if (me.getArmor().get(ArmorType.bodyPart.GREAVES) != null)
+                            {
                                 i = (display.Image) me.getArmor().get(ArmorType.bodyPart.GREAVES).getSkin();
-                            else {
+                            } else
+                            {
                                 i = new display.Image(display.Sets.legArmor);
                                 i.recolour(t);
                             }
                             break;
                         case 2:
-                            if(me.getArmor().get(ArmorType.bodyPart.CHESTPLATE) != null)
+                            if (me.getArmor().get(ArmorType.bodyPart.CHESTPLATE) != null)
+                            {
                                 i = (display.Image) me.getArmor().get(ArmorType.bodyPart.CHESTPLATE).getSkin();
-                            else {
+                            } else
+                            {
                                 i = new display.Image(display.Sets.bodyArmor);
                                 i.recolour(t);
                             }
                             break;
                         default:
-                            if(me.getArmor().get(ArmorType.bodyPart.HELMET) != null)
+                            if (me.getArmor().get(ArmorType.bodyPart.HELMET) != null)
+                            {
                                 i = (display.Image) me.getArmor().get(ArmorType.bodyPart.HELMET).getSkin();
-                            else { 
+                            } else
+                            {
                                 i = new display.Image(display.Sets.SpikeHelmet);
                                 i.recolour(t);
                             }
                     }
-                    
-                    if(i == null)
-                        g.fillRect(scene.getWidth() - 50 + 10, scene.getHeight() - 100 - 50*y + 10, 20, 20);
-                    else
+
+                    if (i == null)
+                    {
+                        g.fillRect(scene.getWidth() - 50 + 10, scene.getHeight() - 100 - 50 * y + 10, 20, 20);
+                    } else
+                    {
                         g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 100 - 50 * y + (40 - i.getHeight()) / 2);
+                    }
 
                 } catch (IOException ex)
                 {
@@ -732,25 +760,28 @@ public class TheGame extends Application {
         }
 
         // Tool
-        if(inventory || me.getHolding() != null) {
+        if (inventory || me.getHolding() != null)
+        {
             g.beginPath();
             g.setFill(background);
             g.setStroke(Color.WHITE);
             g.fillRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
             g.strokeRoundRect(scene.getWidth() - 50, scene.getHeight() - 50, 40, 40, 5, 5);
-            
-            if(me.getHolding() != null) {
+
+            if (me.getHolding() != null)
+            {
                 display.Skin i = me.getHolding().getSkin();
                 g.setFill(Color.RED);
-                if(i == null)
+                if (i == null)
+                {
                     g.fillRect(scene.getWidth() - 50 + 10, scene.getHeight() - 50 + 10, 20, 20);
-                else
+                } else
+                {
                     g.drawImage(i.show(), scene.getWidth() - 50 + (40 - i.getWidth()) / 2, scene.getHeight() - 50 + (40 - i.getHeight()) / 2);
+                }
             }
         }
-        
-        
-        
+
         g.closePath();
 
         g.beginPath();
@@ -793,9 +824,9 @@ public class TheGame extends Application {
         g.closePath();
 
         //Chat
-        if(sjeton || notification)
+        if (sjeton || notification)
         {
-             g.beginPath();
+            g.beginPath();
             g.setFill(background);
             g.setStroke(Color.WHITE);
             int RectHeight = 250;
@@ -807,61 +838,73 @@ public class TheGame extends Application {
             g.setStroke(Color.WHITE);
             int textPosition = 10;
             List<Message> chatMessages = play.getChatMessages();
-            if(chatMessages.size() < 15)
+            if (chatMessages.size() < 15)
             {
-                for(Message message : chatMessages)
+                for (Message message : chatMessages)
                 {
                     g.setFont(Font.font("monospaced", 11));
                     g.strokeText((message.getSender().getUsername() + ": " + message.getText()), 15, (scene.getHeight() - RectHeight) + textPosition);
                     textPosition += 15;
                 }
-            }
-            else
+            } else
             {
                 chatMessages.remove(0);
             }
             g.closePath();
-            if(sjeton || !notification)
+            if (sjeton || !notification)
             {
                 g.beginPath();
                 g.setFont(Font.font("monospaced", 11));
                 g.fillRoundRect(12, (scene.getHeight() - 27), RectWidth - 4, 15, 5, 5);
-                g.strokeText(chatline, 15, scene.getHeight() -15);
+                g.strokeText(chatline, 15, scene.getHeight() - 15);
                 g.closePath();
-            }
-            else if(!sjeton || notification)
+            } else if (!sjeton || notification)
             {
                 notificationTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    notification = false;
-                }
-            }, 3000);
+                    @Override
+                    public void run()
+                    {
+                        notification = false;
+                    }
+                }, 3000);
             }
         }
     }
 
     private void loadingScreen()
-    {   
+    {
         StackPane root = new StackPane();
 
         Scene scene = new Scene(root, stages.getWidth(), stages.getHeight(), Color.BLACK);
-       
+
         stages.setTitle("Loading Screen");
         stages.setScene(scene);
         stages.show();
-        
-        try {
-        splash = new SplashScreen();
-        splash.giveSplash(splash);
-        splash.SplashScreen();
-        
-        } catch (Exception e) {
+
+        try
+        {
+            splash = new SplashScreen();
+            splash.giveSplash(splash);
+            splash.SplashScreen();
+
+        } catch (Exception e)
+        {
         }
     }
-    
+
     public void chatNotiifcation()
     {
         notification = true;
+    }
+
+    public void connectionLoss()
+    {
+        try
+        {
+            start(stages);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(TheGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

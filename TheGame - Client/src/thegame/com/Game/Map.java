@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
@@ -50,7 +51,7 @@ public class Map implements Serializable {
     private transient IGameClientToServer gameClientToServer;
     private transient thegame.TheGame theGame;
     private transient List<Message> chatMessages;
-    
+
     public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.TheGame theGame)
     {
         for (int y = 0; y < height; y++)
@@ -160,14 +161,13 @@ public class Map implements Serializable {
         } else if (mo instanceof Player)
         {
             players.add((Player) mo);
-        }
-        else
+        } else
         {
             objects.add(mo);
         }
     }
 
-    public void removeMapObject(MapObject removeObject)
+    /*public void removeMapObject(MapObject removeObject)
     {
         if (removeObject instanceof Block)
         {
@@ -184,7 +184,7 @@ public class Map implements Serializable {
         {
             players.remove((Player) removeObject);
         }
-    }
+    }*/
 
     public void removeMapObject(int type, int id, int x, int y)
     {
@@ -222,15 +222,15 @@ public class Map implements Serializable {
                 break;
             case 4:
                 // delete objects
-                for(MapObject object : objects)
+                for (MapObject object : objects)
                 {
-                    if(object.getID() == id)
+                    if (object.getID() == id)
                     {
                         removeObject = object;
                     }
                 }
                 objects.remove(removeObject);
-            break;
+                break;
         }
     }
 
@@ -330,44 +330,54 @@ public class Map implements Serializable {
 
     public void update()
     {
-        try
+        //Movement
+        float oldX = me.getX();
+        float oldY = me.getY();
+        sides oldSide = me.getDirection();
+
+        me.update();
+
+        int direction = 1;
+        if (me.getDirection() == MapObject.sides.LEFT)
         {
-            float oldX = me.getX();
-            float oldY = me.getY();
-            sides oldSide = me.getDirection();
+            direction = 0;
+        }
 
-            me.update();
-
-            int direction = 1;
-            if (me.getDirection() == MapObject.sides.LEFT)
-            {
-                direction = 0;
-            }
-
-            if (oldX != me.getX() || oldY != me.getY() || oldSide != me.getDirection())
+        if (oldX != me.getX() || oldY != me.getY() || oldSide != me.getDirection())
+        {
+            try
             {
                 gameClientToServer.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
-
+            } catch (RemoteException ex)
+            {
+                System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                Platform.runLater(() ->
+                {
+                    theGame.connectionLoss();
+                });
             }
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(Map.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public int getLifes() {
+
+    public int getLifes()
+    {
         return teamlifes;
     }
-    
-    public void decreaseLife() {
-        if(teamlifes > 0)
-        teamlifes--;
+
+    public void decreaseLife()
+    {
+        if (teamlifes > 0)
+        {
+            teamlifes--;
+        }
     }
-    
-    public void increaseLife() {
-        if(teamlifes < 4)
-        teamlifes++;
+
+    public void increaseLife()
+    {
+        if (teamlifes < 4)
+        {
+            teamlifes++;
+        }
     }
 
     public void addChatMessage(Message message)
@@ -380,9 +390,14 @@ public class Map implements Serializable {
     {
         return chatMessages;
     }
-    
+
     public IGameClientToServer getGameClientToServer()
     {
         return gameClientToServer;
+    }
+
+    public thegame.TheGame getTheGame()
+    {
+        return theGame;
     }
 }

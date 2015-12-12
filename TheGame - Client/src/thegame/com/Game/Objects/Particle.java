@@ -1,6 +1,9 @@
 package thegame.com.Game.Objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.config;
 
 /**
  * A particle is a MapObject that belongs to nobody and has no use but to pick
@@ -31,6 +34,14 @@ public class Particle extends MapObject {
     @Override
     public void createSkin()
     {
-        //create skin particle
+        try
+        {
+            skin = object.getSkin().clone();
+            skin.setHeight((int)(height*config.block.val));
+            skin.setWidth((int)(height*config.block.val));
+        } catch (CloneNotSupportedException ex)
+        {
+            Logger.getLogger(Particle.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

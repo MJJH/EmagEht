@@ -17,6 +17,7 @@ public class Particle extends MapObject {
 
     private MapObject object;
     private int count;
+    private transient boolean pickedUp;
 
     /**
      * Create a new particle
@@ -71,6 +72,16 @@ public class Particle extends MapObject {
     @Override
     public void hit(Tool use, sides hitDirection)
     {
+    }
+
+    public void setPickedUp(boolean b)
+    {
+        pickedUp = b;
+    }
+
+    public boolean getPickedUp()
+    {
+        return pickedUp;
     }
 
 }

@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.List;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.Tool;
+import thegame.com.Game.Objects.ToolType;
 
 /**
  * This constructor creates an enemy
@@ -30,6 +32,10 @@ public class Enemy extends CharacterGame {
     public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, height, width, map);
+        
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
+        Tool equip = new Tool(test, map);
+        equipTool(equip);
     }
 
     public void walkRight()

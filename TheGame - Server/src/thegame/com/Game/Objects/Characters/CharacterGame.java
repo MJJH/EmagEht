@@ -49,9 +49,6 @@ public abstract class CharacterGame extends MapObject {
         backpack = new ArrayList[30];
         armor = new HashMap();
         direction = sides.RIGHT;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
-        Tool equip = new Tool(test, map);
-        equipTool(equip);
     }
 
     public abstract void knockBack(int kb, sides hitDirection);
@@ -80,7 +77,7 @@ public abstract class CharacterGame extends MapObject {
                 {
                     Block block = (Block) l.get(0);
                     Block toAddBlock = (Block) object;
-                    if(block.getBlockType().equals(toAddBlock.getBlockType()))
+                    if (block.getBlockType().equals(toAddBlock.getBlockType()))
                     {
                         spot = i;
                         break;
@@ -151,13 +148,19 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    private void equipTool(Tool toolAdd)
+    public static void main(String[] args)
+    {
+
+    }
+
+    public void equipTool(Tool toolAdd)
     {
         if (holding == null)
         {
             holding = toolAdd;
         } else if (!holding.equals(toolAdd))
         {
+            addToBackpack(holding);
             holding = toolAdd;
         }
     }

@@ -40,7 +40,7 @@ public class Block extends MapObject {
     {
         return 0;
     }
-    
+
     public BlockType getBlockType()
     {
         return type;
@@ -85,9 +85,12 @@ public class Block extends MapObject {
     @Override
     public void hit(Tool use, sides hitDirection)
     {
-        damage += use.type.strength;
-        interaction = true;
-        playing.addToUpdate(this);
+        if (type.reqTool == use.type.type || use.type.type == ToolType.toolType.FLINT)
+        {
+            damage += use.type.strength;
+            interaction = true;
+            playing.addToUpdate(this);
+        }
     }
 
 }

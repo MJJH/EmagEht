@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
@@ -352,7 +353,11 @@ public class Player extends CharacterGame {
                         playing.getGameClientToServer().pickUpParticle(mo.getID(), mo.getX(), mo.getY(), getID());
                     } catch (RemoteException ex)
                     {
-                        Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                        Platform.runLater(() ->
+                        {
+                            playing.getTheGame().connectionLoss();
+                        });
                     }
                 }
                 for (sides s : found)
