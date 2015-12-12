@@ -225,7 +225,7 @@ public abstract class CharacterGame extends MapObject {
         if(spot > backpack.length-1)
             return false;
         
-        if(!backpack[spot].isEmpty() && backpack[spot].get(0).getClass().equals(object.getClass()))
+        if(!backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
             return false;
         
         if(backpack[spot] == null || backpack[spot].isEmpty()){
