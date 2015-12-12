@@ -54,6 +54,7 @@ public class Block extends MapObject {
             if (damage > type.strength)
             {
                 MapObject particleStack = null;
+                float curDifX = 100;
                 for (MapObject object : playing.getObjects(xPosition, yPosition, 1.1f))
                 {
                     if (object instanceof Particle)
@@ -64,7 +65,11 @@ public class Block extends MapObject {
                         }
                         else
                         {
-                            //code for closest stack here
+                            if(curDifX > Math.abs(object.getX()-xPosition))
+                            {
+                                curDifX = Math.abs(object.getX()-xPosition);
+                                particleStack = object;
+                            }
                         }
                     }
                 }

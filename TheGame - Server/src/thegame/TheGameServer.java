@@ -53,19 +53,20 @@ public class TheGameServer extends Application {
                 }
             });
             */
+            System.out.println("Server is starting up");
             gameClientToServerHandler = new GameClientToServerHandler();
-            System.out.println("Selected port is " + config.reachGameLogicPort);
             System.setProperty("java.rmi.server.hostname", config.ip);
             registry = LocateRegistry.createRegistry(config.reachGameLogicPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
             registry.rebind(config.bindName, gameClientToServerHandler);
-            System.out.println("Server gestart");
             UnicastRemoteObject.exportObject(gameClientToServerHandler, config.talkBackGameLogicPort);
+            System.out.println("Server is up and running");
         } catch (RemoteException ex)
         {
             gameClientToServerHandler = null;
             registry = null;
-            System.out.println(ex.getMessage());
-            Logger.getLogger(TheGameServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Server could not be started ("+ex.getMessage()+")");
+            System.out.println("Shutting down now");
+            System.exit(0);
         }
     }
 
