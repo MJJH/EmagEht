@@ -15,8 +15,8 @@ import javafx.scene.paint.Color;
 public class PartImage {
     public WritableImage image;
     public Color[] recolors;
-    public final int x;
-    public final int y;
+    public int x;
+    public int y;
     
     public boolean hFlip = false;
     public boolean vFlip = false;

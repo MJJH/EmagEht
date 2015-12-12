@@ -509,8 +509,9 @@ public class Player extends CharacterGame {
             Image d = new Image(Sets.player);
             d.recolour(h);
 
-            Animation a = new Animation(d, 4);
-            a.addFrameByPart(iTexture.Part.FRONTARM, 20);
+            Animation a = new Animation(d, 10);
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 5);
+            a.addFrameByPart(iTexture.Part.FRONTARM, 50);
 
             skins.put("standRight", a);
 

@@ -24,6 +24,10 @@ public class Frame {
     private Image original;
     private Map<Parts, Integer> rotation;
     private WritableImage image;
+    private int offsetTop;
+    private int offsetBot;
+    private int offsetLeft;
+    private int offsetRight;
     
     public Frame(Image o) {
         this.original = o;
@@ -35,6 +39,11 @@ public class Frame {
     }
     
     public void repaint() {
+        offsetTop = 0;
+        offsetBot = 0;
+        offsetLeft = 0;
+        offsetRight = 0;
+        
         image = new WritableImage(original.getWidth(), original.getHeight());
         PixelWriter pw = image.getPixelWriter();
         PixelReader pr;
@@ -42,13 +51,14 @@ public class Frame {
         for(Parts p : original.getParts().keySet()) {
             PartImage pi = original.getParts().get(p);
             
-            
+            double w = 0;
+            double h = 0;
             
             // Rotate!
             if(rotation.containsKey(p)){
                 double rx = pi.image.getWidth() / 2;
                 double ry = pi.image.getHeight() / 10;
-
+                
                 if(p.getType() != iTexture.Type.BODY)
                 {
                     for(Parts tp : original.getParts().keySet()) {
@@ -60,17 +70,66 @@ public class Frame {
                     }
                 }
 
-                double rad = Math.toRadians((rotation.get(p)+360)%360);
-                int w = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.sin(rad)) + Math.abs(pi.image.getHeight() * Math.cos(rad)));
-                int h = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.cos(rad)) + Math.abs(pi.image.getHeight() * Math.sin(rad)));
+                double angle = (rotation.get(p)+360)%360;
+                double rad = Math.toRadians(angle);
+                
+                w = rx + Math.abs((pi.image.getWidth() - rx) * Math.cos(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.sin(rad));
+                h = ry - Math.abs((pi.image.getWidth() - rx) * Math.sin(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.cos(rad));
+                
+                //int w = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.sin(rad)) + Math.abs(pi.image.getHeight() * Math.cos(rad)));
+                //int h = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.cos(rad)) + Math.abs(pi.image.getHeight() * Math.sin(rad)));
+                
+                if((angle < 90 && angle > 0) || (angle > 270 && angle < 360)) {
+                    pi.x -= w - pi.image.getWidth();
+                }
+                if(angle < 180 && angle > 0) {
+                    pi.y -= h - pi.image.getHeight();
+                }
                 
                 BufferedImage bI = SwingFXUtils.fromFXImage(pi.image, null);
-                BufferedImage sI = new BufferedImage(w, h, bI.getType());
+                BufferedImage sI = new BufferedImage((int) Math.abs(w), (int) Math.abs(h), bI.getType());
                 Graphics2D g = sI.createGraphics();
                 g.rotate(rad, rx, ry);
-                g.drawImage(bI, null, 0, 0);
+                g.drawImage(bI, null, (int) (Math.abs(w) - pi.image.getWidth()), (int) (Math.abs(h) - pi.image.getHeight()));
                 pi.image = SwingFXUtils.toFXImage(sI, null);
             }
+            
+            boolean offsetChange = false;
+            int changedLeft = 0;
+            if(pi.x < 0) {
+                changedLeft = Math.abs(pi.x);
+                offsetLeft += Math.abs(pi.x);
+                offsetChange = true;
+            }
+            if(pi.x + w > image.getWidth()) {
+                offsetRight += pi.x + w - image.getWidth();
+                offsetChange = true;
+            }
+            int changedTop = 0;
+            if(pi.y < 0) {
+                changedTop = Math.abs(pi.y);
+                offsetTop += Math.abs(pi.y);
+                offsetChange = true;
+            }
+            if(pi.y + h > image.getHeight()) {
+                offsetBot += pi.y + h - image.getHeight();
+                offsetChange = true;
+            }
+            
+            if(offsetChange) {
+                WritableImage i = new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
+                image = new WritableImage(offsetLeft + original.width + offsetRight, offsetTop + original.height + offsetBot);
+                
+                pw = image.getPixelWriter();
+                PixelReader npr = i.getPixelReader();
+                for(int y = 0; y < i.getHeight(); y++) {
+                    for(int x = 0; x < i.getWidth(); x++) {
+                        pw.setColor(x + changedLeft, y + changedTop, npr.getColor(x, y));
+                    }
+                }
+            }
+                
+            
             pr = pi.image.getPixelReader();
             for(int y = 0; y < pi.image.getHeight(); y++) {
                 for(int x = 0; x < pi.image.getWidth(); x++) {
@@ -84,9 +143,13 @@ public class Frame {
                     if(pi.recolors.length > r && pi.recolors[r] != null) {
                        c = pi.recolors[r];
                     }
+
                                        
-                    int paintX = x + pi.x;
-                    int paintY = y + pi.y;
+                    int paintX = x + pi.x + offsetLeft;
+                    int paintY = y + pi.y + offsetTop;
+                    
+                    if(paintX < 0)
+                        System.out.println("");
                     
                     if(pi.hFlip) {
                         paintX = (int) (image.getWidth() - paintX - 1);
@@ -94,8 +157,7 @@ public class Frame {
                     if(pi.vFlip) {
                         paintY = (int) (image.getHeight() - paintY - 1);
                     }
-                    
-                    
+                        
                     pw.setColor(paintX, paintY, c);
                 }
             }
@@ -108,4 +170,5 @@ public class Frame {
         else
             return image;
     }
+    
 }
