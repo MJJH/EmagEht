@@ -26,7 +26,7 @@ public enum Parts implements iTexture {
     helmetHorn(Part.HEAD, Type.ARMOR, 68, 60, 7, 9),
     
     tShirtBody(Part.TORSO, Type.ARMOR, 12, 76, 16, 17),
-    tShirtBack(Part.BACKARM, Type.ARMOR, 2, 58, 7, 6),
+    tShirtBack(Part.BACKARM, Type.ARMOR, 2, 85, 7, 7),
     tShirtFront(Part.FRONTARM, Type.ARMOR, 1, 76, 9, 8),
     
     armorBody(Part.TORSO, Type.ARMOR, 1, 214, 16, 15),
@@ -36,8 +36,8 @@ public enum Parts implements iTexture {
     armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6),
     
     shortTop(Part.TORSO, Type.ARMOR, 1, 96, 14, 2),
-    shortBack(Part.BACKLEG, Type.ARMOR, 9, 101, 8, 7),
-    shortFront(Part.FRONTLEG, Type.ARMOR, 1, 100, 7, 7),
+    shortBack(Part.BACKLEG, Type.ARMOR, 8, 98, 8, 7),
+    shortFront(Part.FRONTLEG, Type.ARMOR, 1, 98, 7, 8),
     
     armorTop(Part.TORSO, Type.ARMOR, 3, 185, 15, 2),
     armorBack(Part.BACKLEG, Type.ARMOR, 13, 189, 8, 9),
