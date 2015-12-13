@@ -50,6 +50,7 @@ public class Map implements Serializable {
     private transient List<MapObject> toUpdate;
     private transient final List<MapObject> toAdd;
     private transient final List<MapObject> toRemove;
+    private transient final List<MapObject> toUpdatePlayers;
 
     private transient ExecutorService threadPool;
     private transient GameClientToServerHandler gameClientToServerHandler;
@@ -74,6 +75,7 @@ public class Map implements Serializable {
         toUpdate = new ArrayList<>();
         toAdd = new ArrayList<>();
         toRemove = new ArrayList<>();
+        toUpdatePlayers = new ArrayList<>();
         blocks = new Block[height][width];
 
         threadPool = Executors.newCachedThreadPool();
@@ -239,7 +241,7 @@ public class Map implements Serializable {
         {
             if (x >= object.getX() - range && x <= object.getX() + range)
             {
-                if (y >= object.getY() - range  && y <= object.getY() + range)
+                if (y >= object.getY() - range && y <= object.getY() + range)
                 {
                     toReturn.add(object);
                 }
@@ -484,8 +486,18 @@ public class Map implements Serializable {
         toUpdate.add(toUpdateMO);
     }
 
+    public void addToPlayerUpdate(Player player)
+    {
+        synchronized (toUpdatePlayers)
+        {
+            toUpdatePlayers.add(player);
+        }
+    }
+
     public void update()
     {
+        List<MapObject> toSend = new ArrayList<>();
+
         synchronized (toAdd)
         {
             if (toAdd.size() > 0)
@@ -500,8 +512,14 @@ public class Map implements Serializable {
                 runRemoveMapObjects();
             }
         }
-
-        List<MapObject> toSend = new ArrayList<>();
+        synchronized (toUpdatePlayers)
+        {
+            if (toUpdate.size() > 0)
+            {
+                toSend.addAll(toUpdatePlayers);
+                toUpdatePlayers.clear();
+            }
+        }
 
         HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
 

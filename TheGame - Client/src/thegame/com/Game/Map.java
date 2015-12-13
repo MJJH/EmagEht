@@ -252,6 +252,21 @@ public class Map implements Serializable {
                 if (enemy.getID() == update.getID())
                 {
                     enemy.update((Enemy) update);
+                    return;
+                }
+            }
+        } else if (update instanceof Player)
+        {
+            for(Player player : players)
+            {
+                if(player == update)
+                {
+                    if(player == me)
+                    {
+                        return;
+                    }
+                    player.updateValues((Player)update);
+                    return;
                 }
             }
         }

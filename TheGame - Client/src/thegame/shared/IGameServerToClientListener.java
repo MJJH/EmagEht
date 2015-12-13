@@ -20,7 +20,7 @@ public interface IGameServerToClientListener extends Remote, EventListener {
 
     public void sendGameChatMessage(Message message) throws RemoteException;
 
-    public void updatePlayer(int id, float x, float y, int direction) throws RemoteException;
+    //public void updatePlayer(int id, float x, float y, int direction) throws RemoteException;
 
     public void updateHealthPlayer(int id, int newHealth) throws RemoteException;
 

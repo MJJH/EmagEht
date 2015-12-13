@@ -37,6 +37,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         map.addChatMessage(message);
     }
 
+    /*
     @Override
     public void updatePlayer(int id, float x, float y, int direction) throws RemoteException
     {
@@ -60,7 +61,8 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             }
         }
     }
-
+    */
+    
     @Override
     public void updateHealthPlayer(int id, int newHealth) throws RemoteException
     {

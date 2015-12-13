@@ -29,14 +29,14 @@ public class GameServerToClientHandler {
     private transient Map map;
     private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
     private transient final List<IGameServerToClientListener> connectionLossTable;
-    private transient final ConcurrentHashMap<IGameServerToClientListener, String> isSending;
+    private transient final List<IGameServerToClientListener> isSending;
     private transient ExecutorService threadPoolSend;
 
     public GameServerToClientHandler()
     {
         playerListenersTable = new ConcurrentHashMap<>();
         connectionLossTable = new ArrayList<>();
-        isSending = new ConcurrentHashMap<>();
+        isSending = new ArrayList<>();
         threadPoolSend = Executors.newCachedThreadPool();
     }
 
@@ -92,48 +92,49 @@ public class GameServerToClientHandler {
         }
     }
 
-    public void updatePlayer(Player toSendPlayer)
-    {
-        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
-        {
-            IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updatePlayer")))
-            {
-                continue;
-            }
-            Player player = entry.getValue();
+    /*
+     public void updatePlayer(Player toSendPlayer)
+     {
+     for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+     {
+     IGameServerToClientListener listener = entry.getKey();
+     if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updatePlayer")))
+     {
+     continue;
+     }
+     Player player = entry.getValue();
 
-            if (toSendPlayer == player)
-            {
-                continue;
-            }
+     if (toSendPlayer == player)
+     {
+     continue;
+     }
 
-            threadPoolSend.submit(() ->
-            {
-                int direction = 1;
-                if (toSendPlayer.getDirection() == MapObject.sides.LEFT)
-                {
-                    direction = 0;
-                }
-                try
-                {
-                    isSending.put(listener, "updatePlayer");
-                    listener.updatePlayer(toSendPlayer.getID(), toSendPlayer.getX(), toSendPlayer.getY(), direction);
-                } catch (RemoteException ex)
-                {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-                    System.err.println(sdf.format(cal.getTime()) + " Could not updatePlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
-                    System.err.println(ex.getMessage());
-                    leavePlayer(listener);
-                } finally
-                {
-                    isSending.remove(listener, "updatePlayer");
-                }
-            });
-        }
-    }
-
+     threadPoolSend.submit(() ->
+     {
+     int direction = 1;
+     if (toSendPlayer.getDirection() == MapObject.sides.LEFT)
+     {
+     direction = 0;
+     }
+     try
+     {
+     isSending.put(listener, "updatePlayer");
+     listener.updatePlayer(toSendPlayer.getID(), toSendPlayer.getX(), toSendPlayer.getY(), direction);
+     } catch (RemoteException ex)
+     {
+     Calendar cal = Calendar.getInstance();
+     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+     System.err.println(sdf.format(cal.getTime()) + " Could not updatePlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
+     System.err.println(ex.getMessage());
+     leavePlayer(listener);
+     } finally
+     {
+     isSending.remove(listener, "updatePlayer");
+     }
+     });
+     }
+     }
+     */
     public void addMapObject(MapObject mo)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
@@ -199,20 +200,24 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
-            threadPoolSend.submit(() ->
+            if (player == toSendPlayer)
             {
-                try
+                threadPoolSend.submit(() ->
                 {
-                    listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
-                } catch (RemoteException ex)
-                {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-                    System.err.println(sdf.format(cal.getTime()) + " Could not updateHealthPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
-                    System.err.println(ex.getMessage());
-                    leavePlayer(listener);
-                }
-            });
+                    try
+                    {
+                        listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
+                    } catch (RemoteException ex)
+                    {
+                        Calendar cal = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                        System.err.println(sdf.format(cal.getTime()) + " Could not updateHealthPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
+                        System.err.println(ex.getMessage());
+                        leavePlayer(listener);
+                    }
+                });
+                return;
+            }
         }
     }
 
@@ -255,7 +260,7 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updateObjects")))
+            if (connectionLossTable.contains(listener) || isSending.contains(listener))
             {
                 continue;
             }
@@ -264,7 +269,8 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.put(listener, "updateObjects");
+                    isSending.add(listener);
+                    toSend.remove(player);
                     listener.updateObjects(toSend);
                 } catch (RemoteException ex)
                 {
@@ -275,7 +281,7 @@ public class GameServerToClientHandler {
                     leavePlayer(listener);
                 } finally
                 {
-                    isSending.remove(listener, "updateObjects");
+                    isSending.remove(listener);
                 }
             });
         }

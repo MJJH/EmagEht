@@ -362,8 +362,6 @@ public abstract class CharacterGame extends MapObject {
         {
             if (this instanceof Player)
             {
-                this.xPosition = playing.getSpawnX();
-                this.yPosition = playing.getSpawnY();
                 updateHP(-100);
             } else
             {

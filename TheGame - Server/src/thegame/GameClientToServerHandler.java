@@ -104,7 +104,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
                 }
                 player.setDirection(directionSide);
 
-                gameServerToClientHandler.updatePlayer(player);
+                map.addToPlayerUpdate(player);
                 return;
             }
         }

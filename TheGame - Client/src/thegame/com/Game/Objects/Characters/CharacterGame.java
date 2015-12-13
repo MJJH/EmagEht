@@ -129,10 +129,11 @@ public abstract class CharacterGame extends MapObject {
     {
         hp = newHP;
 
-        if (this instanceof Player && this == playing.getMe() && hp == 0)
+        if (hp == 0 && this instanceof Player && this == playing.getMe())
         {
             setX(((Player) this).getSpawnX());
             setY(((Player) this).getSpawnY());
+            hp = getMaxHP();
         }
     }
 

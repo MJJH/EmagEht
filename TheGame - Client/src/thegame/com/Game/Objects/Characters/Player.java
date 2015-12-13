@@ -559,4 +559,11 @@ public class Player extends CharacterGame {
     {
         return spawnY;
     }
+
+    public void updateValues(Player update)
+    {
+        setCords(update.getX(), update.getY());
+        setDirection(update.getDirection());
+        updateHP(update.getHP());
+    }
 }
