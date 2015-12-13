@@ -5,14 +5,17 @@
  */
 package thegame;
 
-import display.Frame;
-import display.IntColor;
+import sound.Sound;
+import gui.Title;
+import gui.SplashScreen;
+import gui.MenuItem;
+import gui.MenuBox;
 import display.Skin;
 import java.io.IOException;
 import javafx.scene.Scene;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths; 
+import java.nio.file.Paths;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -39,15 +42,18 @@ import thegame.com.Game.Objects.MapObject;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import sun.plugin.javascript.navig.JSType;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
@@ -78,7 +84,7 @@ public class TheGame extends Application {
     private int startX;
     private int startY;
     private int offsetBlocks;
-    
+
     private Sound sound;
 
     // FPS
@@ -221,6 +227,9 @@ public class TheGame extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException
     {
+        sound = new Sound("MenuSound.wav");
+        sound.loop();
+        
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && listener != null)
@@ -490,8 +499,8 @@ public class TheGame extends Application {
 
     public void startagame(Stage primaryStage)
     {
-        Sound s = new Sound("");
-        s.loop();
+        //sound = new Sound("GameSound.wav");
+        //sound.loop();
         offsetBlocks = 4;
 
         StackPane root = new StackPane();
@@ -585,19 +594,19 @@ public class TheGame extends Application {
     {
         Pane root = new Pane();
         root.setPrefSize(1280, 720);
+        root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        /*
-         try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
-         {
-         ImageView img = new ImageView(new Image(is));
-         img.setFitWidth(860);
-         img.setFitHeight(600);
-         root.getChildren().add(img);
-         } catch (Exception e)
-         {
-         System.out.println("Couldnt load image");
-         }
-         */
+        try (InputStream is = Files.newInputStream(Paths.get("src/resources//menu.jpg")))
+        {
+            ImageView img = new ImageView(new Image(is));
+            img.setFitWidth(1280);
+            img.setFitHeight(720);
+            root.getChildren().add(img);
+        } catch (Exception e)
+        {
+            System.out.println("Couldnt load image");
+        }
+
         Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
@@ -914,7 +923,7 @@ public class TheGame extends Application {
         keys = new ArrayList<>();
         draw.stop();
         movement.cancel();
-        
+
         try
         {
             start(stages);
