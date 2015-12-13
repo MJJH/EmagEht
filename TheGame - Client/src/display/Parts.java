@@ -64,14 +64,18 @@ public enum Parts implements iTexture {
     private final int y;
     private final int width;
     private final int height;
+    private final int connectX;
+    private final int connectY;
 
-    Parts(Part part, Type type, int x, int y, int width, int height) {
+    Parts(Part part, Type type, int x, int y, int width, int height, int connectX, int connectY) {
         this.part = part;
         this.type = type;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.connectX = connectX;
+        this.connectY = connectY;
     }
 
     public int getX() {
@@ -98,5 +102,13 @@ public enum Parts implements iTexture {
 
     public Type getType() {
         return type;
+    }
+
+    int getConnectY() {
+        return connectY;
+    }
+
+    int getConnectX() {
+        return connectX;
     }
 }

@@ -5,6 +5,7 @@
  */
 package display;
 
+import display.iTexture.Type;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -53,6 +54,36 @@ public class Image extends Skin {
         }
             
         repaint();
+    }
+    
+    public void addTexture(iTexture texture) throws IOException {
+        BufferedImage bI;
+        bI = ImageIO.read(new File(iTexture.path));
+        WritableImage i;
+        
+        if(texture instanceof Parts) {
+            Parts t = (Parts) texture;
+            
+            calculateNewSize(t);
+            Parts parent = getParent(t);
+            
+            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX(), parent.getConnectY() - t.getConnectY()));
+        } else if(texture instanceof Sets) {
+            Sets s = (Sets) texture;
+            for(CombineParts cp : s.parts) {
+                
+                calculateNewSize(cp.part);
+                Parts parent = getParent(cp.part);
+                
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX(), parent.getConnectY() - cp.part.getConnectY()));
+            }
+        }
+            
+        repaint();
+        
+      
     }
     
     public Map<Parts, PartImage> getParts() {
@@ -141,6 +172,45 @@ public class Image extends Skin {
                     pw.setColor(paintX, paintY, c);
                 }
             }
+        }
+    }
+    
+    private Parts getParent(Parts t) {
+        if(t.getType() != Type.BODY) {
+            for(Parts p : parts.keySet()) {
+                if(p.getPart() == t.getPart() && p.getType() == Type.BODY) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void calculateNewSize(Parts t) {
+        Parts parent = getParent(t);
+        
+        int difTop = 0, difBot = 0, difLeft = 0, difRight = 0;
+        if(parent != null) {
+            if(parent.getConnectY() - t.getConnectY() < 0) {
+                difTop = parent.getConnectY() - t.getConnectY();
+            }
+            if(parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height) {
+                difBot = parent.getConnectY() + (t.getHeight() - t.getConnectY());
+            }
+            if(parent.getConnectX() - t.getConnectX() < 0) {
+                difLeft = parent.getConnectX() - t.getConnectX();
+            }
+            if(parent.getConnectX() + (t.getWidth() - t.getConnectX()) > width) {
+                difRight = parent.getConnectX() + (t.getWidth() - t.getConnectX());
+            }
+            
+            for(PartImage p : parts.values()) {
+                p.x += difLeft;
+                p.y += difTop;
+            }
+            
+            height += difTop + difBot;
+            width += difLeft + difRight;
         }
     }
     
