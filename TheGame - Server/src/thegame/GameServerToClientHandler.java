@@ -9,9 +9,9 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import thegame.com.Game.Map;
@@ -27,16 +27,16 @@ import thegame.shared.IGameServerToClientListener;
 public class GameServerToClientHandler {
 
     private transient Map map;
-    private transient final HashMap<IGameServerToClientListener, Player> playerListenersTable;
+    private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
     private transient final List<IGameServerToClientListener> connectionLossTable;
-    private transient final List<IGameServerToClientListener> isSending;
+    private transient final ConcurrentHashMap<IGameServerToClientListener, String> isSending;
     private transient ExecutorService threadPoolSend;
 
     public GameServerToClientHandler()
     {
-        playerListenersTable = new HashMap<>();
+        playerListenersTable = new ConcurrentHashMap<>();
         connectionLossTable = new ArrayList<>();
-        isSending = new ArrayList<>();
+        isSending = new ConcurrentHashMap<>();
         threadPoolSend = Executors.newCachedThreadPool();
     }
 
@@ -79,7 +79,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.sendGameChatMessage(message);
                 } catch (RemoteException ex)
                 {
@@ -89,7 +88,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
         }
     }
@@ -99,7 +97,7 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener) || isSending.contains(listener))
+            if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updatePlayer")))
             {
                 continue;
             }
@@ -119,7 +117,7 @@ public class GameServerToClientHandler {
                 }
                 try
                 {
-                    isSending.add(listener);
+                    isSending.put(listener, "updatePlayer");
                     listener.updatePlayer(toSendPlayer.getID(), toSendPlayer.getX(), toSendPlayer.getY(), direction);
                 } catch (RemoteException ex)
                 {
@@ -128,8 +126,10 @@ public class GameServerToClientHandler {
                     System.err.println(sdf.format(cal.getTime()) + " Could not updatePlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
+                } finally
+                {
+                    isSending.remove(listener, "updatePlayer");
                 }
-                isSending.remove(listener);
             });
         }
     }
@@ -149,7 +149,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.addMapObject(mo);
                 } catch (RemoteException ex)
                 {
@@ -159,7 +158,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
         }
     }
@@ -178,7 +176,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.removeMapObject(id, type, x, y);
                 } catch (RemoteException ex)
                 {
@@ -188,7 +185,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
         }
     }
@@ -207,7 +203,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
                 } catch (RemoteException ex)
                 {
@@ -217,7 +212,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
         }
     }
@@ -242,7 +236,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.knockBackPlayer(hSpeed, vSpeed);
                 } catch (RemoteException ex)
                 {
@@ -252,7 +245,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
             break;
         }
@@ -263,7 +255,7 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener) || isSending.contains(listener))
+            if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updateObjects")))
             {
                 continue;
             }
@@ -272,7 +264,7 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
+                    isSending.put(listener, "updateObjects");
                     listener.updateObjects(toSend);
                 } catch (RemoteException ex)
                 {
@@ -281,13 +273,15 @@ public class GameServerToClientHandler {
                     System.err.println(sdf.format(cal.getTime()) + " Could not updateObjects(" + toSend.toString() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
+                } finally
+                {
+                    isSending.remove(listener, "updateObjects");
                 }
-                isSending.remove(listener);
             });
         }
     }
-    
-    public void addToBackpack (MapObject object, int spot, Player toSendPlayer)
+
+    public void addToBackpack(MapObject object, int spot, Player toSendPlayer)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
@@ -307,7 +301,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.addToBackpack(object, spot);
                 } catch (RemoteException ex)
                 {
@@ -317,13 +310,12 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
             break;
         }
     }
-    
-    public void addToEmptyBackpack (MapObject object, Player toSendPlayer)
+
+    public void addToEmptyBackpack(MapObject object, Player toSendPlayer)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
@@ -343,7 +335,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.addToEmptyBackpack(object);
                 } catch (RemoteException ex)
                 {
@@ -353,7 +344,6 @@ public class GameServerToClientHandler {
                     System.err.println(ex.getMessage());
                     leavePlayer(listener);
                 }
-                isSending.remove(listener);
             });
             break;
         }

@@ -117,6 +117,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         }
         for(MapObject mo : toSend)
         {
+            mo.setMap(map);
             map.updateMapObject(mo);
         }
     }

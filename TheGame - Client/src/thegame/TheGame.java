@@ -923,6 +923,8 @@ public class TheGame extends Application {
         keys = new ArrayList<>();
         draw.stop();
         movement.cancel();
+        sound.stop();
+        sound = null;
 
         try
         {
