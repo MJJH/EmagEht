@@ -47,15 +47,15 @@ public enum Parts implements iTexture {
     
     // Wieldables
     Shield(Part.BACKARM, Type.TOOL, 1, 110, 12, 21, 0, 0),
-    PickAxe(Part.FRONTARM, Type.TOOL, 1, 134, 20, 15, 0, 0),
-    Sword(Part.FRONTARM, Type.TOOL, 1, 150, 23, 5, 0, 0),
-    Hatchet(Part.FRONTARM, Type.TOOL, 1, 158, 27, 9, 0, 0),
-    Shovel(Part.FRONTARM, Type.TOOL, 1, 172, 26, 9, 0, 0),
-    Flint(Part.FRONTARM, Type.TOOL, 35, 127, 12, 5, 0, 0),
+    PickAxe(Part.FRONTARM, Type.TOOL, 1, 134, 20, 15, -2, -8),
+    Sword(Part.FRONTARM, Type.TOOL, 1, 150, 23, 5, -3, -13),
+    Hatchet(Part.FRONTARM, Type.TOOL, 1, 158, 27, 9, -2, -11),
+    Shovel(Part.FRONTARM, Type.TOOL, 1, 172, 26, 9, -3, -11),
+    Flint(Part.FRONTARM, Type.TOOL, 35, 127, 12, 5, -4, -13),
     
     // Blocks
-    Block(Part.FRONTARM, Type.BLOCK, 86, 0, 20, 20, 0, 0),
-    Ore(Part.FRONTARM, Type.BLOCK, 106, 0, 20, 20, 0, 0),
+    Block(Part.FRONTARM, Type.BLOCK, 86, 0, 20, 20, 8, -7),
+    Ore(Part.FRONTARM, Type.BLOCK, 106, 0, 20, 20, 9, -7),
     Liquid(null, Type.BLOCK, 126, 0, 20, 20, 0, 0);
     
     private final Part part;
