@@ -68,7 +68,7 @@ public class Image extends Skin {
             Parts parent = getParent(t);
             
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX(), parent.getConnectY() - t.getConnectY()));
+            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
         } else if(texture instanceof Sets) {
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
@@ -77,7 +77,7 @@ public class Image extends Skin {
                 Parts parent = getParent(cp.part);
                 
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX(), parent.getConnectY() - cp.part.getConnectY()));
+                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
             }
         }
             
@@ -192,16 +192,16 @@ public class Image extends Skin {
         int difTop = 0, difBot = 0, difLeft = 0, difRight = 0;
         if(parent != null) {
             if(parent.getConnectY() - t.getConnectY() < 0) {
-                difTop = parent.getConnectY() - t.getConnectY();
+                difTop = Math.abs(parent.getConnectY() - t.getConnectY());
             }
             if(parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height) {
-                difBot = parent.getConnectY() + (t.getHeight() - t.getConnectY());
+                difBot = Math.abs(parent.getConnectY() + (t.getHeight() - t.getConnectY()));
             }
             if(parent.getConnectX() - t.getConnectX() < 0) {
-                difLeft = parent.getConnectX() - t.getConnectX();
+                difLeft = Math.abs(parent.getConnectX() - t.getConnectX());
             }
             if(parent.getConnectX() + (t.getWidth() - t.getConnectX()) > width) {
-                difRight = parent.getConnectX() + (t.getWidth() - t.getConnectX());
+                difRight = Math.abs(parent.getConnectX() + (t.getWidth() - t.getConnectX()));
             }
             
             for(PartImage p : parts.values()) {

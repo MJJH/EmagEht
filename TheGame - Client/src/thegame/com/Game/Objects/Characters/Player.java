@@ -2,6 +2,7 @@ package thegame.com.Game.Objects.Characters;
 
 import display.Animation;
 import display.Image;
+import display.Parts;
 import display.Sets;
 import display.Skin;
 import display.iTexture;
@@ -511,11 +512,12 @@ public class Player extends CharacterGame {
 
             Animation a = new Animation(d, 10);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 5);
-            a.addFrameByPart(iTexture.Part.FRONTARM, 50);
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
 
             skins.put("standRight", a);
 
             Image d2 = new Image(Sets.player);
+            d2.addTexture(Sets.SpikeHelmet);
             d2.flipHorizontal();
             d2.recolour(h);
             skins.put("standLeft", d2);
