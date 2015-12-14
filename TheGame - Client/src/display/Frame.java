@@ -6,6 +6,7 @@
 package display;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -38,6 +39,22 @@ public class Frame {
         return rotation;
     }
     
+    public int getOffsetTop() {
+        return offsetTop;
+    }
+    
+    public int getOffsetBot() {
+        return offsetBot;
+    }
+    
+    public int getOffsetRight() {
+        return offsetRight;
+    }
+    
+    public int getOffsetLeft() {
+        return offsetLeft;
+    }
+    
     public void repaint() {
         offsetTop = 0;
         offsetBot = 0;
@@ -56,43 +73,36 @@ public class Frame {
             
             // Rotate!
             if(rotation.containsKey(p)){
-                double rx = pi.image.getWidth() / 2;
-                double ry = pi.image.getHeight() / 10;
+                int rx = (int) Math.round(pi.image.getWidth() / 2);
+                int ry = 0;
                 
-                if(p.getType() != iTexture.Type.BODY)
+                /*if(p.getType() != iTexture.Type.BODY)
                 {
                     for(Parts tp : original.getParts().keySet()) {
                         if(tp.getType() == iTexture.Type.BODY && tp.getPart() == p.getPart()) {
                             PartImage tpi = original.getParts().get(tp);
-                            rx = tpi.image.getWidth() / 2 + tpi.x - pi.x;
-                            ry = tpi.image.getHeight() / 2 + tpi.y - pi.y;
+                            rx = (int) Math.round(tpi.image.getWidth() / 2 + tpi.x - pi.x);
+                            ry = (int) Math.round(tpi.y - pi.y);
                         }
                     }
+                }*/
+                
+                double rad = Math.toRadians((rotation.get(p) + 360) % 360);
+                
+                Point size = getRotPoint((int) pi.image.getWidth(), (int) pi.image.getHeight(), 0, 0, rad);
+                
+                if(rad > 0) {
+                    pi.x -= pi.image.getWidth() / 2;
                 }
 
-                double angle = (rotation.get(p)+360)%360;
-                double rad = Math.toRadians(angle);
-                
-                w = rx + Math.abs((pi.image.getWidth() - rx) * Math.cos(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.sin(rad));
-                h = ry - Math.abs((pi.image.getWidth() - rx) * Math.sin(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.cos(rad));
-                
-                double zeroX = rx + Math.abs((0 - rx) * Math.cos(rad)) + Math.abs((0 - ry) * Math.sin(rad));
-                double zeroY = ry - Math.abs((0 - rx) * Math.sin(rad)) + Math.abs((0 - ry) * Math.cos(rad));
-                
-                if((angle < 90 && angle > 0) || (angle > 270 && angle < 360)) {
-                    pi.x -= w - pi.image.getWidth();
-                }
-                if(angle < 180 && angle > 0) {
-                    pi.y -= h - pi.image.getHeight();
-                }
                 
                 BufferedImage bI = SwingFXUtils.fromFXImage(pi.image, null);
-                BufferedImage sI = new BufferedImage((int) Math.ceil(w*2), (int) Math.ceil(h*2), bI.getType());
+                BufferedImage sI = new BufferedImage(Math.abs(size.x), Math.abs(size.y), bI.getType());
                 Graphics2D g = sI.createGraphics();
+                
                 g.rotate(rad, rx, ry);
-                int posX = (int) (w - zeroX);
-                int posY = (int) (h - zeroY);
-                g.drawImage(bI, null, posX, posY);
+                
+                g.drawImage(bI, null, (int) (pi.image.getWidth() / 2), 0);
                 pi.image = SwingFXUtils.toFXImage(sI, null);
             }
             
@@ -137,8 +147,10 @@ public class Frame {
                 for(int x = 0; x < pi.image.getWidth(); x++) {
                     Color c = pr.getColor(x, y);
                     
-                    if((int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
+                    if((int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1) {
+                        //pw.setColor(x + pi.x + offsetLeft, y + pi.y + offsetTop, Color.RED);
                         continue;
+                    }
                     
                     int r = (int) Math.round((c.getRed()* 255) / 32);
                     
@@ -171,6 +183,14 @@ public class Frame {
             return original.show();
         else
             return image;
+    }
+    
+    private Point getRotPoint(int x, int y, int rX, int rY, double angle) {
+        /*double xB = (x - rX) * Math.cos(angle) - (y - rY) * Math.sin(angle) + rX;
+        double yB = (y - rY) * Math.cos(angle) + (x - rX) * Math.sin(angle) + rY;*/
+        int xB = (int) Math.ceil(Math.abs(x * Math.sin(angle)) + Math.abs(y * Math.cos(angle)));
+        int yB = (int) Math.ceil(Math.abs(x * Math.cos(angle)) + Math.abs(y * Math.sin(angle)));
+        return new Point((int) Math.round(xB), (int) Math.round(yB));
     }
     
 }

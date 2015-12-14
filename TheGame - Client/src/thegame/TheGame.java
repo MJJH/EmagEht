@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import display.Animation;
 import sound.Sound;
 import gui.Title;
 import gui.SplashScreen;
@@ -369,8 +370,16 @@ public class TheGame extends Application {
                 float divY = ((draw.getH() * config.block.val) - s.getHeight());
                 /*g.setFill(Color.GREEN);
                  g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
-
-                g.drawImage(s.show(), x + divX, y + divY);
+                if(s instanceof display.Image)
+                    g.drawImage(s.show(), x + divX, y + divY);
+                else if (s instanceof display.Animation)
+                {
+                    Animation a = (Animation) s;
+                    if(a.getFrame() != null)
+                        g.drawImage(a.show(), x + divX - a.getFrame().getOffsetLeft(), y + divY - a.getFrame().getOffsetTop());
+                    else
+                        g.drawImage(s.show(), x + divX, y + divY);
+                }
             }
 
             g.closePath();

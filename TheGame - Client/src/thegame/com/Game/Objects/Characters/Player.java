@@ -509,27 +509,18 @@ public class Player extends CharacterGame {
 
             Image d = new Image(Sets.player);
             d.recolour(h);
-            d.addTexture(Sets.SpikeHelmet);
-            d.addTexture(Sets.bodyArmor);
-            d.addTexture(Sets.legArmor);
-            
-
-            
-
-            //d.addTexture(Sets.SpikeHelmet);
-
-
             Animation a = new Animation(d, 10);
-            a.addFrameByPart(iTexture.Part.FRONTARM, 5);
+            a.addFrameByPart(iTexture.Part.FRONTARM, 40);
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
 
             skins.put("standRight", a);
 
             Image d2 = new Image(Sets.player);
             d2.recolour(h);
-            d2.addTexture(Sets.SpikeHelmet);
+            /*d2.addTexture(Sets.SpikeHelmet);
             d2.addTexture(Sets.bodyArmor);
-            d2.addTexture(Sets.legArmor);
+            d2.addTexture(Sets.legArmor);*/
              d2.flipHorizontal();
 
             skins.put("standLeft", d2);

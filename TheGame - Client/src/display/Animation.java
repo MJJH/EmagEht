@@ -60,4 +60,11 @@ public class Animation extends Skin {
         
         return frames.get(current).show();
     }
+    
+    public Frame getFrame() {
+        if(frames == null || frames.size() >= current)
+            return null;
+        
+        return frames.get(current);
+    }
 }
