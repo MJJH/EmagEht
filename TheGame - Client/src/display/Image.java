@@ -12,8 +12,11 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.PixelReader;
@@ -27,15 +30,17 @@ import javax.imageio.ImageIO;
  * @author Martijn
  */
 public class Image extends Skin {
-
+    private int getal = 1;
     private WritableImage image;
-    private Map<Parts, PartImage> parts;
+    private MyLinkedMap<Parts, PartImage> parts;
     
     public Image(iTexture texture) throws IOException {
+       
         this.height = texture.getHeight();
         this.width = texture.getWidth();
         
-        parts = new LinkedHashMap<>();
+        parts = new MyLinkedMap<>();
+        
         
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
@@ -44,17 +49,53 @@ public class Image extends Skin {
         if(texture instanceof Parts) {
             Parts t = (Parts) texture;
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.put(t, new PartImage(i, 0, 0));
+            parts.add(parts,getal,t, new PartImage(i, 0, 0));
+            getal++;
         } else if(texture instanceof Sets) {
+            
+            
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, cp.x, cp.y));
+                parts.add(parts,getal,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
             }
-        }
+        
+        /* for(Parts p : parts.keySet()) 
+        {
+        if(p.equals(Parts.playerBackArm))
+        {
+            Parts temp = p;
+            PartImage tempI = parts.get(temp);
             
+            int size = parts.size();
+            parts.remove(p);
+            parts.put(temp, tempI);
+        }
+        else if(p.equals(Parts.playerFrontArm))
+        {
+            Parts temp = p;
+            PartImage tempI = parts.get(temp);
+            
+            int size = parts.size();
+            parts.remove(p);
+            parts.put(temp, tempI);
+            System.err.println("hoi");
+        }
+        } */
+        } 
+        
+        
+        
+            
+        
+       
+    
+
         repaint();
     }
+    
+   
     
     public void addTexture(iTexture texture) throws IOException {
         BufferedImage bI;
@@ -68,7 +109,8 @@ public class Image extends Skin {
             Parts parent = getParent(t);
             
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            parts.add(parts,getal,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            getal++;
         } else if(texture instanceof Sets) {
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
@@ -77,7 +119,8 @@ public class Image extends Skin {
                 Parts parent = getParent(cp.part);
                 
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                parts.add(parts,getal,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            getal++;
             }
         }
             
@@ -185,6 +228,8 @@ public class Image extends Skin {
         }
         return null;
     }
+    
+    
 
     private void calculateNewSize(Parts t) {
         Parts parent = getParent(t);
@@ -213,5 +258,32 @@ public class Image extends Skin {
             width += difLeft + difRight;
         }
     }
+
+ public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value) {
+     assert (map != null);
+    assert !map.containsKey(key);
+  assert (index >= 0) && (index < map.size());
+
+  int i = 0;
+  List<Map.Entry<Parts, PartImage>> rest = new ArrayList<Map.Entry<Parts, PartImage>>();
+  for (Map.Entry<Parts, PartImage> entry : map.entrySet()) {
+    if (i++ >= index) {
+      rest.add(entry);
+    }
+  }
+  map.put(key, value);
+  for (int j = 0; j < rest.size(); j++) {
+    Map.Entry<Parts, PartImage> entry = rest.get(j);
+    map.remove(entry.getKey());
+    map.put(entry.getKey(), entry.getValue());
+  }
+}    
+
+    public void add() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+  
+ 
     
 }

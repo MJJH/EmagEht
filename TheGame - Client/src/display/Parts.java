@@ -20,30 +20,30 @@ public enum Parts implements iTexture {
 
     // Clothes
     helmetHigh(Part.HEAD, Type.ARMOR, 0, 54, 16, 21,0,0),
-    helmetEyes(Part.HEAD, Type.ARMOR, 17, 56, 18, 16,0,0),
-    helmetFeather(Part.HEAD, Type.ARMOR, 36, 54, 10, 18,0,0),
-    helmetOpen(Part.HEAD, Type.ARMOR, 47, 55, 19, 17,10,10),
-    helmetHorn(Part.HEAD, Type.ARMOR, 68, 60, 7, 9,0,1),
+    helmetEyes(Part.HEAD, Type.ARMOR, 17, 56, 18, 16,1,0),
+    helmetFeather(Part.HEAD, Type.ARMOR, 36, 54, 10, 18,10,1),
+    helmetOpen(Part.HEAD, Type.ARMOR, 47, 55, 19, 17,3,2),
+    helmetHorn(Part.HEAD, Type.ARMOR, 68, 60, 7, 9,-2,5),
 
     tShirtBody(Part.TORSO, Type.ARMOR, 12, 76, 16, 17,0,0),
     tShirtBack(Part.BACKARM, Type.ARMOR, 2, 85, 7, 7,0,0),
     tShirtFront(Part.FRONTARM, Type.ARMOR, 1, 76, 9, 8,0,0),
 
-    armorBody(Part.TORSO, Type.ARMOR, 1, 214, 16, 15,0,0),
-    armorShoulderBack(Part.BACKARM, Type.ARMOR, 35, 217, 8, 8,0,0),
-    armorWristBack(Part.BACKARM, Type.ARMOR, 57, 218, 5, 3,0,0),
-    armorShoulderFront(Part.FRONTARM, Type.ARMOR, 18, 216, 14, 10,0,0),
-    armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6,0,0),
+    armorBody(Part.TORSO, Type.ARMOR, 1, 214, 16, 15,0,-1),
+    armorShoulderBack(Part.BACKARM, Type.ARMOR, 35, 217, 8, 8,1,0),
+    armorWristBack(Part.BACKARM, Type.ARMOR, 57, 218, 5, 3,-3,-9),
+    armorShoulderFront(Part.FRONTARM, Type.ARMOR, 18, 216, 14, 10,3,1),
+    armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6,1,-11),
 
     shortTop(Part.TORSO, Type.ARMOR, 1, 96, 14, 2,0,0),
     shortBack(Part.BACKLEG, Type.ARMOR, 8, 98, 8, 7,0,0),
     shortFront(Part.FRONTLEG, Type.ARMOR, 1, 98, 7, 8,0,0),
 
     armorTop(Part.TORSO, Type.ARMOR, 3, 185, 15, 2,0,0),
-    armorBack(Part.BACKLEG, Type.ARMOR, 13, 189, 8, 9,0,0),
+    armorBack(Part.BACKLEG, Type.ARMOR, 13, 189, 8, 9,-4,0),
     armorFront(Part.FRONTLEG, Type.ARMOR, 0, 189, 9, 9,0,0),
-    armorShoeBack(Part.BACKLEG, Type.ARMOR, 15, 203, 13, 9,0,0),
-    armorShoeFront(Part.FRONTLEG, Type.ARMOR, 0, 203, 19, 9,0,0),
+    armorShoeBack(Part.BACKLEG, Type.ARMOR, 15, 203, 13, 9,0,-6),
+    armorShoeFront(Part.FRONTLEG, Type.ARMOR, 0, 203, 13, 9,0,-6),
     
     // Wieldables
     Shield(Part.BACKARM, Type.TOOL, 1, 110, 12, 21, 0, 0),

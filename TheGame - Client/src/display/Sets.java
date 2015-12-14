@@ -70,7 +70,7 @@ public enum Sets implements iTexture {
     
     legArmor(new ArrayList<CombineParts>() {
         {
-            add(new CombineParts(Parts.armorTop, 1, 0));
+            //add(new CombineParts(Parts.armorTop, 1, 0));
             add(new CombineParts(Parts.armorBack, 9, 2));
             add(new CombineParts(Parts.armorFront, 1, 2));
             add(new CombineParts(Parts.armorShoeBack, 6, 8));
