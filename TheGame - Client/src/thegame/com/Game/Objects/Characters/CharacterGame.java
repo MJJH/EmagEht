@@ -128,12 +128,6 @@ public abstract class CharacterGame extends MapObject {
     public void updateHP(int newHP)
     {
         hp = newHP;
-
-        if (hp == 0 && this instanceof Player && this == playing.getMe())
-        {
-            setX(((Player) this).getSpawnX());
-            setY(((Player) this).getSpawnY());
-        }
     }
 
     public int getMaxHP()

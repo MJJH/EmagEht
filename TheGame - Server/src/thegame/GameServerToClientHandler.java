@@ -190,37 +190,6 @@ public class GameServerToClientHandler {
         }
     }
 
-    public void updateHealthPlayer(Player toSendPlayer)
-    {
-        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
-        {
-            IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener))
-            {
-                continue;
-            }
-            Player player = entry.getValue();
-            if (player == toSendPlayer)
-            {
-                threadPoolSend.submit(() ->
-                {
-                    try
-                    {
-                        listener.updateHealthPlayer(toSendPlayer.getID(), toSendPlayer.getHP());
-                    } catch (RemoteException ex)
-                    {
-                        Calendar cal = Calendar.getInstance();
-                        SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-                        System.err.println(sdf.format(cal.getTime()) + " Could not updateHealthPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
-                        System.err.println(ex.getMessage());
-                        leavePlayer(listener);
-                    }
-                });
-                return;
-            }
-        }
-    }
-
     public void knockBackPlayer(Player toSendPlayer, float hSpeed, float vSpeed)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
@@ -353,8 +322,8 @@ public class GameServerToClientHandler {
             break;
         }
     }
-    
-    public void setTeamLifes (int lifes) 
+
+    public void setTeamLifes(int lifes)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
@@ -378,6 +347,41 @@ public class GameServerToClientHandler {
                     leavePlayer(listener);
                 }
             });
+        }
+    }
+
+    public void respawnPlayer(Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.respawnMe();
+                    player.updateHP(-100);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not respawn " + toSendPlayer.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+            });
+            break;
         }
     }
 }

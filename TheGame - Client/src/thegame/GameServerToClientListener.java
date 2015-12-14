@@ -62,23 +62,6 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         }
     }
     */
-    
-    @Override
-    public void updateHealthPlayer(int id, int newHealth) throws RemoteException
-    {
-        if (map == null || me == null)
-        {
-            return;
-        }
-        for (Player player : map.getPlayers())
-        {
-            if (player.getID() == id)
-            {
-                player.updateHP(newHealth);
-                return;
-            }
-        }
-    }
 
     @Override
     public void knockBackPlayer(float hSpeed, float vSpeed) throws RemoteException
@@ -154,5 +137,15 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             return;
         }
         map.setLifes(lifes);
+    }
+
+    @Override
+    public void respawnMe() throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        me.spawn();
     }
 }

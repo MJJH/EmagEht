@@ -539,8 +539,8 @@ public class Player extends CharacterGame {
      */
     public void spawn()
     {
-        // TODO - implement Player.spawn
-        throw new UnsupportedOperationException();
+        setX(((Player) this).getSpawnX());
+        setY(((Player) this).getSpawnY());
     }
 
     /**

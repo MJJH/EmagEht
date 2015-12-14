@@ -263,6 +263,7 @@ public class Map implements Serializable {
                 {
                     if(player == me)
                     {
+                        me.updateHP(player.getHP());
                         return;
                     }
                     player.updateValues((Player)update);

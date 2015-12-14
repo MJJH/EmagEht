@@ -364,7 +364,7 @@ public abstract class CharacterGame extends MapObject {
             {
                 if (playing.decreaseLife())
                 {
-                    playing.getGameServerToClientHandler().updateHealthPlayer((Player)this);
+                    playing.getGameServerToClientHandler().respawnPlayer((Player) this);
                 } else
                 {
                     //game over
@@ -379,6 +379,11 @@ public abstract class CharacterGame extends MapObject {
             {
                 knockBack(used.type.kb, hitDirection);
             }
+        }
+
+        if (this instanceof Player)
+        {
+            playing.addToUpdate(this);
         }
     }
 }
