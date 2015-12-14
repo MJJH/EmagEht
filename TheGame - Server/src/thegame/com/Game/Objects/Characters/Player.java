@@ -50,9 +50,9 @@ public class Player extends CharacterGame {
             this.addToBackpack(new Block(BlockType.Stone, 0, 0, playing));
         }
         
-        this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 0, 1, playing));
-        this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 0, 1, playing));
-        this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 0, 1, playing));
+        this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 1, 1, playing));
+        this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
+        this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));
     }
 
     /**
