@@ -1,6 +1,10 @@
 package thegame.com.Game.Objects;
 
+import display.Image;
+import display.Parts;
+import display.Sets;
 import display.Skin;
+import java.io.IOException;
 
 
 /**
@@ -12,8 +16,29 @@ public class ArmorType {
     public final String name;
     public final int multiplier;
     public final int reqLvl;
-    public final Skin skin;
+    public Skin skin;
     public final bodyPart bodypart;
+
+    Skin getSkin() throws IOException {
+        if(skin == null)
+            createSkin();
+        
+        return skin;
+    }
+
+    private void createSkin() throws IOException {
+        switch(bodypart) {
+            case CHESTPLATE:
+                skin = new Image(Sets.bodyArmor);
+                break;
+            case GREAVES:
+                skin = new Image(Sets.legArmor);
+                break;
+            case HELMET:
+                skin = new Image(Sets.SpikeHelmet);
+                break;
+        }
+    }
 
     public enum bodyPart { HELMET, CHESTPLATE, GREAVES, BOOTS, SHIELD }
 

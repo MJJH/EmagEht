@@ -1,6 +1,9 @@
 package thegame.com.Game.Objects;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Game.Map;
 
 /**
@@ -22,6 +25,10 @@ public class Armor extends MapObject {
     
     @Override
     public void createSkin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            this.skin = type.getSkin();
+        } catch (IOException ex) {
+            Logger.getLogger(Armor.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

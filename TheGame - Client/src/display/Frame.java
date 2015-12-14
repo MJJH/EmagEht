@@ -74,7 +74,6 @@ public class Frame {
             // Rotate!
             if(rotation.containsKey(p)){
                 int rx = (int) Math.round(pi.image.getWidth() / 2);
-                int ry = 0;
                 
                 /*if(p.getType() != iTexture.Type.BODY)
                 {
@@ -89,20 +88,18 @@ public class Frame {
                 
                 double rad = Math.toRadians((rotation.get(p) + 360) % 360);
                 
-                Point size = getRotPoint((int) pi.image.getWidth(), (int) pi.image.getHeight(), 0, 0, rad);
+                Point size = getRotPoint((int) p.getWidth(), (int) p.getHeight(), 0, 0, rad);
                 
-                if(rad > 0) {
-                    pi.x -= pi.image.getWidth() / 2;
-                }
-
+                //pi.x += p.getWidth()- size.x - zero.x;
+                //pi.y -= pi.image.getWidth() - size.y - zero.y;
                 
                 BufferedImage bI = SwingFXUtils.fromFXImage(pi.image, null);
                 BufferedImage sI = new BufferedImage(Math.abs(size.x), Math.abs(size.y), bI.getType());
                 Graphics2D g = sI.createGraphics();
                 
-                g.rotate(rad, rx, ry);
+                g.rotate(rad, rx, 0);
                 
-                g.drawImage(bI, null, (int) (pi.image.getWidth() / 2), 0);
+                g.drawImage(bI, null, 0, 0);
                 pi.image = SwingFXUtils.toFXImage(sI, null);
             }
             

@@ -1,8 +1,13 @@
 package thegame.com.Game.Objects.Characters;
 
+import display.Skin;
+import display.iTexture;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.GameServerToClientListener;
 import thegame.com.Game.Objects.*;
 

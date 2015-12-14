@@ -34,7 +34,7 @@ public class Player extends CharacterGame {
     private int spawnY;
     private transient boolean toUpdate;
 
-    private HashMap<String, Skin> skins;
+    public HashMap<String, Skin> skins;
 
     public void walkRight()
     {
@@ -512,19 +512,13 @@ public class Player extends CharacterGame {
             };
 
             Image d = new Image(Sets.player);
+            
             d.recolour(h);
-            Animation a = new Animation(d, 10);
-            a.addFrameByPart(iTexture.Part.FRONTARM, 40);
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
-
-            skins.put("standRight", a);
+            
+            skins.put("standRight", d);
 
             Image d2 = new Image(Sets.player);
             d2.recolour(h);
-            /*d2.addTexture(Sets.SpikeHelmet);
-            d2.addTexture(Sets.bodyArmor);
-            d2.addTexture(Sets.legArmor);*/
              d2.flipHorizontal();
 
             skins.put("standLeft", d2);
