@@ -83,6 +83,7 @@ public class Image extends Skin {
                 add((LinkedHashMap<Parts, PartImage>) parts,8,cp.part, new PartImage(i, cp.x, cp.y));
                 getal++;
             }
+           
             else if (cp.part.equals(Parts.playerFrontArm)) 
             {
                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
@@ -146,9 +147,27 @@ public class Image extends Skin {
             calculateNewSize(t);
             Parts parent = getParent(t);
             
-            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            if(texture.equals(Parts.Sword))
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            add((LinkedHashMap<Parts, PartImage>) parts,7,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            getal++;   
+            }
+            /*if(texture.equals(Parts.Shield))
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            add((LinkedHashMap<Parts, PartImage>) parts,7,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            getal++;   
+            } */
+            else
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
             parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
             getal++;
+                
+            }
+           
+            
         } else if(texture instanceof Sets) {
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
@@ -174,10 +193,12 @@ public class Image extends Skin {
             add((LinkedHashMap<Parts, PartImage>) parts,3,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
             getal++;      
             }
+            
+            
             else if(cp.part.equals(Parts.armorShoulderBack))
             {
              i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,7,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            add((LinkedHashMap<Parts, PartImage>) parts,10,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
             getal++;      
             }
             else if(cp.part.equals(Parts.armorShoulderFront))
