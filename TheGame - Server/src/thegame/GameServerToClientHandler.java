@@ -270,7 +270,6 @@ public class GameServerToClientHandler {
                 try
                 {
                     isSending.add(listener);
-                    toSend.remove(player);
                     listener.updateObjects(toSend);
                 } catch (RemoteException ex)
                 {
@@ -352,6 +351,33 @@ public class GameServerToClientHandler {
                 }
             });
             break;
+        }
+    }
+    
+    public void setTeamLifes (int lifes) 
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.setTeamLifes(lifes);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not setTeamLifes(" + lifes + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    leavePlayer(listener);
+                }
+            });
         }
     }
 }

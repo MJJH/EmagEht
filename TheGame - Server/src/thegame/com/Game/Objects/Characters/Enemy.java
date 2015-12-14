@@ -33,7 +33,7 @@ public class Enemy extends CharacterGame {
     {
         super(name, hp, skills, x, y, height, width, map);
         
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 1, 1, 1);
+        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 0.3f, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
     }
@@ -207,16 +207,16 @@ public class Enemy extends CharacterGame {
     }
 
     @Override
-    public void knockBack(int kb, sides hitDirection)
+    public void knockBack(float kb, sides hitDirection)
     {
         switch (hitDirection)
         {
             case LEFT:
-                hSpeed = -kb * 2;
+                hSpeed = -kb;
                 vSpeed = kb;
                 break;
             case RIGHT:
-                hSpeed = kb * 2;
+                hSpeed = kb;
                 vSpeed = kb;
                 break;
         }

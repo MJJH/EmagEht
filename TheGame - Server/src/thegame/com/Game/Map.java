@@ -198,20 +198,26 @@ public class Map implements Serializable {
         return teamlifes;
     }
 
-    public void decreaseLife()
+    public boolean decreaseLife()
     {
         if (teamlifes > 0)
         {
             teamlifes--;
+            gameServerToClientHandler.setTeamLifes(teamlifes);
+            return true;
         }
+        return false;
     }
 
-    public void increaseLife()
+    public boolean increaseLife()
     {
         if (teamlifes < 4)
         {
             teamlifes++;
+            gameServerToClientHandler.setTeamLifes(teamlifes);
+            return true;
         }
+        return false;
     }
 
     int getTime()

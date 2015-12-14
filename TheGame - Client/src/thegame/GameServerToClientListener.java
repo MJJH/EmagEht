@@ -145,4 +145,14 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         object.setMap(map);
         me.addToEmptyBackpack(object);
     }
+
+    @Override
+    public void setTeamLifes(int lifes) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        map.setLifes(lifes);
+    }
 }

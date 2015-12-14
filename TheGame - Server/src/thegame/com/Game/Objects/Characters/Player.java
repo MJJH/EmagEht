@@ -34,17 +34,19 @@ public class Player extends CharacterGame {
     public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, height, width, map);
-        
+
         spawnX = playing.getSpawnX();
         spawnY = playing.getSpawnY();
-        
-        ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 1, 1, 1);
+
+        ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
-        
+
         this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0, 1, 1), playing));
-        for(int c = 0; c < 103; c++)
+        for (int c = 0; c < 103; c++)
+        {
             this.addToBackpack(new Block(BlockType.Stone, 0, 0, playing));
+        }
     }
 
     /**
@@ -96,7 +98,7 @@ public class Player extends CharacterGame {
     }
 
     @Override
-    public void knockBack(int kb, sides hitDirection)
+    public void knockBack(float kb, sides hitDirection)
     {
         float newHSpeed = 0;
         float newVSpeed = 0;
@@ -128,8 +130,6 @@ public class Player extends CharacterGame {
         {
             hp = 0;
         }
-
-        playing.getGameServerToClientHandler().updateHealthPlayer(this);
         
         return hp;
     }

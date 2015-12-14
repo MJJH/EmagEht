@@ -133,7 +133,6 @@ public abstract class CharacterGame extends MapObject {
         {
             setX(((Player) this).getSpawnX());
             setY(((Player) this).getSpawnY());
-            hp = getMaxHP();
         }
     }
 

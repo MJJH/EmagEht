@@ -15,7 +15,7 @@ public class ToolType implements Serializable{
     public float speed;
     public float range;
     public int reqLvl;
-    public int kb;
+    public float kb;
     public transient Skin skin;
     public float height;
     public float width;
@@ -36,7 +36,7 @@ public class ToolType implements Serializable{
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, int kb, Skin skin, float height, float width) {
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, Skin skin, float height, float width) {
         this.name = name;
         this.strength = strength;
         this.speed = speed;

@@ -259,7 +259,7 @@ public class Map implements Serializable {
         {
             for(Player player : players)
             {
-                if(player == update)
+                if(player.getID() == update.getID())
                 {
                     if(player == me)
                     {
@@ -414,5 +414,10 @@ public class Map implements Serializable {
     public thegame.TheGame getTheGame()
     {
         return theGame;
+    }
+
+    public void setLifes(int lifes)
+    {
+        this.teamlifes = lifes;
     }
 }

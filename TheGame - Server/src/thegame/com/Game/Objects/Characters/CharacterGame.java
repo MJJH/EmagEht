@@ -51,7 +51,7 @@ public abstract class CharacterGame extends MapObject {
         direction = sides.RIGHT;
     }
 
-    public abstract void knockBack(int kb, sides hitDirection);
+    public abstract void knockBack(float kb, sides hitDirection);
 
     /**
      * This method will let you add an object to your backpack.
@@ -362,7 +362,13 @@ public abstract class CharacterGame extends MapObject {
         {
             if (this instanceof Player)
             {
-                updateHP(-100);
+                if (playing.decreaseLife())
+                {
+                    playing.getGameServerToClientHandler().updateHealthPlayer((Player)this);
+                } else
+                {
+                    //game over
+                }
             } else
             {
                 playing.removeMapObject(this);
