@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
+import thegame.com.Game.Objects.Tool;
 import thegame.shared.IGameClientToServer;
 
 /**
@@ -447,17 +448,20 @@ public class Player extends CharacterGame {
 
     public void useTool(float x, float y, IGameClientToServer gameLogic)
     {
-        if (System.currentTimeMillis() - used >= holding.type.speed)
-        {
-            try
+        if(holding instanceof Tool) {
+            Tool h = (Tool) holding;
+            if (System.currentTimeMillis() - used >= h.type.speed)
             {
-                if (gameLogic.useTool(id, x, y))
+                try
                 {
-                    //feedback
+                    if (gameLogic.useTool(id, x, y))
+                    {
+                        //feedback
+                    }
+                } catch (RemoteException ex)
+                {
+                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

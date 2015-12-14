@@ -455,7 +455,7 @@ public class TheGame extends Application {
                 /*g.setFill(Color.GREEN);
                  g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
                 if(s instanceof display.Image)
-                    g.drawImage(s.show(), x + divX, y + divY);
+                    g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
                 else if (s instanceof display.Animation)
                 {
                     Animation a = (Animation) s;
