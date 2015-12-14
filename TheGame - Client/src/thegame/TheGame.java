@@ -227,6 +227,7 @@ public class TheGame extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException
     {
+        //System.setProperty("java.rmi.server.hostname", "84.31.253.143");
         sound = new Sound("MenuSound.wav");
         sound.loop();
         
@@ -369,7 +370,7 @@ public class TheGame extends Application {
                 /*g.setFill(Color.GREEN);
                  g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
 
-                g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
+                g.drawImage(s.show(), x + divX, y + divY);
             }
 
             g.closePath();

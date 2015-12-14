@@ -76,8 +76,8 @@ public class Frame {
                 w = rx + Math.abs((pi.image.getWidth() - rx) * Math.cos(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.sin(rad));
                 h = ry - Math.abs((pi.image.getWidth() - rx) * Math.sin(rad)) + Math.abs((pi.image.getHeight() - ry) * Math.cos(rad));
                 
-                //int w = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.sin(rad)) + Math.abs(pi.image.getHeight() * Math.cos(rad)));
-                //int h = (int) Math.ceil(Math.abs(pi.image.getWidth() * Math.cos(rad)) + Math.abs(pi.image.getHeight() * Math.sin(rad)));
+                double zeroX = rx + Math.abs((0 - rx) * Math.cos(rad)) + Math.abs((0 - ry) * Math.sin(rad));
+                double zeroY = ry - Math.abs((0 - rx) * Math.sin(rad)) + Math.abs((0 - ry) * Math.cos(rad));
                 
                 if((angle < 90 && angle > 0) || (angle > 270 && angle < 360)) {
                     pi.x -= w - pi.image.getWidth();
@@ -87,10 +87,12 @@ public class Frame {
                 }
                 
                 BufferedImage bI = SwingFXUtils.fromFXImage(pi.image, null);
-                BufferedImage sI = new BufferedImage((int) Math.abs(w), (int) Math.abs(h), bI.getType());
+                BufferedImage sI = new BufferedImage((int) Math.ceil(w*2), (int) Math.ceil(h*2), bI.getType());
                 Graphics2D g = sI.createGraphics();
                 g.rotate(rad, rx, ry);
-                g.drawImage(bI, null, (int) (Math.abs(w) - pi.image.getWidth()), (int) (Math.abs(h) - pi.image.getHeight()));
+                int posX = (int) (w - zeroX);
+                int posY = (int) (h - zeroY);
+                g.drawImage(bI, null, posX, posY);
                 pi.image = SwingFXUtils.toFXImage(sI, null);
             }
             

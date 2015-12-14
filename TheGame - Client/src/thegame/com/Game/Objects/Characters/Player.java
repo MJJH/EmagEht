@@ -520,7 +520,7 @@ public class Player extends CharacterGame {
 
 
             Animation a = new Animation(d, 10);
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 5);
+            a.addFrameByPart(iTexture.Part.FRONTARM, 5);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
 
             skins.put("standRight", a);
