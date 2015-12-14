@@ -56,9 +56,46 @@ public class Image extends Skin {
             
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
-                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, cp.x, cp.y));
+            
+            
+            if(cp.part.equals(Parts.playerFrontLeg))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,2,cp.part, new PartImage(i, cp.x, cp.y));
                 getal++;
+            }
+             if(cp.part.equals(Parts.playerBackLeg))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,1,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+              if(cp.part.equals(Parts.playerTorso))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,0,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+                     
+            if(cp.part.equals(Parts.playerBackArm))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,8,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+            else if (cp.part.equals(Parts.playerFrontArm)) 
+            {
+               i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+               add((LinkedHashMap<Parts, PartImage>) parts,9,cp.part, new PartImage(i, cp.x, cp.y));
+               getal++;      
+            }
+             else
+            {
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,getal,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+            
             }
         
         /* for(Parts p : parts.keySet()) 
@@ -93,6 +130,7 @@ public class Image extends Skin {
     
 
         repaint();
+       
     }
     
    
@@ -117,14 +155,52 @@ public class Image extends Skin {
                 
                 calculateNewSize(cp.part);
                 Parts parent = getParent(cp.part);
+            
+            if(cp.part.equals(Parts.armorFront))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,4,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+                 if(cp.part.equals(Parts.armorBack))
+            {
+                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts,5,cp.part, new PartImage(i, cp.x, cp.y));
+                getal++;
+            }
+            if(cp.part.equals(Parts.armorBody))
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+            add((LinkedHashMap<Parts, PartImage>) parts,3,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            getal++;      
+            }
+            else if(cp.part.equals(Parts.armorShoulderBack))
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+            add((LinkedHashMap<Parts, PartImage>) parts,7,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            getal++;      
+            }
+            else if(cp.part.equals(Parts.armorShoulderFront))
+            {
+             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+            add((LinkedHashMap<Parts, PartImage>) parts,6,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            getal++;      
+            }
+            else
+            {
+            i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+            parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+            getal++;   
+            }
                 
-                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-            getal++;
             }
         }
             
         repaint();
+         if(parts.size() >= 17)
+        {
+            System.err.println("Hoi");
+        }
         
       
     }
@@ -245,7 +321,7 @@ public class Image extends Skin {
             if(parent.getConnectX() - t.getConnectX() < 0) {
                 difLeft = Math.abs(parent.getConnectX() - t.getConnectX());
             }
-            if(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()) < width) {
+                if(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()) < width) {
                 difRight = Math.abs(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()));
             }
             
@@ -260,8 +336,8 @@ public class Image extends Skin {
     }
 
  public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value) {
-     assert (map != null);
-    assert !map.containsKey(key);
+  assert (map != null);
+  assert !map.containsKey(key);
   assert (index >= 0) && (index < map.size());
 
   int i = 0;
