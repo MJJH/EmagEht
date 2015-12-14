@@ -214,13 +214,63 @@ public class TheGame extends Application {
     {
         if (event.getButton().equals(MouseButton.PRIMARY))
         {
-            double clickX = (event.getSceneX() + dx) / config.block.val - startX;
-
-            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
-
-            me.useTool((float) clickX, (float) clickY, gameClientToServer);
+            clickHandler(event.getSceneX(), event.getSceneY());
         }
     };
+
+    private void clickHandler(double clickX, double clickY)
+    {
+        boolean useTool = true;
+        if (inventory)
+        {
+            if (clickX <= 500 && clickY <= 150)
+            {
+                useTool = false;
+                int actualSlot = -1;
+
+                double horizontalX = clickX / 50;
+                int horizontalSlot = Math.round((int) horizontalX);
+                if ((horizontalX - Math.floor(horizontalX)) < 0.2)
+                {
+                    horizontalSlot = -1;
+                }
+
+                double verticalY = clickY / 50;
+                int verticalSlot = Math.round((int) verticalY);
+                if ((verticalY - Math.floor(verticalY)) < 0.2)
+                {
+                    verticalSlot = -1;
+                }
+
+                if (horizontalSlot != -1 && verticalSlot != -1)
+                {
+                    actualSlot = verticalSlot * 10 + horizontalSlot;
+                }
+
+                me.interactWithBackpack(actualSlot);
+            }
+        }
+        if (sjeton)
+        {
+            if (clickX >= 410 && clickY >= 540)
+            {
+                useTool = false;
+            }
+        }
+        if (notification)
+        {
+            if (clickX >= 410 && clickY >= 540)
+            {
+                useTool = false;
+            }
+        }
+        if (useTool)
+        {
+            double mapX = (clickX + dx) / config.block.val - startX;
+            double mapY = (scene.getHeight() - clickY + dy) / config.block.val - startY;
+            me.useTool((float) mapX, (float) mapY, gameClientToServer);
+        }
+    }
     private Stage stages;
     public boolean LoadingDone;
 
@@ -229,7 +279,7 @@ public class TheGame extends Application {
     {
         sound = new Sound("MenuSound.wav");
         sound.loop();
-        
+
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && listener != null)

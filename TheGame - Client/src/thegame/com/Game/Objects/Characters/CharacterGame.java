@@ -17,7 +17,7 @@ public abstract class CharacterGame extends MapObject {
     protected int hp;
     protected String name;
     protected int maxHP;
-    protected Tool holding;
+    protected MapObject holding;
     protected long used;
 
     protected sides direction;
@@ -37,20 +37,28 @@ public abstract class CharacterGame extends MapObject {
     public boolean addToBackpack(MapObject object)
     {
         int spot = -1;
-        
-        for(int i = 0; i < backpack.length; i++) {
+
+        for (int i = 0; i < backpack.length; i++)
+        {
             List<MapObject> l = backpack[i];
-            if(l == null)
+            if (l == null)
+            {
                 continue;
-            
-            if(!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99) 
+            }
+
+            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
+            {
                 spot = i;
+            }
         }
-        
-        if(spot > -1)
+
+        if (spot > -1)
+        {
             return addToBackpack(object, spot);
-        else
+        } else
+        {
             return addToEmptyBackpack(object);
+        }
     }
 
     /**
@@ -70,15 +78,15 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param armorAdd, the armor that you want to wear
      */
-    public void equipArmor(int spot)
+    public void equipArmor(Armor armorAdd)
     {
-        if(!backpack[spot].isEmpty() && backpack[spot].get(0) instanceof Armor) {
-            Armor a = (Armor) backpack[spot];
-            Armor old = armor.get(a.getArmorType().bodypart);
-            
-            backpack[spot].clear();
-            armor.put(a.getArmorType().bodypart, a);
-            addToBackpack(old);
+        if (armor.get(armorAdd.getArmorType().bodypart) == null)
+        {
+            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
+        } else
+        {
+            addToBackpack(armor.get(armorAdd.getArmorType().bodypart));
+            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
         }
     }
 
@@ -89,10 +97,10 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipArmor(Armor armorDel)
     {
-        if (armor.containsValue(armorDel))
+        if (armor.get(armorDel.getArmorType().bodypart) != null && armor.get(armorDel.getArmorType().bodypart).getID() == armorDel.getID())
         {
-            armor.remove(armorDel.getArmorType(), armorDel);
-            addToBackpack(armorDel);
+            addToBackpack(armor.get(armorDel.getArmorType().bodypart));
+            armor.put(armorDel.getArmorType().bodypart, null);
         }
     }
 
@@ -101,7 +109,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    private void equipTool(Tool toolAdd)
+    private void equipTool(MapObject toolAdd)
     {
         if (holding == null)
         {
@@ -190,7 +198,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return tool
      */
-    public Tool getHolding()
+    public MapObject getHolding()
     {
         return holding;
     }
@@ -215,35 +223,62 @@ public abstract class CharacterGame extends MapObject {
         this.direction = direction;
     }
 
-    public boolean addToBackpack(MapObject object, int spot) {
-        if(spot > backpack.length-1)
+    public boolean addToBackpack(MapObject object, int spot)
+    {
+        if (spot > backpack.length - 1)
+        {
             return false;
-        
-        if(!backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
+        }
+
+        if (!backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
+        {
             return false;
-        
-        if(backpack[spot] == null || backpack[spot].isEmpty()){
+        }
+
+        if (backpack[spot] == null || backpack[spot].isEmpty())
+        {
             backpack[spot] = new ArrayList<>();
             backpack[spot].add(object);
             return true;
         }
-        
-        if(object instanceof Tool || object instanceof Armor) {
+
+        if (object instanceof Tool || object instanceof Armor)
+        {
             return false;
-        } 
-        
+        }
+
         backpack[spot].add(object);
         return true;
     }
 
-    public boolean addToEmptyBackpack(MapObject object) {
-         for(int i = 0; i < backpack.length; i++) {
-             if(backpack[i] == null || backpack[i].isEmpty()){
+    public boolean addToEmptyBackpack(MapObject object)
+    {
+        for (int i = 0; i < backpack.length; i++)
+        {
+            if (backpack[i] == null || backpack[i].isEmpty())
+            {
                 backpack[i] = new ArrayList<>();
                 backpack[i].add(object);
                 return true;
-             }
-         } 
-         return false;
+            }
+        }
+        return false;
+    }
+
+    public void interactWithBackpack(int spot)
+    {
+        if (backpack[spot] != null && !backpack[spot].isEmpty())
+        {
+            List<MapObject> content = backpack[spot];
+            System.out.println(content.get(0).getClass().getSimpleName());
+            if (content.get(0) instanceof Armor)
+            {
+                equipArmor((Armor) content.get(0));
+            }
+            else
+            {
+                equipTool(content.get(0));
+            }
+        }
     }
 }

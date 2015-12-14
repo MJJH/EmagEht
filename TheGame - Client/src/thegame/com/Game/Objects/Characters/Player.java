@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
+import thegame.com.Game.Objects.Tool;
 import thegame.shared.IGameClientToServer;
 
 /**
@@ -447,17 +448,21 @@ public class Player extends CharacterGame {
 
     public void useTool(float x, float y, IGameClientToServer gameLogic)
     {
-        if (System.currentTimeMillis() - used >= holding.type.speed)
+        if (holding instanceof Tool)
         {
-            try
+            if (System.currentTimeMillis() - used >= ((Tool)holding).type.speed)
             {
-                if (gameLogic.useTool(id, x, y))
+                used = System.currentTimeMillis();
+                try
                 {
-                    //feedback
+                    if (gameLogic.useTool(id, x, y))
+                    {
+                        //feedback
+                    }
+                } catch (RemoteException ex)
+                {
+                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -512,13 +517,8 @@ public class Player extends CharacterGame {
             d.addTexture(Sets.SpikeHelmet);
             d.addTexture(Sets.bodyArmor);
             d.addTexture(Sets.legArmor);
-            
-
-            
 
             //d.addTexture(Sets.SpikeHelmet);
-
-
             Animation a = new Animation(d, 10);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 5);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
@@ -530,7 +530,7 @@ public class Player extends CharacterGame {
             d2.addTexture(Sets.SpikeHelmet);
             d2.addTexture(Sets.bodyArmor);
             d2.addTexture(Sets.legArmor);
-             d2.flipHorizontal();
+            d2.flipHorizontal();
 
             skins.put("standLeft", d2);
 
@@ -579,5 +579,7 @@ public class Player extends CharacterGame {
         setCords(update.getX(), update.getY());
         setDirection(update.getDirection());
         updateHP(update.getHP());
+        holding = update.getHolding();
+        armor = update.getArmor();
     }
 }
