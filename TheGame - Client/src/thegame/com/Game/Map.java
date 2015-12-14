@@ -261,7 +261,7 @@ public class Map implements Serializable {
             {
                 if(player.getID() == update.getID())
                 {
-                    if(player == me)
+                    if(player.getID() == me.getID())
                     {
                         me.updateHP(player.getHP());
                         return;

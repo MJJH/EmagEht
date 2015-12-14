@@ -229,7 +229,7 @@ public class GameServerToClientHandler {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener) || isSending.contains(listener))
+            if (connectionLossTable.contains(listener))
             {
                 continue;
             }

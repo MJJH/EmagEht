@@ -276,26 +276,29 @@ public class Map implements Serializable {
 
     public void runAddMapObject()
     {
-        for (MapObject mo : toAdd)
+        synchronized (toAdd)
         {
-            gameServerToClientHandler.addMapObject(mo);
+            for (MapObject mo : toAdd)
+            {
+                gameServerToClientHandler.addMapObject(mo);
 
-            if (mo instanceof Enemy)
-            {
-                enemies.add((Enemy) mo);
-                addToUpdate(mo);
-            } else if (mo instanceof Block)
-            {
-                blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
-            } else if (mo instanceof Player)
-            {
-                players.add((Player) mo);
-            } else
-            {
-                objects.add(mo);
+                if (mo instanceof Enemy)
+                {
+                    enemies.add((Enemy) mo);
+                    addToUpdate(mo);
+                } else if (mo instanceof Block)
+                {
+                    blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
+                } else if (mo instanceof Player)
+                {
+                    players.add((Player) mo);
+                } else
+                {
+                    objects.add(mo);
+                }
             }
+            toAdd.clear();
         }
-        toAdd.clear();
     }
 
     public void removeMapObject(MapObject removeMapObject)
@@ -308,47 +311,50 @@ public class Map implements Serializable {
 
     public void runRemoveMapObjects()
     {
-        for (MapObject removeObject : toRemove)
+        synchronized (toRemove)
         {
-            int type = 0;
-            if (removeObject instanceof Block)
+            for (MapObject removeObject : toRemove)
             {
-                type = 1;
-            } else if (removeObject instanceof Enemy)
-            {
-                type = 2;
-            } else if (removeObject instanceof Player)
-            {
-                type = 3;
-            } else if (removeObject instanceof MapObject)
-            {
-                type = 4;
-            }
-            gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
-
-            toUpdate.remove(removeObject);
-
-            if (removeObject instanceof Block)
-            {
-                try
+                int type = 0;
+                if (removeObject instanceof Block)
                 {
-                    blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-                } catch (Exception e)
+                    type = 1;
+                } else if (removeObject instanceof Enemy)
                 {
-                    System.err.println(e.getMessage());
+                    type = 2;
+                } else if (removeObject instanceof Player)
+                {
+                    type = 3;
+                } else if (removeObject instanceof MapObject)
+                {
+                    type = 4;
                 }
-            } else if (removeObject instanceof Enemy)
-            {
-                enemies.remove((Enemy) removeObject);
-            } else if (removeObject instanceof Player)
-            {
-                players.remove((Player) removeObject);
-            } else
-            {
-                objects.remove(removeObject);
+                gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+
+                toUpdate.remove(removeObject);
+
+                if (removeObject instanceof Block)
+                {
+                    try
+                    {
+                        blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+                    } catch (Exception e)
+                    {
+                        System.err.println(e.getMessage());
+                    }
+                } else if (removeObject instanceof Enemy)
+                {
+                    enemies.remove((Enemy) removeObject);
+                } else if (removeObject instanceof Player)
+                {
+                    players.remove((Player) removeObject);
+                } else
+                {
+                    objects.remove(removeObject);
+                }
             }
+            toRemove.clear();
         }
-        toRemove.clear();
     }
 
     public MapObject GetTile(float x, float y, MapObject self)
