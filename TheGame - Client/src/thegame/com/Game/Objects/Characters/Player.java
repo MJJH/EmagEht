@@ -34,7 +34,7 @@ public class Player extends CharacterGame {
     private int spawnY;
     private transient boolean toUpdate;
 
-    private HashMap<String, Skin> skins;
+    public HashMap<String, Skin> skins;
 
     public void walkRight()
     {
@@ -512,6 +512,7 @@ public class Player extends CharacterGame {
             };
 
             Image d = new Image(Sets.player);
+            
             d.recolour(h);
             Animation a = new Animation(d, 10);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 40);

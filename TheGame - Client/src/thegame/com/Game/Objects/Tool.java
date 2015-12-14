@@ -2,6 +2,8 @@ package thegame.com.Game.Objects;
 
 import display.IntColor;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 
 /**
@@ -17,16 +19,8 @@ public class Tool extends MapObject {
     @Override
     public void createSkin() {
         try {
-            display.Image i = new display.Image(display.Parts.Flint);
-            i.recolour(new Color[] { 
-                null,
-                IntColor.rgb(35, 25, 25),
-                IntColor.rgb(60, 60, 60),
-                IntColor.rgb(100, 100, 110)
-            });
-            this.skin = i;
+            this.skin = type.getSkin();
         } catch (IOException ex) {
-            
         }
     }
 }

@@ -25,10 +25,10 @@ public class ArmorType implements Serializable{
      */
     public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodyPart)
     {
-     this.name = name;
-     this.multiplier = multiplier;
-     this.reqLvl = reqLvl;
-     this.bodypart = bodyPart;
+        this.name = name;
+        this.multiplier = multiplier;
+        this.reqLvl = reqLvl;
+        this.bodypart = bodyPart;
     }
     
 }
