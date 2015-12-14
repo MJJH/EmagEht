@@ -61,6 +61,33 @@ public abstract class CharacterGame extends MapObject {
         }
     }
 
+    public void removeFromBackpack(MapObject object)
+    {
+        int spot = -1;
+
+        for (int i = 0; i < backpack.length; i++)
+        {
+            List<MapObject> l = backpack[i];
+            if (l == null)
+            {
+                continue;
+            }
+
+            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
+            {
+                if (l.contains(object))
+                {
+                    spot = i;
+                }
+            }
+        }
+
+        if (spot > -1)
+        {
+            backpack[spot].clear();
+        }
+    }
+
     /**
      * This method will drop an object from your backpack to the map.
      *
@@ -83,24 +110,28 @@ public abstract class CharacterGame extends MapObject {
         if (armor.get(armorAdd.getArmorType().bodypart) == null)
         {
             armor.put(armorAdd.getArmorType().bodypart, armorAdd);
+            removeFromBackpack(armorAdd);
         } else
         {
-            addToBackpack(armor.get(armorAdd.getArmorType().bodypart));
-            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
+            if (addToBackpack(armor.get(armorAdd.getArmorType().bodypart)))
+            {
+                removeFromBackpack(armorAdd);
+                armor.put(armorAdd.getArmorType().bodypart, armorAdd);
+            }
         }
     }
 
     /**
      * This method lets the in game character unequip an armor piece.
      *
-     * @param armorDel
+     * @param partToUnequip
      */
-    public void unequipArmor(Armor armorDel)
+    public void unequipArmor(ArmorType.bodyPart partToUnequip)
     {
-        if (armor.get(armorDel.getArmorType().bodypart) != null && armor.get(armorDel.getArmorType().bodypart).getID() == armorDel.getID())
+        if (armor.get(partToUnequip) != null)
         {
-            addToBackpack(armor.get(armorDel.getArmorType().bodypart));
-            armor.put(armorDel.getArmorType().bodypart, null);
+            addToBackpack(armor.get(partToUnequip));
+            armor.put(partToUnequip, null);
         }
     }
 
@@ -113,10 +144,15 @@ public abstract class CharacterGame extends MapObject {
     {
         if (holding == null)
         {
+            removeFromBackpack(toolAdd);
             holding = toolAdd;
         } else if (!holding.equals(toolAdd))
         {
-            holding = toolAdd;
+            if (addToBackpack(holding))
+            {
+                removeFromBackpack(toolAdd);
+                holding = toolAdd;
+            }
         }
     }
 
@@ -125,7 +161,12 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipTool()
     {
-        holding = null;
+        if (holding != null)
+        {
+            addToBackpack(holding);
+            holding = null;
+        }
+
     }
 
     /**
@@ -270,12 +311,10 @@ public abstract class CharacterGame extends MapObject {
         if (backpack[spot] != null && !backpack[spot].isEmpty())
         {
             List<MapObject> content = backpack[spot];
-            System.out.println(content.get(0).getClass().getSimpleName());
             if (content.get(0) instanceof Armor)
             {
                 equipArmor((Armor) content.get(0));
-            }
-            else
+            } else
             {
                 equipTool(content.get(0));
             }
