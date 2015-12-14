@@ -33,7 +33,7 @@ public enum Parts implements iTexture {
     armorShoulderBack(Part.BACKARM, Type.ARMOR, 35, 217, 8, 8,1,0),
     armorWristBack(Part.BACKARM, Type.ARMOR, 57, 218, 5, 3,-3,-9),
     armorShoulderFront(Part.FRONTARM, Type.ARMOR, 18, 216, 14, 10,3,1),
-    armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6,1,-11),
+    armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6,1,-9),
 
     shortTop(Part.TORSO, Type.ARMOR, 1, 96, 14, 2,0,0),
     shortBack(Part.BACKLEG, Type.ARMOR, 8, 98, 8, 7,0,0),
