@@ -1,33 +1,40 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
-import display.Parts;
 import display.Sets;
 import display.Skin;
 import java.io.IOException;
-
+import java.io.Serializable;
 
 /**
  * A class representing the type of Armor used.
- * @author Mark 
+ *
+ * @author Mark
  */
-public class ArmorType {
+public class ArmorType implements Serializable{
 
-    public final String name;
-    public final int multiplier;
-    public final int reqLvl;
-    public Skin skin;
-    public final bodyPart bodypart;
+    private static final long serialVersionUID = 5529685098264757690L;
 
-    Skin getSkin() throws IOException {
-        if(skin == null)
+    public String name;
+    public int multiplier;
+    public int reqLvl;
+    public transient Skin skin;
+    public bodyPart bodypart;
+
+    Skin getSkin() throws IOException
+    {
+        if (skin == null)
+        {
             createSkin();
-        
+        }
+
         return skin;
     }
 
-    private void createSkin() throws IOException {
-        switch(bodypart) {
+    private void createSkin() throws IOException
+    {
+        switch (bodypart)
+        {
             case CHESTPLATE:
                 skin = new Image(Sets.bodyArmor);
                 break;
@@ -40,23 +47,8 @@ public class ArmorType {
         }
     }
 
-    public enum bodyPart { HELMET, CHESTPLATE, GREAVES, BOOTS, SHIELD }
+    public enum bodyPart {
 
-    /**
-     * Initiates an instance of this class with the following attributes
-     * @param name The name of the ArmorType 
-     * @param multiplier The multiplier of the Armortype
-     * @param reqLvl The required level of the Armortype
-     * @param skin The look of the Armortype
-     * @param bodyPart The place on the body where to wear the Armor
-     */
-    public ArmorType(String name, int multiplier, int reqLvl, Skin skin, bodyPart bodyPart)
-    {
-     this.name = name;
-     this.multiplier = multiplier;
-     this.reqLvl = reqLvl;
-     this.skin = skin;
-     this.bodypart = bodyPart;
+        HELMET, CHESTPLATE, GREAVES, SHIELD
     }
-    
 }

@@ -1,24 +1,31 @@
 package thegame.com.Game.Objects;
 
+import java.io.IOException;
 import java.io.Serializable;
-
 
 /**
  * A class representing the type of Armor used.
- * @author Mark 
+ *
+ * @author Mark
  */
 public class ArmorType implements Serializable{
 
-    public final String name;
-    public final int multiplier;
-    public final int reqLvl;
-    public final bodyPart bodypart;
+    private static final long serialVersionUID = 5529685098264757690L;
 
-    public enum bodyPart { HELMET, CHESTPLATE, GREAVES, BOOTS, SHIELD }
+    public String name;
+    public int multiplier;
+    public int reqLvl;
+    public bodyPart bodypart;
+
+    public enum bodyPart {
+
+        HELMET, CHESTPLATE, GREAVES, SHIELD
+    }
 
     /**
      * Initiates an instance of this class with the following attributes
-     * @param name The name of the ArmorType 
+     *
+     * @param name The name of the ArmorType
      * @param multiplier The multiplier of the Armortype
      * @param reqLvl The required level of the Armortype
      * @param bodyPart The place on the body where to wear the Armor
@@ -30,5 +37,5 @@ public class ArmorType implements Serializable{
         this.reqLvl = reqLvl;
         this.bodypart = bodyPart;
     }
-    
+
 }
