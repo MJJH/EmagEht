@@ -113,4 +113,8 @@ public enum BlockType {
             Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String getName() {
+        return name;
+    }
 }

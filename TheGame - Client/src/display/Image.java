@@ -315,7 +315,7 @@ public class Image extends Skin {
             if(parent.getConnectY() - t.getConnectY() < 0) {
                 difTop = Math.abs(parent.getConnectY() - t.getConnectY());
             }
-            if(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()) < height) {
+            if(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height) {
                 difBot = Math.abs(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()));
             }
             if(parent.getConnectX() - t.getConnectX() < 0) {
@@ -354,6 +354,12 @@ public class Image extends Skin {
     map.put(entry.getKey(), entry.getValue());
   }
 }    
+
+    public void removeTexture(iTexture it)
+    {
+        parts.remove(it);
+        repaint();
+    }
 
   
  

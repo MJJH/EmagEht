@@ -40,7 +40,7 @@ public class Block extends MapObject {
     {
         return 0;
     }
-
+    
     public BlockType getBlockType()
     {
         return type;

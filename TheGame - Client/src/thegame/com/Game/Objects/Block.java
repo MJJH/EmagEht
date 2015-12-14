@@ -16,4 +16,8 @@ public class Block extends MapObject {
     {
         skin = type.skin;
     }
+    
+    public BlockType getType() {
+        return type;
+    }
 }

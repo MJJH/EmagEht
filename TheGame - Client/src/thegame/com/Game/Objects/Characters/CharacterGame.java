@@ -1,5 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
+import display.Image;
+import display.Parts;
 import display.Skin;
 import display.iTexture;
 import java.io.IOException;
@@ -51,8 +53,23 @@ public abstract class CharacterGame extends MapObject {
                 continue;
             }
 
+            if (object instanceof Tool || object instanceof Armor)
+            {
+                continue;
+            }
+
             if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
             {
+                if (l.get(0) instanceof Block && object instanceof Block)
+                {
+                    Block b = (Block) l.get(0);
+                    Block b2 = (Block) object;
+                    if (!b.getType().getName().equals(b2.getType().getName()))
+                    {
+                        continue;
+                    }
+                }
+
                 spot = i;
             }
         }
@@ -124,6 +141,27 @@ public abstract class CharacterGame extends MapObject {
                 armor.put(armorAdd.getArmorType().bodypart, armorAdd);
             }
         }
+        
+        /*if (this instanceof Player)
+        {
+            Player p = (Player) this;
+            Image i = (Image) p.skins.get("standLeft");
+            Image i2 = (Image) p.skins.get("standRight");
+
+            for(Armor a : armor.values()) {
+                for (iTexture it : ((display.Image) a.getSkin()).getParts().keySet())
+                {
+                    try
+                    {
+                        i.addTexture(it);
+                        i.flipHorizontal((Parts) it);
+                        i2.addTexture(it);
+                    } catch (IOException ex)
+                    {
+                    }
+                }
+            }
+        }*/
     }
 
     /**
@@ -159,6 +197,25 @@ public abstract class CharacterGame extends MapObject {
                 holding = toolAdd;
             }
         }
+
+       /* if (this instanceof Player)
+        {
+            Player p = (Player) this;
+            Image i = (Image) p.skins.get("standLeft");
+            Image i2 = (Image) p.skins.get("standRight");
+
+            for (iTexture it : ((display.Image) toolAdd.getSkin()).getParts().keySet())
+            {
+                try
+                {
+                    i.addTexture(it);
+                    i.flipHorizontal((Parts) it);
+                    i2.addTexture(it);
+                } catch (IOException ex)
+                {
+                }
+            }
+        }*/
     }
 
     /**
@@ -169,6 +226,20 @@ public abstract class CharacterGame extends MapObject {
         if (holding != null)
         {
             addToBackpack(holding);
+
+            /*if (this instanceof Player)
+            {
+                Player p = (Player) this;
+                Image i = (Image) p.skins.get("standLeft");
+                Image i2 = (Image) p.skins.get("standRight");
+
+                for (iTexture it : ((display.Image) holding.getSkin()).getParts().keySet())
+                {
+                    i.removeTexture(it);
+                    i2.removeTexture(it);
+                }
+            }*/
+
             holding = null;
         }
 

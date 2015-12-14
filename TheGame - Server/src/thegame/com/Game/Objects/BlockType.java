@@ -46,4 +46,8 @@ public enum BlockType {
         this.imageY = bty;
         this.solid = solid;
     }
+    
+    public String getName() {
+        return name;
+    }
 }

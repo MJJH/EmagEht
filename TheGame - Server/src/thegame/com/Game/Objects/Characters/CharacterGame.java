@@ -59,7 +59,7 @@ public abstract class CharacterGame extends MapObject {
      * @param object, the specific object you want to add to your backpack
      * @return
      */
-    public boolean addToBackpack(MapObject object)
+public boolean addToBackpack(MapObject object)
     {
         int spot = -1;
 
@@ -71,22 +71,24 @@ public abstract class CharacterGame extends MapObject {
                 continue;
             }
 
+            if (object instanceof Tool || object instanceof Armor)
+            {
+                continue;
+            }
+
             if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
             {
                 if (l.get(0) instanceof Block && object instanceof Block)
                 {
-                    Block block = (Block) l.get(0);
-                    Block toAddBlock = (Block) object;
-                    if (block.getBlockType().equals(toAddBlock.getBlockType()))
+                    Block b = (Block) l.get(0);
+                    Block b2 = (Block) object;
+                    if (!b.getBlockType().getName().equals(b2.getBlockType().getName()))
                     {
-                        spot = i;
-                        break;
+                        continue;
                     }
-                } else
-                {
-                    spot = i;
-                    break;
                 }
+
+                spot = i;
             }
         }
 
