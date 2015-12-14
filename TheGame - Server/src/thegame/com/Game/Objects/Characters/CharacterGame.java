@@ -236,7 +236,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return tool
      */
-    public Tool getHolding()
+    public MapObject getHolding()
     {
         return holding;
     }

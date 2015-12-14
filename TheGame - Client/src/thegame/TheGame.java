@@ -106,6 +106,9 @@ public class TheGame extends Application {
     private AnimationTimer draw;
     private Timer movement;
 
+    private Stage stages;
+    public boolean LoadingDone;
+
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
         if (!sjeton)
@@ -215,15 +218,96 @@ public class TheGame extends Application {
     {
         if (event.getButton().equals(MouseButton.PRIMARY))
         {
-            double clickX = (event.getSceneX() + dx) / config.block.val - startX;
-
-            double clickY = (scene.getHeight() - event.getSceneY() + dy) / config.block.val - startY;
-
-            me.useTool((float) clickX, (float) clickY, gameClientToServer);
+            clickHandler(event.getSceneX(), event.getSceneY());
         }
     };
-    private Stage stages;
-    public boolean LoadingDone;
+
+    private void clickHandler(double clickX, double clickY)
+    {
+        boolean useTool = true;
+        if (inventory)
+        {
+            if (clickX <= 500 && clickY <= 150 && clickX > 10 && clickY > 10)
+            {
+                useTool = false;
+                double horizontalX = clickX / 50;
+                int horizontalSlot = Math.round((int) horizontalX);
+                if ((horizontalX - Math.floor(horizontalX)) < 0.2)
+                {
+                    horizontalSlot = -1;
+                }
+
+                double verticalY = clickY / 50;
+                int verticalSlot = Math.round((int) verticalY);
+                if ((verticalY - Math.floor(verticalY)) < 0.2)
+                {
+                    verticalSlot = -1;
+                }
+
+                if (horizontalSlot != -1 && verticalSlot != -1)
+                {
+                    me.interactWithBackpack(verticalSlot * 10 + horizontalSlot);
+                }
+            }
+        }
+        if (sjeton)
+        {
+            if (clickX >= 410 && clickY >= 540)
+            {
+                useTool = false;
+            }
+        }
+        if (notification)
+        {
+            if (clickX >= 410 && clickY >= 540)
+            {
+                useTool = false;
+            }
+        }
+        //Tool
+        if (clickX >= scene.getWidth() - 50 && clickY >= scene.getHeight() - 50 && clickX < scene.getWidth() - 10 && scene.getHeight() - 10 > clickY)
+        {
+            useTool = false;
+            me.unequipTool();
+        }
+
+        //Armor
+        if (clickX >= scene.getWidth() - 50 && clickX < scene.getWidth() - 10 && clickY >= scene.getHeight() - 5 * 50 && clickY < scene.getHeight() - (10 + 50))
+        {
+            useTool = false;
+            double vertical = (scene.getHeight() - clickY) / 50;
+            int verticalSlot = Math.round((int) vertical);
+            if ((vertical - Math.floor(vertical)) < 0.2)
+            {
+                verticalSlot = -1;
+            }
+            if (verticalSlot != -1)
+            {
+                switch (verticalSlot)
+                {
+                    case 1:
+                        me.unequipArmor(ArmorType.bodyPart.SHIELD);
+                        break;
+                    case 2:
+                        me.unequipArmor(ArmorType.bodyPart.GREAVES);
+                        break;
+                    case 3:
+                        me.unequipArmor(ArmorType.bodyPart.CHESTPLATE);
+                        break;
+                    case 4:
+                        me.unequipArmor(ArmorType.bodyPart.HELMET);
+                        break;
+                }
+            }
+        }
+
+        if (useTool)
+        {
+            double mapX = (clickX + dx) / config.block.val - startX;
+            double mapY = (scene.getHeight() - clickY + dy) / config.block.val - startY;
+            me.useTool((float) mapX, (float) mapY, gameClientToServer);
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws IOException
@@ -231,7 +315,7 @@ public class TheGame extends Application {
         //System.setProperty("java.rmi.server.hostname", "84.31.253.143");
         sound = new Sound("MenuSound.wav");
         sound.loop();
-        
+
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && listener != null)
