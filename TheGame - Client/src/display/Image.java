@@ -32,14 +32,14 @@ import javax.imageio.ImageIO;
 public class Image extends Skin {
     private int getal = 1;
     private WritableImage image;
-    private MyLinkedMap<Parts, PartImage> parts;
+    private Map<Parts, PartImage> parts;
     
     public Image(iTexture texture) throws IOException {
        
         this.height = texture.getHeight();
         this.width = texture.getWidth();
         
-        parts = new MyLinkedMap<>();
+        parts = new LinkedHashMap<>();
         
         
         BufferedImage bI;
@@ -49,7 +49,7 @@ public class Image extends Skin {
         if(texture instanceof Parts) {
             Parts t = (Parts) texture;
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.add(parts,getal,t, new PartImage(i, 0, 0));
+            parts.put(t, new PartImage(i, 0, 0));
             getal++;
         } else if(texture instanceof Sets) {
             
@@ -57,7 +57,7 @@ public class Image extends Skin {
             Sets s = (Sets) texture;
             for(CombineParts cp : s.parts) {
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.add(parts,getal,cp.part, new PartImage(i, cp.x, cp.y));
+                parts.put(cp.part, new PartImage(i, cp.x, cp.y));
                 getal++;
             }
         
@@ -109,7 +109,7 @@ public class Image extends Skin {
             Parts parent = getParent(t);
             
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.add(parts,getal,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
             getal++;
         } else if(texture instanceof Sets) {
             Sets s = (Sets) texture;
@@ -119,7 +119,7 @@ public class Image extends Skin {
                 Parts parent = getParent(cp.part);
                 
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.add(parts,getal,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
             getal++;
             }
         }
@@ -278,10 +278,6 @@ public class Image extends Skin {
     map.put(entry.getKey(), entry.getValue());
   }
 }    
-
-    public void add() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
   
  
