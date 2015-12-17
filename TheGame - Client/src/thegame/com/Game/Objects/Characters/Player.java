@@ -1,14 +1,10 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Animation;
 import display.Image;
-import display.Parts;
 import display.Sets;
 import display.Skin;
-import display.iTexture;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
@@ -38,49 +33,6 @@ public class Player extends CharacterGame {
     private transient boolean toUpdate;
 
     public HashMap<String, Skin> skins;
-
-    public void walkRight()
-    {
-        direction = sides.RIGHT;
-
-        if (hSpeed < 0)
-        {
-            hSpeed = 0.075f;
-        } else if (hSpeed < 0.3)
-        {
-            hSpeed += 0.075f;
-        }
-    }
-
-    public void walkLeft()
-    {
-        direction = sides.LEFT;
-
-        if (hSpeed > 0)
-        {
-            hSpeed = -0.075f;
-        } else if (hSpeed > -0.3)
-        {
-            hSpeed -= 0.075f;
-        }
-    }
-
-    public void jump() 
-    {
-        jumping = true;
-        vSpeed += 0.05f;
-
-        if (vSpeed >= 0.3f)
-        {
-            vSpeed = 0.3f;
-            jumping = false;
-        }
-    }
-
-    public void stopJump()
-    {
-        jumping = false;
-    }
 
     public void update()
     {

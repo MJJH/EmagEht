@@ -6,10 +6,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
- * This class contains code for the party. 
+ * This class contains code for the party.
+ *
  * @author laure
  */
-public class Party implements Serializable{
+public class Party implements Serializable {
 
     private int id;
     private final ArrayList<Account> members;
@@ -18,96 +19,102 @@ public class Party implements Serializable{
 
     /**
      * This method creates a party with the owner as member and owner.
+     *
      * @param owner
      */
-    public Party(Account owner)throws RemoteException
+    public Party(Account owner) throws RemoteException
     {
         this.owner = owner;
         members = new ArrayList();
         chat = new ArrayList();
-        
+
     }
 
     /**
      * This method creates a PartyInvite for an account by a sender.
+     *
      * @param invite
      * @param sender
      */
     public void sendInvite(Account invite, Account sender)
     {
-        if(invite != null && sender != null && !invite.getUsername().equals(sender.getUsername()))
+        if (invite != null && sender != null && !invite.getUsername().equals(sender.getUsername()))
         {
             invite.sendPartyInviteToMe(new PartyInvite(invite, this, sender));
         }
     }
-    
+
     /**
      * This method creates a message in the party chat.
+     *
      * @param sender
      * @param message
      * @return returns true if message is send
      */
     public boolean sendMessage(Account sender, String message)
     {
-        if(!message.isEmpty())
+        if (!message.isEmpty())
         {
             chat.add(new Message(sender, message));
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
-     * This method is used to leave a party. 
-     * If the owner is leaving, the party will get a new owner.
+     * This method is used to leave a party. If the owner is leaving, the party
+     * will get a new owner.
+     *
      * @param leaveAccount
-     * @return returns null if party is empty and owner is leaving, else new/current owner.
+     * @return returns null if party is empty and owner is leaving, else
+     * new/current owner.
      */
-    public Account leaveParty (Account leaveAccount)
+    public Account leaveParty(Account leaveAccount)
     {
-        if(leaveAccount.equals(owner))
+        if (leaveAccount.equals(owner))
         {
-            if(members.size() > 1)
+            if (members.size() > 1)
             {
                 members.remove(leaveAccount);
                 leaveAccount.leaveParty();
                 owner = members.get(0);
                 return owner;
-            }
-            else
+            } else
             {
                 return null;
             }
-        }
-        else
+        } else
         {
             members.remove(leaveAccount);
             leaveAccount.leaveParty();
         }
-        return  owner;
+        return owner;
     }
-    
+
     /**
      * This method gets the members of a party
+     *
      * @return list of accounts
      */
     public ArrayList<Account> getMembers()
     {
         return members;
     }
-    
+
     /**
      * This method gets the party owner
+     *
      * @return account
      */
     public Account getOwner()
     {
         return owner;
     }
-    
+
     /**
      * This method gets party chat
+     *
      * @return list of messages
      */
     public ArrayList<Message> getChat()

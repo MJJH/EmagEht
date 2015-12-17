@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author Mark
  */
-public class ArmorType implements Serializable{
+public class ArmorType implements Serializable {
 
     private static final long serialVersionUID = 5529685098264757690L;
 

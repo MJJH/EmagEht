@@ -26,11 +26,11 @@ public abstract class MapObject implements Serializable {
     protected float height;
     protected float width;
     protected float solid;
-    
+
     protected transient Skin skin;
     protected transient Map playing;
 
-    public enum sides implements Serializable{
+    public enum sides implements Serializable {
 
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
@@ -101,8 +101,6 @@ public abstract class MapObject implements Serializable {
             throw new IllegalArgumentException("Solid should be between 0 and 1");
         }
     }
-
-    
 
     /**
      * Get x (horizontal) position
@@ -181,13 +179,13 @@ public abstract class MapObject implements Serializable {
      */
     public Skin getSkin()
     {
-        if(skin == null)
+        if (skin == null)
+        {
             createSkin();
-        
+        }
+
         return skin;
     }
-
-    
 
     public int getID()
     {
@@ -215,17 +213,17 @@ public abstract class MapObject implements Serializable {
     {
         this.playing = set;
     }
-    
+
     public Map getMap()
     {
         return playing;
     }
-    
+
     public void setSX(float newSpeed)
     {
         hSpeed = newSpeed;
     }
-    
+
     public void setSY(float newSpeed)
     {
         vSpeed = newSpeed;

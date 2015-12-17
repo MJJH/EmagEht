@@ -18,7 +18,7 @@ public class Physics {
     public static boolean gravity(MapObject subject)
     {
         EnumMap<MapObject.sides, List<MapObject>> collision = Collision.collision(subject, false);
-                
+
         if (collision.get(MapObject.sides.BOTTOM).isEmpty() && subject.getSY() > -1)
         {
             subject.setSY(subject.getSY() - .1f);

@@ -10,14 +10,16 @@ package thegame;
  * @author Martijn
  */
 public enum config {
+
     block(20);
-    
+
     public final float val;
-    
-    config(float val) {
+
+    config(float val)
+    {
         this.val = val;
     }
-    
+
     //public static String ip = "84.24.141.120";
     public static String ip = "localhost";
     public static String bindName = "//" + ip + ":1099/gameLogic";

@@ -10,22 +10,24 @@ public class SplashScreen extends JWindow {
 
     private static JProgressBar progressBar = new JProgressBar();
     private static SplashScreen splashScreen;
-    private static int count = 1, TIMER_PAUSE = 25,PROGBAR_MAX=100;
+    private static int count = 1, TIMER_PAUSE = 25, PROGBAR_MAX = 100;
     private static Timer progressBarTimer;
     private int counttill;
-    
+
     ActionListener al = new ActionListener() {
 
         @Override
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
+        {
             progressBar.setValue(count);
-            if(counttill == count)
+            if (counttill == count)
             {
                 progressBarTimer.stop();
-                
+
             }
-            
-            if (PROGBAR_MAX == count) {
+
+            if (PROGBAR_MAX == count)
+            {
                 splashScreen.dispose();
                 progressBarTimer.stop();
             }
@@ -34,11 +36,13 @@ public class SplashScreen extends JWindow {
         }
     };
 
-    public void SplashScreen() {
+    public void SplashScreen()
+    {
         createSplash();
     }
 
-    private void createSplash() {
+    private void createSplash()
+    {
         Container container = getContentPane();
         JPanel panel = new JPanel();
         panel.setBorder(new javax.swing.border.EtchedBorder());
@@ -51,7 +55,6 @@ public class SplashScreen extends JWindow {
         progressBar.setMaximum(PROGBAR_MAX);
         container.add(progressBar, BorderLayout.SOUTH);
 
-        
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -59,37 +62,37 @@ public class SplashScreen extends JWindow {
         startProgressBar();
     }
 
-    private void startProgressBar() {
+    private void startProgressBar()
+    {
         progressBarTimer = new Timer(TIMER_PAUSE, al);
-        
+
     }
 
-   
-
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
-            public void run() {
+            public void run()
+            {
                 splashScreen = new SplashScreen();
             }
         });
     }
-    
+
     public void countTill(int count)
     {
         this.counttill = count;
         progressBarTimer.start();
     }
-    
+
     public int returnCount()
     {
-       return count;
+        return count;
     }
 
-   
-
-    public void giveSplash(SplashScreen splash) {
+    public void giveSplash(SplashScreen splash)
+    {
         splashScreen = splash;
     }
 }

@@ -17,20 +17,20 @@ import javafx.scene.text.Text;
  *
  * @author robin
  */
-    public class Title extends StackPane {
+public class Title extends StackPane {
 
-        public Title(String name)
-        {
-            Rectangle bg = new Rectangle(250, 60);
-            bg.setStroke(Color.WHITE);
-            bg.setStrokeWidth(2);
-            bg.setFill(null);
+    public Title(String name)
+    {
+        Rectangle bg = new Rectangle(250, 60);
+        bg.setStroke(Color.WHITE);
+        bg.setStrokeWidth(2);
+        bg.setFill(null);
 
-            Text text = new Text(name);
-            text.setFill(Color.WHITE);
-            text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 50));
+        Text text = new Text(name);
+        text.setFill(Color.WHITE);
+        text.setFont(Font.font("Tw Cen MT Condensed", FontWeight.SEMI_BOLD, 50));
 
-            setAlignment(Pos.CENTER);
-            getChildren().addAll(bg, text);
-        }
+        setAlignment(Pos.CENTER);
+        getChildren().addAll(bg, text);
     }
+}

@@ -40,7 +40,7 @@ public class Block extends MapObject {
     {
         return 0;
     }
-    
+
     public BlockType getBlockType()
     {
         return type;
@@ -59,15 +59,14 @@ public class Block extends MapObject {
                 {
                     if (object instanceof Particle)
                     {
-                        if(particleStack == null)
+                        if (particleStack == null)
                         {
                             particleStack = object;
-                        }
-                        else
+                        } else
                         {
-                            if(curDifX > Math.abs(object.getX()-xPosition))
+                            if (curDifX > Math.abs(object.getX() - xPosition))
                             {
-                                curDifX = Math.abs(object.getX()-xPosition);
+                                curDifX = Math.abs(object.getX() - xPosition);
                                 particleStack = object;
                             }
                         }

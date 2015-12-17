@@ -12,15 +12,19 @@ import javafx.scene.paint.Color;
  * @author Martijn
  */
 public class Tool extends MapObject {
+
     private static final long serialVersionUID = 6529585098267757690L;
 
     public ToolType type;
 
     @Override
-    public void createSkin() {
-        try {
+    public void createSkin()
+    {
+        try
+        {
             this.skin = type.getSkin();
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
         }
     }
 }

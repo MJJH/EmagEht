@@ -11,7 +11,7 @@ import thegame.com.Game.Map;
  *
  * @author laure
  */
-public class Lobby extends UnicastRemoteObject{
+public class Lobby extends UnicastRemoteObject {
 
     private int id;
     private ArrayList<Message> chat;
@@ -37,12 +37,12 @@ public class Lobby extends UnicastRemoteObject{
      */
     public boolean sendMessage(Account sender, String message)
     {
-        if(!message.isEmpty())
+        if (!message.isEmpty())
         {
             chat.add(new Message(sender, message));
             return true;
         }
-        
+
         return false;
     }
 
@@ -63,7 +63,7 @@ public class Lobby extends UnicastRemoteObject{
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -75,39 +75,43 @@ public class Lobby extends UnicastRemoteObject{
     {
         //plays = new Map();
     }
-    
+
     /**
      * This method gets chat messages
+     *
      * @return messages in chat
      */
-    public ArrayList<Message> getChat ()
+    public ArrayList<Message> getChat()
     {
         return chat;
     }
-    
+
     /**
      * This method gets all joined players
+     *
      * @return accounts in lobby
      */
-    public ArrayList<Account> getAccounts ()
+    public ArrayList<Account> getAccounts()
     {
         return accounts;
     }
-    
+
     /**
-     * This method gets the map 
+     * This method gets the map
+     *
      * @return game map
      */
-    public Map getMap ()
+    public Map getMap()
     {
         return plays;
     }
-    
+
     /**
      * This method gets the lobby ID
+     *
      * @return lobby ID
      */
-    public int getID ()
+    public int getID()
     {
         return id;
     }

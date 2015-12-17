@@ -21,7 +21,6 @@ public interface IGameServerToClientListener extends Remote, EventListener {
     public void sendGameChatMessage(Message message) throws RemoteException;
 
     //public void updatePlayer(int id, float x, float y, int direction) throws RemoteException;
-
     public void knockBackPlayer(float hSpeed, float vSpeed) throws RemoteException;
 
     public void removeMapObject(int id, int type, float x, float y) throws RemoteException;
@@ -29,12 +28,12 @@ public interface IGameServerToClientListener extends Remote, EventListener {
     public void addMapObject(MapObject mo) throws RemoteException;
 
     public void updateObjects(List<MapObject> toSend) throws RemoteException;
-    
+
     public void addToBackpack(MapObject object, int spot) throws RemoteException;
-    
+
     public void addToEmptyBackpack(MapObject object) throws RemoteException;
-    
-    public void setTeamLifes (int lifes) throws RemoteException;
-    
-    public void respawnMe () throws RemoteException;
+
+    public void setTeamLifes(int lifes) throws RemoteException;
+
+    public void respawnMe() throws RemoteException;
 }

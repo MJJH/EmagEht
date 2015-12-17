@@ -33,26 +33,26 @@ public class TheGameServer extends Application {
         try
         {
             /*
-            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
-                @Override
-                public Socket createSocket(String host, int port)
-                        throws IOException
-                {
-                    Socket socket = new Socket();
-                    socket.setSoTimeout(config.timeOutTime);
-                    socket.setSoLinger(false, 0);
-                    socket.connect(new InetSocketAddress(host, port), config.timeOutTime);
-                    return socket;
-                }
+             RMISocketFactory.setSocketFactory(new RMISocketFactory() {
+             @Override
+             public Socket createSocket(String host, int port)
+             throws IOException
+             {
+             Socket socket = new Socket();
+             socket.setSoTimeout(config.timeOutTime);
+             socket.setSoLinger(false, 0);
+             socket.connect(new InetSocketAddress(host, port), config.timeOutTime);
+             return socket;
+             }
 
-                @Override
-                public ServerSocket createServerSocket(int port)
-                        throws IOException
-                {
-                    return new ServerSocket(port);
-                }
-            });
-            */
+             @Override
+             public ServerSocket createServerSocket(int port)
+             throws IOException
+             {
+             return new ServerSocket(port);
+             }
+             });
+             */
             System.out.println("Server is starting up");
             gameClientToServerHandler = new GameClientToServerHandler();
             System.setProperty("java.rmi.server.hostname", config.ip);
@@ -64,7 +64,7 @@ public class TheGameServer extends Application {
         {
             gameClientToServerHandler = null;
             registry = null;
-            System.out.println("Server could not be started ("+ex.getMessage()+")");
+            System.out.println("Server could not be started (" + ex.getMessage() + ")");
             System.out.println("Shutting down now");
             System.exit(0);
         }

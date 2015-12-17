@@ -30,7 +30,7 @@ public class Particle extends MapObject {
      */
     public Particle(MapObject object, float x, float y, Map map)
     {
-        super(x+(object.getW()/4), y-(object.getH()/4), 0.5f, 0.5f, 0, map);
+        super(x + (object.getW() / 4), y - (object.getH() / 4), 0.5f, 0.5f, 0, map);
         setObject(object);
         this.count = 1;
     }
@@ -57,6 +57,7 @@ public class Particle extends MapObject {
     {
         count++;
     }
+
     public int getObjectCount()
     {
         return count;

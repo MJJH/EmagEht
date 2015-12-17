@@ -41,49 +41,6 @@ public class Enemy extends CharacterGame {
         equipTool(equip);
     }
 
-    public void walkRight()
-    {
-        direction = sides.RIGHT;
-
-        if (hSpeed < 0)
-        {
-            hSpeed = 0.05f;
-        } else if (hSpeed < 0.25)
-        {
-            hSpeed += 0.05;
-        }
-    }
-
-    public void walkLeft()
-    {
-        direction = sides.LEFT;
-
-        if (hSpeed > 0)
-        {
-            hSpeed = -0.05f;
-        } else if (hSpeed > -0.25)
-        {
-            hSpeed -= 0.05;
-        }
-    }
-
-    public void jump()
-    {
-        jumping = true;
-        vSpeed += 0.1f;
-
-        if (vSpeed >= 0.4f)
-        {
-            vSpeed = 0.4f;
-            jumping = false;
-        }
-    }
-
-    public void stopJump()
-    {
-        jumping = false;
-    }
-
     @Override
     public Boolean call()
     {

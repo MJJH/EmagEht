@@ -8,31 +8,24 @@ package thegame.com.Menu;
 import java.rmi.Remote;
 import java.util.ArrayList;
 
-
 /**
  *
  * @author nickbijmoer
  */
-public interface iParty extends Remote{
-   
+public interface iParty extends Remote {
+
     public ArrayList<Message> getChat();
-    
+
     public ArrayList<Account> getMembers();
-    
+
     public Account getOwner();
-    
-    public Account leaveParty (Account leaveAccount);
-    
+
+    public Account leaveParty(Account leaveAccount);
+
     public void sendInvite(Account invite, Account sender);
-    
+
     public boolean sendMessage(Account sender, String message);
-    
+
     public boolean joinParty(Account account);
 
-
-
-
-
-    
-    
 }

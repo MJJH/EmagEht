@@ -23,7 +23,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     private transient Map map;
     private transient Account myAccount;
     private transient Player me;
-    
+
     public void loadAfterRecieve(Account myAccount, Map map, Player me) throws RemoteException
     {
         this.myAccount = myAccount;
@@ -38,31 +38,30 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     }
 
     /*
-    @Override
-    public void updatePlayer(int id, float x, float y, int direction) throws RemoteException
-    {
-        if (map == null || me == null)
-        {
-            return;
-        }
-        MapObject.sides directionSide = MapObject.sides.RIGHT;
-        if (direction == 0)
-        {
-            directionSide = MapObject.sides.LEFT;
-        }
+     @Override
+     public void updatePlayer(int id, float x, float y, int direction) throws RemoteException
+     {
+     if (map == null || me == null)
+     {
+     return;
+     }
+     MapObject.sides directionSide = MapObject.sides.RIGHT;
+     if (direction == 0)
+     {
+     directionSide = MapObject.sides.LEFT;
+     }
 
-        for (Player player : map.getPlayers())
-        {
-            if (player.getID() == id)
-            {
-                player.setCords(x, y);
-                player.setDirection(directionSide);
-                return;
-            }
-        }
-    }
-    */
-
+     for (Player player : map.getPlayers())
+     {
+     if (player.getID() == id)
+     {
+     player.setCords(x, y);
+     player.setDirection(directionSide);
+     return;
+     }
+     }
+     }
+     */
     @Override
     public void knockBackPlayer(float hSpeed, float vSpeed) throws RemoteException
     {
@@ -100,7 +99,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         {
             return;
         }
-        for(MapObject mo : toSend)
+        for (MapObject mo : toSend)
         {
             mo.setMap(map);
             map.updateMapObject(mo);

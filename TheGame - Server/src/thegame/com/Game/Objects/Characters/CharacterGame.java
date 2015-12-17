@@ -53,13 +53,56 @@ public abstract class CharacterGame extends MapObject {
 
     public abstract void knockBack(float kb, sides hitDirection);
 
+    public void walkRight()
+    {
+        direction = sides.RIGHT;
+
+        if (hSpeed < 0)
+        {
+            hSpeed = 0.05f;
+        } else if (hSpeed < 0.25)
+        {
+            hSpeed += 0.05;
+        }
+    }
+
+    public void walkLeft()
+    {
+        direction = sides.LEFT;
+
+        if (hSpeed > 0)
+        {
+            hSpeed = -0.05f;
+        } else if (hSpeed > -0.25)
+        {
+            hSpeed -= 0.05;
+        }
+    }
+
+    public void jump()
+    {
+        jumping = true;
+        vSpeed += 0.1f;
+
+        if (vSpeed >= 0.4f)
+        {
+            vSpeed = 0.4f;
+            jumping = false;
+        }
+    }
+
+    public void stopJump()
+    {
+        jumping = false;
+    }
+
     /**
      * This method will let you add an object to your backpack.
      *
      * @param object, the specific object you want to add to your backpack
      * @return
      */
-public boolean addToBackpack(MapObject object)
+    public boolean addToBackpack(MapObject object)
     {
         int spot = -1;
 

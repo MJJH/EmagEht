@@ -37,8 +37,8 @@ public class Particle extends MapObject {
         try
         {
             skin = object.getSkin().clone();
-            skin.setHeight((int)(height*config.block.val));
-            skin.setWidth((int)(height*config.block.val));
+            skin.setHeight((int) (height * config.block.val));
+            skin.setWidth((int) (height * config.block.val));
         } catch (CloneNotSupportedException ex)
         {
             Logger.getLogger(Particle.class.getName()).log(Level.SEVERE, null, ex);

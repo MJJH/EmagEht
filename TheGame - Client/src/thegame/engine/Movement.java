@@ -7,6 +7,7 @@ package thegame.engine;
 
 import java.util.EnumMap;
 import java.util.List;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -184,9 +185,9 @@ public class Movement {
             }
         } else if (subject.getSY() < 0)
         {
-            if (subject instanceof Player)
+            if (subject instanceof CharacterGame)
             {
-                ((Player) subject).stopJump();
+                ((CharacterGame) subject).stopJump();
             }
 
             found = collision.get(MapObject.sides.BOTTOM);

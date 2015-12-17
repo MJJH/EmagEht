@@ -37,7 +37,7 @@ public class Collision {
             {
                 continue;
             }
-            if(!withUnsolids && (mo.getS() == 0 || subject.getS() == 0))
+            if (!withUnsolids && (mo.getS() == 0 || subject.getS() == 0))
             {
                 continue;
             }

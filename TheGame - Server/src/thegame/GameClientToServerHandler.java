@@ -121,7 +121,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
             {
                 particleMO = mo;
                 particle = (Particle) particleMO;
-                if(particle.getPickedUp())
+                if (particle.getPickedUp())
                 {
                     return;
                 }
@@ -138,7 +138,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
             {
                 for (int i = 1; i <= particle.getObjectCount(); i++)
                 {
-                    
+
                     player.addToBackpack(particle.getObject());
                 }
                 particle.setPickedUp(true);

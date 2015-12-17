@@ -168,24 +168,23 @@ public class Map implements Serializable {
     }
 
     /*public void removeMapObject(MapObject removeObject)
-    {
-        if (removeObject instanceof Block)
-        {
-            try
-            {
-                blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-            } catch (Exception e)
-            {
-            }
-        } else if (removeObject instanceof Enemy)
-        {
-            enemies.remove((Enemy) removeObject);
-        } else if (removeObject instanceof Player)
-        {
-            players.remove((Player) removeObject);
-        }
-    }*/
-
+     {
+     if (removeObject instanceof Block)
+     {
+     try
+     {
+     blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
+     } catch (Exception e)
+     {
+     }
+     } else if (removeObject instanceof Enemy)
+     {
+     enemies.remove((Enemy) removeObject);
+     } else if (removeObject instanceof Player)
+     {
+     players.remove((Player) removeObject);
+     }
+     }*/
     public void removeMapObject(int type, int id, int x, int y)
     {
         MapObject removeObject = null;
@@ -257,16 +256,16 @@ public class Map implements Serializable {
             }
         } else if (update instanceof Player)
         {
-            for(Player player : players)
+            for (Player player : players)
             {
-                if(player.getID() == update.getID())
+                if (player.getID() == update.getID())
                 {
-                    if(player.getID() == me.getID())
+                    if (player.getID() == me.getID())
                     {
                         me.updateHP(player.getHP());
                         return;
                     }
-                    player.updateValues((Player)update);
+                    player.updateValues((Player) update);
                     return;
                 }
             }

@@ -8,9 +8,10 @@ import thegame.com.Game.Map;
  *
  * @author Martijn
  */
-public class Tool extends MapObject{
+public class Tool extends MapObject {
+
     private static final long serialVersionUID = 6529585098267757690L;
-    
+
     public final ToolType type;
 
     /**

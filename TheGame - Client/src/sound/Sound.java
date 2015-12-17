@@ -13,12 +13,12 @@ public class Sound {
     private Clip clip;
 
     public Sound(String fileName)
-    { 
+    {
         AudioInputStream aiStream = null;
-        
+
         try
         {
-            aiStream = AudioSystem.getAudioInputStream(new File("src/resources/"+fileName));
+            aiStream = AudioSystem.getAudioInputStream(new File("src/resources/" + fileName));
             clip = AudioSystem.getClip();
             clip.open(aiStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex)

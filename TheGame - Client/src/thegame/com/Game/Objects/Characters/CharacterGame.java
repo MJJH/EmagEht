@@ -1,16 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
-import display.Image;
-import display.Parts;
-import display.Skin;
-import display.iTexture;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import thegame.GameServerToClientListener;
 import thegame.com.Game.Objects.*;
 
 /**
@@ -34,6 +25,49 @@ public abstract class CharacterGame extends MapObject {
     protected List<MapObject>[] backpack;
 
     protected boolean jumping = false;
+
+    public void walkRight()
+    {
+        direction = sides.RIGHT;
+
+        if (hSpeed < 0)
+        {
+            hSpeed = 0.075f;
+        } else if (hSpeed < 0.3)
+        {
+            hSpeed += 0.075f;
+        }
+    }
+
+    public void walkLeft()
+    {
+        direction = sides.LEFT;
+
+        if (hSpeed > 0)
+        {
+            hSpeed = -0.075f;
+        } else if (hSpeed > -0.3)
+        {
+            hSpeed -= 0.075f;
+        }
+    }
+
+    public void jump()
+    {
+        jumping = true;
+        vSpeed += 0.05f;
+
+        if (vSpeed >= 0.3f)
+        {
+            vSpeed = 0.3f;
+            jumping = false;
+        }
+    }
+
+    public void stopJump()
+    {
+        jumping = false;
+    }
 
     /**
      * This method will let you add an object to your backpack.
@@ -141,27 +175,27 @@ public abstract class CharacterGame extends MapObject {
                 armor.put(armorAdd.getArmorType().bodypart, armorAdd);
             }
         }
-        
-        /*if (this instanceof Player)
-        {
-            Player p = (Player) this;
-            Image i = (Image) p.skins.get("standLeft");
-            Image i2 = (Image) p.skins.get("standRight");
 
-            for(Armor a : armor.values()) {
-                for (iTexture it : ((display.Image) a.getSkin()).getParts().keySet())
-                {
-                    try
-                    {
-                        i.addTexture(it);
-                        i.flipHorizontal((Parts) it);
-                        i2.addTexture(it);
-                    } catch (IOException ex)
-                    {
-                    }
-                }
-            }
-        }*/
+        /*if (this instanceof Player)
+         {
+         Player p = (Player) this;
+         Image i = (Image) p.skins.get("standLeft");
+         Image i2 = (Image) p.skins.get("standRight");
+
+         for(Armor a : armor.values()) {
+         for (iTexture it : ((display.Image) a.getSkin()).getParts().keySet())
+         {
+         try
+         {
+         i.addTexture(it);
+         i.flipHorizontal((Parts) it);
+         i2.addTexture(it);
+         } catch (IOException ex)
+         {
+         }
+         }
+         }
+         }*/
     }
 
     /**
@@ -198,24 +232,24 @@ public abstract class CharacterGame extends MapObject {
             }
         }
 
-       /* if (this instanceof Player)
-        {
-            Player p = (Player) this;
-            Image i = (Image) p.skins.get("standLeft");
-            Image i2 = (Image) p.skins.get("standRight");
+        /* if (this instanceof Player)
+         {
+         Player p = (Player) this;
+         Image i = (Image) p.skins.get("standLeft");
+         Image i2 = (Image) p.skins.get("standRight");
 
-            for (iTexture it : ((display.Image) toolAdd.getSkin()).getParts().keySet())
-            {
-                try
-                {
-                    i.addTexture(it);
-                    i.flipHorizontal((Parts) it);
-                    i2.addTexture(it);
-                } catch (IOException ex)
-                {
-                }
-            }
-        }*/
+         for (iTexture it : ((display.Image) toolAdd.getSkin()).getParts().keySet())
+         {
+         try
+         {
+         i.addTexture(it);
+         i.flipHorizontal((Parts) it);
+         i2.addTexture(it);
+         } catch (IOException ex)
+         {
+         }
+         }
+         }*/
     }
 
     /**
@@ -228,18 +262,17 @@ public abstract class CharacterGame extends MapObject {
             addToBackpack(holding);
 
             /*if (this instanceof Player)
-            {
-                Player p = (Player) this;
-                Image i = (Image) p.skins.get("standLeft");
-                Image i2 = (Image) p.skins.get("standRight");
+             {
+             Player p = (Player) this;
+             Image i = (Image) p.skins.get("standLeft");
+             Image i2 = (Image) p.skins.get("standRight");
 
-                for (iTexture it : ((display.Image) holding.getSkin()).getParts().keySet())
-                {
-                    i.removeTexture(it);
-                    i2.removeTexture(it);
-                }
-            }*/
-
+             for (iTexture it : ((display.Image) holding.getSkin()).getParts().keySet())
+             {
+             i.removeTexture(it);
+             i2.removeTexture(it);
+             }
+             }*/
             holding = null;
         }
 

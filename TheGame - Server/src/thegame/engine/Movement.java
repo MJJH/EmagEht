@@ -20,7 +20,7 @@ public class Movement {
 
     public static boolean moveH(MapObject subject)
     {
-        EnumMap<MapObject.sides, List<MapObject>> collision = Collision.collision(subject,false);
+        EnumMap<MapObject.sides, List<MapObject>> collision = Collision.collision(subject, false);
         List<MapObject> found;
 
         if (subject.getSX() > 0)
@@ -122,7 +122,7 @@ public class Movement {
                         maxX = mo.getX() + mo.getW();
                     }
                 }
-                
+
                 subject.setSX(0);
                 subject.setX(maxX);
                 return true;
@@ -150,13 +150,12 @@ public class Movement {
                     float minY = -1;
                     for (MapObject mo : found)
                     {
-
                         if (minY == -1 || mo.getY() < minY)
                         {
                             minY = mo.getY() - mo.getH();
                         }
                     }
-                    
+
                     subject.setSY(0);
                     subject.setY(minY);
                 }
@@ -186,9 +185,9 @@ public class Movement {
             }
         } else if (subject.getSY() < 0)
         {
-            if (subject instanceof Enemy)
+            if (subject instanceof CharacterGame)
             {
-                ((Enemy) subject).stopJump();
+                ((CharacterGame) subject).stopJump();
             }
 
             found = collision.get(MapObject.sides.BOTTOM);

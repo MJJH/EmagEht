@@ -8,11 +8,13 @@ import java.io.Serializable;
 
 /**
  * A tooltype defines what a tool will be able to do
+ *
  * @author Martijn
  */
-public class ToolType implements Serializable{
+public class ToolType implements Serializable {
+
     private static final long serialVersionUID = 6522685098267757690L;
-    
+
     public String name;
     public int strength;
     public float speed;
@@ -22,17 +24,22 @@ public class ToolType implements Serializable{
     public transient Skin skin;
     public float height;
     public float width;
-    public toolType type; 
+    public toolType type;
 
-    Skin getSkin() throws IOException {
-        if(skin == null)
+    Skin getSkin() throws IOException
+    {
+        if (skin == null)
+        {
             createSkin();
-        
+        }
+
         return skin;
     }
 
-    private void createSkin() throws IOException {
-        switch(type) {
+    private void createSkin() throws IOException
+    {
+        switch (type)
+        {
             case AXE:
                 skin = new Image(Parts.Hatchet);
                 break;
@@ -50,9 +57,12 @@ public class ToolType implements Serializable{
                 break;
         }
     }
-    
-    public enum toolType { PICKAXE, AXE, SWORD, SHOVEL, FLINT }
-    
+
+    public enum toolType {
+
+        PICKAXE, AXE, SWORD, SHOVEL, FLINT
+    }
+
     /**
      *
      * @param name
@@ -66,7 +76,8 @@ public class ToolType implements Serializable{
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, Skin skin, float height, float width) {
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, Skin skin, float height, float width)
+    {
         this.name = name;
         this.strength = strength;
         this.speed = speed;

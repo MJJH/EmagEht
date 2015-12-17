@@ -10,10 +10,20 @@ package display;
  * @author Martijn
  */
 public interface iTexture {
+
     public int getWidth();
+
     public int getHeight();
-            
+
     public final String path = "src/resources//mapping.png";
-    public enum Part { HEAD, TORSO, BACKARM, FRONTARM, BACKLEG, FRONTLEG }
-    public enum Type { BODY, ARMOR, TOOL, BLOCK }
+
+    public enum Part {
+
+        HEAD, TORSO, BACKARM, FRONTARM, BACKLEG, FRONTLEG
+    }
+
+    public enum Type {
+
+        BODY, ARMOR, TOOL, BLOCK
+    }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author robin
  */
-public class Account implements Serializable{
+public class Account implements Serializable {
 
     private Party party;
     private int id;

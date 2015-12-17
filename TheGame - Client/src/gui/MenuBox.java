@@ -13,23 +13,23 @@ import javafx.scene.shape.Line;
  *
  * @author robin
  */
-    public class MenuBox extends VBox {
+public class MenuBox extends VBox {
 
-        public MenuBox(MenuItem... items)
+    public MenuBox(MenuItem... items)
+    {
+        getChildren().add(createSeparator());
+
+        for (MenuItem item : items)
         {
-            getChildren().add(createSeparator());
-
-            for (MenuItem item : items)
-            {
-                getChildren().addAll(item, createSeparator());
-            }
-        }
-
-        private Line createSeparator()
-        {
-            Line sep = new Line();
-            sep.setEndX(200);
-            sep.setStroke(Color.DARKGREY);
-            return sep;
+            getChildren().addAll(item, createSeparator());
         }
     }
+
+    private Line createSeparator()
+    {
+        Line sep = new Line();
+        sep.setEndX(200);
+        sep.setStroke(Color.DARKGREY);
+        return sep;
+    }
+}

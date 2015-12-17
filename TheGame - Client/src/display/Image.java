@@ -30,351 +30,372 @@ import javax.imageio.ImageIO;
  * @author Martijn
  */
 public class Image extends Skin {
+
     private int getal = 1;
     private WritableImage image;
     private Map<Parts, PartImage> parts;
-    
-    public Image(iTexture texture) throws IOException {
-       
+
+    public Image(iTexture texture) throws IOException
+    {
+
         this.height = texture.getHeight();
         this.width = texture.getWidth();
-        
+
         parts = new LinkedHashMap<>();
-        
-        
+
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
         WritableImage i;
-        
-        if(texture instanceof Parts) {
+
+        if (texture instanceof Parts)
+        {
             Parts t = (Parts) texture;
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
             parts.put(t, new PartImage(i, 0, 0));
             getal++;
-        } else if(texture instanceof Sets) {
-            
-            
+        } else if (texture instanceof Sets)
+        {
+
             Sets s = (Sets) texture;
-            for(CombineParts cp : s.parts) {
+            for (CombineParts cp : s.parts)
+            {
+
+                if (cp.part.equals(Parts.playerFrontLeg))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 2, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+                if (cp.part.equals(Parts.playerBackLeg))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 1, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+                if (cp.part.equals(Parts.playerTorso))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 0, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+
+                if (cp.part.equals(Parts.playerBackArm))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 8, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                } else if (cp.part.equals(Parts.playerFrontArm))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 9, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                } else
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, getal, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+
+            }
+
+            /* for(Parts p : parts.keySet()) 
+             {
+             if(p.equals(Parts.playerBackArm))
+             {
+             Parts temp = p;
+             PartImage tempI = parts.get(temp);
             
+             int size = parts.size();
+             parts.remove(p);
+             parts.put(temp, tempI);
+             }
+             else if(p.equals(Parts.playerFrontArm))
+             {
+             Parts temp = p;
+             PartImage tempI = parts.get(temp);
             
-            if(cp.part.equals(Parts.playerFrontLeg))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,2,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-             if(cp.part.equals(Parts.playerBackLeg))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,1,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-              if(cp.part.equals(Parts.playerTorso))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,0,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-                     
-            if(cp.part.equals(Parts.playerBackArm))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,8,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-           
-            else if (cp.part.equals(Parts.playerFrontArm)) 
-            {
-               i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-               add((LinkedHashMap<Parts, PartImage>) parts,9,cp.part, new PartImage(i, cp.x, cp.y));
-               getal++;      
-            }
-             else
-            {
-                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,getal,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-            
-            }
-        
-        /* for(Parts p : parts.keySet()) 
-        {
-        if(p.equals(Parts.playerBackArm))
-        {
-            Parts temp = p;
-            PartImage tempI = parts.get(temp);
-            
-            int size = parts.size();
-            parts.remove(p);
-            parts.put(temp, tempI);
+             int size = parts.size();
+             parts.remove(p);
+             parts.put(temp, tempI);
+             System.err.println("hoi");
+             }
+             } */
         }
-        else if(p.equals(Parts.playerFrontArm))
-        {
-            Parts temp = p;
-            PartImage tempI = parts.get(temp);
-            
-            int size = parts.size();
-            parts.remove(p);
-            parts.put(temp, tempI);
-            System.err.println("hoi");
-        }
-        } */
-        } 
-        
-        
-        
-            
-        
-       
-    
 
         repaint();
-       
+
     }
-    
-   
-    
-    public void addTexture(iTexture texture) throws IOException {
+
+    public void addTexture(iTexture texture) throws IOException
+    {
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
         WritableImage i;
-        
-        if(texture instanceof Parts) {
+
+        if (texture instanceof Parts)
+        {
             Parts t = (Parts) texture;
-            
+
             calculateNewSize(t);
             Parts parent = getParent(t);
-            
-            if(texture.equals(Parts.Sword))
+
+            if (texture.equals(Parts.Sword))
             {
+                i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts, 7, t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+                getal++;
+            } /*if(texture.equals(Parts.Shield))
+             {
              i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,7,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-            getal++;   
+             add((LinkedHashMap<Parts, PartImage>) parts,7,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+             getal++;   
+             } */ else
+            {
+                i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+                parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+                getal++;
+
             }
-            /*if(texture.equals(Parts.Shield))
-            {
-             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,7,t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-            getal++;   
-            } */
-            else
-            {
-             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-            getal++;
-                
-            }
-           
-            
-        } else if(texture instanceof Sets) {
+
+        } else if (texture instanceof Sets)
+        {
             Sets s = (Sets) texture;
-            for(CombineParts cp : s.parts) {
-                
+            for (CombineParts cp : s.parts)
+            {
+
                 calculateNewSize(cp.part);
                 Parts parent = getParent(cp.part);
-            
-            if(cp.part.equals(Parts.armorFront))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,4,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-                 if(cp.part.equals(Parts.armorBack))
-            {
-                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts,5,cp.part, new PartImage(i, cp.x, cp.y));
-                getal++;
-            }
-            if(cp.part.equals(Parts.armorBody))
-            {
-             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,3,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-            getal++;      
-            }
-            
-            
-            else if(cp.part.equals(Parts.armorShoulderBack))
-            {
-             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,10,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-            getal++;      
-            }
-            else if(cp.part.equals(Parts.armorShoulderFront))
-            {
-             i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-            add((LinkedHashMap<Parts, PartImage>) parts,6,cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-            getal++;      
-            }
-            else
-            {
-            i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-            parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-            getal++;   
-            }
-                
+
+                if (cp.part.equals(Parts.armorFront))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 4, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+                if (cp.part.equals(Parts.armorBack))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 5, cp.part, new PartImage(i, cp.x, cp.y));
+                    getal++;
+                }
+                if (cp.part.equals(Parts.armorBody))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 3, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                    getal++;
+                } else if (cp.part.equals(Parts.armorShoulderBack))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 10, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                    getal++;
+                } else if (cp.part.equals(Parts.armorShoulderFront))
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    add((LinkedHashMap<Parts, PartImage>) parts, 6, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                    getal++;
+                } else
+                {
+                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                    parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                    getal++;
+                }
+
             }
         }
-            
+
         repaint();
-         if(parts.size() >= 17)
+        if (parts.size() >= 17)
         {
             System.err.println("Hoi");
         }
-        
-      
+
     }
-    
-    public Map<Parts, PartImage> getParts() {
+
+    public Map<Parts, PartImage> getParts()
+    {
         return parts;
     }
-    
-    public void recolour(Color[] colors) {
-        for(PartImage pi : parts.values()) {
+
+    public void recolour(Color[] colors)
+    {
+        for (PartImage pi : parts.values())
+        {
             pi.recolors = colors;
         }
         repaint();
     }
-    
-    public void recolour(Parts p, Color[] colors) {
-        if(parts.containsValue(p))
+
+    public void recolour(Parts p, Color[] colors)
+    {
+        if (parts.containsValue(p))
+        {
             parts.get(p).recolors = colors;
+        }
         repaint();
     }
-    
-    public void flipHorizontal() {
-        for(PartImage pi : parts.values()) {
+
+    public void flipHorizontal()
+    {
+        for (PartImage pi : parts.values())
+        {
             pi.hFlip = !pi.hFlip;
         }
         repaint();
     }
-    
-    public void flipHorizontal(Parts p) {
-        if(parts.containsValue(p))
+
+    public void flipHorizontal(Parts p)
+    {
+        if (parts.containsValue(p))
+        {
             parts.get(p).hFlip = !parts.get(p).hFlip;
+        }
         repaint();
     }
-    
-    public void flipVertical() {
-        for(PartImage pi : parts.values()) {
+
+    public void flipVertical()
+    {
+        for (PartImage pi : parts.values())
+        {
             pi.vFlip = !pi.vFlip;
         }
         repaint();
     }
-    
-    public void flipVorizontal(Parts p) {
-        if(parts.containsValue(p))
+
+    public void flipVorizontal(Parts p)
+    {
+        if (parts.containsValue(p))
+        {
             parts.get(p).vFlip = !parts.get(p).vFlip;
+        }
         repaint();
     }
-    
-    
+
     @Override
-    public javafx.scene.image.Image show() {
+    public javafx.scene.image.Image show()
+    {
         return image;
-        
+
     }
-    
-    private void repaint() 
+
+    private void repaint()
     {
         image = new WritableImage(width, height);
         PixelWriter pw = image.getPixelWriter();
         PixelReader pr;
-        
-        for(PartImage pi : parts.values()) {
+
+        for (PartImage pi : parts.values())
+        {
             pr = pi.image.getPixelReader();
-            
-            for(int y = 0; y < pi.image.getHeight(); y++) {
-                for(int x = 0; x < pi.image.getWidth(); x++) {
+
+            for (int y = 0; y < pi.image.getHeight(); y++)
+            {
+                for (int x = 0; x < pi.image.getWidth(); x++)
+                {
                     Color c = pr.getColor(x, y);
-                    
-                    if((int) Math.round(c.getRed()* 255) / 32 == 7 || c.getOpacity() < 1)
+
+                    if ((int) Math.round(c.getRed() * 255) / 32 == 7 || c.getOpacity() < 1)
+                    {
                         continue;
-                    
-                    int r = (int) Math.round((c.getRed()* 255) / 32);
-                    
-                    if(pi.recolors.length > r && pi.recolors[r] != null) {
-                       c = pi.recolors[r];
                     }
-                    
+
+                    int r = (int) Math.round((c.getRed() * 255) / 32);
+
+                    if (pi.recolors.length > r && pi.recolors[r] != null)
+                    {
+                        c = pi.recolors[r];
+                    }
+
                     int paintX = x + pi.x;
                     int paintY = y + pi.y;
-                    
-                    if(pi.hFlip) {
+
+                    if (pi.hFlip)
+                    {
                         paintX = width - paintX - 1;
                     }
-                    if(pi.vFlip) {
+                    if (pi.vFlip)
+                    {
                         paintY = height - paintY - 1;
                     }
-                    
-                    
+
                     pw.setColor(paintX, paintY, c);
                 }
             }
         }
     }
-    
-    private Parts getParent(Parts t) {
-        if(t.getType() != Type.BODY) {
-            for(Parts p : parts.keySet()) {
-                if(p.getPart() == t.getPart() && p.getType() == Type.BODY) {
+
+    private Parts getParent(Parts t)
+    {
+        if (t.getType() != Type.BODY)
+        {
+            for (Parts p : parts.keySet())
+            {
+                if (p.getPart() == t.getPart() && p.getType() == Type.BODY)
+                {
                     return p;
                 }
             }
         }
         return null;
     }
-    
-    
 
-    private void calculateNewSize(Parts t) {
+    private void calculateNewSize(Parts t)
+    {
         Parts parent = getParent(t);
-        
+
         int difTop = 0, difBot = 0, difLeft = 0, difRight = 0;
-        if(parent != null) {
-            if(parent.getConnectY() - t.getConnectY() < 0) {
+        if (parent != null)
+        {
+            if (parent.getConnectY() - t.getConnectY() < 0)
+            {
                 difTop = Math.abs(parent.getConnectY() - t.getConnectY());
             }
-            if(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height) {
+            if (parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height)
+            {
                 difBot = Math.abs(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()));
             }
-            if(parent.getConnectX() - t.getConnectX() < 0) {
+            if (parent.getConnectX() - t.getConnectX() < 0)
+            {
                 difLeft = Math.abs(parent.getConnectX() - t.getConnectX());
             }
-                if(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()) < width) {
+            if (parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()) < width)
+            {
                 difRight = Math.abs(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()));
             }
-            
-            for(PartImage p : parts.values()) {
+
+            for (PartImage p : parts.values())
+            {
                 p.x += difLeft;
                 p.y += difTop;
             }
-            
+
             height += difTop + difBot;
             width += difLeft + difRight;
         }
     }
 
- public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value) {
-  assert (map != null);
-  assert !map.containsKey(key);
-  assert (index >= 0) && (index < map.size());
+    public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value)
+    {
+        assert (map != null);
+        assert !map.containsKey(key);
+        assert (index >= 0) && (index < map.size());
 
-  int i = 0;
-  List<Map.Entry<Parts, PartImage>> rest = new ArrayList<Map.Entry<Parts, PartImage>>();
-  for (Map.Entry<Parts, PartImage> entry : map.entrySet()) {
-    if (i++ >= index) {
-      rest.add(entry);
+        int i = 0;
+        List<Map.Entry<Parts, PartImage>> rest = new ArrayList<Map.Entry<Parts, PartImage>>();
+        for (Map.Entry<Parts, PartImage> entry : map.entrySet())
+        {
+            if (i++ >= index)
+            {
+                rest.add(entry);
+            }
+        }
+        map.put(key, value);
+        for (int j = 0; j < rest.size(); j++)
+        {
+            Map.Entry<Parts, PartImage> entry = rest.get(j);
+            map.remove(entry.getKey());
+            map.put(entry.getKey(), entry.getValue());
+        }
     }
-  }
-  map.put(key, value);
-  for (int j = 0; j < rest.size(); j++) {
-    Map.Entry<Parts, PartImage> entry = rest.get(j);
-    map.remove(entry.getKey());
-    map.put(entry.getKey(), entry.getValue());
-  }
-}    
 
     public void removeTexture(iTexture it)
     {
@@ -382,7 +403,4 @@ public class Image extends Skin {
         repaint();
     }
 
-  
- 
-    
 }
