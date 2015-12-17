@@ -35,7 +35,7 @@ public abstract class MapObject implements Serializable {
         TOP, BOTTOM, LEFT, RIGHT, CENTER
     }
 
-    protected void setX(float x)
+    public void setX(float x)
     {
         if (x >= 0 && x + width < playing.getWidth())
         {
@@ -53,7 +53,7 @@ public abstract class MapObject implements Serializable {
         }
     }
 
-    protected void setY(float y)
+    public void setY(float y)
     {
         if (y > height && y < playing.getHeight())
         {
@@ -214,6 +214,21 @@ public abstract class MapObject implements Serializable {
     public void setMap(Map set)
     {
         this.playing = set;
+    }
+    
+    public Map getMap()
+    {
+        return playing;
+    }
+    
+    public void setSX(float newSpeed)
+    {
+        hSpeed = newSpeed;
+    }
+    
+    public void setSY(float newSpeed)
+    {
+        vSpeed = newSpeed;
     }
 
     public abstract void createSkin();

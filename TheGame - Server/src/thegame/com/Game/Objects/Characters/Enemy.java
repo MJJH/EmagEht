@@ -6,6 +6,9 @@ import thegame.com.Game.Map;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Game.Objects.ToolType;
+import thegame.engine.Collision;
+import thegame.engine.Movement;
+import thegame.engine.Physics;
 
 /**
  * This constructor creates an enemy
@@ -32,7 +35,7 @@ public class Enemy extends CharacterGame {
     public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, height, width, map);
-        
+
         ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 0.3f, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
@@ -40,13 +43,7 @@ public class Enemy extends CharacterGame {
 
     public void walkRight()
     {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.RIGHT;
-
-        if (!c.get(sides.RIGHT).isEmpty())
-        {
-            return;
-        }
 
         if (hSpeed < 0)
         {
@@ -59,13 +56,7 @@ public class Enemy extends CharacterGame {
 
     public void walkLeft()
     {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
         direction = sides.LEFT;
-
-        if (!c.get(sides.LEFT).isEmpty())
-        {
-            return;
-        }
 
         if (hSpeed > 0)
         {
@@ -78,17 +69,13 @@ public class Enemy extends CharacterGame {
 
     public void jump()
     {
-        EnumMap<MapObject.sides, List<MapObject>> c = collision();
-        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
-        {
-            jumping = true;
-            vSpeed += 0.1f;
+        jumping = true;
+        vSpeed += 0.1f;
 
-            if (vSpeed >= 0.4f)
-            {
-                vSpeed = 0.4f;
-                jumping = false;
-            }
+        if (vSpeed >= 0.4f)
+        {
+            vSpeed = 0.4f;
+            jumping = false;
         }
     }
 
@@ -100,7 +87,7 @@ public class Enemy extends CharacterGame {
     @Override
     public Boolean call()
     {
-        EnumMap<sides, List<MapObject>> collision = collision();
+        EnumMap<sides, List<MapObject>> collision = Collision.collision(this, false);
 
         List<Player> players = playing.getPlayers();
 
@@ -181,17 +168,17 @@ public class Enemy extends CharacterGame {
         }
 
         Boolean ret = false;
-        if (fall(collision))
+        if (Physics.gravity(this))
         {
             ret = true;
         }
 
-        if (moveH(collision))
+        if (Movement.moveH(this))
         {
             ret = true;
         }
 
-        if (moveV(collision))
+        if (Movement.moveV(this))
         {
             ret = true;
         }
@@ -199,7 +186,7 @@ public class Enemy extends CharacterGame {
         while (!collision.get(sides.CENTER).isEmpty())
         {
             yPosition++;
-            collision = collision();
+            collision = Collision.collision(this, false);
             ret = true;
         }
 

@@ -113,13 +113,12 @@ public class TheGame extends Application {
     {
         if (!sjeton)
         {
-            if (event.getEventType() == KeyEvent.KEY_PRESSED && !keys.contains(event.getCode()))
+            if (event.getEventType() == KeyEvent.KEY_PRESSED && (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A) && !keys.contains(event.getCode()))
             {
                 if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
                 {
                     keys.add(event.getCode());
                 }
-
                 if (event.getCode() == KeyCode.A && keys.contains(KeyCode.D))
                 {
                     keys.remove(KeyCode.D);
@@ -128,22 +127,23 @@ public class TheGame extends Application {
                 {
                     keys.remove(KeyCode.A);
                 }
-                if (event.getCode() == KeyCode.T)
-                {
-                    sjeton = true;
-                    chatline = "";
-                }
-                if (event.getCode() == KeyCode.E)
-                {
-                    inventory = !inventory;
-                }
-            } else if (event.getEventType() == KeyEvent.KEY_RELEASED)
+            }
+            if (event.getEventType() == KeyEvent.KEY_RELEASED && (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A))
             {
                 keys.remove(event.getCode());
                 if (event.getCode() == KeyCode.W)
                 {
                     me.stopJump();
                 }
+            }
+            if (event.getCode() == KeyCode.T && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                sjeton = true;
+                chatline = "";
+            }
+            if (event.getCode() == KeyCode.E && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                inventory = !inventory;
             }
             if (event.getCode() == KeyCode.DIGIT1 && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
@@ -454,15 +454,19 @@ public class TheGame extends Application {
                 float divY = ((draw.getH() * config.block.val) - s.getHeight());
                 /*g.setFill(Color.GREEN);
                  g.fillRect(x, y, draw.getW() * config.block.val, draw.getH() * config.block.val);*/
-                if(s instanceof display.Image)
+                if (s instanceof display.Image)
+                {
                     g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
-                else if (s instanceof display.Animation)
+                } else if (s instanceof display.Animation)
                 {
                     Animation a = (Animation) s;
-                    if(a.getFrame() != null)
+                    if (a.getFrame() != null)
+                    {
                         g.drawImage(a.show(), x + divX - a.getFrame().getOffsetLeft(), y + divY - a.getFrame().getOffsetTop());
-                    else
+                    } else
+                    {
                         g.drawImage(s.show(), x + divX, y + divY);
+                    }
                 }
             }
 

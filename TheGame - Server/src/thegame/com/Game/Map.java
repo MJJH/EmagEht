@@ -22,6 +22,7 @@ import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.engine.Collision;
 
 /**
  * The class for the map of the game.
@@ -560,11 +561,11 @@ public class Map implements Serializable {
                 if (value)
                 {
                     toSend.add(key);
-                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : key.collision().entrySet())
+                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : Collision.collision(key, true).entrySet())
                     {
                         for (MapObject toUpdateMO : collision.getValue())
                         {
-                            if (!(toUpdateMO instanceof Block) && !(toUpdateMO instanceof Player))
+                            if (!(toUpdateMO instanceof Player))
                             {
                                 toUpdate.add(toUpdateMO);
                             }
