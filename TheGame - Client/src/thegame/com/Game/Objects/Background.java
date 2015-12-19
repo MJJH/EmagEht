@@ -12,11 +12,13 @@ import thegame.com.Game.Map;
  * @author Martijn
  */
 public class Background extends Block {
+
     private static final long serialVersionUID = 5529681028267757690L;
-    
+
     @Override
-    public void createSkin() {
+    public void createSkin()
+    {
         this.skin = BlockType.CaveStone.skin;
     }
-    
+
 }

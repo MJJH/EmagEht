@@ -21,7 +21,7 @@ public class Physics {
 
         if (collision.get(MapObject.sides.BOTTOM).isEmpty() && subject.getSY() > -1)
         {
-            subject.setSY(subject.getSY() - .1f);
+            subject.setSY(subject.getSY() - .025f);
             return true;
         }
         return false;

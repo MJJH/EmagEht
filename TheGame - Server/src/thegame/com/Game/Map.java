@@ -49,7 +49,7 @@ public class Map implements Serializable {
     private List<Enemy> enemies;
     private List<Player> players;
 
-    private transient List<MapObject> toUpdate;
+    private transient final List<MapObject> toUpdate;
     private transient final List<MapObject> toAdd;
     private transient final List<MapObject> toRemove;
     private transient final List<MapObject> toUpdatePlayers;
@@ -109,10 +109,12 @@ public class Map implements Serializable {
                     switch (b)
                     {
                         case '0':
-                            
-                            if(first.contains(x))
+
+                            if (first.contains(x))
+                            {
                                 blocks[y][x] = new Background(BlockType.CaveStone, x, y, this);
-                            
+                            }
+
                             break;
                         case 'x':
                             this.spawnX = x;
@@ -145,7 +147,8 @@ public class Map implements Serializable {
                         case 'C':
                             blocks[y][x] = new Block(BlockType.Copper, x, y, this);
                     }
-                    if(b != '0') {
+                    if (b != '0')
+                    {
                         first.add(x);
                     }
                     x++;
@@ -283,6 +286,10 @@ public class Map implements Serializable {
         synchronized (toAdd)
         {
             toAdd.add(mo);
+            synchronized (toUpdate)
+            {
+                toUpdate.add(mo);
+            }
         }
     }
 
@@ -343,7 +350,10 @@ public class Map implements Serializable {
                 }
                 gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
 
-                toUpdate.remove(removeObject);
+                synchronized (toUpdate)
+                {
+                    toUpdate.remove(removeObject);
+                }
 
                 if (removeObject instanceof Block)
                 {
@@ -506,12 +516,18 @@ public class Map implements Serializable {
         {
             return;
         }
-
-        toUpdate.add(toUpdateMO);
+        synchronized (toUpdate)
+        {
+            toUpdate.add(toUpdateMO);
+        }
     }
 
     public void addToPlayerUpdate(Player player)
     {
+        if (toUpdatePlayers.contains(player))
+        {
+            return;
+        }
         synchronized (toUpdatePlayers)
         {
             toUpdatePlayers.add(player);
@@ -538,7 +554,7 @@ public class Map implements Serializable {
         }
         synchronized (toUpdatePlayers)
         {
-            if (toUpdate.size() > 0)
+            if (toUpdatePlayers.size() > 0)
             {
                 toSend.addAll(toUpdatePlayers);
                 toUpdatePlayers.clear();
@@ -547,11 +563,14 @@ public class Map implements Serializable {
 
         HashMap<MapObject, Future<Boolean>> updateResults = new HashMap<>();
 
-        for (MapObject update : toUpdate)
+        synchronized (toUpdate)
         {
-            if (!(update instanceof Player) && !updateResults.containsKey(update))
+            for (MapObject update : toUpdate)
             {
-                updateResults.put(update, threadPool.submit(update));
+                if (!(update instanceof Player) && !updateResults.containsKey(update))
+                {
+                    updateResults.put(update, threadPool.submit(update));
+                }
             }
         }
 
@@ -578,13 +597,19 @@ public class Map implements Serializable {
                         {
                             if (!(toUpdateMO instanceof Player))
                             {
-                                toUpdate.add(toUpdateMO);
+                                synchronized (toUpdate)
+                                {
+                                    toUpdate.add(toUpdateMO);
+                                }
                             }
                         }
                     }
                 } else
                 {
-                    toUpdate.remove(key);
+                    synchronized (toUpdate)
+                    {
+                        toUpdate.remove(key);
+                    }
                 }
             } catch (InterruptedException | ExecutionException ex)
             {

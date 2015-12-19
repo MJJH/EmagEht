@@ -1,5 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
+import thegame.com.Game.Objects.MapObject;
+
 /**
  * This constructor creates an enemy
  *
@@ -15,10 +17,15 @@ public class Enemy extends CharacterGame {
         return;
     }
 
-    public void update(Enemy update)
+    @Override
+    public void update(MapObject update)
     {
-        setX(update.getX());
-        setY(update.getY());
-        updateHP(update.getHP());
+        if (update instanceof Enemy)
+        {
+            Enemy updateEnemy = (Enemy) update;
+            setX(updateEnemy.getX());
+            setY(updateEnemy.getY());
+            updateHP(updateEnemy.getHP());
+        }
     }
 }

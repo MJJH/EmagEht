@@ -250,7 +250,7 @@ public class Map implements Serializable {
             {
                 if (enemy.getID() == update.getID())
                 {
-                    enemy.update((Enemy) update);
+                    enemy.update(update);
                     return;
                 }
             }
@@ -265,8 +265,17 @@ public class Map implements Serializable {
                         me.updateHP(player.getHP());
                         return;
                     }
-                    player.updateValues((Player) update);
+                    player.update(update);
                     return;
+                }
+            }
+        } else
+        {
+            for (MapObject object : objects)
+            {
+                if (object.getID() == update.getID())
+                {
+                    object.update(update);
                 }
             }
         }

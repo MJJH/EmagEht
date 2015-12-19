@@ -27,4 +27,9 @@ public class Tool extends MapObject {
         {
         }
     }
+
+    @Override
+    public void update(MapObject update)
+    {
+    }
 }

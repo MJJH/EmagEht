@@ -1,10 +1,12 @@
 package thegame.com.Game.Objects.Characters;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
+import thegame.engine.Collision;
 
 /**
  *
@@ -49,45 +51,65 @@ public abstract class CharacterGame extends MapObject {
         backpack = new ArrayList[30];
         armor = new HashMap();
         direction = sides.RIGHT;
+        sXIncrease = 0.075f;
+        sYIncrease = 0.05f;
+        sXMax = 0.3f;
+        sYMax = 0.3f;
     }
 
     public abstract void knockBack(float kb, sides hitDirection);
 
     public void walkRight()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
         direction = sides.RIGHT;
 
-        if (hSpeed < 0)
+        if (!c.get(sides.RIGHT).isEmpty())
         {
-            hSpeed = 0.05f;
-        } else if (hSpeed < 0.25)
+            return;
+        }
+
+        if (sX < 0)
         {
-            hSpeed += 0.05;
+            sX = getSXIncrease();
+        } else if (sX < getSXMax())
+        {
+            sX += getSXIncrease();
         }
     }
 
     public void walkLeft()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
         direction = sides.LEFT;
 
-        if (hSpeed > 0)
+        if (!c.get(sides.LEFT).isEmpty())
         {
-            hSpeed = -0.05f;
-        } else if (hSpeed > -0.25)
+            return;
+        }
+
+        if (sX > 0)
         {
-            hSpeed -= 0.05;
+            sX = -getSXIncrease();
+        } else if (sX > -getSXMax())
+        {
+            sX -= getSXIncrease();
         }
     }
 
     public void jump()
     {
-        jumping = true;
-        vSpeed += 0.1f;
-
-        if (vSpeed >= 0.4f)
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
         {
-            vSpeed = 0.4f;
-            jumping = false;
+            jumping = true;
+            sY += getSYIncrease();
+
+            if (sY >= getSYMax())
+            {
+                sY = getSYMax();
+                jumping = false;
+            }
         }
     }
 
@@ -193,11 +215,6 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    public static void main(String[] args)
-    {
-
-    }
-
     public void equipTool(Tool toolAdd)
     {
         if (holding == null)

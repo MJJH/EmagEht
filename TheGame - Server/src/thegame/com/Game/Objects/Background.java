@@ -12,19 +12,23 @@ import thegame.com.Game.Map;
  * @author Martijn
  */
 public class Background extends Block {
+
     private static final long serialVersionUID = 5529681028267757690L;
 
-    public Background(BlockType type, float x, float y, Map map) {
+    public Background(BlockType type, float x, float y, Map map)
+    {
         super(type, x, y, map);
     }
-    
+
     @Override
-    public Boolean call() {
+    public Boolean call()
+    {
         return false;
     }
 
     @Override
-    public void hit(Tool used, sides hitDirection) {
+    public void hit(Tool used, sides hitDirection)
+    {
     }
-    
+
 }

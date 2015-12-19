@@ -2,11 +2,6 @@ package thegame.com.Game.Objects;
 
 import display.Skin;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Map;
 
 /**
@@ -21,8 +16,13 @@ public abstract class MapObject implements Serializable {
     protected int id;
     protected float xPosition;
     protected float yPosition;
-    protected float hSpeed;
-    protected float vSpeed;
+    protected float sX;
+    protected float sY;
+    protected float sXDecay;
+    protected float sXMax;
+    protected float sYMax;
+    protected float sXIncrease;
+    protected float sYIncrease;
     protected float height;
     protected float width;
     protected float solid;
@@ -49,7 +49,7 @@ public abstract class MapObject implements Serializable {
             {
                 this.xPosition = playing.getWidth() - width;
             }
-            hSpeed = 0;
+            sX = 0;
         }
     }
 
@@ -61,11 +61,11 @@ public abstract class MapObject implements Serializable {
         } else if (y <= height)
         {
             this.yPosition = height;
-            vSpeed = 0;
+            sY = 0;
         } else
         {
             this.yPosition = playing.getHeight();
-            vSpeed = 0;
+            sY = 0;
         }
     }
 
@@ -155,21 +155,46 @@ public abstract class MapObject implements Serializable {
     /**
      * Get horizontal speed
      *
-     * @return hSpeed
+     * @return sX
      */
     public float getSX()
     {
-        return hSpeed;
+        return sX;
     }
 
     /**
      * Get vertical speed
      *
-     * @return vSpeed
+     * @return sY
      */
     public float getSY()
     {
-        return vSpeed;
+        return sY;
+    }
+
+    public float getSXDecay()
+    {
+        return sXDecay;
+    }
+
+    public float getSXMax()
+    {
+        return sXMax;
+    }
+
+    public float getSYMax()
+    {
+        return sYMax;
+    }
+
+    public float getSXIncrease()
+    {
+        return sXIncrease;
+    }
+
+    public float getSYIncrease()
+    {
+        return sYIncrease;
     }
 
     /**
@@ -221,13 +246,15 @@ public abstract class MapObject implements Serializable {
 
     public void setSX(float newSpeed)
     {
-        hSpeed = newSpeed;
+        sX = newSpeed;
     }
 
     public void setSY(float newSpeed)
     {
-        vSpeed = newSpeed;
+        sY = newSpeed;
     }
 
     public abstract void createSkin();
+
+    public abstract void update(MapObject update);
 }

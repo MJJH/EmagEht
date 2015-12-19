@@ -85,7 +85,6 @@ public enum BlockType {
         IntColor.rgb(133, 97, 35),
         IntColor.rgb(140, 110, 40)
     }),
-    
     CaveStone("CaveBackground", 0, 0, null, 1, Parts.Block, new Color[]
     {
         null,

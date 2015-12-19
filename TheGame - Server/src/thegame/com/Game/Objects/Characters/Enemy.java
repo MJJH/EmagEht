@@ -156,12 +156,12 @@ public class Enemy extends CharacterGame {
         switch (hitDirection)
         {
             case LEFT:
-                hSpeed = -kb;
-                vSpeed = kb;
+                sX = -kb;
+                sY = kb;
                 break;
             case RIGHT:
-                hSpeed = kb;
-                vSpeed = kb;
+                sX = kb;
+                sY = kb;
                 break;
         }
     }

@@ -157,8 +157,8 @@ public class Player extends CharacterGame {
 
     public void knockBack(float hSpeed, float vSpeed)
     {
-        this.hSpeed = hSpeed;
-        this.vSpeed = vSpeed;
+        this.sX = hSpeed;
+        this.sY = vSpeed;
     }
 
     /**
@@ -189,10 +189,15 @@ public class Player extends CharacterGame {
         return spawnY;
     }
 
-    public void updateValues(Player update)
+    @Override
+    public void update(MapObject update)
     {
-        setCords(update.getX(), update.getY());
-        setDirection(update.getDirection());
-        updateHP(update.getHP());
+        if (update instanceof Player)
+        {
+            Player updatePlayer = (Player) update;
+            setCords(updatePlayer.getX(), updatePlayer.getY());
+            setDirection(updatePlayer.getDirection());
+            updateHP(updatePlayer.getHP());
+        }
     }
 }

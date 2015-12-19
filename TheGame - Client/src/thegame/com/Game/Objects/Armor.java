@@ -1,10 +1,8 @@
 package thegame.com.Game.Objects;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import thegame.com.Game.Map;
 
 /**
  *
@@ -36,5 +34,10 @@ public class Armor extends MapObject {
         {
             Logger.getLogger(Armor.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void update(MapObject update)
+    {
     }
 }

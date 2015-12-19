@@ -30,40 +30,53 @@ public abstract class CharacterGame extends MapObject {
 
     public void walkRight()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
         direction = sides.RIGHT;
 
-        if (hSpeed < 0)
+        if (!c.get(sides.RIGHT).isEmpty())
         {
-            hSpeed = 0.075f;
-        } else if (hSpeed < 0.3)
+            return;
+        }
+
+        if (sX < 0)
         {
-            hSpeed += 0.075f;
+            sX = getSXIncrease();
+        } else if (sX < getSXMax())
+        {
+            sX += getSXIncrease();
         }
     }
 
     public void walkLeft()
     {
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
         direction = sides.LEFT;
 
-        if (hSpeed > 0)
+        if (!c.get(sides.LEFT).isEmpty())
         {
-            hSpeed = -0.075f;
-        } else if (hSpeed > -0.3)
+            return;
+        }
+
+        if (sX > 0)
         {
-            hSpeed -= 0.075f;
+            sX = -getSXIncrease();
+        } else if (sX > -getSXMax())
+        {
+            sX -= getSXIncrease();
         }
     }
 
     public void jump()
     {
-        EnumMap<MapObject.sides,List<MapObject>> c = Collision.collision(this, false);
-        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty()) {
+        EnumMap<MapObject.sides, List<MapObject>> c = Collision.collision(this, false);
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty())
+        {
             jumping = true;
-            vSpeed += 0.05f;
+            sY += getSYIncrease();
 
-            if (vSpeed >= 0.3f)
+            if (sY >= getSYMax())
             {
-                vSpeed = 0.3f;
+                sY = getSYMax();
                 jumping = false;
             }
         }

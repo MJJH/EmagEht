@@ -44,4 +44,11 @@ public class Particle extends MapObject {
             Logger.getLogger(Particle.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public void update(MapObject update)
+    {
+        setX(update.getX());
+        setY(update.getY());
+    }
 }

@@ -8,8 +8,6 @@ package thegame.engine;
 import java.util.EnumMap;
 import java.util.List;
 import thegame.com.Game.Objects.Characters.CharacterGame;
-import thegame.com.Game.Objects.Characters.Enemy;
-import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -25,7 +23,8 @@ public class Movement {
 
         if (subject.getSX() > 0)
         {
-            subject.setSX(subject.getSX() - 0.04f);
+            subject.setSX(subject.getSX() - subject.getSXDecay());
+
             if (subject.getSX() <= 0)
             {
                 subject.setSX(0);
@@ -76,7 +75,7 @@ public class Movement {
             }
         } else if (subject.getSX() < 0)
         {
-            subject.setSX(subject.getSX() + 0.04f);
+            subject.setSX(subject.getSX() + subject.getSXDecay());
             if (subject.getSX() >= 0)
             {
                 subject.setSX(0);
@@ -150,6 +149,7 @@ public class Movement {
                     float minY = -1;
                     for (MapObject mo : found)
                     {
+
                         if (minY == -1 || mo.getY() < minY)
                         {
                             minY = mo.getY() - mo.getH();
@@ -189,7 +189,6 @@ public class Movement {
             {
                 ((CharacterGame) subject).stopJump();
             }
-
             found = collision.get(MapObject.sides.BOTTOM);
             if (found.isEmpty())
             {

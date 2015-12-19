@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.engine.Movement;
+import thegame.engine.Physics;
 
 /**
  * A particle is a MapObject that belongs to nobody and has no use but to pick
@@ -66,8 +68,25 @@ public class Particle extends MapObject {
     @Override
     public Boolean call()
     {
-        return false;
-        // Fall And Maybe go in 
+        Boolean ret = false;
+
+        /*
+         if (Physics.gravity(this))
+         {
+         ret = true;
+         }
+
+         if (Movement.moveH(this))
+         {
+         ret = true;
+         }
+
+         if (Movement.moveV(this))
+         {
+         ret = true;
+         }
+         */
+        return ret;
     }
 
     @Override

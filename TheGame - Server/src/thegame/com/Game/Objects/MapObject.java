@@ -1,13 +1,8 @@
 package thegame.com.Game.Objects;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 import java.util.concurrent.Callable;
-import javafx.scene.shape.Rectangle;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.Characters.Enemy;
 
 /**
  * An object that can be drawn on the map
@@ -21,8 +16,13 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected int id;
     protected float xPosition;
     protected float yPosition;
-    protected float hSpeed;
-    protected float vSpeed;
+    protected float sX;
+    protected float sY;
+    protected float sXDecay;
+    protected float sXMax;
+    protected float sYMax;
+    protected float sXIncrease;
+    protected float sYIncrease;
     protected float height;
     protected float width;
     protected float solid;
@@ -37,12 +37,12 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     public void setSX(float f)
     {
-        hSpeed = f;
+        sX = f;
     }
 
     public void setSY(float f)
     {
-        vSpeed = f;
+        sY = f;
     }
 
     public enum sides implements Serializable {
@@ -69,6 +69,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.setW(width);
         this.setS(solid);
         this.id = map.getMapObjectID();
+        sXDecay = 0.04f;
     }
 
     /**
@@ -106,7 +107,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
             {
                 this.xPosition = playing.getWidth() - width;
             }
-            hSpeed = 0;
+            sX = 0;
         }
     }
 
@@ -118,11 +119,11 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         } else if (y <= height)
         {
             this.yPosition = height;
-            vSpeed = 0;
+            sY = 0;
         } else
         {
             this.yPosition = playing.getHeight();
-            vSpeed = 0;
+            sY = 0;
         }
     }
 
@@ -217,21 +218,46 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     /**
      * Get horizontal speed
      *
-     * @return hSpeed
+     * @return sX
      */
     public float getSX()
     {
-        return hSpeed;
+        return sX;
     }
 
     /**
      * Get vertical speed
      *
-     * @return vSpeed
+     * @return sY
      */
     public float getSY()
     {
-        return vSpeed;
+        return sY;
+    }
+    
+    public float getSXDecay()
+    {
+        return sXDecay;
+    }
+    
+    public float getSXMax()
+    {
+        return sXMax;
+    }
+    
+    public float getSYMax()
+    {
+        return sYMax;
+    }
+    
+    public float getSXIncrease()
+    {
+        return sXIncrease;
+    }
+    
+    public float getSYIncrease()
+    {
+        return sYIncrease;
     }
 
     public float distance(MapObject to)

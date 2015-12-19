@@ -21,4 +21,11 @@ public class Block extends MapObject {
     {
         return type;
     }
+
+    @Override
+    public void update(MapObject update)
+    {
+        setX(update.getX());
+        setY(update.getY());
+    }
 }
