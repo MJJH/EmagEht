@@ -1,8 +1,10 @@
 package thegame.com.Game.Objects.Characters;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import thegame.com.Game.Objects.*;
+import thegame.engine.Collision;
 
 /**
  *
@@ -54,13 +56,16 @@ public abstract class CharacterGame extends MapObject {
 
     public void jump()
     {
-        jumping = true;
-        vSpeed += 0.05f;
+        EnumMap<MapObject.sides,List<MapObject>> c = Collision.collision(this, false);
+        if ((!c.get(sides.BOTTOM).isEmpty() || jumping) && c.get(sides.TOP).isEmpty()) {
+            jumping = true;
+            vSpeed += 0.05f;
 
-        if (vSpeed >= 0.3f)
-        {
-            vSpeed = 0.3f;
-            jumping = false;
+            if (vSpeed >= 0.3f)
+            {
+                vSpeed = 0.3f;
+                jumping = false;
+            }
         }
     }
 

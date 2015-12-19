@@ -17,6 +17,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.GameServerToClientHandler;
+import thegame.com.Game.Objects.Background;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -93,6 +94,7 @@ public class Map implements Serializable {
 
         int y = height - 1;
         int x = 0;
+        List<Integer> first = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(new File("src/resources/testMapI1.txt"))))
         {
@@ -107,6 +109,10 @@ public class Map implements Serializable {
                     switch (b)
                     {
                         case '0':
+                            
+                            if(first.contains(x))
+                                blocks[y][x] = new Background(BlockType.CaveStone, x, y, this);
+                            
                             break;
                         case 'x':
                             this.spawnX = x;
@@ -135,8 +141,13 @@ public class Map implements Serializable {
                             break;
                         case 'b':
                             blocks[y][x] = new Block(BlockType.Wood, x, y, this);
+                            break;
+                        case 'C':
+                            blocks[y][x] = new Block(BlockType.Copper, x, y, this);
                     }
-
+                    if(b != '0') {
+                        first.add(x);
+                    }
                     x++;
                 }
 
