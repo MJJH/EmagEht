@@ -61,14 +61,7 @@ public class Map implements Serializable {
                 try
                 {
                     Block cur = blocks[y][x];
-
-                    if (cur != null)
-                    {
-                        if (cur.getSkin() == null)
-                        {
-                            cur.createSkin();
-                        }
-                    }
+                    cur.setMap(this);
                 } catch (NullPointerException e)
                 {
                 }
@@ -101,6 +94,17 @@ public class Map implements Serializable {
 
         chatMessages = new ArrayList<>();
     }
+    
+    
+    public Block getBlock(int y, int x) 
+    {
+        try {
+            return blocks[y][x];
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
 
     public List<Player> getPlayers()
     {

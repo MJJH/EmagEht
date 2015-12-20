@@ -119,7 +119,7 @@ public enum BlockType {
         this.reqTool = req;
         this.solid = solid;
         this.colors = colors;
-
+        //this.skin = new display.Image(20, 20, colors[2]);
         display.Image i;
         try
         {
