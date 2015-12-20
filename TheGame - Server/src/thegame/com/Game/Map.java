@@ -20,6 +20,7 @@ import thegame.GameServerToClientHandler;
 import thegame.com.Game.Objects.Background;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -43,9 +44,10 @@ public class Map implements Serializable {
     private int level;
     private int spawnX;
     private int spawnY;
+    private float gravity;
 
     private Block[][] blocks;
-    private List<MapObject> objects;
+    private final List<MapObject> objects;
     private List<Enemy> enemies;
     private List<Player> players;
 
@@ -70,6 +72,7 @@ public class Map implements Serializable {
         height = 100;
 
         teamlifes = 4;
+        gravity = .025f;
 
         objects = new ArrayList<>();
         players = new ArrayList<>();
@@ -258,16 +261,21 @@ public class Map implements Serializable {
     public List<MapObject> getObjects(float x, float y, float range)
     {
         List<MapObject> toReturn = new ArrayList<>();
-        for (MapObject object : objects)
+
+        synchronized (objects)
         {
-            if (x >= object.getX() - range && x <= object.getX() + range)
+            for (MapObject object : objects)
             {
-                if (y >= object.getY() - range && y <= object.getY() + range)
+                if (x >= object.getX() - range && x <= object.getX() + range)
                 {
-                    toReturn.add(object);
+                    if (y >= object.getY() - range && y <= object.getY() + range)
+                    {
+                        toReturn.add(object);
+                    }
                 }
             }
         }
+
         return toReturn;
     }
 
@@ -373,6 +381,17 @@ public class Map implements Serializable {
                 } else
                 {
                     objects.remove(removeObject);
+                }
+
+                for (MapObject collision : Collision.collision(removeObject, true).get(MapObject.sides.TOP))
+                {
+                    if (!(collision instanceof CharacterGame))
+                    {
+                        synchronized (toUpdate)
+                        {
+                            toUpdate.add(collision);
+                        }
+                    }
                 }
             }
             toRemove.clear();
@@ -579,9 +598,8 @@ public class Map implements Serializable {
             try
             {
                 MapObject key = entrySet.getKey();
-
                 boolean value = entrySet.getValue().get();
-
+                
                 if (key instanceof Enemy)
                 {
                     toSend.add(key);
@@ -591,19 +609,21 @@ public class Map implements Serializable {
                 if (value)
                 {
                     toSend.add(key);
-                    for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : Collision.collision(key, true).entrySet())
-                    {
-                        for (MapObject toUpdateMO : collision.getValue())
-                        {
-                            if (!(toUpdateMO instanceof Player))
-                            {
-                                synchronized (toUpdate)
-                                {
-                                    toUpdate.add(toUpdateMO);
-                                }
-                            }
-                        }
-                    }
+                    /*
+                     for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : Collision.collision(key, true).entrySet())
+                     {
+                     for (MapObject toUpdateMO : collision.getValue())
+                     {
+                     if (!(toUpdateMO instanceof CharacterGame))
+                     {
+                     synchronized (toUpdate)
+                     {
+                     toUpdate.add(toUpdateMO);
+                     }
+                     }
+                     }
+                     }
+                     */
                 } else
                 {
                     synchronized (toUpdate)
@@ -620,5 +640,10 @@ public class Map implements Serializable {
         {
             gameServerToClientHandler.updateObjects(toSend);
         }
+    }
+
+    public float getGravity()
+    {
+        return gravity;
     }
 }

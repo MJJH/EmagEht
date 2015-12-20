@@ -89,6 +89,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         {
             return;
         }
+        mo.setMap(map);
         map.addMapObject(mo);
     }
 

@@ -2,6 +2,7 @@ package thegame.com.Game.Objects;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.config;
 
@@ -48,7 +49,14 @@ public class Particle extends MapObject {
     @Override
     public void update(MapObject update)
     {
-        setX(update.getX());
-        setY(update.getY());
+        xPosition = update.getX();
+        yPosition = update.getY();
+    }
+    
+    @Override
+    public void setMap(Map set)
+    {
+        this.playing = set;
+        object.setMap(set);
     }
 }

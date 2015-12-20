@@ -69,7 +69,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.setW(width);
         this.setS(solid);
         this.id = map.getMapObjectID();
-        sXDecay = 0.04f;
     }
 
     /**

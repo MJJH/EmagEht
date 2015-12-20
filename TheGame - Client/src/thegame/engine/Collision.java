@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import javafx.scene.shape.Rectangle;
+import thegame.com.Game.Objects.Background;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -26,18 +27,14 @@ public class Collision {
         collision.put(MapObject.sides.RIGHT, new ArrayList<>());
         collision.put(MapObject.sides.CENTER, new ArrayList<>());
 
-        List<MapObject> mos = subject.getMap().getBlocksAndObjects((int) Math.round(subject.getX() - 2),
-                (int) Math.round(subject.getY() - subject.getH() - 3),
+        List<MapObject> mos = subject.getMap().getBlocksAndObjects((int) Math.round(subject.getX() - 1),
+                (int) Math.round(subject.getY() - subject.getH() - 1),
                 (int) Math.round(subject.getX() + subject.getW() + 1),
                 (int) Math.round(subject.getY() + 2));
 
         for (MapObject mo : mos)
         {
-            if (mo.equals(subject))
-            {
-                continue;
-            }
-            if (!withUnsolids && (mo.getS() == 0 || subject.getS() == 0))
+            if (mo.equals(subject) || mo instanceof Background || (!withUnsolids && (mo.getS() == 0)))
             {
                 continue;
             }

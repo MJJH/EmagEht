@@ -38,6 +38,7 @@ public class Map implements Serializable {
     private int level;
     private int spawnX;
     private int spawnY;
+    private float gravity;
 
     private Block[][] blocks;
     private List<MapObject> objects;
@@ -432,5 +433,10 @@ public class Map implements Serializable {
     public void setLifes(int lifes)
     {
         this.teamlifes = lifes;
+    }
+    
+    public float getGravity()
+    {
+        return gravity;
     }
 }

@@ -51,6 +51,7 @@ public abstract class CharacterGame extends MapObject {
         backpack = new ArrayList[30];
         armor = new HashMap();
         direction = sides.RIGHT;
+        sXDecay = 0.04f;
         sXIncrease = 0.075f;
         sYIncrease = 0.05f;
         sXMax = 0.3f;

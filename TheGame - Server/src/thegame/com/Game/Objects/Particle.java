@@ -1,7 +1,5 @@
 package thegame.com.Game.Objects;
 
-import java.rmi.RemoteException;
-import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.engine.Movement;
@@ -35,6 +33,11 @@ public class Particle extends MapObject {
         super(x + (object.getW() / 4), y - (object.getH() / 4), 0.5f, 0.5f, 0, map);
         setObject(object);
         this.count = 1;
+        sXDecay = 0.04f;
+        sXIncrease = 0.075f;
+        sYIncrease = 0.05f;
+        sXMax = 0.3f;
+        sYMax = 0.3f;
     }
 
     private void setObject(MapObject object)
@@ -58,6 +61,7 @@ public class Particle extends MapObject {
     public void addObjectCount()
     {
         count++;
+        playing.addToUpdate(this);
     }
 
     public int getObjectCount()
@@ -69,23 +73,22 @@ public class Particle extends MapObject {
     public Boolean call()
     {
         Boolean ret = false;
+        
+        if (Physics.gravity(this))
+        {
+            ret = true;
+        }
 
-        /*
-         if (Physics.gravity(this))
-         {
-         ret = true;
-         }
+        if (Movement.moveH(this))
+        {
+            ret = true;
+        }
 
-         if (Movement.moveH(this))
-         {
-         ret = true;
-         }
+        if (Movement.moveV(this))
+        {
+            ret = true;
+        }
 
-         if (Movement.moveV(this))
-         {
-         ret = true;
-         }
-         */
         return ret;
     }
 
