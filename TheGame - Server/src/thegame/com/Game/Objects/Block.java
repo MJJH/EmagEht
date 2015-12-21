@@ -81,18 +81,18 @@ public class Block extends MapObject {
                         if (block.type == type)
                         {
                             particle.addObjectCount();
-                            playing.removeMapObject(this);
+                            playing.addMapObject(new Background(BlockType.CaveStone, xPosition, yPosition, playing));
                             return false;
                         }
                     }
                 }
 
                 playing.addMapObject(new Particle(this, xPosition, yPosition, playing));
-                playing.removeMapObject(this);
+                playing.addMapObject(new Background(BlockType.CaveStone, xPosition, yPosition, playing));
                 return false;
             }
             interaction = false;
-            return true;
+            return false;
         } else
         {
             return false;
