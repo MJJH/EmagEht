@@ -20,6 +20,7 @@ public class Enemy extends CharacterGame {
     private static final long serialVersionUID = 6729685098267757690L;
     private final float distanceX = 30;
     private final float distanceY = 10;
+    private transient Player agroPlayer;
 
     /**
      *
@@ -35,7 +36,8 @@ public class Enemy extends CharacterGame {
     public Enemy(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, height, width, map);
-
+        sXMax = 0.2f;
+        sYMax = 0.2f;
         ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 0.3f, 1, 1);
         Tool equip = new Tool(test, map);
         equipTool(equip);
@@ -44,27 +46,53 @@ public class Enemy extends CharacterGame {
     @Override
     public Boolean call()
     {
-        EnumMap<sides, List<MapObject>> collision = Collision.collision(this, false);
-
-        List<Player> players = playing.getPlayers();
-
-        for (Player player : players)
+        if (agroPlayer == null)
         {
-            float playerX = player.getX() + (player.getW() / 2);
-            float playerY = player.getY() + (player.getH() / 2);
-
-            if ((xPosition - distanceX) < playerX && (xPosition + distanceX) > playerX)
+            List<Player> players = playing.getPlayers();
+            for (Player player : players)
             {
-                if ((yPosition - distanceY) < playerY && (yPosition + distanceY) > playerY)
+                if (((xPosition + (width / 2)) - distanceX) < (player.getX() + (player.getW() / 2)) && ((xPosition + (width / 2)) + distanceX) > (player.getX() + (player.getW() / 2)))
+                {
+                    if (((yPosition + (height / 2)) - distanceY) < (player.getY() + (player.getH() / 2)) && ((yPosition + (height / 2)) + distanceY) > (player.getY() + (player.getH() / 2)))
+                    {
+                        if (agroPlayer == null)
+                        {
+                            agroPlayer = player;
+                        } else
+                        {
+                            if (Math.abs((xPosition + (width / 2)) - (player.getX() + (player.getW() / 2))) < Math.abs((xPosition + (width / 2)) - (agroPlayer.getX() + (agroPlayer.getW() / 2))))
+                            {
+                                agroPlayer = player;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (agroPlayer != null)
+        {
+            if (((xPosition + (width / 2)) - distanceX) < (agroPlayer.getX() + (agroPlayer.getW() / 2)) && ((xPosition + (width / 2)) + distanceX) > (agroPlayer.getX() + (agroPlayer.getW() / 2)))
+            {
+                if (((yPosition + (height / 2)) - distanceY) < (agroPlayer.getY() + (agroPlayer.getH() / 2)) && ((yPosition + (height / 2)) + distanceY) > (agroPlayer.getY() + (agroPlayer.getH() / 2)))
                 {
                     // WALK TO PLAYER
-                    if (playerX < xPosition)
+                    if(xPosition == agroPlayer.getX() + agroPlayer.getW())
+                    {
+                        //PLAYER LEFT
+                    }
+                    else if(xPosition + width == agroPlayer.getX())
+                    {
+                        //PLAYER RIGHT
+                    }
+                    else if ((agroPlayer.getX() + (agroPlayer.getW() / 2)) < (xPosition + (width / 2)))
                     {
                         walkLeft();
-                    } else if (playerX > xPosition)
+                    } else if ((agroPlayer.getX() + (agroPlayer.getW() / 2)) > (xPosition + (width / 2)))
                     {
                         walkRight();
                     }
+
+                    EnumMap<sides, List<MapObject>> collision = Collision.collision(this, false);
 
                     // COLLISION LEFT
                     if (collision.get(sides.LEFT).size() > 0)
@@ -79,7 +107,6 @@ public class Enemy extends CharacterGame {
                                 jump();
                             }
                         }
-                        //collision.get(sides.LEFT).get(0).hit(holding, sides.LEFT);
                         // COLLISION RIGHT
                     } else if (collision.get(sides.RIGHT).size() > 0)
                     {
@@ -93,34 +120,36 @@ public class Enemy extends CharacterGame {
                                 jump();
                             }
                         }
-                    }
-                    // COLLISION TOP
-                } else if (collision.get(sides.TOP).size() > 0)
-                {
-                    for (MapObject colTop : collision.get(sides.TOP))
+
+                        // COLLISION TOP
+                    } else if (collision.get(sides.TOP).size() > 0)
                     {
-                        if (colTop instanceof Player)
+                        for (MapObject colTop : collision.get(sides.TOP))
                         {
-                            useTool(colTop.getX(), colTop.getY());
-                        } else
+                            if (colTop instanceof Player)
+                            {
+                                useTool(colTop.getX(), colTop.getY());
+                            }
+                        }
+
+                        // COLLISON BOTTOM
+                    } else if (collision.get(sides.BOTTOM).size() > 0)
+                    {
+                        for (MapObject colBottom : collision.get(sides.BOTTOM))
                         {
-                            walkLeft();
+                            if (colBottom instanceof Player)
+                            {
+                                useTool(colBottom.getX(), colBottom.getY());
+                            }
                         }
                     }
-                }
-                // COLLISON BOTTOM
-            } else if (collision.get(sides.BOTTOM).size() > 0)
-            {
-                for (MapObject colBottom : collision.get(sides.BOTTOM))
+                } else
                 {
-                    if (colBottom instanceof Player)
-                    {
-                        useTool(colBottom.getX(), colBottom.getY());
-                    } else
-                    {
-                        walkLeft();
-                    }
+                    agroPlayer = null;
                 }
+            } else
+            {
+                agroPlayer = null;
             }
         }
 

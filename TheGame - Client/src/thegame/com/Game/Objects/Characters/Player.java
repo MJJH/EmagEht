@@ -75,6 +75,7 @@ public class Player extends CharacterGame {
             Tool h = (Tool) holding;
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
+                used = System.currentTimeMillis();
                 try
                 {
                     if (gameLogic.useTool(id, x, y))

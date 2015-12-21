@@ -29,6 +29,7 @@ public abstract class CharacterGame extends MapObject {
     protected List<MapObject>[] backpack;
 
     protected boolean jumping = false;
+    private transient long used;
 
     /**
      * This constructor creates a new in game character.
@@ -380,30 +381,40 @@ public abstract class CharacterGame extends MapObject {
 
     public boolean useTool(float x, float y)
     {
-        MapObject click = playing.GetTile(x, y, this);
-        if (click != null && holding != null && holding.type.range >= distance(click))
+        if (holding instanceof Tool)
         {
-            if (!(click instanceof Block))
+            Tool h = (Tool) holding;
+            if (System.currentTimeMillis() - used >= h.type.speed)
             {
-                if (!((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
+                used = System.currentTimeMillis();
+                MapObject click = playing.GetTile(x, y, this);
+                if (click != null && holding != null && holding.type.range >= distance(click))
                 {
-                    return false;
+                    if (!(click instanceof Block))
+                    {
+                        if (!((xPosition <= x && direction == sides.RIGHT) || (xPosition >= x && direction == sides.LEFT)))
+                        {
+                            return false;
+                        }
+                    }
+
+                    click.hit(holding, direction);
+                    return true;
                 }
+                /*
+                 else if (click == null)
+                 {
+                 Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
+                 if(holding.type.range >= distance(block))
+                 {
+                 playing.addBlock(block, Math.round(x), Math.round(y));
+                 return true;
+                 }
+                 return false;
+                 }
+                 */
             }
-
-            click.hit(holding, direction);
-            return true;
-        } /*else if (click == null)
-         {
-         Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
-         if(holding.type.range >= distance(block))
-         {
-         playing.addBlock(block, Math.round(x), Math.round(y));
-         return true;
-         }
-         return false;
-         }*/
-
+        }
         return false;
     }
 
@@ -446,7 +457,7 @@ public abstract class CharacterGame extends MapObject {
 
         if (this instanceof Player)
         {
-            playing.addToPlayerUpdate((Player)this);
+            playing.addToPlayerUpdate((Player) this);
         }
     }
 }
