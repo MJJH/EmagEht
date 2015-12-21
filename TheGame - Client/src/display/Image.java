@@ -36,15 +36,25 @@ public class Image extends Skin {
     private WritableImage image;
     private Map<Parts, PartImage> parts;
     private Color background;
-    private EnumMap<borderSide, Color> border;
+    private Map<borderSide, Color> border;
     public enum borderSide { TOP, LEFT, BOTTOM, RIGHT };
     
+    public Image(Image i) {
+        image = (WritableImage) i.show();
+        parts = i.getParts();
+        width = i.getWidth();
+        height = i.getHeight();
+        border = new HashMap<>();
+        background = i.getBackground();
+        
+        repaint();
+    }
     
     public Image(int height, int width, Color background) {
         this.height = height;
         this.width = width;
         this.background = background;
-        this.border = new EnumMap<>(borderSide.class);
+        border = new HashMap<>();
         parts = new LinkedHashMap<>();
         
         repaint();
@@ -52,7 +62,7 @@ public class Image extends Skin {
 
     public Image(iTexture texture) throws IOException
     {
-        this.border = new EnumMap<>(borderSide.class);
+        this.border = new HashMap<>();
         this.height = texture.getHeight();
         this.width = texture.getWidth();
 
@@ -120,6 +130,14 @@ public class Image extends Skin {
     
     public void setBackground(Color background) {
         this.background = background;
+    }
+    
+    public Color getBackground() {
+        return background;
+    }
+    
+    public Map<borderSide, Color> getBorder() {
+        return border;
     }
 
     public void addTexture(iTexture texture) throws IOException
@@ -196,10 +214,6 @@ public class Image extends Skin {
         }
 
         repaint();
-        if (parts.size() >= 17)
-        {
-            System.err.println("Hoi");
-        }
 
     }
 
@@ -372,48 +386,48 @@ public class Image extends Skin {
         }
     }
     
-    public void addBorder(borderSide side, Color c) {
+    public void addBorder(borderSide side, Color c, int size) {
         border.put(side, c);
         PixelWriter pw = image.getPixelWriter();
         switch(side) {
-                case TOP:
-                    if(border.get(borderSide.TOP) == null || border.get(borderSide.TOP) == Color.TRANSPARENT)
-                        break;
-                    
-                    for(int y = 0; y < 2; y++) {
-                        for(int x = 0; x < this.width; x++) {
-                            pw.setColor(x, y, border.get(borderSide.TOP));
-                        }
-                    }
+            case TOP:
+                if(border.get(borderSide.TOP) == null || border.get(borderSide.TOP) == Color.TRANSPARENT)
                     break;
-                case BOTTOM:
-                    if(border.get(borderSide.BOTTOM) == null || border.get(borderSide.BOTTOM) == Color.TRANSPARENT)
-                        break;
-                    
-                    for(int y = 0; y < 2; y++) {
-                        for(int x = 0; x < this.width; x++) {
-                            pw.setColor(x, height - 1 - y, border.get(borderSide.BOTTOM));
-                        }
+
+                for(int y = 0; y < size; y++) {
+                    for(int x = 0; x < this.width; x++) {
+                        pw.setColor(x, y, border.get(borderSide.TOP));
                     }
+                }
+                break;
+            case BOTTOM:
+                if(border.get(borderSide.BOTTOM) == null || border.get(borderSide.BOTTOM) == Color.TRANSPARENT)
                     break;
-                case LEFT:
-                    if(border.get(borderSide.LEFT) == null || border.get(borderSide.LEFT) == Color.TRANSPARENT)
-                        break;
-                    for(int x = 0; x < 2; x++) {
-                        for(int y = 0; y < this.height; y++) {
-                            pw.setColor(x, y, border.get(borderSide.LEFT));
-                        }
+
+                for(int y = 0; y < 2; y++) {
+                    for(int x = 0; x < this.width; x++) {
+                        pw.setColor(x, height - 1 - y, border.get(borderSide.BOTTOM));
                     }
+                }
+                break;
+            case LEFT:
+                if(border.get(borderSide.LEFT) == null || border.get(borderSide.LEFT) == Color.TRANSPARENT)
                     break;
-                case RIGHT:
-                    if(border.get(borderSide.RIGHT) == null || border.get(borderSide.RIGHT) == Color.TRANSPARENT)
-                        break;
-                    for(int x = 0; x < 2; x++) {
-                        for(int y = 0; y < this.height; y++) {
-                            pw.setColor(width - 1 - x, y, border.get(borderSide.RIGHT));
-                        }
+                for(int x = 0; x < 2; x++) {
+                    for(int y = 0; y < this.height; y++) {
+                        pw.setColor(x, y, border.get(borderSide.LEFT));
                     }
+                }
+                break;
+            case RIGHT:
+                if(border.get(borderSide.RIGHT) == null || border.get(borderSide.RIGHT) == Color.TRANSPARENT)
                     break;
+                for(int x = 0; x < 2; x++) {
+                    for(int y = 0; y < this.height; y++) {
+                        pw.setColor(width - 1 - x, y, border.get(borderSide.RIGHT));
+                    }
+                }
+                break;
             }
     }
 
@@ -496,5 +510,4 @@ public class Image extends Skin {
         parts.remove(it);
         repaint();
     }
-
 }
