@@ -95,17 +95,17 @@ public class Map implements Serializable {
 
         chatMessages = new ArrayList<>();
     }
-    
-    
-    public Block getBlock(int y, int x) 
+
+    public Block getBlock(int y, int x)
     {
-        try {
+        try
+        {
             return blocks[y][x];
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return null;
         }
     }
-    
 
     public List<Player> getPlayers()
     {
@@ -267,7 +267,7 @@ public class Map implements Serializable {
                 {
                     if (player.getID() == me.getID())
                     {
-                        me.updateHP(player.getHP());
+                        me.updateHP(((Player) update).getHP());
                         return;
                     }
                     player.update(update);
@@ -434,7 +434,7 @@ public class Map implements Serializable {
     {
         this.teamlifes = lifes;
     }
-    
+
     public float getGravity()
     {
         return gravity;

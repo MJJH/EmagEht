@@ -8,6 +8,7 @@ package thegame.engine;
 import java.util.EnumMap;
 import java.util.List;
 import thegame.com.Game.Objects.Characters.CharacterGame;
+import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 
 /**
@@ -238,5 +239,18 @@ public class Movement {
         }
 
         return false;
+    }
+
+    public static Boolean deglitch(MapObject subject)
+    {
+        Boolean ret = false;
+        while (!Collision.collision(subject, false).get(MapObject.sides.CENTER).isEmpty())
+        {
+            float yPostion = subject.getY();
+            yPostion++;
+            subject.setY(yPostion);
+            ret = true;
+        }
+        return ret;
     }
 }

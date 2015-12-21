@@ -88,6 +88,11 @@ public class Particle extends MapObject {
         {
             ret = true;
         }
+        
+        if (Movement.deglitch(this))
+        {
+            ret = true;
+        }
 
         return ret;
     }

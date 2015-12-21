@@ -446,7 +446,7 @@ public abstract class CharacterGame extends MapObject {
 
         if (this instanceof Player)
         {
-            playing.addToUpdate(this);
+            playing.addToPlayerUpdate((Player)this);
         }
     }
 }

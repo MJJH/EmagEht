@@ -61,7 +61,7 @@ public class Player extends CharacterGame {
         Physics.gravity(this);
         Movement.moveH(this);
         Movement.moveV(this);
-
+        Movement.deglitch(this);
         while (!Collision.collision(this, false).get(sides.CENTER).isEmpty())
         {
             yPosition++;

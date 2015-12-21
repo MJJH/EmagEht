@@ -49,8 +49,8 @@ public class Particle extends MapObject {
     @Override
     public void update(MapObject update)
     {
-        xPosition = update.getX();
-        yPosition = update.getY();
+        setX(update.getX());
+        setY(update.getY());
     }
     
     @Override

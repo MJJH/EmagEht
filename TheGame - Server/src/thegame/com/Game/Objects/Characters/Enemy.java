@@ -140,10 +140,8 @@ public class Enemy extends CharacterGame {
             ret = true;
         }
 
-        while (!collision.get(sides.CENTER).isEmpty())
+        if (Movement.deglitch(this))
         {
-            yPosition++;
-            collision = Collision.collision(this, false);
             ret = true;
         }
 
