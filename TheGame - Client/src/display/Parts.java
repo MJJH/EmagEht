@@ -48,9 +48,18 @@ public enum Parts implements iTexture {
     Shovel(Part.FRONTARM, Type.TOOL, 1, 172, 26, 9, -3, -11),
     Flint(Part.FRONTARM, Type.TOOL, 35, 127, 12, 5, -4, -13),
     // Blocks
+    Top(Part.HEAD, Type.BLOCK, 86, 0, 20, 5, 8, -7),
     Block(Part.FRONTARM, Type.BLOCK, 86, 0, 20, 20, 8, -7),
     Ore(Part.FRONTARM, Type.BLOCK, 106, 0, 20, 20, 9, -7),
-    Liquid(null, Type.BLOCK, 126, 0, 20, 20, 0, 0);
+    Liquid(null, Type.BLOCK, 126, 0, 20, 20, 0, 0),
+    // Trees
+    TreeTop(Part.TORSO, Type.BLOCK, 107, 20, 24, 17, 0, 0),
+    TreeMiddle(Part.TORSO, Type.BLOCK, 107, 137, 24, 20, 0, 0),
+    TreeMiddle1(Part.TORSO, Type.BLOCK, 107, 37, 24, 20, 0, 0),
+    TreeMiddle2(Part.TORSO, Type.BLOCK, 107, 97, 24, 20, 0, 0),
+    TreeMiddle3(Part.TORSO, Type.BLOCK, 107, 117, 24, 20, 0, 0),
+    TreeTrunk1(Part.TORSO, Type.BLOCK, 107, 57, 24, 20, 0, 0),
+    TreeTrunk2(Part.TORSO, Type.BLOCK, 107, 77, 24, 20, 0, 0);
 
     private final Part part;
     private final Type type;

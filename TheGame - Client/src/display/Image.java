@@ -162,7 +162,14 @@ public class Image extends Skin {
             else
             {
                 i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-                parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+                if(parent != null)
+                {
+                    parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+                }
+                else
+                {
+                    parts.put(t, new PartImage(i, 0, 0));
+                }
                 getal++;
 
             }
@@ -233,7 +240,7 @@ public class Image extends Skin {
 
     public void recolour(Parts p, Color[] colors)
     {
-        if (parts.containsValue(p))
+        if (parts.containsKey(p))
         {
             parts.get(p).recolors = colors;
         }

@@ -6,6 +6,9 @@ import display.Parts;
 import display.Skin;
 import display.iTexture;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
@@ -78,13 +81,7 @@ public enum BlockType {
         IntColor.rgb(18, 10, 60),
         IntColor.rgb(18, 10, 80)
     }),
-    Wood("Wood", 10, 0, ToolType.toolType.AXE, 0, Parts.Block, new Color[]
-    {
-        null,
-        IntColor.rgb(130, 90, 30),
-        IntColor.rgb(133, 97, 35),
-        IntColor.rgb(140, 110, 40)
-    }),
+    Wood("Wood", 10, 0, ToolType.toolType.AXE, 0, null, null),
     CaveStone("CaveBackground", 0, 0, null, 1, Parts.Block, new Color[]
     {
         null,
@@ -119,21 +116,73 @@ public enum BlockType {
         this.reqTool = req;
         this.solid = solid;
         this.colors = colors;
-        //this.skin = new display.Image(20, 20, colors[2]);
-        display.Image i;
-        try
-        {
-            i = new display.Image(skin);
-            i.recolour(colors);
-            this.skin = i;
-        } catch (IOException ex)
-        {
-            Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
+        if(skin != null) { 
+            display.Image i;
+            try
+            {
+                i = new display.Image(skin);
+                i.recolour(colors);
+                this.skin = i;
+            } catch (IOException ex)
+            {
+                Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     public String getName()
     {
         return name;
+    }
+
+    Skin createSkin(Block t, Block b, Block l, Block r) {
+        switch(valueOf(this.getName())) {
+            case Wood:
+                Parts[] possible; 
+                if(t == null) {
+                    possible = new Parts[] { Parts.TreeTop };
+                } 
+                else if(b != null && b.getType() == Wood) {
+                   possible = new Parts[] { Parts.TreeMiddle, Parts.TreeMiddle1, Parts.TreeMiddle2, Parts.TreeMiddle3 }; 
+                } else {
+                   possible = new Parts[] { Parts.TreeMiddle, Parts.TreeTrunk1, Parts.TreeTrunk2 }; 
+                }
+                {
+                    try {
+                        display.Image i = new display.Image(possible[(int)(Math.random() * (possible.length))]);
+                        i.recolour(new Color[] {
+                            null,
+                            IntColor.rgb(83, 49, 24),
+                            IntColor.rgb(103, 60, 30),
+                            IntColor.rgb(125, 80, 40),
+                            IntColor.rgb(150, 98, 45),
+                            IntColor.rgb(150, 108, 30)
+                        });
+                        return i;
+                    } catch (IOException ex) {
+                        Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
+            case Dirt:
+                if(t == null || t.getS() == 0 || t instanceof Background) {
+                    try {
+                        display.Image i = (display.Image) this.skin.clone();
+                        i.addTexture(Parts.Top);
+                        i.recolour(Parts.Top, new Color[] {
+                            null,
+                            IntColor.rgb(34, 177, 76),
+                            IntColor.rgb(74, 200, 106),
+                            IntColor.rgb(104, 255, 156),
+                        });
+                        return i;
+                    } catch (IOException | CloneNotSupportedException ex) {
+                        Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
+        }
+        
+        return this.skin;
     }
 }
