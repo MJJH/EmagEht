@@ -150,7 +150,7 @@ public class Map implements Serializable {
                         case 'C':
                             blocks[y][x] = new Block(BlockType.Copper, x, y, this);
                     }
-                    if (b != '0' && b != 'X')
+                    if (b != '0' && b != 'x')
                     {
                         first.add(x);
                     }

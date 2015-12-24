@@ -111,6 +111,10 @@ public class TheGame extends Application {
 
     private final EventHandler<KeyEvent> keyListener = (KeyEvent event) ->
     {
+        if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.F11) {
+            stages.setFullScreen(!stages.isFullScreen());
+            
+        }
         if (!sjeton)
         {
             if (event.getEventType() == KeyEvent.KEY_PRESSED && (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A) && !keys.contains(event.getCode()))
@@ -476,10 +480,12 @@ public class TheGame extends Application {
         drawGUI(g);
 
         // Calibration lines
-        g.setLineWidth(1);
+        /*g.setLineWidth(1);
         g.setStroke(Color.rgb(0, 0, 0, 0.2));
         g.strokeLine(scene.getWidth() / 2, 0, scene.getWidth() / 2, scene.getHeight());
-        g.strokeLine(0, scene.getHeight() / 2, scene.getWidth(), scene.getHeight() / 2);
+        g.strokeLine(0, scene.getHeight() / 2, scene.getWidth(), scene.getHeight() / 2);*/
+        /*g.setFill(new Color(0, 0, 0, 0.9));
+        g.fillRect(0, 0, scene.getWidth(), scene.getHeight());*/
 
     }
 
@@ -549,7 +555,7 @@ public class TheGame extends Application {
     private void connectToServer(Stage primaryStage) throws InterruptedException
     {
 
-        loadingScreen();
+        loadingScreen(primaryStage);
 
         Thread updateListenerThread = new Thread(() ->
         {
@@ -603,7 +609,7 @@ public class TheGame extends Application {
 
         StackPane root = new StackPane();
 
-        scene = new Scene(root, stages.getWidth(), stages.getHeight(), Color.LIGHTBLUE);
+        scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.LIGHTBLUE);
         scene.addEventHandler(KeyEvent.ANY, keyListener);
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
 
@@ -754,7 +760,7 @@ public class TheGame extends Application {
     {
 
         //draw black background
-        Color background = new Color(0f, 0f, 0f, .4f);
+        Color background = new Color(0f, 0f, 0f, .45f);
 
         if (inventory)
         {
@@ -984,12 +990,12 @@ public class TheGame extends Application {
         }
     }
 
-    private void loadingScreen()
+    private void loadingScreen(Stage primaryStage)
     {
         StackPane root = new StackPane();
 
-        Scene scene = new Scene(root, stages.getWidth(), stages.getHeight(), Color.BLACK);
-
+        scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
+        
         stages.setTitle("Loading Screen");
         stages.setScene(scene);
         stages.show();
