@@ -29,26 +29,26 @@ public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
 
-    private int id;
-    private int height;
-    private int width;
-    private int teamlifes;
-    private int time;
-    private Array[] seasons;
-    private int level;
-    private int spawnX;
-    private int spawnY;
-    private float gravity;
+    protected int id;
+    protected int height;
+    protected int width;
+    protected int teamlifes;
+    protected int time;
+    protected Array[] seasons;
+    protected int level;
+    protected int spawnX;
+    protected int spawnY;
+    protected float gravity;
 
-    private Block[][] blocks;
-    private List<MapObject> objects;
-    private List<Enemy> enemies;
-    private List<Player> players;
+    protected Block[][] blocks;
+    protected List<MapObject> objects;
+    protected List<Enemy> enemies;
+    protected List<Player> players;
 
     private transient ExecutorService playerUpdateThread;
 
     private transient Account myAccount;
-    private transient Player me;
+    protected transient Player me;
     private transient IGameClientToServer gameClientToServer;
     private transient thegame.Startup theGame;
     private transient List<Message> chatMessages;
@@ -172,24 +172,6 @@ public class Map implements Serializable {
         }
     }
 
-    /*public void removeMapObject(MapObject removeObject)
-     {
-     if (removeObject instanceof Block)
-     {
-     try
-     {
-     blocks[(int) removeObject.getY()][(int) removeObject.getX()] = null;
-     } catch (Exception e)
-     {
-     }
-     } else if (removeObject instanceof Enemy)
-     {
-     enemies.remove((Enemy) removeObject);
-     } else if (removeObject instanceof Player)
-     {
-     players.remove((Player) removeObject);
-     }
-     }*/
     public void removeMapObject(int type, int id, int x, int y)
     {
         MapObject removeObject = null;
@@ -321,7 +303,7 @@ public class Map implements Serializable {
                     Block cur = blocks[y][x];
 
                     if (cur != null
-                            && (cur.getX() + cur.getW() >= startX && cur.getX() <= endX && cur.getY() - cur.getH() >= startY && cur.getY() <= endY))
+                            && (cur.getX() >= startX && cur.getX() + cur.getW() <= endX && cur.getY() >= startY && cur.getY() - cur.getH() <= endY))
                     {
                         ret.add(cur);
                     }
@@ -348,7 +330,7 @@ public class Map implements Serializable {
         }
         for (Player player : players)
         {
-            if (player.getX() + player.getW() > startX && player.getX() < endX && player.getY() - player.getH() > startY && player.getY() < endY)
+            if (player.getX() >= startX && player.getX() + player.getW() <= endX && player.getY() >= startY && player.getY() - player.getH() <= endY)
             {
                 ret.add(player);
             }

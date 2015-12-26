@@ -162,7 +162,7 @@ public class GameUtilities {
         for (MapObject draw : view) 
         {
             float x, y;
-            if(draw.equals(me)) 
+            if(draw == me) 
             {
                 x = pX;
                 y = pY;
@@ -276,7 +276,6 @@ public class GameUtilities {
         g.fillText("TEAM LIFES", s.getWidth() - 100, 21);
 
         g.setStroke(Color.BLACK);
-        g.beginPath();
         g.strokeRect(s.getWidth() - 121, 50, 102.0f, 13.0f);
 
         g.setFill(Color.RED);
@@ -499,13 +498,13 @@ public class GameUtilities {
             endY--;
         }
         // If there are less blocks than could be displayed, just display less
-        if (startX < 0 && endX > play.getWidth())
+        if (startX <= 0 && endX >= play.getWidth())
         {
             startX = 0;
             endX = play.getWidth();
         }
         // Same for height
-        if (startY < 0 && endY > play.getHeight())
+        if (startY <= 0 && endY >= play.getHeight())
         {
             startY = 0;
             endY = play.getHeight();
@@ -520,7 +519,7 @@ public class GameUtilities {
         // Get amount of blocks that fit on screen
         int blockHorizontal = (int) Math.ceil(s.getWidth() / config.block.val) + 4;
         int blockVertical = (int) Math.ceil(s.getHeight() / config.block.val) + 4;
-
+        
         // preset Delta values
         float dx = 0;
         float dy = 0;
@@ -560,6 +559,14 @@ public class GameUtilities {
         {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (h - blockVertical + 2) * config.block.val * 2;
+        }
+        
+        
+        if(w < blockHorizontal - 4) {
+            dx = (float) (s.getWidth() / 2 - ((w / 2) * config.block.val)) * -1;
+        }
+        if(h < blockVertical - 4) {
+            dy = (float) (s.getHeight() / 2 - ((h / 2) * config.block.val)) * -1;
         }
         
         return new float[] { dx, dy };

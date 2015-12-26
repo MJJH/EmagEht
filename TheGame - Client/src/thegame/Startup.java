@@ -62,6 +62,8 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
+import thegame.tutorial.TutPlayer;
+import thegame.tutorial.Tutorial;
 
 /**
  *
@@ -203,10 +205,6 @@ public class Startup extends Application {
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
-        MenuItem SinglePlayer = new MenuItem("SINGLE PLAYER[soon]");
-        SinglePlayer.setOnMouseClicked(event ->
-        {
-        });
 
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
         startMultiPlayer.setOnMouseClicked(event ->
@@ -219,9 +217,19 @@ public class Startup extends Application {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        
+
+
+        MenuItem startTut = new MenuItem("TUTORIAL [WIP]");
+        startTut.setOnMouseClicked(event ->
+        {
+                new Loading(stages);
+        }
+        );
 
         MenuBox menu = new MenuBox(
                 startMultiPlayer,
+                startTut,
                 new MenuItem("CHARACTERS [soon]"),
                 new MenuItem("OPTIONS [soon]"),
                 itemExit);
@@ -244,8 +252,9 @@ public class Startup extends Application {
 
     private void loadingScreen(Stage primaryStage)
     {
+        
+        // Start tutorial
         StackPane root = new StackPane();
-
         scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
         
         stages.setTitle("Loading Screen");

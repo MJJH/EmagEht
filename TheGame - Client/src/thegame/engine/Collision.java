@@ -34,7 +34,7 @@ public class Collision {
 
         for (MapObject mo : mos)
         {
-            if (mo.equals(subject) || mo instanceof Background || (!withUnsolids && (mo.getS() == 0)))
+            if (mo == subject || mo instanceof Background || (!withUnsolids && (mo.getS() == 0)))
             {
                 continue;
             }
