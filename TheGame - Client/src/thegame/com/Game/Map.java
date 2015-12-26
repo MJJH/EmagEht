@@ -50,10 +50,10 @@ public class Map implements Serializable {
     private transient Account myAccount;
     private transient Player me;
     private transient IGameClientToServer gameClientToServer;
-    private transient thegame.TheGame theGame;
+    private transient thegame.Startup theGame;
     private transient List<Message> chatMessages;
 
-    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.TheGame theGame)
+    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.Startup theGame)
     {
         for (int y = 0; y < height; y++)
         {
@@ -412,7 +412,7 @@ public class Map implements Serializable {
     public void addChatMessage(Message message)
     {
         chatMessages.add(message);
-        theGame.chatNotiifcation();
+        //theGame.chatNotiifcation();
     }
 
     public List getChatMessages()
@@ -425,7 +425,7 @@ public class Map implements Serializable {
         return gameClientToServer;
     }
 
-    public thegame.TheGame getTheGame()
+    public thegame.Startup getTheGame()
     {
         return theGame;
     }

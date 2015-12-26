@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    thegame.TheGame.class, thegame.com.ComSuite.class
+    thegame.Startup.class, thegame.com.ComSuite.class
 })
 public class ThegameSuite {
 

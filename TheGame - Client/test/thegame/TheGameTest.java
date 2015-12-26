@@ -17,12 +17,12 @@ import static org.junit.Assert.*;
  *
  * @author laure
  */
-public class TheGame {
+public class Startup {
     
     /**
      *
      */
-    public TheGame()
+    public Startup()
     {
     }
     
@@ -59,28 +59,28 @@ public class TheGame {
     }
 
     /**
-     * Test of start method, of class TheGame.
+     * Test of start method, of class Startup.
      */
     @Test
     public void testStart()
     {
         System.out.println("start");
         Stage primaryStage = null;
-        TheGame instance = new TheGame();
+        Startup instance = new Startup();
         instance.start(primaryStage);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of main method, of class TheGame.
+     * Test of main method, of class Startup.
      */
     @Test
     public void testMain()
     {
         System.out.println("main");
         String[] args = null;
-        TheGame.main(args);
+        Startup.main(args);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

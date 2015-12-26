@@ -48,8 +48,8 @@ public class SplashScreen extends JWindow {
         panel.setBorder(new javax.swing.border.EtchedBorder());
         container.add(panel, BorderLayout.CENTER);
 
-        JLabel label = new JLabel("Loading TheGame:");
-        label.setFont(new Font("Verdana", Font.BOLD, 14));
+        JLabel label = new JLabel("Hier komt straks de tutorial!");
+        label.setFont(new Font("Verdana", Font.BOLD, 11));
         panel.add(label);
 
         progressBar.setMaximum(PROGBAR_MAX);

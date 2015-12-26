@@ -10,7 +10,7 @@ package display;
  * @author Martijn
  */
 public enum Parts implements iTexture {
-
+    Heart(Part.TORSO, Type.BODY, 146, 0, 15, 12, 0, 0),
     // Body
     playerHead(Part.HEAD, Type.BODY, 0, 0, 15, 15, 0, 0),
     playerTorso(Part.TORSO, Type.BODY, 17, 0, 14, 16, 0, 0),
@@ -34,7 +34,7 @@ public enum Parts implements iTexture {
     armorWristFront(Part.FRONTARM, Type.ARMOR, 46, 217, 7, 6, 1, -9),
     shortTop(Part.TORSO, Type.ARMOR, 1, 96, 14, 2, 0, 0),
     shortBack(Part.BACKLEG, Type.ARMOR, 8, 98, 8, 7, 0, 0),
-    shortFront(Part.FRONTLEG, Type.ARMOR, 1, 98, 7, 8, 0, 0),
+    shortFront(Part.FRONTLEG, Type.ARMOR, 0, 100, 7, 7, 0, 0),
     armorTop(Part.TORSO, Type.ARMOR, 3, 185, 15, 2, 0, 0),
     armorBack(Part.BACKLEG, Type.ARMOR, 13, 189, 8, 9, -4, 0),
     armorFront(Part.FRONTLEG, Type.ARMOR, 0, 189, 9, 9, 0, 0),
