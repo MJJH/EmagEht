@@ -12,7 +12,7 @@ import gui.SplashScreen;
 import gui.MenuItem;
 import gui.MenuBox;
 import display.Skin;
-import gui.NewJFrame;
+import gui.JavaFXColorPicker;
 import java.io.IOException;
 import javafx.scene.Scene;
 import java.io.InputStream;
@@ -232,13 +232,10 @@ public class Startup extends Application {
         MenuItem CustomizeCharacter = new MenuItem("Customize Character [WIP]");
         CustomizeCharacter.setOnMouseClicked(event ->
         {
-                JFrame j = new NewJFrame();
-                j.setVisible(true);
-                Player veranderplayer = new  Player();
-                veranderplayer.setCords(100, 100);
+            JavaFXColorPicker p = new JavaFXColorPicker();
             try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
+                p.start(stages);
+            } catch (IOException ex) {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
