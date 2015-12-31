@@ -1,7 +1,6 @@
     package gui;
 
     import display.Image;
-    import java.awt.Button;
     import java.io.IOException;
     import java.util.logging.Level;
     import java.util.logging.Logger;
@@ -29,6 +28,11 @@
     import javafx.scene.paint.Paint;
     import javafx.scene.text.Font;
     import javafx.stage.Stage;
+    import javafx.scene.control.TextField;
+    import javafx.scene.control.Label;
+    import javafx.scene.control.Button;
+
+
 
     /**
      *
@@ -71,15 +75,21 @@
               backleg = new display.Image(display.Parts.playerBackLeg);
 
 
-            final Canvas canvas = new Canvas(500,400);
+            final Canvas canvas = new Canvas(500,200);
 
              GraphicsContext gc = canvas.getGraphicsContext2D();
-              BorderPane root = new BorderPane();
+             BorderPane root = new BorderPane();
+             Scene scene = new Scene(root, 500, 250, Color.BLUE); 
+             primaryStage.setResizable(false);
+             
+            root.setStyle("-fx-background-color: #add8e6");
+             root.setPadding(new Insets(10, 30, 30, 5));
 
-             Scene scene = new Scene(root, 500, 600, Color.BLACK); 
-            
-             root.setPadding(new Insets(10, 30, 30, 30));
-
+             gc.strokeText("Color Head :", 5, 40);
+             gc.strokeText("Color Body :", 5, 95);
+             gc.strokeText("Color Legs :", 5, 145);
+              
+             
 
              ColorChanged(gc);
 
@@ -160,7 +170,10 @@
 
             
             root.getChildren().add(canvas);
+            root.setRight(addTextbox());
+            root.setBottom(addButton());
             root.setLeft(addVBox());
+
            
 
 
@@ -183,12 +196,48 @@
 
 
         }
+        
+        public HBox addTextbox() {
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(0,0,0,0));
+        hbox.setSpacing(25);
+        
+        Label label1 = new Label("Character Name:");
+        final TextField name = new TextField();
+        name.maxWidth(30);
+        
+        hbox.getChildren().add(label1);
+        hbox.getChildren().add(name);
+
+        
+        return hbox;
+
+        }
+        
+        public HBox addButton() {
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(0,0,0,175));
+        hbox.setSpacing(10);
+        
+        Button Save = new Button("Save Character");
+        Button Reset = new Button("Reset Character");
+
+        hbox.getChildren().add(Save);
+        hbox.getChildren().add(Reset);
+ 
+        return hbox;
+
+        }
+        
+        
+        
        
         public VBox addVBox() {
          VBox vbox = new VBox();
-         vbox.setPadding(new Insets(50,10,10,10));
-         vbox.setSpacing(8);
-         
+         vbox.setPadding(new Insets(40,10,10,0));
+         vbox.setSpacing(25);
+        
+             
           vbox.getChildren().add(HeadColor); 
           vbox.getChildren().add(BodyColor);
           vbox.getChildren().add(LegColor);
