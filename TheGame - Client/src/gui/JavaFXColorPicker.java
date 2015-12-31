@@ -1,10 +1,12 @@
     package gui;
 
     import display.Image;
+    import javafx.scene.input.MouseEvent;
     import java.io.IOException;
     import java.util.logging.Level;
     import java.util.logging.Logger;
     import javafx.application.Application;
+import javafx.event.ActionEvent;
     import javafx.event.Event;
     import javafx.event.EventHandler;
     import javafx.geometry.Insets;
@@ -45,11 +47,19 @@
         private Image backarm;
         private Image frontleg;
         private Image backleg;
-
+        
+        
+        private TextField name;
+        private Button Save;
+        private Button Reset;
+        private Scene scene;
 
         private Color[] BodyColorArray;
         private Color[] HeadColorArray;
         private Color[] LegColorArray;
+        private Color[] temp;      
+        private Color[] tempclear;
+
 
         private Image heart;
             ColorPicker HeadColor = new ColorPicker();
@@ -59,9 +69,13 @@
         @Override
         public void start(Stage primaryStage) throws IOException {
 
-             Color[] temp = new Color[]
+             temp = new Color[]
                 {
                     new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
+                };
+              tempclear = new Color[]
+                {
+                    new Color(0, 0, 0, 1), new Color(0.2, 0.2, 0.2, 1), new Color(0.4, 0.4, 0.4, 1), new Color(0.6, 0.6, 0.6, 1), new Color(0.8, 0.8, 0.8, 1), new Color(1, 1, 1, 1)
                 };
               HeadColorArray = temp;
               BodyColorArray = temp;
@@ -79,7 +93,7 @@
 
              GraphicsContext gc = canvas.getGraphicsContext2D();
              BorderPane root = new BorderPane();
-             Scene scene = new Scene(root, 500, 250, Color.BLUE); 
+             scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLUE); 
              primaryStage.setResizable(false);
              
             root.setStyle("-fx-background-color: #add8e6");
@@ -93,6 +107,10 @@
 
              ColorChanged(gc);
 
+            root.getChildren().add(canvas);
+            root.setRight(addTextbox());
+            root.setBottom(addButton());
+            root.setLeft(addVBox());
 
 
 
@@ -111,7 +129,7 @@
                     new Color(1, 1, 1, 1) // de ogen
                 };
                     ColorChanged(gc);
-
+                   
 
 
 
@@ -135,6 +153,7 @@
                     new Color(1, 1, 1, 1) // de ogen
                 };
                     ColorChanged(gc);
+                   
 
 
                 }
@@ -159,7 +178,37 @@
                     ColorChanged(gc);
                 }  
              });
+             
+            
+             
+             Save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+             Stage stage = (Stage) Save.getScene().getWindow();
+             stage.close();           
+            }
+                 });
+             
+             Reset.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+             @Override
+             public void handle(ActionEvent actionEvent) {
+             HeadColor.setValue(Color.WHITE);
+             BodyColor.setValue(Color.WHITE);
+             LegColor.setValue(Color.WHITE);
+             BodyColorArray = tempclear;
+             HeadColorArray = tempclear;
+             LegColorArray = tempclear;
+             name.setText("");
+             ColorChanged(gc);
+          
+             
+             }
+             });
+             
+    
 
+             
+           
 
 
 
@@ -169,11 +218,7 @@
 
 
             
-            root.getChildren().add(canvas);
-            root.setRight(addTextbox());
-            root.setBottom(addButton());
-            root.setLeft(addVBox());
-
+         
            
 
 
@@ -203,7 +248,7 @@
         hbox.setSpacing(25);
         
         Label label1 = new Label("Character Name:");
-        final TextField name = new TextField();
+        name = new TextField();
         name.maxWidth(30);
         
         hbox.getChildren().add(label1);
@@ -219,8 +264,8 @@
         hbox.setPadding(new Insets(0,0,0,175));
         hbox.setSpacing(10);
         
-        Button Save = new Button("Save Character");
-        Button Reset = new Button("Reset Character");
+        Save = new Button("Save Character");
+        Reset = new Button("Reset Character");
 
         hbox.getChildren().add(Save);
         hbox.getChildren().add(Reset);
