@@ -27,7 +27,7 @@ public class Block extends MapObject {
      */
     public Block(BlockType type, float x, float y, Map map)
     {
-        super(x, y, 1.0f, 1.0f, type.solid, map);
+        super(x, y, 1.0f, 1.0f, type.solid, map, false, true);
         this.type = type;
     }
 

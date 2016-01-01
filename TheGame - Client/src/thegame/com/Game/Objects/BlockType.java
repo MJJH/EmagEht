@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
  *
  * @author Mark
  */
-public enum BlockType {
+public enum BlockType implements iObjectType {
 
     Dirt("Dirt", 5, 3, ToolType.toolType.SHOVEL, 1, Parts.Block, new Color[]
     {

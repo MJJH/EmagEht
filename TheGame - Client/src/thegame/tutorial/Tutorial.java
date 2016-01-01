@@ -21,12 +21,15 @@ import thegame.com.Game.Objects.MapObject;
  */
 public class Tutorial extends Map 
 {
+    private steps step = steps.WOOD;
+    enum steps { WOOD, WORKBENCH, STONE, PICKAXE, IRON, FURNACE, SWORD, ENEMY, READY }
+    
     public Tutorial(int width, int height) 
     {
         this.width = width;
         this.height = height;
-        
-        teamlifes = 4;
+
+        teamlifes = 1;
         gravity = .025f;
 
         objects = new ArrayList<>();
@@ -35,6 +38,19 @@ public class Tutorial extends Map
         blocks = new Block[height][width];
 
         generateMap();
+    }
+    
+    public steps nextStep()
+    {
+        if(step != steps.READY)
+            return step = steps.values()[step.ordinal()+1];
+        
+        return step;
+    }
+    
+    public steps getStep()
+    {
+        return step;
     }
     
     public void generateMap() 

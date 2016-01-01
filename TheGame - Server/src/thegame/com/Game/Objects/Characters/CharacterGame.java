@@ -45,7 +45,7 @@ public abstract class CharacterGame extends MapObject {
      */
     public CharacterGame(String name, int hp, java.util.Map<SkillType, Integer> skills, float x, float y, float height, float width, Map map)
     {
-        super(x, y, height, width, 1, map);
+        super(x, y, height, width, 1, map, false, false);
         this.name = name;
         this.hp = 100;
         this.skills = skills;

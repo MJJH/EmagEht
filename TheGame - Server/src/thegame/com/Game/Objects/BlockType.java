@@ -7,7 +7,7 @@ import java.io.IOException;
  *
  * @author Mark
  */
-public enum BlockType {
+public enum BlockType implements iObjectType {
 
     Dirt("Dirt", 5, 3, ToolType.toolType.SHOVEL, 1),
     Sand("Sand", 5, 3, ToolType.toolType.SHOVEL, 1),

@@ -23,7 +23,7 @@ public class Armor extends MapObject {
      */
     public Armor(ArmorType type, float height, float width, Map map)
     {
-        super(height, width, map);
+        super(height, width, map, false, false);
         this.type = type;
     }
 
