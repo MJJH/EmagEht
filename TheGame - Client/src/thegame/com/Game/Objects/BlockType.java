@@ -82,8 +82,22 @@ public enum BlockType implements iObjectType {
         IntColor.rgb(18, 10, 80)
     }),
     Wood("Wood", 10, 0, ToolType.toolType.AXE, 0, null, null),
-    Leafleft("Leafleft",0,0,null,0,null,null),
-    Leafright("Leafright",0,0,null,0,null,null),
+    Leafleft("Leafleft", 0, 0, null, 0, Parts.Leafleft, new Color[]
+    {
+        null,
+        null,
+        null,
+        null
+    }),
+    
+     Leafright("Leafright", 0, 0, null, 0, Parts.Leafright, new Color[]
+    {
+        null,
+        null,
+        null,
+        null
+    }),
+     
     CaveStone("CaveBackground", 0, 0, null, 1, Parts.Block, new Color[]
     {
         null,
