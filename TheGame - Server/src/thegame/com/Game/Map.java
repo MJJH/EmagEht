@@ -147,6 +147,12 @@ public class Map implements Serializable {
                         case '|':
                             blocks[y][x] = new Block(BlockType.Wood, x, y, this);
                             break;
+                        case '[':
+                            blocks[y][x] = new Block(BlockType.Leafleft, x, y, this);
+                            break;
+                        case ']':
+                            blocks[y][x] = new Block(BlockType.Leafright, x, y, this);
+                            break;
                         case 'C':
                             blocks[y][x] = new Block(BlockType.Copper, x, y, this);
                     }

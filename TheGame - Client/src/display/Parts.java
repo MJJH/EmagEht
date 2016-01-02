@@ -59,7 +59,11 @@ public enum Parts implements iTexture {
     TreeMiddle2(Part.TORSO, Type.BLOCK, 107, 97, 24, 20, 0, 0),
     TreeMiddle3(Part.TORSO, Type.BLOCK, 107, 117, 24, 20, 0, 0),
     TreeTrunk1(Part.TORSO, Type.BLOCK, 107, 57, 24, 20, 0, 0),
-    TreeTrunk2(Part.TORSO, Type.BLOCK, 107, 77, 24, 20, 0, 0);
+    TreeTrunk2(Part.TORSO, Type.BLOCK, 107, 77, 24, 20, 0, 0),
+    
+    //Leaves
+    Leafleft(Part.TORSO, Type.BLOCK, 41,84,23,25,0,0),
+    Leafright(Part.TORSO, Type.BLOCK, 72,79,22,28,0,0);
 
     private final Part part;
     private final Type type;

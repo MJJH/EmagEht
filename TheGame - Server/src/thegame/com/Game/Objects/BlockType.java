@@ -18,7 +18,9 @@ public enum BlockType implements iObjectType {
     Iron("Iron", 60, 3, ToolType.toolType.PICKAXE, 1),
     Obsidian("Obsidian", 120, 3, ToolType.toolType.PICKAXE, 1),
     Wood("Wood", 10, 0, ToolType.toolType.AXE, 0),
-    CaveStone("CaveStone", 0, 0, null, 0);
+    CaveStone("CaveStone", 0, 0, null, 0),
+    Leafleft("Leafleft",0,0,null,0),
+    Leafright("Leafright",0,0,null,0);
 
     public final String name;
     public final int strength;
