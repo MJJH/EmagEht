@@ -28,7 +28,7 @@ public class Collision {
         collision.put(MapObject.sides.CENTER, new ArrayList<>());
 
         List<MapObject> mos = subject.getMap().getBlocksAndObjects((int) Math.round(subject.getX() - 1),
-                (int) Math.round(subject.getY() - subject.getH() - 1),
+                (int) Math.round(subject.getY() - subject.getH() - 3),
                 (int) Math.round(subject.getX() + subject.getW() + 1),
                 (int) Math.round(subject.getY() + 2));
 
