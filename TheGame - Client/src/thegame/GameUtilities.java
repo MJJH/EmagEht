@@ -6,6 +6,7 @@
 package thegame;
 
 import display.Animation;
+import display.IntColor;
 import display.Sets;
 import display.Skin;
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class GameUtilities {
         play = playing;
         s = scene;
         
-        guiBackground = new Color(0f, 0f, 0f, .45f);
+        guiBackground = new Color(0.35f, 0.35f, 0.35f, 1f);
         guiFontColor = Color.WHITE;
         guiFont = Font.font("monospaced", 10);
         
@@ -216,11 +217,17 @@ public class GameUtilities {
     {
         g.beginPath();
         g.setFill(guiBackground);
-        g.setStroke(Color.WHITE);
+
         g.setFont(guiFont);
         int RectHeight = 250;
         int RectWidth = 400;
-        g.fillRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+        g.fillRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);        
+        
+        g.setStroke(Color.BLACK);
+        g.strokeRoundRect(9, (s.getHeight() - RectHeight) - 11, RectWidth + 2, RectHeight + 2, 5, 5);
+        g.strokeRoundRect(11, (s.getHeight() - RectHeight) - 9, RectWidth - 2, RectHeight - 2, 5, 5);
+        
+        g.setStroke(Color.WHITE);
         g.strokeRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
 
         int textPosition = 10;
@@ -236,11 +243,16 @@ public class GameUtilities {
         {
             chatMessages.remove(0);
         }
-        if (typing != "~")
+        if (!typing.equals("~"))
         {
             g.setFont(Font.font("monospaced", 11));
-            g.fillRoundRect(12, (s.getHeight() - 27), RectWidth - 4, 15, 5, 5);
-            g.strokeText(typing, 15, s.getHeight() - 15);
+            g.setFill(IntColor.rgb(50, 50, 50));
+            g.fillRoundRect(12, (s.getHeight() - 29), RectWidth - 4, 17, 5, 5);
+            g.strokeText(typing, 15, s.getHeight() - 17);
+            g.setStroke(Color.BLACK);
+            g.strokeLine(11, (s.getHeight() - 29), RectWidth+9, (s.getHeight() - 29));
+            g.setStroke(Color.WHITE);
+            g.strokeLine(11, (s.getHeight() - 28), RectWidth+9, (s.getHeight() - 28));
             g.closePath();
         } else 
         {
@@ -259,8 +271,12 @@ public class GameUtilities {
     {
         g.beginPath();
         g.setFill(guiBackground);
-
         g.fillRoundRect(s.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
+        
+        g.setStroke(Color.BLACK);
+        g.strokeRoundRect(s.getWidth() - 131, 9, 122f, 62.0f, 5, 5);
+        g.strokeRoundRect(s.getWidth() - 129, 11, 118f, 58.0f, 5, 5);
+        
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(s.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
 
@@ -294,8 +310,13 @@ public class GameUtilities {
     {
         g.beginPath();
         g.setFill(guiBackground);
+        g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);        
+        
+        g.setStroke(Color.BLACK);
+        g.strokeRoundRect(s.getWidth() - 51, s.getHeight() - 51, 42f, 42.0f, 5, 5);
+        g.strokeRoundRect(s.getWidth() - 49, s.getHeight() - 49, 38f, 38.0f, 5, 5);
+        
         g.setStroke(Color.WHITE);
-        g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);
         g.strokeRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);
 
         if (me.getHolding() != null)
@@ -320,9 +341,15 @@ public class GameUtilities {
         for (int y = 0; y < 4; y++)
         {
             g.setFill(guiBackground);
+            g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);            
+            
+            g.setStroke(Color.BLACK);
+            g.strokeRoundRect(s.getWidth() - 51, s.getHeight() - 1 - 100 - 50 * y, 42f, 42.0f, 5, 5);
+            g.strokeRoundRect(s.getWidth() - 49, s.getHeight() + 1 - 100 - 50 * y, 38f, 38.0f, 5, 5);
+            
             g.setStroke(Color.WHITE);
-            g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
             g.strokeRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
+            
             display.Image i;
 
             switch (y)
@@ -384,8 +411,13 @@ public class GameUtilities {
             for (int x = 0; x < 10; x++)
             {
                 g.setFill(guiBackground);
+                g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);                
+                
+                g.setStroke(Color.BLACK);
+                g.strokeRoundRect(-1 + 10 + 50 * x, -1 + 10 + 50 * y, 42, 42, 5, 5);
+                g.strokeRoundRect(1 + 10 + 50 * x, 1 + 10 + 50 * y, 38, 38, 5, 5);
+                
                 g.setStroke(Color.WHITE);
-                g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
                 g.strokeRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
 
                 int spot = y * 10 + x;
