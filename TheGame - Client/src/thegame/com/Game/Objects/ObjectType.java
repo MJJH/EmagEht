@@ -5,10 +5,16 @@
  */
 package thegame.com.Game.Objects;
 
+import display.Skin;
+import java.io.Serializable;
+
 /**
  *
  * @author Martijn
  */
-public interface iObjectType {
+public abstract class ObjectType implements Serializable {
+    private static final long serialVersionUID = 6522685098267700690L;
+    
+    public transient Skin skin;
     
 }

@@ -56,11 +56,11 @@ public class Tutorial extends Map
     public void generateMap() 
     {
         for(int b = 0; b < 5; b++) {
-            this.blocks[7-b][5] = new TutBlock(BlockType.Wood, 5, 7-b, this, 0);
+            this.blocks[7-b][5] = new TutBlock(BlockType.blocktypes.get("Wood"), 5, 7-b, this, 0);
         }
         
         for(int i = 0; i < 3; i++) {
-            this.blocks[4-i][9] = new TutBlock(BlockType.Iron, 9, 4-i, this, 1);
+            this.blocks[4-i][9] = new TutBlock(BlockType.blocktypes.get("Iron"), 9, 4-i, this, 1);
         }
         
         for(int y = 0; y < 3; y++)
@@ -69,9 +69,9 @@ public class Tutorial extends Map
             {
                 BlockType t;
                 switch(y) {
-                    case 0: t = BlockType.Obsidian; break;
-                    case 1: t = BlockType.Stone; break;
-                    default: t = BlockType.Dirt; break;
+                    case 0: t = BlockType.blocktypes.get("Obsidian"); break;
+                    case 1: t = BlockType.blocktypes.get("Stone"); break;
+                    default: t = BlockType.blocktypes.get("Dirt"); break;
                 }
                 this.blocks[y][x] = new TutBlock(t, x, y, this, 1);
             }

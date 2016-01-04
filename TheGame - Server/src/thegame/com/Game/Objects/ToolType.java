@@ -1,13 +1,15 @@
 package thegame.com.Game.Objects;
 
-import java.io.Serializable;
+import java.io.IOException;
+import javafx.scene.control.Skin;
+import javafx.scene.image.Image;
 
 /**
  * A tooltype defines what a tool will be able to do
  *
  * @author Martijn
  */
-public class ToolType implements Serializable {
+public class ToolType extends ObjectType {
 
     private static final long serialVersionUID = 6522685098267757690L;
 
@@ -21,9 +23,9 @@ public class ToolType implements Serializable {
     public float width;
     public toolType type;
 
-    public enum toolType implements Serializable {
+    public enum toolType {
 
-        PICKAXE, AXE, SWORD, SHOVEL, FLINT, BUCKET
+        PICKAXE, AXE, SWORD, SHOVEL, FLINT
     }
 
     /**
@@ -35,6 +37,7 @@ public class ToolType implements Serializable {
      * @param reqLvl
      * @param type
      * @param kb
+     * @param skin
      * @param height
      * @param width
      */

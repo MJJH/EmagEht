@@ -47,12 +47,12 @@ public class Player extends CharacterGame {
         this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0, 1, 1), playing));
         for (int c = 0; c < 103; c++)
         {
-            this.addToBackpack(new Block(BlockType.Stone, 0, 0, playing));
+            this.addToBackpack(new Block(BlockType.blocktypes.get("Stone"), 0, 0, playing));
         }
 
-        this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 1, 1, playing));
+        /*this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 1, 1, playing));
         this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
-        this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));
+        this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));*/
     }
 
     /**

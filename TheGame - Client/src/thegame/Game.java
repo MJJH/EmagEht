@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import gui.GameUtilities;
 import display.Animation;
 import display.Skin;
 import gui.SplashScreen;

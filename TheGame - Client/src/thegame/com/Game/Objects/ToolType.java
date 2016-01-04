@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author Martijn
  */
-public class ToolType implements Serializable {
+public class ToolType extends ObjectType {
 
     private static final long serialVersionUID = 6522685098267757690L;
 
@@ -21,7 +21,6 @@ public class ToolType implements Serializable {
     public float range;
     public int reqLvl;
     public float kb;
-    public transient Skin skin;
     public float height;
     public float width;
     public toolType type;

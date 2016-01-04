@@ -6,24 +6,21 @@
 package thegame.com.Game;
 
 import java.util.HashMap;
-import thegame.com.Game.Objects.Item;
-import thegame.com.Game.Objects.ItemType;
-import thegame.com.Game.Objects.MapObject;
-import thegame.com.Game.Objects.iObjectType;
+import thegame.com.Game.Objects.ObjectType;
 
 /**
  *
  * @author Martijn
  */
-public enum Crafting {
-    WorkBench(ItemType.WorkBench, new HashMap<>(), 0, null);
+public class Crafting {
+    //WorkBench(ItemType.WorkBench, new HashMap<>(), 0, null);
     
-    public final iObjectType crafting;
-    public final HashMap<iObjectType, Integer> recources;
+    public final ObjectType crafting;
+    public final HashMap<ObjectType, Integer> recources;
     public final int level;
-    public final iObjectType near;
+    public final ObjectType near;
     
-    Crafting(iObjectType object, HashMap<iObjectType, Integer> need, int level, iObjectType near)
+    Crafting(ObjectType object, HashMap<ObjectType, Integer> need, int level, ObjectType near)
     {
         this.crafting = object;
         this.recources = need;

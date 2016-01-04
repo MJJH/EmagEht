@@ -9,6 +9,7 @@ package thegame.com.Game.Objects;
  *
  * @author Martijn
  */
-public enum ItemType implements iObjectType {
-    WorkBench;
+public class ItemType extends ObjectType {
+    private static final long serialVersionUID = 6522685098267706690L;
+
 }
