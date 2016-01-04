@@ -19,11 +19,11 @@ public class Database {
 
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/theGame?zeroDateTimeBehavior=convertToNull";
+    static final String DB_URL = "jdbc:mysql://athena01.fhict.local:3306/dbi322250?zeroDateTimeBehavior=convertToNull";
 
     //  Database credentials
-    static final String USER = "root";
-    static final String PASS = "root";
+    static final String USER = "dbi322250";
+    static final String PASS = "lZoCxvXKps";
 
     Connection conn = null;
 
@@ -43,16 +43,17 @@ public class Database {
             System.out.println("Connection Successful");
         } catch (SQLException e)
         {
+            System.out.println(e.getMessage());
             System.out.println("Connection Failed!");
         }
     }
 
-    public ResultSet executeQuery(String sql) throws SQLException{
+    public ResultSet executeQuery(String sql) throws SQLException, ClassNotFoundException{
         //Execute a query
-        Statement statement = null;
+        Statement statement;
         ResultSet resultSet = null;
         try{
-            //openConnection();
+            openConnection();
             System.out.println("Creating statement...");
             statement = conn.createStatement();
             //String sql = "SELECT id, first, last, age FROM Employees";
@@ -62,24 +63,6 @@ public class Database {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-        }
-        finally{
-            if (resultSet != null){
-                try{
-                    resultSet.close();
-                }
-                catch(SQLException sqlEx){
-                    System.out.println(sqlEx.getMessage());
-                }
-            }
-            if (statement != null){
-                try{
-                    statement.close();
-                }
-                catch(SQLException sqlEx){
-                    System.out.println(sqlEx.getMessage());
-                }
-            }
         }
         return resultSet;
         /*
