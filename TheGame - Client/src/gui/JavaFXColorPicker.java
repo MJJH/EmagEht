@@ -134,10 +134,20 @@ import javafx.scene.shape.Rectangle;
              
              gc.setFill(Color.RED);
             
+            double[] pointabove = new double[]{(width * 0.4) , (height * 0.33) , (width * 0.4) , (height * 0.378), (width * 0.36) , (height * 0.354)};
+            Polygon p = new Polygon(pointabove);
             
-            double[] points = new double[]{25 , 5 , 45 , 45, 5 , 45};
-            Polygon p = new Polygon(points);
+            double[] pointmiddle = new double[]{(width * 0.4) , (height * 0.42) , (width * 0.4) , (height * 0.468), (width * 0.36) , (height * 0.444)};
+            Polygon pa = new Polygon(pointmiddle);
+            
+            double[] pointbeneath = new double[]{(width * 0.4) , (height * 0.51) , (width * 0.4) , (height * 0.558), (width * 0.36) , (height * 0.534)};
+            Polygon pas = new Polygon(pointbeneath);
+            
+            
             root.getChildren().add(p);
+            root.getChildren().add(pa);
+            root.getChildren().add(pas);
+
             //     root.getChildren().add(addButton());
 
             /*
