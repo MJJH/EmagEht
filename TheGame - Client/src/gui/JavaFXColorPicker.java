@@ -1,38 +1,25 @@
     package gui;
 
     import display.Image;
-    import javafx.scene.input.MouseEvent;
     import java.io.IOException;
-    import java.util.logging.Level;
-    import java.util.logging.Logger;
+import java.util.ArrayList;
     import javafx.application.Application;
-import javafx.event.ActionEvent;
     import javafx.event.Event;
     import javafx.event.EventHandler;
     import javafx.geometry.Insets;
-    import javafx.geometry.Orientation;
-    import javafx.geometry.Pos;
     import javafx.scene.Scene;
     import javafx.scene.canvas.Canvas;
     import javafx.scene.canvas.GraphicsContext;
     import javafx.scene.control.ColorPicker;
-    import javafx.scene.layout.Background;
-    import javafx.scene.layout.BackgroundFill;
-    import javafx.scene.layout.BorderPane;
-    import javafx.scene.layout.CornerRadii;
-    import javafx.scene.layout.FlowPane;
-    import javafx.scene.layout.GridPane;
-    import javafx.scene.layout.HBox;
-    import javafx.scene.layout.Pane;
-    import javafx.scene.layout.StackPane;
-    import javafx.scene.layout.VBox;
     import javafx.scene.paint.Color;
-    import javafx.scene.paint.Paint;
-    import javafx.scene.text.Font;
     import javafx.stage.Stage;
     import javafx.scene.control.TextField;
     import javafx.scene.control.Label;
     import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 
 
@@ -48,6 +35,8 @@ import javafx.event.ActionEvent;
         private Image frontleg;
         private Image backleg;
         
+        double width;
+        double height;
         
         private TextField name;
         private Button Save;
@@ -89,25 +78,69 @@ import javafx.event.ActionEvent;
               backleg = new display.Image(display.Parts.playerBackLeg);
 
 
-            final Canvas canvas = new Canvas(500,200);
+            final Canvas canvas = new Canvas(primaryStage.getScene().getWidth(),primaryStage.getScene().getHeight());
 
              GraphicsContext gc = canvas.getGraphicsContext2D();
-             BorderPane root = new BorderPane();
+             //BorderPane root = new BorderPane();
+             AnchorPane root = new AnchorPane();
+             
+             width = primaryStage.getScene().getWidth();
+             height = primaryStage.getScene().getHeight();
+             
              scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLUE); 
              primaryStage.setResizable(false);
              
             root.setStyle("-fx-background-color: #add8e6");
              root.setPadding(new Insets(10, 30, 30, 5));
 
-             gc.strokeText("Color Head :", 5, 40);
+            /* gc.strokeText("Color Head :", 5, 40);
              gc.strokeText("Color Body :", 5, 95);
-             gc.strokeText("Color Legs :", 5, 145);
+             gc.strokeText("Color Legs :", 5, 145); */
               
              
 
              ColorChanged(gc);
 
             root.getChildren().add(canvas);
+            Save = new Button("Save Character");
+            Reset = new Button("Reset Character");
+
+            AnchorPane.setTopAnchor(BodyColor, height * 0.6);
+            AnchorPane.setLeftAnchor(BodyColor, width * 0.45);
+            root.getChildren().add(BodyColor);
+
+ 
+            AnchorPane.setTopAnchor(Save, height * 0.6);
+            AnchorPane.setTopAnchor(Reset, height * 0.6);
+            AnchorPane.setLeftAnchor(Reset, width * 0.35); 
+            AnchorPane.setLeftAnchor(Save, width * 0.565);
+
+            root.getChildren().add(Save);
+            root.getChildren().add(Reset);
+            
+             Label label1 = new Label("Character Name:");
+             name = new TextField();
+             name.maxWidth(30);
+             
+            AnchorPane.setTopAnchor(label1, height * 0.2);
+            AnchorPane.setTopAnchor(name, height * 0.2);
+            AnchorPane.setLeftAnchor(label1, width * 0.40); 
+            AnchorPane.setLeftAnchor(name, width * 0.50);
+             
+             root.getChildren().add(label1);
+             root.getChildren().add(name);
+             
+            
+             
+             gc.setFill(Color.RED);
+            
+            
+            double[] points = new double[]{25 , 5 , 45 , 45, 5 , 45};
+            Polygon p = new Polygon(points);
+            root.getChildren().add(p);
+            //     root.getChildren().add(addButton());
+
+            /*
             root.setRight(addTextbox());
             root.setBottom(addButton());
             root.setLeft(addVBox());
@@ -137,7 +170,16 @@ import javafx.event.ActionEvent;
                 }
 
             });
-
+             */
+            
+             p.setOnMouseClicked(new EventHandler<MouseEvent>()
+            {
+            @Override
+            public void handle(MouseEvent t) {
+                p.setFill(Color.RED);
+            }
+            });
+             
             BodyColor.setOnAction(new EventHandler(){
 
                 @Override
@@ -160,7 +202,7 @@ import javafx.event.ActionEvent;
 
             });
 
-
+               /*
              LegColor.setOnAction(new EventHandler(){
 
                 @Override
@@ -213,7 +255,7 @@ import javafx.event.ActionEvent;
 
 
 
-
+             */
 
 
 
@@ -242,6 +284,8 @@ import javafx.event.ActionEvent;
 
         }
         
+        
+        /*
         public HBox addTextbox() {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(0,0,0,0));
@@ -257,9 +301,9 @@ import javafx.event.ActionEvent;
         
         return hbox;
 
-        }
+        } */
         
-        public HBox addButton() {
+      /*  public HBox addButton() {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(0,0,0,175));
         hbox.setSpacing(10);
@@ -272,11 +316,11 @@ import javafx.event.ActionEvent;
  
         return hbox;
 
-        }
+        } */
         
         
         
-       
+       /* 
         public VBox addVBox() {
          VBox vbox = new VBox();
          vbox.setPadding(new Insets(40,10,10,0));
@@ -288,13 +332,13 @@ import javafx.event.ActionEvent;
           vbox.getChildren().add(LegColor);
 
          return vbox;
-}
+} */
 
         public void ColorChanged(GraphicsContext gc) {
 
 
 
-                    backleg.recolour(LegColorArray);
+                    backleg.recolour(BodyColorArray);
                     Image i = backleg;
                     gc.drawImage(i.show(), 304, 128);    
 
@@ -307,7 +351,7 @@ import javafx.event.ActionEvent;
                     i = body;
                     gc.drawImage(i.show(), 300, 112);  
 
-                    frontleg.recolour(LegColorArray);
+                    frontleg.recolour(BodyColorArray);
                     i = frontleg;
                     gc.drawImage(i.show(), 299, 128);  
 
@@ -316,7 +360,7 @@ import javafx.event.ActionEvent;
                     gc.drawImage(i.show(), 296, 112);  
 
 
-                    head.recolour(HeadColorArray);
+                    head.recolour(BodyColorArray);
                      i = head;
                     gc.drawImage(i.show(), 300, 100);
     }
