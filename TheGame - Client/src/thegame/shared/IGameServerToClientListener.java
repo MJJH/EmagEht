@@ -7,7 +7,6 @@ package thegame.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.EventListener;
 import java.util.List;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Message;
@@ -16,7 +15,7 @@ import thegame.com.Menu.Message;
  *
  * @author laure
  */
-public interface IGameServerToClientListener extends Remote, EventListener {
+public interface IGameServerToClientListener extends Remote {
 
     public void sendGameChatMessage(Message message) throws RemoteException;
 

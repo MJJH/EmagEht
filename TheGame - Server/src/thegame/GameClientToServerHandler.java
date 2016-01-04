@@ -6,6 +6,7 @@
 package thegame;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import thegame.com.Game.Map;
@@ -13,6 +14,7 @@ import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
 import thegame.shared.IGameServerToClientListener;
@@ -25,10 +27,11 @@ public class GameClientToServerHandler implements IGameClientToServer {
 
     private transient Map map;
     private final transient GameServerToClientHandler gameServerToClientHandler;
+    private transient HashMap<Lobby, Map> games = new HashMap<>();
 
-    public GameClientToServerHandler() throws RemoteException
+    public GameClientToServerHandler(GameServerToClientHandler gameServerToClientHandler) throws RemoteException
     {
-        gameServerToClientHandler = new GameServerToClientHandler();
+        this.gameServerToClientHandler = gameServerToClientHandler;
 
         map = new Map(gameServerToClientHandler, this);
         gameServerToClientHandler.registerMap(map);
@@ -43,6 +46,8 @@ public class GameClientToServerHandler implements IGameClientToServer {
             }
         }, 0, 1000 / 60);
     }
+    
+    
 
     @Override
     public Player joinPlayer(Account account, IGameServerToClientListener listener) throws RemoteException

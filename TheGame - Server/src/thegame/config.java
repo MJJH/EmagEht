@@ -22,9 +22,12 @@ public enum config {
 
     //public static String ip = "84.24.141.120";
     public static String ip = "localhost";
-    public static String bindName = "//" + ip + ":1099/gameLogic";
-    public static int reachGameLogicPort = 1099;
-    public static int talkBackGameLogicPort = 1100;
-    public static int updateListenerPort = 1101;
+    public static String lobbyClientToServerName = "lobbyClientToServer";
+    public static String gameClientToServerName = "gameClientToServer";
+    public static int lobbyServerToClientPort = 1097;
+    public static int lobbyClientToServerPort = 1098;
+    public static int gameServerToClientPort = 1099;
+    public static int gameClientToServerPort = 1100;
+    public static int gameServerToClientListenerPort = 1101;
     public static int timeOutTime = 500;
 }

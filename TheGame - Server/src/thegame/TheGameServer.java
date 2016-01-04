@@ -25,8 +25,10 @@ import javafx.stage.Stage;
  */
 public class TheGameServer extends Application {
 
-    private Registry registry = null;
+    private Registry gameClientToServerRegistry = null;
+    private Registry lobbyClientToServerRegistry = null;
     private GameClientToServerHandler gameClientToServerHandler = null;
+    private LobbyClientToServerHandler lobbyClientToServerHandler = null;
 
     public void startServer()
     {
@@ -54,16 +56,28 @@ public class TheGameServer extends Application {
              });
              */
             System.out.println("Server is starting up");
-            gameClientToServerHandler = new GameClientToServerHandler();
-            System.setProperty("java.rmi.server.hostname", config.ip);
-            registry = LocateRegistry.createRegistry(config.reachGameLogicPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
-            registry.rebind(config.bindName, gameClientToServerHandler);
-            UnicastRemoteObject.exportObject(gameClientToServerHandler, config.talkBackGameLogicPort);
+
+            // Lobby
+            LobbyServerToClientHandler lobbyServerToClientHandler = new LobbyServerToClientHandler();
+            lobbyClientToServerHandler = new LobbyClientToServerHandler(lobbyServerToClientHandler);
+            lobbyClientToServerRegistry = LocateRegistry.createRegistry(config.lobbyServerToClientPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
+            lobbyClientToServerRegistry.rebind(config.lobbyClientToServerName, lobbyClientToServerHandler);
+            UnicastRemoteObject.exportObject(lobbyClientToServerHandler, config.lobbyClientToServerPort);
+
+            // Game
+            GameServerToClientHandler gameServerToClientHandler = new GameServerToClientHandler();
+            gameClientToServerHandler = new GameClientToServerHandler(gameServerToClientHandler);
+            gameClientToServerRegistry = LocateRegistry.createRegistry(config.gameServerToClientPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
+            gameClientToServerRegistry.rebind(config.gameClientToServerName, gameClientToServerHandler);
+            UnicastRemoteObject.exportObject(gameClientToServerHandler, config.gameClientToServerPort);
+
             System.out.println("Server is up and running");
         } catch (RemoteException ex)
         {
+            lobbyClientToServerHandler = null;
+            lobbyClientToServerRegistry = null;
             gameClientToServerHandler = null;
-            registry = null;
+            gameClientToServerRegistry = null;
             System.out.println("Server could not be started (" + ex.getMessage() + ")");
             System.out.println("Shutting down now");
             System.exit(0);
@@ -85,6 +99,7 @@ public class TheGameServer extends Application {
         primaryStage.setHeight(100);
         primaryStage.show();
 
+        System.setProperty("java.rmi.server.hostname", config.ip);
         startServer();
         primaryStage.setOnCloseRequest(event ->
         {

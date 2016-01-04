@@ -46,6 +46,7 @@ import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
+import thegame.shared.IGameServerToClientListener;
 
 /**
  *
@@ -85,8 +86,27 @@ public class Game {
 
     private Stage stages;
     
-    public Game(Stage primaryStage, Player me, Account a, Map play, IGameClientToServer gameClientToServer) 
+    public Game(Stage primaryStage, Player me, Account a, Map play, IGameClientToServer gameClientToServer, IGameServerToClientListener gameServerToClientListener) 
     {
+        primaryStage.setOnCloseRequest(event ->
+        {
+            if (gameClientToServer != null && gameServerToClientListener != null)
+            {
+                try
+                {
+                    gameClientToServer.leavePlayer(gameServerToClientListener);
+                } catch (RemoteException ex)
+                {
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                    Platform.runLater(() ->
+                    {
+                        connectionLoss();
+                    });
+                }
+            }
+            System.exit(0);
+        });
+        
         myAccount = a;
         stages = primaryStage;
         this.me = me;
@@ -391,4 +411,35 @@ public class Game {
         alert.showAndWait();
         System.exit(0);
     }
+    
+    /*
+    public void connectionLoss()
+    {
+        myAccount = null;
+        play = null;
+        me = null;
+        server = null;
+        gameServerToClientListener = null;
+        gameClientToServer = null;
+        keys = new ArrayList<>();
+        draw.stop();
+        movement.cancel();
+        sound.stop();
+        sound = null;
+
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Connectionn loss");
+        alert.setHeaderText("Connection to server lost");
+        alert.setContentText("You lost the connection to the server. Please try again in a minute.");
+        alert.showAndWait();
+        
+        try
+        {
+            start(stages);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    */
 }

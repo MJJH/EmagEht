@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.Characters.Enemy;
@@ -50,10 +47,10 @@ public class Map implements Serializable {
     private transient Account myAccount;
     protected transient Player me;
     private transient IGameClientToServer gameClientToServer;
-    private transient thegame.Startup theGame;
+    private transient thegame.LobbyFX lobbyFX;
     private transient List<Message> chatMessages;
 
-    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.Startup theGame)
+    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.LobbyFX lobbyFX)
     {
         for (int y = 0; y < height; y++)
         {
@@ -88,7 +85,7 @@ public class Map implements Serializable {
         this.gameClientToServer = gameClientToServer;
         this.myAccount = myAccount;
         this.me = me;
-        this.theGame = theGame;
+        this.lobbyFX = lobbyFX;
 
         players.remove(me);
         players.add(me);
@@ -364,7 +361,7 @@ public class Map implements Serializable {
                 System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
                 Platform.runLater(() ->
                 {
-                    theGame.connectionLoss();
+                    lobbyFX.connectionLoss();
                 });
             }
         }
@@ -394,7 +391,6 @@ public class Map implements Serializable {
     public void addChatMessage(Message message)
     {
         chatMessages.add(message);
-        //theGame.chatNotiifcation();
     }
 
     public List getChatMessages()
@@ -407,11 +403,6 @@ public class Map implements Serializable {
         return gameClientToServer;
     }
 
-    public thegame.Startup getTheGame()
-    {
-        return theGame;
-    }
-
     public void setLifes(int lifes)
     {
         this.teamlifes = lifes;
@@ -420,5 +411,10 @@ public class Map implements Serializable {
     public float getGravity()
     {
         return gravity;
+    }
+    
+    public thegame.LobbyFX getLobbyFX()
+    {
+        return lobbyFX;
     }
 }

@@ -52,7 +52,7 @@ public class Player extends CharacterGame {
                         System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
                         Platform.runLater(() ->
                         {
-                            playing.getTheGame().connectionLoss();
+                            playing.getLobbyFX().connectionLoss();
                         });
                     }
                 }
