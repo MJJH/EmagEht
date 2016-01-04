@@ -11,14 +11,13 @@ import java.io.Serializable;
  *
  * @author Mark
  */
-public class ArmorType implements Serializable {
+public class ArmorType extends ObjectType {
 
     private static final long serialVersionUID = 5529685098264757690L;
 
     public String name;
     public int multiplier;
     public int reqLvl;
-    public transient Skin skin;
     public bodyPart bodypart;
 
     Skin getSkin() throws IOException

@@ -18,7 +18,7 @@ public class Background extends Block {
     @Override
     public void createSkin()
     {
-        this.skin = BlockType.CaveStone.skin;
+        this.skin = BlockType.blocktypes.get("CaveBackground").skin;
     }
 
 }

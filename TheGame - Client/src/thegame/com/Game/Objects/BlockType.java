@@ -7,7 +7,9 @@ import display.Skin;
 import display.iTexture;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +21,10 @@ import javafx.scene.paint.Color;
  *
  * @author Mark
  */
-public enum BlockType implements iObjectType {
-
+public class BlockType extends ObjectType {
+    private static final long serialVersionUID = 6522685098267704690L;
+    public static Map<String, BlockType> blocktypes = new HashMap<>();
+/*
     Dirt("Dirt", 5, 3, ToolType.toolType.SHOVEL, 1, Parts.Block, new Color[]
     {
         null,
@@ -105,14 +109,13 @@ public enum BlockType implements iObjectType {
         IntColor.rgb(42, 42, 42),
         IntColor.rgb(44, 44, 44)
     });
-
+*/
     public final String name;
     public final int strength;
     public final int reqToolLvl;
     public final ToolType.toolType reqTool;
     public final float solid;
 
-    public Skin skin;
     public final Color[] colors;
 
     /**
@@ -144,6 +147,7 @@ public enum BlockType implements iObjectType {
                 Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        blocktypes.put(name, this);
     }
 
     public String getName()
@@ -152,13 +156,13 @@ public enum BlockType implements iObjectType {
     }
 
     Skin createSkin(Block t, Block b, Block l, Block r) {
-        switch(valueOf(this.getName())) {
-            case Wood:
+        switch(this.getName()) {
+            case "Wood":
                 Parts[] possible; 
                 if(t == null) {
                     possible = new Parts[] { Parts.TreeTop };
                 } 
-                else if(b != null && b.getType() == Wood) {
+                else if(b != null && b.getType().getName() == "Wood") {
                    possible = new Parts[] { Parts.TreeMiddle, Parts.TreeMiddle1, Parts.TreeMiddle2, Parts.TreeMiddle3 }; 
                 } else {
                    possible = new Parts[] { Parts.TreeMiddle, Parts.TreeTrunk1, Parts.TreeTrunk2 }; 
@@ -180,7 +184,7 @@ public enum BlockType implements iObjectType {
                     }
                 }
                 break;
-            case Dirt:
+            case "Dirt":
                 if(t == null || t.getS() == 0 || t instanceof Background) {
                     try {
                         display.Image i = (display.Image) this.skin.clone();

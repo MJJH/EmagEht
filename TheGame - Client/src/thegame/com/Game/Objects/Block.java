@@ -25,7 +25,7 @@ public class Block extends MapObject {
     @Override
     public void createSkin()
     {
-        if(type.skin == null || type == BlockType.Dirt)
+        if(type.skin == null || type.getName() == "Dirt")
         {
             Block t = playing.getBlock((int) yPosition + 1, (int) xPosition);
             Block b = playing.getBlock((int) yPosition - 1, (int) xPosition);

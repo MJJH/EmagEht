@@ -3,38 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package thegame;
+package gui;
 
 import display.Animation;
 import display.IntColor;
 import display.Sets;
 import display.Skin;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Menu.Message;
+import thegame.config;
 
 /**
  *
@@ -67,6 +59,10 @@ public class GameUtilities {
                           heart;
     
     private Timer notificationTimer;
+    
+    // Crafting
+    private int selected;
+    private int offset;
                          
     
     public GameUtilities (Player me, Map playing, GraphicsContext g, Scene scene) {
@@ -189,6 +185,7 @@ public class GameUtilities {
         if(inventory) 
         {
             drawInventory();
+            drawCrafting();
             drawArmor();
         }
         
@@ -602,5 +599,80 @@ public class GameUtilities {
         }
         
         return new float[] { dx, dy };
+    }
+
+    private void drawCrafting() {
+        g.beginPath();
+        
+        // Get craftings
+        //List<Crafting> toCraft = me.getCrafting();
+        List<Crafting> toCraft = new ArrayList<>(5);
+        
+        int maxX = toCraft.size();
+        if(maxX > 10)
+            maxX = 10;
+        
+        for (int x = 0; x < maxX; x++)
+        {
+            g.setFill(guiBackground);
+            g.fillRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);                
+
+            g.setStroke(Color.BLACK);
+            g.strokeRoundRect(-1 + 10 + 50 * x, -1 + 200, 42, 42, 5, 5);
+            g.strokeRoundRect(1 + 10 + 50 * x, 1 + 200, 38, 38, 5, 5);
+
+            if(x == selected)
+                g.setStroke(Color.BLACK);
+            else
+                g.setStroke(Color.WHITE);
+            g.strokeRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);
+            
+            Skin i = toCraft.get(x + offset).crafting.skin;
+            if (i != null)
+            {
+                g.drawImage(i.show(), 10 + 50 * x + (40 - i.getWidth()) / 2, 200 + (40 - i.getHeight()) / 2);
+            } else
+            {
+                g.setFill(Color.RED);
+                g.fillRect(10 + 50 * x + 10, 200 + 10, 20, 20);
+            }
+        }
+        
+        if(selected + offset - 1 >= toCraft.size() && toCraft.get(selected + offset) != null && toCraft.get(selected + offset).recources != null)
+        {
+            for (int y = 0; y < toCraft.get(selected + offset).recources.size(); y++)
+            {
+                g.setFill(guiBackground);
+                g.fillRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);                
+
+                g.setStroke(Color.BLACK);
+                g.strokeRoundRect(-1 + 10 + 50 * (selected), -1 + 245 + y * 35, 32, 32, 5, 5);
+                g.strokeRoundRect(1 + 10 + 50 * (selected), 1 + 245 + y * 35, 28, 28, 5, 5);
+
+                g.setStroke(Color.BLACK);
+                g.strokeRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);
+                
+                Skin i = ((ObjectType) toCraft.get(selected + offset).recources.keySet().toArray()[y]).skin;
+                if (i != null)
+                {
+                    g.drawImage(i.show(), 10 + 50 * selected + (30 - i.getWidth()) / 2, 245 + y * 35 + (30 - i.getHeight()) / 2);
+                } else
+                {
+                    g.setFill(Color.RED);
+                    g.fillRect(10 + 50 * selected + 5, 245 + y * 35 + 5, 20, 20);
+                }
+
+                if ((Integer) toCraft.get(selected + offset).recources.values().toArray()[y] > 1)
+                {
+                    g.setFill(guiFontColor);
+                    g.setFont(guiFont);
+                    String t = (Integer) toCraft.get(selected + offset).recources.values().toArray()[y] + "";
+                    g.fillText(t, 10 + 50 * selected + 30 - ((t.length() - 1) * 5) - 8, 245 * y + 38);
+                }
+            }
+        }
+        
+        
+        g.closePath();
     }
 }

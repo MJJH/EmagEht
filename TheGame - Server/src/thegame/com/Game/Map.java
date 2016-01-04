@@ -116,7 +116,7 @@ public class Map implements Serializable {
 
                             if (first.contains(x))
                             {
-                                blocks[y][x] = new Background(BlockType.CaveStone, x, y, this);
+                                blocks[y][x] = new Background(BlockType.blocktypes.get("CaveBackground"), x, y, this);
                             }
 
                             break;
@@ -125,37 +125,31 @@ public class Map implements Serializable {
                             this.spawnY = y;
                             break;
                         case 'd':
-                            blocks[y][x] = new Block(BlockType.Dirt, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Dirt"), x, y, this);
                             break;
                         case 's':
-                            blocks[y][x] = new Block(BlockType.Stone, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Stone"), x, y, this);
                             break;
                         case 'S':
-                            blocks[y][x] = new Block(BlockType.Sand, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Sand"), x, y, this);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.Obsidian, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Obisidian"), x, y, this);
                             break;
                         case 'c':
-                            blocks[y][x] = new Block(BlockType.Coal, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Coal"), x, y, this);
                             break;
                         case 't':
-                            blocks[y][x] = new Block(BlockType.Tin, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Tin"), x, y, this);
                             break;
                         case 'i':
-                            blocks[y][x] = new Block(BlockType.Iron, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Iron"), x, y, this);
                             break;
                         case '|':
-                            blocks[y][x] = new Block(BlockType.Wood, x, y, this);
-                            break;
-                        case '[':
-                            blocks[y][x] = new Block(BlockType.Leafleft, x, y, this);
-                            break;
-                        case ']':
-                            blocks[y][x] = new Block(BlockType.Leafright, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Wood"), x, y, this);
                             break;
                         case 'C':
-                            blocks[y][x] = new Block(BlockType.Copper, x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Copper"), x, y, this);
                     }
                     if (b != '0' && b != 'x')
                     {
