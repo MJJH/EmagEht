@@ -26,6 +26,8 @@ public abstract class MapObject implements Serializable {
     protected float height;
     protected float width;
     protected float solid;
+    protected boolean placeable;
+    protected boolean stackable;
 
     protected transient Skin skin;
     protected transient Map playing;

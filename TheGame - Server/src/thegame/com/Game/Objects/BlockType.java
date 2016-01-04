@@ -7,7 +7,7 @@ import java.io.IOException;
  *
  * @author Mark
  */
-public enum BlockType {
+public enum BlockType implements iObjectType {
 
     Dirt("Dirt", 5, 3, ToolType.toolType.SHOVEL, 1),
     Sand("Sand", 5, 3, ToolType.toolType.SHOVEL, 1),
@@ -18,7 +18,9 @@ public enum BlockType {
     Iron("Iron", 60, 3, ToolType.toolType.PICKAXE, 1),
     Obsidian("Obsidian", 120, 3, ToolType.toolType.PICKAXE, 1),
     Wood("Wood", 10, 0, ToolType.toolType.AXE, 0),
-    CaveStone("CaveStone", 0, 0, null, 0);
+    CaveStone("CaveStone", 0, 0, null, 0),
+    Leafleft("Leafleft",0,0,null,0),
+    Leafright("Leafright",0,0,null,0);
 
     public final String name;
     public final int strength;

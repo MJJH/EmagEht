@@ -23,7 +23,7 @@ public class ToolType implements Serializable {
 
     public enum toolType implements Serializable {
 
-        PICKAXE, AXE, SWORD, SHOVEL, FLINT
+        PICKAXE, AXE, SWORD, SHOVEL, FLINT, BUCKET
     }
 
     /**

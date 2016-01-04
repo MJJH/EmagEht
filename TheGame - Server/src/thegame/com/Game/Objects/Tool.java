@@ -22,7 +22,7 @@ public class Tool extends MapObject {
      */
     public Tool(ToolType type, Map map)
     {
-        super(type.height, type.width, map);
+        super(type.height, type.width, map, false, false);
         this.type = type;
     }
 

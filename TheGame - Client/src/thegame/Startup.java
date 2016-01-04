@@ -12,6 +12,7 @@ import gui.SplashScreen;
 import gui.MenuItem;
 import gui.MenuBox;
 import display.Skin;
+import gui.JavaFXColorPicker;
 import java.io.IOException;
 import javafx.scene.Scene;
 import java.io.InputStream;
@@ -57,6 +58,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javax.swing.JFrame;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Menu.Account;
@@ -211,7 +213,7 @@ public class Startup extends Application {
         {
             try
             {
-                connectToServer(stages);
+               connectToServer(stages);
             } catch (InterruptedException ex)
             {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
@@ -226,11 +228,23 @@ public class Startup extends Application {
                 new Loading(stages);
         }
         );
+        
+        MenuItem CustomizeCharacter = new MenuItem("Customize Character [WIP]");
+        CustomizeCharacter.setOnMouseClicked(event ->
+        {
+            JavaFXColorPicker p = new JavaFXColorPicker();
+            try {
+                p.start(stages);
+            } catch (IOException ex) {
+                Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        );
 
         MenuBox menu = new MenuBox(
                 startMultiPlayer,
                 startTut,
-                new MenuItem("CHARACTERS [soon]"),
+                CustomizeCharacter,
                 new MenuItem("OPTIONS [soon]"),
                 itemExit);
         menu.setTranslateX(100);

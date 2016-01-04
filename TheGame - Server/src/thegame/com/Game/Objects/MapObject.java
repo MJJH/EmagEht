@@ -27,6 +27,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float width;
     protected float solid;
     protected transient Map playing;
+    protected boolean placeable;
+    protected boolean stackable;
 
     public boolean debug = false;
 
@@ -60,7 +62,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param solid the density of this object
      * @param map the map that this is on
      */
-    public MapObject(float x, float y, float height, float width, float solid, Map map)
+    public MapObject(float x, float y, float height, float width, float solid, Map map, boolean place, boolean stackable)
     {
         this.playing = map;
         this.setX(x);
@@ -68,6 +70,8 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         this.setH(height);
         this.setW(width);
         this.setS(solid);
+        this.placeable = place;
+        this.stackable = stackable;
         this.id = map.getMapObjectID();
     }
 
@@ -78,11 +82,13 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
      * @param width
      * @param map
      */
-    public MapObject(float height, float width, Map map)
+    public MapObject(float height, float width, Map map, boolean place, boolean stackable)
     {
         this.playing = map;
         this.setH(height);
         this.setW(width);
+        this.placeable = place;
+        this.stackable = stackable;
         this.id = map.getMapObjectID();
     }
 
