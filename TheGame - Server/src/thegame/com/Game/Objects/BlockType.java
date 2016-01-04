@@ -97,7 +97,6 @@ public class BlockType extends ObjectType {
         IntColor.rgb(44, 44, 44)
     });
 */
-    public final String name;
     public final int strength;
     public final int reqToolLvl;
     public final ToolType.toolType reqTool;

@@ -5,15 +5,15 @@
  */
 package thegame.tutorial;
 
-import java.rmi.RemoteException;
+import display.IntColor;
+import display.Parts;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import javafx.application.Platform;
+import javafx.scene.paint.Color;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Player;
-import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.ToolType;
 
 /**
  *
@@ -55,6 +55,38 @@ public class Tutorial extends Map
     
     public void generateMap() 
     {
+        new BlockType("Wood", 1, 0, ToolType.toolType.AXE, 0, null, null);
+        new BlockType("Iron", 60, 3, ToolType.toolType.PICKAXE, 1, Parts.Ore, new Color[]
+        {
+            null,
+            IntColor.rgb(87, 87, 97),
+            IntColor.rgb(120, 110, 130),
+            IntColor.rgb(169, 159, 169),
+            IntColor.rgb(130, 130, 180)
+        });
+        new BlockType("Dirt", 5, 3, ToolType.toolType.SHOVEL, 1, Parts.Block, new Color[]
+        {
+            null,
+            IntColor.rgb(68, 46, 32),
+            IntColor.rgb(108, 72, 51),
+            IntColor.rgb(158, 106, 75)
+        });
+        new BlockType("Stone", 25, 3, ToolType.toolType.PICKAXE, 1, Parts.Block, new Color[]
+        {
+            null,
+            IntColor.rgb(87, 87, 87),
+            IntColor.rgb(110, 110, 110),
+            IntColor.rgb(159, 159, 159)
+        });
+        new BlockType("Obsidian", 120, 3, ToolType.toolType.PICKAXE, 1, Parts.Block, new Color[]
+        {
+            null,
+            IntColor.rgb(12, 0, 57),
+            IntColor.rgb(18, 10, 60),
+            IntColor.rgb(18, 10, 80)
+        });
+        
+        
         for(int b = 0; b < 5; b++) {
             this.blocks[7-b][5] = new TutBlock(BlockType.blocktypes.get("Wood"), 5, 7-b, this, 0);
         }

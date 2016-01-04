@@ -1,8 +1,7 @@
 package thegame.com.Game.Objects;
 
-import java.io.IOException;
-import javafx.scene.control.Skin;
-import javafx.scene.image.Image;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A tooltype defines what a tool will be able to do
@@ -10,10 +9,10 @@ import javafx.scene.image.Image;
  * @author Martijn
  */
 public class ToolType extends ObjectType {
-
     private static final long serialVersionUID = 6522685098267757690L;
 
-    public String name;
+    public static Map<String, ToolType> tooltypes = new HashMap<>();
+
     public int strength;
     public float speed;
     public float range;
@@ -52,6 +51,8 @@ public class ToolType extends ObjectType {
         this.height = height;
         this.width = width;
         this.type = type;
+        
+        tooltypes.put(name, this);
     }
 
 }

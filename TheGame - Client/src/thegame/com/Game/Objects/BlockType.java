@@ -1,19 +1,14 @@
 package thegame.com.Game.Objects;
 
-import display.Animation;
 import display.IntColor;
 import display.Parts;
 import display.Skin;
 import display.iTexture;
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
@@ -110,11 +105,11 @@ public class BlockType extends ObjectType {
         IntColor.rgb(44, 44, 44)
     });
 */
-    public final String name;
     public final int strength;
     public final int reqToolLvl;
     public final ToolType.toolType reqTool;
     public final float solid;
+    private iTexture texture;
 
     public final Color[] colors;
 
@@ -127,7 +122,7 @@ public class BlockType extends ObjectType {
      * @param btx
      * @param bty
      */
-    BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid, iTexture skin, Color[] colors)
+    public BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid, iTexture skin, Color[] colors)
     {
         this.name = name;
         this.strength = strength;
@@ -135,18 +130,7 @@ public class BlockType extends ObjectType {
         this.reqTool = req;
         this.solid = solid;
         this.colors = colors;
-        if(skin != null) { 
-            display.Image i;
-            try
-            {
-                i = new display.Image(skin);
-                i.recolour(colors);
-                this.skin = i;
-            } catch (IOException ex)
-            {
-                Logger.getLogger(BlockType.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        texture = skin;
         blocktypes.put(name, this);
     }
 
@@ -155,7 +139,7 @@ public class BlockType extends ObjectType {
         return name;
     }
 
-    Skin createSkin(Block t, Block b, Block l, Block r) {
+    protected Skin createSkin(Block t, Block b, Block l, Block r) {
         switch(this.getName()) {
             case "Wood":
                 Parts[] possible; 
@@ -204,5 +188,15 @@ public class BlockType extends ObjectType {
         }
         
         return this.skin;
+    }
+
+    @Override
+    protected void createSkin() throws IOException {
+        if(texture == null)
+            return;
+        
+        display.Image i = new display.Image(texture);
+        i.recolour(colors);
+        this.skin = i;
     }
 }

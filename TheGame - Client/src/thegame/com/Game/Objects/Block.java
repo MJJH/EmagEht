@@ -24,7 +24,13 @@ public class Block extends MapObject {
 
     @Override
     public void createSkin()
-    {
+    {            
+        try {
+            skin = type.getSkin();
+        } catch (IOException ex) {
+        }
+        
+        
         if(type.skin == null || type.getName() == "Dirt")
         {
             Block t = playing.getBlock((int) yPosition + 1, (int) xPosition);
@@ -33,10 +39,6 @@ public class Block extends MapObject {
             Block l = playing.getBlock((int) yPosition, (int) xPosition - 1);
             skin = type.createSkin(t, b, l, r);
         } 
-        else
-        {
-            skin = type.skin;
-        }
     }
 
     public BlockType getType()

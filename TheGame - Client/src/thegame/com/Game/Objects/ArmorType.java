@@ -5,6 +5,8 @@ import display.Sets;
 import display.Skin;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class representing the type of Armor used.
@@ -12,25 +14,25 @@ import java.io.Serializable;
  * @author Mark
  */
 public class ArmorType extends ObjectType {
-
     private static final long serialVersionUID = 5529685098264757690L;
-
-    public String name;
+    
+    public static Map<String, ArmorType> armortypes = new HashMap<>();
     public int multiplier;
     public int reqLvl;
     public bodyPart bodypart;
-
-    Skin getSkin() throws IOException
+    
+    public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodypart) 
     {
-        if (skin == null)
-        {
-            createSkin();
-        }
-
-        return skin;
+        this.name = name;
+        this.multiplier = multiplier;
+        this.reqLvl = reqLvl;
+        this.bodypart = bodypart;
+        
+        armortypes.put(name, this);
     }
 
-    private void createSkin() throws IOException
+    @Override
+    protected void createSkin() throws IOException
     {
         switch (bodypart)
         {

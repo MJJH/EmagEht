@@ -14,4 +14,6 @@ import java.io.Serializable;
 public abstract class ObjectType implements Serializable {
     private static final long serialVersionUID = 6522685098267700690L;
     
+    public String name;
+    
 }

@@ -5,6 +5,8 @@ import display.Parts;
 import display.Skin;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A tooltype defines what a tool will be able to do
@@ -12,10 +14,8 @@ import java.io.Serializable;
  * @author Martijn
  */
 public class ToolType extends ObjectType {
-
     private static final long serialVersionUID = 6522685098267757690L;
-
-    public String name;
+    public static Map<String, ToolType> tooltypes = new HashMap<>();
     public int strength;
     public float speed;
     public float range;
@@ -25,17 +25,13 @@ public class ToolType extends ObjectType {
     public float width;
     public toolType type;
 
-    Skin getSkin() throws IOException
-    {
-        if (skin == null)
-        {
-            createSkin();
-        }
-
-        return skin;
+    public ToolType(String string, int aInt, int aInt0, int aInt1, int aInt2, toolType valueOf, double aDouble) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void createSkin() throws IOException
+
+    @Override
+    protected void createSkin() throws IOException
     {
         switch (type)
         {
@@ -87,6 +83,8 @@ public class ToolType extends ObjectType {
         this.height = height;
         this.width = width;
         this.type = type;
+        
+        tooltypes.put(name, this);
     }
 
 }

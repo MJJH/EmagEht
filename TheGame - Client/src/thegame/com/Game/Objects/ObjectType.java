@@ -6,6 +6,7 @@
 package thegame.com.Game.Objects;
 
 import display.Skin;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -16,5 +17,18 @@ public abstract class ObjectType implements Serializable {
     private static final long serialVersionUID = 6522685098267700690L;
     
     public transient Skin skin;
+    public String name;
+    
+    protected Skin getSkin() throws IOException
+    {
+        if (skin == null)
+        {
+            createSkin();
+        }
+
+        return skin;
+    }
+    
+    protected abstract void createSkin() throws IOException;
     
 }

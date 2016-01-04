@@ -5,7 +5,9 @@
  */
 package thegame.com.Game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import thegame.com.Game.Objects.ObjectType;
 
 /**
@@ -13,7 +15,8 @@ import thegame.com.Game.Objects.ObjectType;
  * @author Martijn
  */
 public class Crafting {
-    //WorkBench(ItemType.WorkBench, new HashMap<>(), 0, null);
+    private static final long serialVersionUID = 6522685098267704690L;
+    public static List<Crafting> recipes = new ArrayList<>();
     
     public final ObjectType crafting;
     public final HashMap<ObjectType, Integer> recources;
@@ -26,6 +29,8 @@ public class Crafting {
         this.recources = need;
         this.level = level;
         this.near = near;
+        
+        recipes.add(this);
     }
 
 }

@@ -5,11 +5,26 @@
  */
 package thegame.com.Game.Objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Martijn
  */
 public class ItemType extends ObjectType {
     private static final long serialVersionUID = 6522685098267706690L;
-
+    public static Map<String, ItemType> itemtypes = new HashMap<>();
+    
+    public final int width;
+    public final int height;
+    
+    public ItemType(String name, int width, int height)
+    {
+        this.name = name;
+        this.width = width;
+        this.height = height;
+        
+        itemtypes.put(name, this);
+    }
 }
