@@ -20,6 +20,7 @@ import thegame.GameServerToClientHandler;
 import thegame.com.Game.Objects.Background;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.Characters.Boss;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
@@ -167,6 +168,7 @@ public class Map implements Serializable {
             }
 
             addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));
+            addMapObject(new Boss("TheBoss",1000,null,getWidth()-10,100,5,5,this));
 
         } catch (IOException ex)
         {
