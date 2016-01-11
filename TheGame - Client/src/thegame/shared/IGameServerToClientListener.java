@@ -19,7 +19,6 @@ public interface IGameServerToClientListener extends Remote {
 
     public void sendGameChatMessage(Message message) throws RemoteException;
 
-    //public void updatePlayer(int id, float x, float y, int direction) throws RemoteException;
     public void knockBackPlayer(float hSpeed, float vSpeed) throws RemoteException;
 
     public void removeMapObject(int id, int type, float x, float y) throws RemoteException;

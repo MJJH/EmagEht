@@ -3,15 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package thegame;
+package gui.pages;
 
 import gui.GameUtilities;
+import display.Animation;
+import display.Skin;
+import gui.GameUtilities;
+import gui.SplashScreen;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +26,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -27,28 +37,37 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import sound.Sound;
+import thegame.GameServerToClientListener;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
+import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
+import thegame.config;
 import thegame.shared.IGameClientToServer;
-import thegame.tutorial.TutPlayer;
-import thegame.tutorial.Tutorial;
+import thegame.shared.IGameServerToClientListener;
 
 /**
  *
  * @author Martijn
  */
-public class Loading {
+public class GameFX {
     
     private Account myAccount;
-    private Tutorial play;
+    private Map play;
     private Player me;
     private Scene scene;
     private GameUtilities ui;
+    
+    // server
+    private Registry server;
+    private GameServerToClientListener listener;
+    public IGameClientToServer gameClientToServer;
 
     private List<KeyCode> keys = new ArrayList<>();
 
@@ -61,29 +80,55 @@ public class Loading {
     private int fps = 0;
     private double delta = 0;
     
+    //Chat
+    private boolean typing = false;
+    private String chatline = "";
+    
     private AnimationTimer draw;
     private Timer movement;
     private Timer update;
 
     private Stage stages;
-    public Loading(Stage ps) {
-        stages = ps;
-        play = new Tutorial(10, 10);
-        me = new TutPlayer(play.getSpawnX(), play.getSpawnY(), (Tutorial) play);
-        play.setMe(me);
+    
+    public GameFX(Stage primaryStage, Player me, Account a, Map play, IGameClientToServer gameClientToServer, IGameServerToClientListener gameServerToClientListener) 
+    {
+        primaryStage.setOnCloseRequest(event ->
+        {
+            if (gameClientToServer != null && gameServerToClientListener != null)
+            {
+                try
+                {
+                    gameClientToServer.leavePlayer(gameServerToClientListener);
+                } catch (RemoteException ex)
+                {
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                    Platform.runLater(() ->
+                    {
+                        connectionLoss();
+                    });
+                }
+            }
+            System.exit(0);
+        });
+        
+        myAccount = a;
+        stages = primaryStage;
+        this.me = me;
+        this.play = play;
+        this.gameClientToServer = gameClientToServer;
         
         stages.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11, KeyCombination.SHORTCUT_DOWN));
         stages.setFullScreenExitHint("");
         StackPane root = new StackPane();
-        scene = new Scene(root, ps.getScene().getWidth(), ps.getScene().getHeight(), Color.LIGHTBLUE);
+        scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.LIGHTBLUE);
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
+
         bindHandlers(canvas);
         
         root.getChildren().add(canvas);
-        ps.setScene(scene);
-        ps.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
         
         // Start timers
         startTimers();
@@ -93,7 +138,7 @@ public class Loading {
         sound = new Sound("GameSound.wav");
         sound.loop();
     }
-    
+
     private void startTimers()
     {
         lastTime = System.nanoTime();
@@ -171,6 +216,8 @@ public class Loading {
         if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.F11) {
             stages.setFullScreen(!stages.isFullScreen());
         }
+        if (!typing)
+        {
             if (event.getEventType() == KeyEvent.KEY_PRESSED && (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A) && !keys.contains(event.getCode()))
             {
                 if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.D || event.getCode() == KeyCode.A)
@@ -194,10 +241,79 @@ public class Loading {
                     me.stopJump();
                 }
             }
+            if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                typing = true;
+                chatline = "";
+                ui.setChat(chatline);
+            }
             if (event.getCode() == KeyCode.E && event.getEventType() == KeyEvent.KEY_PRESSED)
             {
                 ui.toggleInventory();
             }
+        } else if (typing)
+        {
+            if (event.getCode() == KeyCode.ENTER && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                if (!chatline.isEmpty())
+                {
+                    Message chatMessage = new Message(myAccount, chatline);
+                    try
+                    {
+                        gameClientToServer.sendGameChatMessage(chatMessage);
+                    } catch (RemoteException ex)
+                    {
+                        System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                        Platform.runLater(() ->
+                        {
+                            connectionLoss();
+                        });
+                    }
+                    ui.setChat("~");
+                } else {
+                    ui.closeChat();
+                }
+                typing = false;
+                
+                return;
+            }
+            if (event.getCode() == KeyCode.BACK_SPACE && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+                if (chatline.length() > 0)
+                {
+                    chatline = chatline.substring(0, chatline.length() - 1);
+                    ui.setChat(chatline);
+                }
+            }
+            if (event.getCode() == KeyCode.LEFT && event.getEventType() == KeyEvent.KEY_PRESSED)
+            {
+
+            }
+            if (event.getEventType() == KeyEvent.KEY_PRESSED && chatline.length() < 44)
+            {
+                if (event.isShiftDown())
+                {
+                    String tempString = event.getCode().getName();
+                    if (!tempString.equals("Shift"))
+                    {
+                        tempString = event.getCode().getName();
+                        if (tempString.equalsIgnoreCase("Slash"))
+                        {
+                            chatline += "?";
+                            ui.setChat(chatline);
+                        } else
+                        {
+                            chatline += event.getCode().getName();
+                            ui.setChat(chatline);
+                        }
+                    }
+                } else
+                {
+                    chatline += event.getText();
+                    ui.setChat(chatline);
+                }
+            }
+        }
     };
     
     private final EventHandler<MouseEvent> mouseListener = (MouseEvent event) ->
@@ -282,11 +398,52 @@ public class Loading {
         float[] dxdy = ui.calculateDXDY(play.getWidth(), play.getHeight(), me.getX(), me.getY(), me.getW(), me.getH());
         double mapX = (clickX + dxdy[0]) / config.block.val - start[0];
         double mapY = (scene.getHeight() - clickY + dxdy[1]) / config.block.val - start[1];
-        ((TutPlayer)me).useTool((float) mapX, (float) mapY);
+        me.useTool((float) mapX, (float) mapY, gameClientToServer);
     }
     
     private void draw()
     {
         ui.drawMap();
     }
+    
+    public void connectionLoss()
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Connectionn loss");
+        alert.setHeaderText("Connection to server lost");
+        alert.setContentText("You lost the connection to the server. Please try again in a minute.");
+        alert.showAndWait();
+        System.exit(0);
+    }
+    
+    /*
+    public void connectionLoss()
+    {
+        myAccount = null;
+        play = null;
+        me = null;
+        server = null;
+        gameServerToClientListener = null;
+        gameClientToServer = null;
+        keys = new ArrayList<>();
+        draw.stop();
+        movement.cancel();
+        sound.stop();
+        sound = null;
+
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Connectionn loss");
+        alert.setHeaderText("Connection to server lost");
+        alert.setContentText("You lost the connection to the server. Please try again in a minute.");
+        alert.showAndWait();
+        
+        try
+        {
+            start(stages);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    */
 }

@@ -25,6 +25,17 @@ public class Database {
     static final String USER = "dbi322250";
     static final String PASS = "lZoCxvXKps";
 
+    private static Database database;
+    
+    public static Database getDatabase()
+    {
+        if (database == null)
+        {
+            database = new Database();
+        }
+        return database;
+    }
+
     Connection conn = null;
 
     public void openConnection() throws ClassNotFoundException

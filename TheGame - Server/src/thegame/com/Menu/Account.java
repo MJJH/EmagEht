@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class Account implements Serializable {
 
+    private static final long serialVersionUID = 5539422509825657690L;
+
     private Party party;
     private int id;
     private final String name;

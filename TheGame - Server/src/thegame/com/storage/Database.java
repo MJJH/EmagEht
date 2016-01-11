@@ -24,6 +24,17 @@ public class Database {
     static final String PASS = "root";
 
     Connection conn = null;
+    
+    private static Database database;
+    
+    public static Database getDatabase()
+    {
+        if (database == null)
+        {
+            database = new Database();
+        }
+        return database;
+    }
 
     public void openConnection() throws ClassNotFoundException
     {

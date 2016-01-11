@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package thegame;
+package gui.pages;
 
+import gui.SplashScreen;
 import gui.SplashScreen;
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -34,10 +35,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import thegame.GameServerToClientListener;
+import thegame.Startup;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
+import thegame.config;
 import thegame.shared.IGameClientToServer;
 
 /**
@@ -47,7 +51,6 @@ import thegame.shared.IGameClientToServer;
 public class LobbyFX {
 
     private Stage primaryStage;
-    private Startup startUp;
 
     private Account myAccount;
     private Map play;
@@ -61,7 +64,7 @@ public class LobbyFX {
     private List<KeyCode> keys = new ArrayList<>();
     private SplashScreen splash;
 
-    public LobbyFX(Stage primaryStage, Startup startUp)
+    public LobbyFX(Stage primaryStage)
     {
         primaryStage.setOnCloseRequest(event ->
         {
@@ -83,7 +86,6 @@ public class LobbyFX {
         });
 
         this.primaryStage = primaryStage;
-        this.startUp = startUp;
 
         StackPane root = new StackPane();
         Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
@@ -106,16 +108,10 @@ public class LobbyFX {
     private void clickHandler(double clickX, double clickY)
     {
         //GUI CLICK
-        try
-        {
-            connectToGame();
-        } catch (InterruptedException ex)
-        {
-            Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        connectToGame();
     }
 
-    private void connectToGame() throws InterruptedException
+    private void connectToGame()
     {
         loadingScreen(primaryStage);
 
@@ -163,7 +159,7 @@ public class LobbyFX {
 
     public void startagame(Stage primaryStage)
     {
-        new Game(primaryStage, me, myAccount, play, gameClientToServer, gameServerToClientListener);
+        new GameFX(primaryStage, me, myAccount, play, gameClientToServer, gameServerToClientListener);
     }
 
     private void loadingScreen(Stage primaryStage)
@@ -202,13 +198,6 @@ public class LobbyFX {
         alert.setHeaderText("Connection to server lost");
         alert.setContentText("You lost the connection to the server. Please try again in a minute.");
         alert.showAndWait();
-
-        try
-        {
-            startUp.start(primaryStage);
-        } catch (IOException ex)
-        {
-            Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        new MenuFX(primaryStage);
     }
 }

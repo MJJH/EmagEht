@@ -11,7 +11,9 @@ import thegame.com.Game.Map;
  *
  * @author laure
  */
-public class Lobby extends UnicastRemoteObject {
+public class Lobby {
+
+    private static final long serialVersionUID = 6529682158264757690L;
 
     private int id;
     private ArrayList<Message> chat;
@@ -21,7 +23,7 @@ public class Lobby extends UnicastRemoteObject {
     /**
      * This method creates a new gamelobby.
      */
-    public Lobby() throws RemoteException
+    public Lobby()
     {
         // TODO - implement Lobby.Lobby
         chat = new ArrayList();

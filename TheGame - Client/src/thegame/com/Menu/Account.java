@@ -1,7 +1,10 @@
 package thegame.com.Menu;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import thegame.com.storage.Database;
 
 /**
  * Contains methods to create accounts
@@ -9,6 +12,8 @@ import java.util.ArrayList;
  * @author robin
  */
 public class Account implements Serializable {
+
+    private static final long serialVersionUID = 5539422509825657690L;
 
     private Party party;
     private int id;
@@ -86,25 +91,24 @@ public class Account implements Serializable {
      */
     public String getPassword()
     {
-        /*
         String sql = "SELECT password FROM account WHERE username = 'robin'";
-        try{
-            ResultSet rs = database.executeQuery(sql);
-                    
-        //STEP 5: Extract data from result set
-        while(rs.next()){
-        //Retrieve by column name
-        password = rs.getString("password");
+        try
+        {
+            ResultSet rs = Database.getDatabase().executeQuery(sql);
 
-        //Display values
-        System.out.print("Password: " + password);
-        }
-        }
-        catch(SQLException ex)
+            //STEP 5: Extract data from result set
+            while (rs.next())
+            {
+                //Retrieve by column name
+                password = rs.getString("password");
+
+                //Display values
+                System.out.print("Password: " + password);
+            }
+        } catch (SQLException|ClassNotFoundException ex)
         {
             System.out.println(ex.getMessage());
         }
-        */
         return password;
     }
 

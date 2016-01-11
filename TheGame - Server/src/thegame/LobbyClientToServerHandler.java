@@ -5,6 +5,7 @@
  */
 package thegame;
 
+import thegame.com.Menu.Lobby;
 import thegame.shared.ILobbyClientToServer;
 
 /**
@@ -13,10 +14,12 @@ import thegame.shared.ILobbyClientToServer;
  */
 public class LobbyClientToServerHandler implements ILobbyClientToServer{
     private final transient LobbyServerToClientHandler lobbyServerToClientHandler;
+    private transient Lobby lobby;
     
     public LobbyClientToServerHandler(LobbyServerToClientHandler lobbyServerToClientHandler)
     {
         this.lobbyServerToClientHandler = lobbyServerToClientHandler;
+        lobby = new Lobby();
     }
     
 }

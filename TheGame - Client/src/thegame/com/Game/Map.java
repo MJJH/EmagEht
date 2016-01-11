@@ -47,10 +47,10 @@ public class Map implements Serializable {
     private transient Account myAccount;
     protected transient Player me;
     private transient IGameClientToServer gameClientToServer;
-    private transient thegame.LobbyFX lobbyFX;
+    private transient gui.pages.LobbyFX lobbyFX;
     private transient List<Message> chatMessages;
 
-    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, thegame.LobbyFX lobbyFX)
+    public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, gui.pages.LobbyFX lobbyFX)
     {
         for (int y = 0; y < height; y++)
         {
@@ -413,7 +413,7 @@ public class Map implements Serializable {
         return gravity;
     }
     
-    public thegame.LobbyFX getLobbyFX()
+    public gui.pages.LobbyFX getLobbyFX()
     {
         return lobbyFX;
     }
