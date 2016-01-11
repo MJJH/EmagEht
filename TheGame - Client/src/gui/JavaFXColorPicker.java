@@ -5,6 +5,7 @@ import display.Parts;
 import display.Sets;
     import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
     import javafx.application.Application;
     import javafx.event.Event;
     import javafx.event.EventHandler;
@@ -61,6 +62,12 @@ import javafx.scene.shape.Rectangle;
     private Image TshirtBody;
     private Image TShirtBack;
     private Image TShirtFront;
+    private Image shortTop;
+    private Image shortBack;
+    private Image shortFront;
+    private Color[] shortColorArray;
+    
+    
 
         @Override
         public void start(Stage primaryStage) throws IOException {
@@ -75,30 +82,44 @@ import javafx.scene.shape.Rectangle;
                 };
                 ShirtColorArray = new Color[]
                 {
-                    new Color(0, 0, 0, 1), new Color(0.2, 0.2, 0.2, 1), new Color(0.4, 0.4, 0.4, 1), new Color(0.6, 0.6, 0.6, 1), new Color(0.8, 0.8, 0.8, 1), new Color(1, 1, 1, 1)
+                    new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
+                };
+                shortColorArray = new Color[]
+                {
+                    new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
                 };
               HeadColorArray = temp;
               BodyColorArray = temp;
               LegColorArray = temp;
+              
 
-              head = new display.Image(display.Parts.playerHead);
-              head.Scale(3);
+             
               body = new display.Image(display.Parts.playerTorso);
               body.Scale(3);
               TshirtBody = new display.Image(Parts.tShirtBody);
-              //TshirtBody.Scale(3);
+              TshirtBody.Scale(3);
               frontarm = new display.Image(display.Parts.playerFrontArm);
               frontarm.Scale(3);
               backarm = new display.Image(display.Parts.playerBackArm);
               backarm.Scale(3);
-             // TShirtBack = new display.Image(Parts.tShirtBack);
-              //TShirtBack.Scale(3);
-              //TShirtFront = new display.Image(Parts.tShirtFront);
-              //TShirtFront.Scale(3);
+              TShirtBack = new display.Image(Parts.tShirtBack);
+              TShirtBack.Scale(3);
+              TShirtFront = new display.Image(Parts.tShirtFront);
+              TShirtFront.Scale(3);
               frontleg = new display.Image(display.Parts.playerFrontLeg);
               frontleg.Scale(3);
               backleg = new display.Image(display.Parts.playerBackLeg);
               backleg.Scale(3);
+              head = new display.Image(display.Parts.playerHead);
+              head.Scale(3);
+              shortTop = new display.Image(display.Parts.shortTop);
+              shortTop.Scale(3);
+              shortBack = new display.Image(display.Parts.shortBack);
+              shortBack.Scale(3);
+              shortFront = new display.Image(display.Parts.shortFront);
+              shortFront.Scale(3);
+              
+              
 
             final Canvas canvas = new Canvas(primaryStage.getScene().getWidth(),primaryStage.getScene().getHeight());
 
@@ -156,19 +177,32 @@ import javafx.scene.shape.Rectangle;
              
              gc.setFill(Color.RED);
             
-            double[] pointabove = new double[]{(width * 0.4) , (height * 0.33) , (width * 0.4) , (height * 0.378), (width * 0.36) , (height * 0.354)};
-            Polygon p = new Polygon(pointabove);
+            double[] pointTopLeft = new double[]{(width * 0.4) , (height * 0.33) , (width * 0.4) , (height * 0.378), (width * 0.36) , (height * 0.354)};
+            Polygon TriangleTopLeft = new Polygon(pointTopLeft);
             
-            double[] pointmiddle = new double[]{(width * 0.4) , (height * 0.42) , (width * 0.4) , (height * 0.468), (width * 0.36) , (height * 0.444)};
-            Polygon pa = new Polygon(pointmiddle);
+            double[] pointMiddleLeft = new double[]{(width * 0.4) , (height * 0.42) , (width * 0.4) , (height * 0.468), (width * 0.36) , (height * 0.444)};
+            Polygon TriangleMiddleLeft = new Polygon(pointMiddleLeft);
             
-            double[] pointbeneath = new double[]{(width * 0.4) , (height * 0.51) , (width * 0.4) , (height * 0.558), (width * 0.36) , (height * 0.534)};
-            Polygon pas = new Polygon(pointbeneath);
+            double[] pointBottomLeft = new double[]{(width * 0.4) , (height * 0.51) , (width * 0.4) , (height * 0.558), (width * 0.36) , (height * 0.534)};
+            Polygon TriangleBottomLeft = new Polygon(pointBottomLeft);
+            
+            double[] pointTopRight = new double[]{(width * 0.6) , (height * 0.33) , (width * 0.6) , (height * 0.378), (width * 0.64) , (height * 0.354)};
+            Polygon TriangleTopRight = new Polygon(pointTopRight);
+            
+            double[] pointMiddleRight = new double[]{(width * 0.6) , (height * 0.42) , (width * 0.6) , (height * 0.468), (width * 0.64) , (height * 0.444)};
+            Polygon TriangleMiddleRight = new Polygon(pointMiddleRight);
+            
+            double[] pointBottomRight = new double[]{(width * 0.6) , (height * 0.51) , (width * 0.6) , (height * 0.558), (width * 0.64) , (height * 0.534)};
+            Polygon TriangleBottomRight = new Polygon(pointBottomRight);
             
             
-            root.getChildren().add(p);
-            root.getChildren().add(pa);
-            root.getChildren().add(pas);
+            root.getChildren().add(TriangleBottomLeft);
+            root.getChildren().add(TriangleMiddleLeft);
+            root.getChildren().add(TriangleTopLeft);
+            root.getChildren().add(TriangleBottomRight);
+            root.getChildren().add(TriangleMiddleRight);
+            root.getChildren().add(TriangleTopRight);
+            
 
             //     root.getChildren().add(addButton());
 
@@ -204,11 +238,51 @@ import javafx.scene.shape.Rectangle;
             });
              */
             
-             p.setOnMouseClicked(new EventHandler<MouseEvent>()
+             TriangleMiddleLeft.setOnMouseClicked(new EventHandler<MouseEvent>()
             {
             @Override
             public void handle(MouseEvent t) {
-                p.setFill(Color.RED);
+                Random rand = new Random();
+
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+                Color shirtPaint = new Color(r, g, b, 1);
+
+                ShirtColorArray = new Color[]
+                {
+                    null,
+                    shirtPaint.darker().darker(),
+                    shirtPaint.darker(),
+                    shirtPaint,
+                    shirtPaint.brighter(),
+                    shirtPaint.brighter().brighter(),
+                };
+                    ColorChanged(gc);
+            }
+            });
+             
+              TriangleBottomLeft.setOnMouseClicked(new EventHandler<MouseEvent>()
+            {
+            @Override
+            public void handle(MouseEvent t) {
+                Random rand = new Random();
+
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+                Color ShortsPaint = new Color(r, g, b, 1);
+
+                shortColorArray = new Color[]
+                {
+                    null,
+                    ShortsPaint.darker().darker(),
+                    ShortsPaint.darker(),
+                    ShortsPaint,
+                    ShortsPaint.brighter(),
+                    ShortsPaint.brighter().brighter(),
+                };
+                    ColorChanged(gc);
             }
             });
              
@@ -372,42 +446,55 @@ import javafx.scene.shape.Rectangle;
                     
                     backleg.recolour(BodyColorArray);
                     Image i = backleg;
-                    gc.drawImage(i.show(), 312, 148);    
+                    gc.drawImage(i.show(), 632, 348);    
 
                  
 
 
                     body.recolour(BodyColorArray);
                     i = body;
-                    gc.drawImage(i.show(), 300, 100);  
+                    gc.drawImage(i.show(), 620, 300);  
 
                     frontleg.recolour(BodyColorArray);
                     i = frontleg;
-                    gc.drawImage(i.show(), 297, 148);  
-
-                    head.recolour(BodyColorArray);
-                     i = head;
-                    gc.drawImage(i.show(), 300, 64);
+                    gc.drawImage(i.show(), 617, 348);
                     
-                  /*   TshirtBody.recolour(ShirtColorArray);
+                    shortBack.recolour(shortColorArray);
+                    i = shortBack;
+                    gc.drawImage(i.show(), 641, 354);   
+                    
+                    shortFront.recolour(shortColorArray);
+                    i = shortFront;
+                    gc.drawImage(i.show(), 620, 354);   
+                    
+                    shortTop.recolour(shortColorArray);
+                    i = shortTop;
+                    gc.drawImage(i.show(), 620, 348);   
+
+                     TshirtBody.recolour(ShirtColorArray);
                      i = TshirtBody;
-                     gc.drawImage(i.show(), 294, 112); */
+                     gc.drawImage(i.show(), 614, 300); 
                      
                     frontarm.recolour(BodyColorArray);
                     i = frontarm;
-                    gc.drawImage(i.show(), 282, 100);  
+                    gc.drawImage(i.show(), 602, 300);  
                     
                     backarm.recolour(BodyColorArray);
                     i = backarm;
-                    gc.drawImage(i.show(), 337, 100);   
+                    gc.drawImage(i.show(), 656, 300);   
                     
-                    /* TShirtBack.recolour(ShirtColorArray);
+                     TShirtBack.recolour(ShirtColorArray);
                      i = TShirtBack;
-                     gc.drawImage(i.show(), 336, 115);
+                     gc.drawImage(i.show(), 656, 301);
                      
                      TShirtFront.recolour(ShirtColorArray);
                      i = TShirtFront;
-                     gc.drawImage(i.show(), 282, 112); */
+                     gc.drawImage(i.show(), 602, 300); 
+                     
+                     head.recolour(BodyColorArray);
+                     i = head;
+                     gc.drawImage(i.show(), 620, 264);
+                    
                   
                      
                       
