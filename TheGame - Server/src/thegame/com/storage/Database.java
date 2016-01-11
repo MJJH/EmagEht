@@ -7,7 +7,9 @@ package thegame.com.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -56,28 +58,37 @@ public class Database {
         }
     }
 
-    /*
-     public void executeQuery(String sql){
-     //STEP 4: Execute a query
-     System.out.println("Creating statement...");
-     Statement stmt = conn.createStatement();
-     String sql;
-     sql = "SELECT id, first, last, age FROM Employees";
-     ResultSet rs = stmt.executeQuery(sql);
-
-     //STEP 5: Extract data from result set
-     while(rs.next()){
-     //Retrieve by column name
-     int id  = rs.getInt("id");
-     int age = rs.getInt("age");
-     String first = rs.getString("first");
-     String last = rs.getString("last");
-
-     //Display values
-     System.out.print("ID: " + id);
-     System.out.print(", Age: " + age);
-     System.out.print(", First: " + first);
-     System.out.println(", Last: " + last);
-     }
-     }*/
+public ResultSet executeQuery(String sql) throws SQLException, ClassNotFoundException{
+        //Execute a query
+        Statement statement;
+        ResultSet resultSet = null;
+        try{
+            openConnection();
+            System.out.println("Creating statement...");
+            statement = conn.createStatement();
+            //String sql = "SELECT id, first, last, age FROM Employees";
+            resultSet = statement.executeQuery(sql);
+        }
+        catch(SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        return resultSet;
+        /*
+        //Extract data from result set
+        while(rs.next()){
+        //Retrieve by column name
+        int id  = rs.getInt("id");
+        int age = rs.getInt("age");
+        String first = rs.getString("first");
+        String last = rs.getString("last");
+        //Display values
+        System.out.print("ID: " + id);
+        System.out.print(", Age: " + age);
+        System.out.print(", First: " + first);
+        System.out.println(", Last: " + last);
+        }
+        */
+    }
 }
