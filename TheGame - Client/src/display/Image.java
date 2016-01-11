@@ -37,6 +37,7 @@ public class Image extends Skin {
     private Map<Parts, PartImage> parts;
     private Color background;
     private Map<borderSide, Color> border;
+    private int scale;
     public enum borderSide { TOP, LEFT, BOTTOM, RIGHT };
     
     public Image(Image i) {
@@ -46,6 +47,7 @@ public class Image extends Skin {
         height = i.getHeight();
         border = new HashMap<>();
         background = i.getBackground();
+        scale = 1;
         
         repaint();
     }
@@ -71,6 +73,7 @@ public class Image extends Skin {
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
         WritableImage i;
+        scale = 1;
 
         if (texture instanceof Parts)
         {
@@ -292,6 +295,7 @@ public class Image extends Skin {
 
     private void repaint()
     {
+        
         image = new WritableImage(width, height);
         PixelWriter pw = image.getPixelWriter();
         PixelReader pr;
@@ -332,8 +336,8 @@ public class Image extends Skin {
                         c = pi.recolors[r];
                     }
 
-                    int paintX = x + pi.x;
-                    int paintY = y + pi.y;
+                    int paintX = (x + pi.x) * scale;
+                    int paintY = (y + pi.y) * scale;
 
                     if (pi.hFlip)
                     {
@@ -343,8 +347,14 @@ public class Image extends Skin {
                     {
                         paintY = height - paintY - 1;
                     }
-
-                    pw.setColor(paintX, paintY, c);
+                    
+                    for(int i = 0; i < scale; i++)
+                    {
+                        for(int nee = 0; nee < scale; nee++)
+                        {
+                            pw.setColor(paintX + nee, paintY + i, c);
+                        }
+                    }
                 }
             }
         }
@@ -516,5 +526,12 @@ public class Image extends Skin {
     {
         parts.remove(it);
         repaint();
+    }
+    
+    public void Scale(int Scale)
+    {
+        scale = Scale;
+        height =  height * scale;
+        width = width * scale;
     }
 }

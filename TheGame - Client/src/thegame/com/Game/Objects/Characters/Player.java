@@ -143,7 +143,7 @@ public class Player extends CharacterGame {
             //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
             skins.put("standRight", d);
-
+            
             Image d2 = new Image(Sets.player);
             d2.recolour(h);
             d2.flipHorizontal();

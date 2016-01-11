@@ -1,6 +1,8 @@
     package gui;
 
     import display.Image;
+import display.Parts;
+import display.Sets;
     import java.io.IOException;
 import java.util.ArrayList;
     import javafx.application.Application;
@@ -45,6 +47,7 @@ import javafx.scene.shape.Rectangle;
 
         private Color[] BodyColorArray;
         private Color[] HeadColorArray;
+        private Color[] ShirtColorArray;
         private Color[] LegColorArray;
         private Color[] temp;      
         private Color[] tempclear;
@@ -54,15 +57,23 @@ import javafx.scene.shape.Rectangle;
             ColorPicker HeadColor = new ColorPicker();
             ColorPicker BodyColor = new ColorPicker();
             ColorPicker LegColor = new ColorPicker();
+    private Image Tshirt;
+    private Image TshirtBody;
+    private Image TShirtBack;
+    private Image TShirtFront;
 
         @Override
         public void start(Stage primaryStage) throws IOException {
 
-             temp = new Color[]
+                temp = new Color[]
                 {
                     new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
                 };
-              tempclear = new Color[]
+                tempclear = new Color[]
+                {
+                    new Color(0, 0, 0, 1), new Color(0.2, 0.2, 0.2, 1), new Color(0.4, 0.4, 0.4, 1), new Color(0.6, 0.6, 0.6, 1), new Color(0.8, 0.8, 0.8, 1), new Color(1, 1, 1, 1)
+                };
+                ShirtColorArray = new Color[]
                 {
                     new Color(0, 0, 0, 1), new Color(0.2, 0.2, 0.2, 1), new Color(0.4, 0.4, 0.4, 1), new Color(0.6, 0.6, 0.6, 1), new Color(0.8, 0.8, 0.8, 1), new Color(1, 1, 1, 1)
                 };
@@ -71,12 +82,23 @@ import javafx.scene.shape.Rectangle;
               LegColorArray = temp;
 
               head = new display.Image(display.Parts.playerHead);
+              head.Scale(3);
               body = new display.Image(display.Parts.playerTorso);
+              body.Scale(3);
+              TshirtBody = new display.Image(Parts.tShirtBody);
+              //TshirtBody.Scale(3);
               frontarm = new display.Image(display.Parts.playerFrontArm);
+              frontarm.Scale(3);
               backarm = new display.Image(display.Parts.playerBackArm);
+              backarm.Scale(3);
+             // TShirtBack = new display.Image(Parts.tShirtBack);
+              //TShirtBack.Scale(3);
+              //TShirtFront = new display.Image(Parts.tShirtFront);
+              //TShirtFront.Scale(3);
               frontleg = new display.Image(display.Parts.playerFrontLeg);
+              frontleg.Scale(3);
               backleg = new display.Image(display.Parts.playerBackLeg);
-
+              backleg.Scale(3);
 
             final Canvas canvas = new Canvas(primaryStage.getScene().getWidth(),primaryStage.getScene().getHeight());
 
@@ -346,33 +368,51 @@ import javafx.scene.shape.Rectangle;
 
         public void ColorChanged(GraphicsContext gc) {
 
-
-
+                    
+                    
                     backleg.recolour(BodyColorArray);
                     Image i = backleg;
-                    gc.drawImage(i.show(), 304, 128);    
+                    gc.drawImage(i.show(), 312, 148);    
 
-                    backarm.recolour(BodyColorArray);
-                    i = backarm;
-                    gc.drawImage(i.show(), 312, 112);    
+                 
 
 
                     body.recolour(BodyColorArray);
                     i = body;
-                    gc.drawImage(i.show(), 300, 112);  
+                    gc.drawImage(i.show(), 300, 100);  
 
                     frontleg.recolour(BodyColorArray);
                     i = frontleg;
-                    gc.drawImage(i.show(), 299, 128);  
-
-                    frontarm.recolour(BodyColorArray);
-                    i = frontarm;
-                    gc.drawImage(i.show(), 296, 112);  
-
+                    gc.drawImage(i.show(), 297, 148);  
 
                     head.recolour(BodyColorArray);
                      i = head;
-                    gc.drawImage(i.show(), 300, 100);
+                    gc.drawImage(i.show(), 300, 64);
+                    
+                  /*   TshirtBody.recolour(ShirtColorArray);
+                     i = TshirtBody;
+                     gc.drawImage(i.show(), 294, 112); */
+                     
+                    frontarm.recolour(BodyColorArray);
+                    i = frontarm;
+                    gc.drawImage(i.show(), 282, 100);  
+                    
+                    backarm.recolour(BodyColorArray);
+                    i = backarm;
+                    gc.drawImage(i.show(), 337, 100);   
+                    
+                    /* TShirtBack.recolour(ShirtColorArray);
+                     i = TShirtBack;
+                     gc.drawImage(i.show(), 336, 115);
+                     
+                     TShirtFront.recolour(ShirtColorArray);
+                     i = TShirtFront;
+                     gc.drawImage(i.show(), 282, 112); */
+                  
+                     
+                      
+            
+        
     }
         
         
