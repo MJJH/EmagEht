@@ -91,24 +91,6 @@ public class Account implements Serializable {
      */
     public String getPassword()
     {
-        String sql = "SELECT password FROM account WHERE username = 'robin'";
-        try
-        {
-            ResultSet rs = Database.getDatabase().executeQuery(sql);
-
-            //STEP 5: Extract data from result set
-            while (rs.next())
-            {
-                //Retrieve by column name
-                password = rs.getString("password");
-
-                //Display values
-                System.out.print("Password: " + password);
-            }
-        } catch (SQLException|ClassNotFoundException ex)
-        {
-            System.out.println(ex.getMessage());
-        }
         return password;
     }
 

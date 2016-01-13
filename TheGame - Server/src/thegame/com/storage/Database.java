@@ -19,12 +19,14 @@ public class Database {
 
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/theGame?zeroDateTimeBehavior=convertToNull";
+    //static final String DB_URL = "jdbc:mysql://athena01.fhict.local:3306/dbi322250?zeroDateTimeBehavior=convertToNull";
+    static final String DB_URL = "jdbc:mysql://84.24.141.120:3306/thegame";
 
     //  Database credentials
-    static final String USER = "root";
-    static final String PASS = "root";
-
+    //static final String USER = "dbi322250";
+    //static final String PASS = "lZoCxvXKps";
+    static final String USER = "thegame";
+    static final String PASS = "@thegame1";
     Connection conn = null;
     
     private static Database database;

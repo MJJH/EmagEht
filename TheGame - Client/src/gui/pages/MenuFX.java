@@ -30,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.Startup;
+import thegame.com.Menu.Account;
 
 /**
  *
@@ -38,9 +39,11 @@ import thegame.Startup;
 public class MenuFX {
 
     Stage primaryStage;
+    private Account account;
 
-    public MenuFX(Stage primaryStage)
+    public MenuFX(Stage primaryStage, Account account)
     {
+        this.account = account;
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Menu");
         primaryStage.setScene(createMenu());
@@ -74,7 +77,7 @@ public class MenuFX {
         MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
         startMultiPlayer.setOnMouseClicked(event ->
         {
-            new LobbyFX(primaryStage);
+            new LobbyFX(primaryStage, account);
         });
 
         MenuItem startTut = new MenuItem("TUTORIAL [WIP]");

@@ -29,5 +29,6 @@ public enum config {
     public static int gameServerToClientPort = 1099;
     public static int gameClientToServerPort = 1100;
     public static int gameServerToClientListenerPort = 1101;
+    public static int lobbyServerToClientListenerPort = 1102;
     public static int timeOutTime = 500;
 }

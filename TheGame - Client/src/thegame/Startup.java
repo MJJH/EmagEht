@@ -5,11 +5,19 @@
  */
 package thegame;
 
+import gui.pages.LoginFX;
 import gui.pages.MenuFX;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.BlockType;
@@ -37,26 +45,40 @@ public class Startup extends Application {
     public void start(Stage primaryStage) throws IOException
     {
         this.primaryStage = primaryStage;
-        /*
-         try {
-         loadDatabase();
-         } catch (SQLException | ClassNotFoundException ex) {
-         System.exit(0);
-         }
-         */
-        
-        new MenuFX(primaryStage);
-        
+
+        try
+        {
+            loadDatabase();
+        } catch (SQLException ex)
+        {
+            System.exit(0);
+        }
+
+        Pane root = new Pane();
+        Scene scene = new Scene(root, 1280, 720);
+        primaryStage.setScene(scene);
+
+        new LoginFX(primaryStage);
+
         primaryStage.setOnCloseRequest(event ->
         {
             System.exit(0);
         });
     }
 
-    private void loadDatabase() throws SQLException, ClassNotFoundException
+    private void loadDatabase() throws SQLException
     {
         Database db = Database.getDatabase();
         ResultSet rs;
+        
+        // Tool
+        String toolQuery = "SELECT * FROM Tool";
+        rs = db.executeQuery(toolQuery);
+        while (rs.next())
+        {
+            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("Type")), rs.getDouble("KnockBack"));
+        }
+        
         // Blocks
         String blockQuery = "SELECT * FROM Resource";
         rs = db.executeQuery(blockQuery);
@@ -73,17 +95,9 @@ public class Startup extends Application {
             new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorTypeID")));
         }
 
-        // Tool
-        String toolQuery = "SELECT * FROM Tool";
-        rs = db.executeQuery(toolQuery);
-        while (rs.next())
-        {
-            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), rs.getDouble("KnockBack"));
-        }
-
-        // Item
+                // Item
         String itemQuery = "SELECT * FROM Item";
-        rs = db.executeQuery(toolQuery);
+        rs = db.executeQuery(itemQuery);
         while (rs.next())
         {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"));

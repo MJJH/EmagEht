@@ -5,10 +5,12 @@
  */
 package thegame.shared;
 
+import java.rmi.Remote;
+
 /**
  *
  * @author laure
  */
-public interface ILobbyServerToClient {
+public interface ILobbyServerToClient extends Remote{
     
 }

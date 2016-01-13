@@ -8,6 +8,7 @@ package gui.pages;
 import gui.SplashScreen;
 import gui.SplashScreen;
 import java.io.IOException;
+import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -36,6 +37,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.GameServerToClientListener;
+import thegame.LobbyServerToClientListener;
 import thegame.Startup;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
@@ -43,6 +45,8 @@ import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
 import thegame.config;
 import thegame.shared.IGameClientToServer;
+import thegame.shared.ILobbyClientToServer;
+import thegame.shared.ILobbyServerToClient;
 
 /**
  *
@@ -64,8 +68,9 @@ public class LobbyFX {
     private List<KeyCode> keys = new ArrayList<>();
     private SplashScreen splash;
 
-    public LobbyFX(Stage primaryStage)
+    public LobbyFX(Stage primaryStage, Account account)
     {
+        myAccount = account;
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && gameServerToClientListener != null)
@@ -111,6 +116,20 @@ public class LobbyFX {
         connectToGame();
     }
 
+    private void connectToLobby()
+    {
+        try
+        {
+            Registry lobbyServer = LocateRegistry.getRegistry(config.ip, config.lobbyServerToClientPort);
+            ILobbyClientToServer lobbyClientToServer = (ILobbyClientToServer) server.lookup(config.lobbyClientToServerName);
+            LobbyServerToClientListener lobbyServerToClientListener = new LobbyServerToClientListener();
+            UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
+        } catch (RemoteException | NotBoundException ex)
+        {
+            Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void connectToGame()
     {
         loadingScreen(primaryStage);
@@ -121,10 +140,8 @@ public class LobbyFX {
             {
                 server = LocateRegistry.getRegistry(config.ip, config.gameServerToClientPort);
                 gameClientToServer = (IGameClientToServer) server.lookup(config.gameClientToServerName);
-                Random rand = new Random();
                 splash.countTill(25);
                 Thread.sleep(500);
-                myAccount = new Account(Integer.toString(rand.nextInt(1000)));
                 gameServerToClientListener = new GameServerToClientListener();
                 UnicastRemoteObject.exportObject(gameServerToClientListener, config.gameServerToClientListenerPort);
                 splash.countTill(50);
@@ -198,6 +215,6 @@ public class LobbyFX {
         alert.setHeaderText("Connection to server lost");
         alert.setContentText("You lost the connection to the server. Please try again in a minute.");
         alert.showAndWait();
-        new MenuFX(primaryStage);
+        new MenuFX(primaryStage, myAccount);
     }
 }
