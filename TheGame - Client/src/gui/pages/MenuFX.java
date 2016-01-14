@@ -57,7 +57,7 @@ public class MenuFX {
     {
         this.account = account;
         this.primaryStage = primaryStage;
-        
+
         try
         {
             connectToLobby();
@@ -76,7 +76,7 @@ public class MenuFX {
         lobbyClientToServer = (ILobbyClientToServer) lobbyServer.lookup(config.lobbyClientToServerName);
         lobbyServerToClientListener = new LobbyServerToClientListener();
         UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
-        if(!lobbyClientToServer.signIn(account, lobbyServerToClientListener))
+        if (!lobbyClientToServer.signIn(account, lobbyServerToClientListener))
         {
             new LoginFX(primaryStage);
         }
@@ -106,13 +106,29 @@ public class MenuFX {
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
-        MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER - NEW");
-        startMultiPlayer.setOnMouseClicked(event ->
+        MenuItem startMultiPlayerNew = new MenuItem("MULTIPLAYER - NEW");
+        startMultiPlayerNew.setOnMouseClicked(event ->
         {
             try
             {
-                Lobby lobby = lobbyClientToServer.findNewGame(account);
+                Lobby lobby = lobbyClientToServer.findNewLobby(account);
                 new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        MenuItem startMultiPlayerFind = new MenuItem("MULTIPLAYER - JOIN");
+        startMultiPlayerFind.setOnMouseClicked(event ->
+        {
+            try
+            {
+                Lobby lobby = lobbyClientToServer.findLobby(account);
+                if (lobby != null)
+                {
+                    new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
+                }
             } catch (RemoteException ex)
             {
                 Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
@@ -141,7 +157,8 @@ public class MenuFX {
         );
 
         MenuBox menu = new MenuBox(
-                startMultiPlayer,
+                startMultiPlayerNew,
+                startMultiPlayerFind,
                 startTut,
                 CustomizeCharacter,
                 new MenuItem("OPTIONS [soon]"),

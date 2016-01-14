@@ -39,7 +39,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
     @Override
     public Player getMe(IGameServerToClientListener listener, Account account) throws RemoteException
     {
-        Lobby lobby = lobbyServerToClientHandler.getLobbies().get(account);
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(account);
         Map map = gameServerToClientHandler.getGameTable().get(lobby);
         for(Player player : map.getPlayers())
         {

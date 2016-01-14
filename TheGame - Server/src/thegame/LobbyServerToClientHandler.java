@@ -25,13 +25,15 @@ public class LobbyServerToClientHandler {
     private transient GameServerToClientHandler gameServerToClientHandler;
     private transient GameClientToServerHandler gameClientToServerHandler;
 
+    private final transient ArrayList<Lobby> lobbies;
     private final transient HashMap<Account, ILobbyServerToClientListener> onlinePlayers;
-    private final transient HashMap<Account, Lobby> lobbies;
+    private final transient HashMap<Account, Lobby> accountsInLobbies;
 
     public LobbyServerToClientHandler()
     {
+        this.lobbies = new ArrayList<>();
         this.onlinePlayers = new HashMap<>();
-        this.lobbies = new HashMap<>();
+        this.accountsInLobbies = new HashMap<>();
     }
 
     public void registerComponents(LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
@@ -40,21 +42,26 @@ public class LobbyServerToClientHandler {
         this.gameServerToClientHandler = gameServerToClientHandler;
         this.gameClientToServerHandler = gameClientToServerHandler;
     }
+    
+    public ArrayList<Lobby> getLobbies()
+    {
+        return lobbies;
+    }
 
     public HashMap<Account, ILobbyServerToClientListener> getOnlinePlayers()
     {
         return onlinePlayers;
     }
 
-    public HashMap<Account, Lobby> getLobbies()
+    public HashMap<Account, Lobby> getAccountsInLobbies()
     {
-        return lobbies;
+        return accountsInLobbies;
     }
 
     public void requestConnectToGame(Lobby lobby)
     {
         ArrayList<Account> accountsInLobby = new ArrayList<>();
-        for (Map.Entry<Account, Lobby> entry : lobbies.entrySet())
+        for (Map.Entry<Account, Lobby> entry : accountsInLobbies.entrySet())
         {
             if (entry.getValue().equals(lobby))
             {

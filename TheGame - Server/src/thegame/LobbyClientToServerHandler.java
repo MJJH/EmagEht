@@ -45,22 +45,41 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
     }
 
     @Override
-    public Lobby findNewGame(Account account) throws RemoteException
+    public Lobby findNewLobby(Account account) throws RemoteException
     {
-        if (lobbyServerToClientHandler.getLobbies().containsKey(account))
+        if (lobbyServerToClientHandler.getAccountsInLobbies().containsKey(account))
         {
             return null;
         }
         Lobby newLobby = new Lobby();
         newLobby.joinLobby(account);
-        lobbyServerToClientHandler.getLobbies().put(account, newLobby);
+        lobbyServerToClientHandler.getLobbies().add(newLobby);
+        lobbyServerToClientHandler.getAccountsInLobbies().put(account, newLobby);
         return newLobby;
+    }
+
+    @Override
+    public Lobby findLobby(Account account) throws RemoteException
+    {
+        if (!lobbyServerToClientHandler.getAccountsInLobbies().containsKey(account))
+        {
+            for (Lobby lobby : lobbyServerToClientHandler.getLobbies())
+            {
+                if (lobby.getAccounts().size() < config.minimumRequiredPlayers)
+                {
+                    lobby.joinLobby(account);
+                    lobbyServerToClientHandler.getAccountsInLobbies().put(account, lobby);
+                    return lobby;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     public boolean checkReady(Account myAccount) throws RemoteException
     {
-        Lobby lobby = lobbyServerToClientHandler.getLobbies().get(myAccount);
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(myAccount);
         boolean returnValue = lobby.setReady(myAccount);
         if (returnValue && lobby.readyToStart())
         {
