@@ -7,6 +7,7 @@ import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Game.Objects.ToolType;
+import thegame.com.Menu.Account;
 
 /**
  *
@@ -16,12 +17,15 @@ public class Player extends CharacterGame {
 
     private static final long serialVersionUID = 6629685098267757690L;
     private boolean connected;
-    private int spawnX;
-    private int spawnY;
+    private float spawnX;
+    private float spawnY;
+    private Account account;
+    private Character character;
 
     /**
      * This constructor will create an player
      *
+     * @param account
      * @param character,
      * @param name, Name of the player
      * @param hp, HP of the player
@@ -33,12 +37,14 @@ public class Player extends CharacterGame {
      * @param width, width of the player
      * @param map
      */
-    public Player(Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map)
+    public Player(Account account, Character character, String name, int hp, java.util.Map<SkillType, Integer> skills, AttackType[] attacks, float x, float y, float height, float width, Map map)
     {
         super(name, hp, skills, x, y, height, width, map);
 
         spawnX = playing.getSpawnX();
         spawnY = playing.getSpawnY();
+        this.character = character;
+        this.account = account;
 
         ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f);
         Tool equip = new Tool(test, map);
@@ -138,5 +144,21 @@ public class Player extends CharacterGame {
         }
 
         return hp;
+    }
+    
+    public void setSpawn(float x, float y)
+    {
+        spawnX = x;
+        spawnY = y;
+    }
+    
+    public Account getAccount()
+    {
+        return account;
+    }
+    
+    public Character getCharacter()
+    {
+        return character;
     }
 }

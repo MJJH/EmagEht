@@ -6,9 +6,6 @@
 package gui.pages;
 
 import gui.SplashScreen;
-import gui.SplashScreen;
-import java.io.IOException;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -16,23 +13,18 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -40,13 +32,12 @@ import thegame.GameServerToClientListener;
 import thegame.LobbyServerToClientListener;
 import thegame.Startup;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
 import thegame.config;
 import thegame.shared.IGameClientToServer;
 import thegame.shared.ILobbyClientToServer;
-import thegame.shared.ILobbyServerToClient;
 
 /**
  *
@@ -56,21 +47,32 @@ public class LobbyFX {
 
     private Stage primaryStage;
 
+    // LOBBY
+    private Registry lobbyServer;
+    private ILobbyClientToServer lobbyClientToServer;
+    private LobbyServerToClientListener lobbyServerToClientListener;
+    private Lobby lobby;
     private Account myAccount;
-    private Map play;
-    private Player me;
 
-    // SERVER
+    // GAME
     private Registry server;
     private GameServerToClientListener gameServerToClientListener;
     public IGameClientToServer gameClientToServer;
+    private Map play;
+    private Player me;
 
     private List<KeyCode> keys = new ArrayList<>();
     private SplashScreen splash;
 
-    public LobbyFX(Stage primaryStage, Account account)
+    public LobbyFX(Stage primaryStage, Lobby lobby, Account account, Registry lobbyServer, ILobbyClientToServer lobbyClientToServer, LobbyServerToClientListener lobbyServerToClientListener)
     {
+        this.lobbyServer = lobbyServer;
+        this.lobbyClientToServer = lobbyClientToServer;
+        this.lobbyServerToClientListener = lobbyServerToClientListener;
+        this.lobby = lobby;
         myAccount = account;
+        this.primaryStage = primaryStage;
+        
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && gameServerToClientListener != null)
@@ -89,9 +91,7 @@ public class LobbyFX {
             }
             System.exit(0);
         });
-
-        this.primaryStage = primaryStage;
-
+        
         StackPane root = new StackPane();
         Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
@@ -113,24 +113,28 @@ public class LobbyFX {
     private void clickHandler(double clickX, double clickY)
     {
         //GUI CLICK
-        connectToGame();
+        checkReady();
     }
-
-    private void connectToLobby()
+    
+    private boolean checkReady()
     {
         try
         {
-            Registry lobbyServer = LocateRegistry.getRegistry(config.ip, config.lobbyServerToClientPort);
-            ILobbyClientToServer lobbyClientToServer = (ILobbyClientToServer) server.lookup(config.lobbyClientToServerName);
-            LobbyServerToClientListener lobbyServerToClientListener = new LobbyServerToClientListener();
-            UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
-        } catch (RemoteException | NotBoundException ex)
+            // if character selected etc. else return false
+            boolean returnValue =  lobbyClientToServer.checkReady(myAccount);
+            if(returnValue)
+            {
+                lobbyServerToClientListener.setLobbyFX(this);
+            }
+            return returnValue;
+        } catch (RemoteException ex)
         {
             Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
-    private void connectToGame()
+    public void connectToGame()
     {
         loadingScreen(primaryStage);
 
@@ -146,8 +150,8 @@ public class LobbyFX {
                 UnicastRemoteObject.exportObject(gameServerToClientListener, config.gameServerToClientListenerPort);
                 splash.countTill(50);
                 Thread.sleep(500);
-                me = gameClientToServer.joinPlayer(myAccount, gameServerToClientListener);
-                play = (Map) gameClientToServer.getMap();
+                me = gameClientToServer.getMe(gameServerToClientListener, myAccount);
+                play = (Map) gameClientToServer.getMap(lobby);
                 gameServerToClientListener.loadAfterRecieve(myAccount, play, me);
                 splash.countTill(75);
                 Thread.sleep(500);

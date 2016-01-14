@@ -6,9 +6,6 @@
 package thegame;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -24,52 +21,69 @@ import thegame.shared.IGameServerToClientListener;
  * @author laure
  */
 public class GameClientToServerHandler implements IGameClientToServer {
+    private transient LobbyServerToClientHandler lobbyServerToClientHandler;
+    private transient LobbyClientToServerHandler lobbyClientToServerHandler;
+    private transient GameServerToClientHandler gameServerToClientHandler;
 
-    private transient Map map;
-    private final transient GameServerToClientHandler gameServerToClientHandler;
-    private transient HashMap<Lobby, Map> games = new HashMap<>();
-
-    public GameClientToServerHandler(GameServerToClientHandler gameServerToClientHandler) throws RemoteException
+    public GameClientToServerHandler()
     {
+    }
+    
+    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler)
+    {
+        this.lobbyServerToClientHandler = lobbyServerToClientHandler;
+        this.lobbyClientToServerHandler = lobbyClientToServerHandler;
         this.gameServerToClientHandler = gameServerToClientHandler;
-
-        map = new Map(gameServerToClientHandler, this);
-        gameServerToClientHandler.registerMap(map);
-
-        Timer update = new Timer("update");
-        update.schedule(new TimerTask() {
-
-            @Override
-            public void run()
+    }
+    
+    @Override
+    public Player getMe(IGameServerToClientListener listener, Account account) throws RemoteException
+    {
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(account);
+        Map map = gameServerToClientHandler.getGameTable().get(lobby);
+        for(Player player : map.getPlayers())
+        {
+            if(player.getAccount() == account)
             {
-                map.update();
+                gameServerToClientHandler.getPlayerListenerTable().put(listener, player);
+                return player;
             }
-        }, 0, 1000 / 60);
+        }
+        return null;
     }
     
-    
-
     @Override
-    public Player joinPlayer(Account account, IGameServerToClientListener listener) throws RemoteException
+    public void leavePlayer(IGameServerToClientListener listener) throws RemoteException
     {
-        Player player = new Player(null, account.getUsername(), 100, null, null, map.getSpawnX(), map.getSpawnY(), 2f, 1f, map);
-        map.addMapObject(player);
-        gameServerToClientHandler.joinPlayer(listener, player);
-        return player;
+        gameServerToClientHandler.leavePlayer(listener);
     }
 
     @Override
-    public Map getMap() throws RemoteException
+    public Map getMap(Lobby lobby) throws RemoteException
     {
-        return map;
+        return gameServerToClientHandler.getGameTable().get(lobby);
     }
 
     @Override
-    public boolean useTool(int id, float x, float y) throws RemoteException
+    public boolean useTool(int lobbyID, int playerID, float x, float y) throws RemoteException
     {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return false;
+        }
+        
         for (Player player : map.getPlayers())
         {
-            if (player.getID() == id)
+            if (player.getID() == playerID)
             {
                 return player.useTool(x, y);
             }
@@ -83,19 +97,26 @@ public class GameClientToServerHandler implements IGameClientToServer {
     {
         gameServerToClientHandler.sendGameChatMessage(message);
     }
-
     @Override
-    public void leavePlayer(IGameServerToClientListener listener) throws RemoteException
+    public void updatePlayer(int lobbyID, int playerID, float x, float y, int direction) throws RemoteException
     {
-        gameServerToClientHandler.leavePlayer(listener);
-    }
-
-    @Override
-    public void updatePlayer(int id, float x, float y, int direction) throws RemoteException
-    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return;
+        }
+        
         for (Player player : map.getPlayers())
         {
-            if (player.getID() == id)
+            if (player.getID() == playerID)
             {
                 if (player.getX() == x && player.getY() == y)
                 {
@@ -116,8 +137,22 @@ public class GameClientToServerHandler implements IGameClientToServer {
     }
 
     @Override
-    public void pickUpParticle(int particleID, float particleX, float particleY, int playerID) throws RemoteException
+    public void pickUpParticle(int lobbyID, int particleID, float particleX, float particleY, int playerID) throws RemoteException
     {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return;
+        }
+        
         MapObject particleMO = null;
         Particle particle = null;
         for (MapObject mo : map.getObjects(particleX, particleY, 0))

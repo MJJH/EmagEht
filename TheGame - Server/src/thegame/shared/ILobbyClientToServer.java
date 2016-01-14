@@ -6,11 +6,21 @@
 package thegame.shared;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
+import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
 
 /**
  *
  * @author laure
  */
-public interface ILobbyClientToServer extends Remote{
-    
+public interface ILobbyClientToServer extends Remote {
+
+    public boolean signIn(Account account, ILobbyServerToClientListener lobbyServerToClientListener) throws RemoteException;
+
+    public Lobby findNewLobby(Account account) throws RemoteException;
+
+    public Lobby findLobby(Account account) throws RemoteException;
+
+    public boolean checkReady(Account myAccount) throws RemoteException;
 }

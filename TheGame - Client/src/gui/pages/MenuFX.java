@@ -17,6 +17,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
@@ -29,8 +34,12 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import thegame.LobbyServerToClientListener;
 import thegame.Startup;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
+import thegame.config;
+import thegame.shared.ILobbyClientToServer;
 
 /**
  *
@@ -40,14 +49,37 @@ public class MenuFX {
 
     Stage primaryStage;
     private Account account;
+    private Registry lobbyServer;
+    private ILobbyClientToServer lobbyClientToServer;
+    private LobbyServerToClientListener lobbyServerToClientListener;
 
     public MenuFX(Stage primaryStage, Account account)
     {
         this.account = account;
         this.primaryStage = primaryStage;
+
+        try
+        {
+            connectToLobby();
+        } catch (RemoteException | NotBoundException ex)
+        {
+            new LoginFX(primaryStage);
+        }
         primaryStage.setTitle("Menu");
         primaryStage.setScene(createMenu());
         primaryStage.show();
+    }
+
+    private void connectToLobby() throws RemoteException, NotBoundException
+    {
+        lobbyServer = LocateRegistry.getRegistry(config.ip, config.lobbyServerToClientPort);
+        lobbyClientToServer = (ILobbyClientToServer) lobbyServer.lookup(config.lobbyClientToServerName);
+        lobbyServerToClientListener = new LobbyServerToClientListener();
+        UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
+        if (!lobbyClientToServer.signIn(account, lobbyServerToClientListener))
+        {
+            new LoginFX(primaryStage);
+        }
     }
 
     private Scene createMenu()
@@ -74,10 +106,33 @@ public class MenuFX {
         MenuItem itemExit = new MenuItem("EXIT");
         itemExit.setOnMouseClicked(event -> System.exit((0)));
 
-        MenuItem startMultiPlayer = new MenuItem("MULTIPLAYER");
-        startMultiPlayer.setOnMouseClicked(event ->
+        MenuItem startMultiPlayerNew = new MenuItem("MULTIPLAYER - NEW");
+        startMultiPlayerNew.setOnMouseClicked(event ->
         {
-            new LobbyFX(primaryStage, account);
+            try
+            {
+                Lobby lobby = lobbyClientToServer.findNewLobby(account);
+                new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        MenuItem startMultiPlayerFind = new MenuItem("MULTIPLAYER - JOIN");
+        startMultiPlayerFind.setOnMouseClicked(event ->
+        {
+            try
+            {
+                Lobby lobby = lobbyClientToServer.findLobby(account);
+                if (lobby != null)
+                {
+                    new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
+                }
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
 
         MenuItem startTut = new MenuItem("TUTORIAL [WIP]");
@@ -102,7 +157,8 @@ public class MenuFX {
         );
 
         MenuBox menu = new MenuBox(
-                startMultiPlayer,
+                startMultiPlayerNew,
+                startMultiPlayerFind,
                 startTut,
                 CustomizeCharacter,
                 new MenuItem("OPTIONS [soon]"),

@@ -14,6 +14,7 @@ import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.MapObject.sides;
 import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameClientToServer;
 
@@ -25,6 +26,8 @@ import thegame.shared.IGameClientToServer;
 public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
+    
+    private Lobby lobby;
 
     protected int id;
     protected int height;
@@ -355,7 +358,7 @@ public class Map implements Serializable {
         {
             try
             {
-                gameClientToServer.updatePlayer(me.getID(), me.getX(), me.getY(), direction);
+                gameClientToServer.updatePlayer(lobby.getID(), me.getID(), me.getX(), me.getY(), direction);
             } catch (RemoteException ex)
             {
                 System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
@@ -416,5 +419,10 @@ public class Map implements Serializable {
     public gui.pages.LobbyFX getLobbyFX()
     {
         return lobbyFX;
+    }
+
+    public Lobby getLobby()
+    {
+        return lobby;
     }
 }

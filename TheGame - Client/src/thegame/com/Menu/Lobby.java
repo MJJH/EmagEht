@@ -1,8 +1,9 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import thegame.com.Game.Map;
 
 /**
@@ -11,14 +12,15 @@ import thegame.com.Game.Map;
  *
  * @author laure
  */
-public class Lobby {
+public class Lobby implements Serializable{
 
     private static final long serialVersionUID = 6529682158264757690L;
-
     private int id;
     private ArrayList<Message> chat;
     private Map plays;
     private ArrayList<Account> accounts;
+    private ArrayList<Account> ready;
+    private HashMap<Account, thegame.com.Game.Objects.Characters.Character> chosenCharacters;
 
     /**
      * This method creates a new gamelobby.

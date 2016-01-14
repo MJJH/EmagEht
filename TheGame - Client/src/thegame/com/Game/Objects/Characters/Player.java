@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
+import thegame.com.Menu.Account;
 import thegame.engine.Collision;
 import thegame.engine.Movement;
 import thegame.engine.Physics;
@@ -28,11 +29,13 @@ public class Player extends CharacterGame {
 
     private static final long serialVersionUID = 6629685098267757690L;
     private boolean connected;
-    private int spawnX;
-    private int spawnY;
+    private float spawnX;
+    private float spawnY;
+    private Account account;
+    private Character character;
+    
     private transient boolean toUpdate;
-
-    public HashMap<String, Skin> skins;
+    public transient HashMap<String, Skin> skins;
 
     public void update()
     {
@@ -46,7 +49,7 @@ public class Player extends CharacterGame {
                 {
                     try
                     {
-                        playing.getGameClientToServer().pickUpParticle(collisionObject.getID(), collisionObject.getX(), collisionObject.getY(), getID());
+                        playing.getGameClientToServer().pickUpParticle(playing.getLobby().getID(), collisionObject.getID(), collisionObject.getX(), collisionObject.getY(), getID());
                     } catch (RemoteException ex)
                     {
                         System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
@@ -78,7 +81,7 @@ public class Player extends CharacterGame {
                 used = System.currentTimeMillis();
                 try
                 {
-                    if (gameLogic.useTool(id, x, y))
+                    if (gameLogic.useTool(playing.getLobby().getID(), id, x, y))
                     {
                         //feedback
                     }

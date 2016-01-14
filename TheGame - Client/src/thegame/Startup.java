@@ -47,7 +47,7 @@ public class Startup extends Application {
     public void start(Stage primaryStage) throws IOException
     {
         this.primaryStage = primaryStage;
-
+        /*
         try
         {
             loadDatabase();
@@ -56,6 +56,7 @@ public class Startup extends Application {
             System.err.println(ex.getMessage());
             System.exit(0);
         }
+        */
 
         Pane root = new Pane();
         Scene scene = new Scene(root, 1280, 720);

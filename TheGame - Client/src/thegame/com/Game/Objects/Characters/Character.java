@@ -1,11 +1,15 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Nick Bijmoer
  */
-public class Character {
+public class Character implements Serializable{
 
+    private static final long serialVersionUID = 5539234098287957690L;
+    
     private int id;
     private String name;
     private int xp;

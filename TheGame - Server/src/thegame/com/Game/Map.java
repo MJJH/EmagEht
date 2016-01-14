@@ -25,6 +25,8 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Account;
+import thegame.com.Menu.Lobby;
 import thegame.engine.Collision;
 
 /**
@@ -35,6 +37,8 @@ import thegame.engine.Collision;
 public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
+    
+    private Lobby lobby;
 
     private int mapObjectID;
     private int height;
@@ -64,16 +68,19 @@ public class Map implements Serializable {
     /**
      * Creates a new instance of the map with height,width, spawnX and spawnY.
      *
+     * @param lobby
      * @param gameServerToClientHandler
      * @param gameClientToServerHandler
      */
-    public Map(GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
+    public Map(Lobby lobby, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
     {
         width = 500;
         height = 100;
 
         teamlifes = 4;
         gravity = .025f;
+        
+        this.lobby = lobby;
 
         objects = new ArrayList<>();
         players = new ArrayList<>();
@@ -159,6 +166,11 @@ public class Map implements Serializable {
                 }
 
                 y--;
+            }
+            
+            for(Account account : lobby.getAccounts())
+            {
+                players.add(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
             }
 
             addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));

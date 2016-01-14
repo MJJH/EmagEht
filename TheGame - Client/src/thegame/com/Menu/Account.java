@@ -1,10 +1,7 @@
 package thegame.com.Menu;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import thegame.com.storage.Database;
 
 /**
  * Contains methods to create accounts
