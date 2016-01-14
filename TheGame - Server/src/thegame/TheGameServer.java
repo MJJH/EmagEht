@@ -113,7 +113,7 @@ public class TheGameServer extends Application {
 
         System.setProperty("java.rmi.server.hostname", config.ip);
 
-        //loadDatabase();
+        loadDatabase();
         startServer();
         primaryStage.setOnCloseRequest(event ->
         {

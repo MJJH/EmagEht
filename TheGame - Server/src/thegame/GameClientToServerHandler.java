@@ -43,7 +43,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
         Map map = gameServerToClientHandler.getGameTable().get(lobby);
         for(Player player : map.getPlayers())
         {
-            if(player.getAccount() == account)
+            if(player.getAccount().getUsername().equals(account.getUsername()))
             {
                 gameServerToClientHandler.getPlayerListenerTable().put(listener, player);
                 return player;

@@ -47,7 +47,7 @@ public class Startup extends Application {
     public void start(Stage primaryStage) throws IOException
     {
         this.primaryStage = primaryStage;
-        /*
+
         try
         {
             loadDatabase();
@@ -56,7 +56,6 @@ public class Startup extends Application {
             System.err.println(ex.getMessage());
             System.exit(0);
         }
-        */
 
         Pane root = new Pane();
         Scene scene = new Scene(root, 1280, 720);
@@ -74,31 +73,31 @@ public class Startup extends Application {
     {
         Database db = Database.getDatabase();
         ResultSet rs;
-        
+
         // Parts
         String partsQuery = "SELECT * FROM Image";
         rs = db.executeQuery(partsQuery);
-        while(rs.next())
+        while (rs.next())
         {
             new Parts(rs.getString("Name"), iTexture.Part.valueOf(rs.getString("Part")), rs.getBoolean("Body"), rs.getInt("X"), rs.getInt("Y"), rs.getInt("Width"), rs.getInt("Height"), rs.getInt("ConnectX"), rs.getInt("ConnectY"));
         }
-        
+
         // Sets
         String setQuery = "SELECT * FROM image_set";
         rs = db.executeQuery(setQuery);
         ResultSet rsI;
-        while(rs.next())
+        while (rs.next())
         {
             List<CombineParts> cb = new ArrayList<>();
-            String setpartQuery = "SELECT * FROM set_piece WHERE `set` = '"+rs.getString("Name")+"'";
+            String setpartQuery = "SELECT * FROM set_piece WHERE `set` = '" + rs.getString("Name") + "'";
             rsI = db.executeQuery(setpartQuery);
-            while(rsI.next())
+            while (rsI.next())
             {
                 cb.add(new CombineParts(Parts.parts.get(rsI.getString("image")), rsI.getInt("place"), rsI.getInt("X"), rsI.getInt("Y")));
             }
             new Sets(rs.getString("Name"), cb);
         }
-        
+
         // Tool
         String toolQuery = "SELECT * FROM Tool";
         rs = db.executeQuery(toolQuery);
@@ -106,7 +105,7 @@ public class Startup extends Application {
         {
             new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set")));
         }
-        
+
         // Blocks
         String blockQuery = "SELECT * FROM Resource";
         rs = db.executeQuery(blockQuery);

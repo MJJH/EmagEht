@@ -121,11 +121,8 @@ public class LobbyFX {
         try
         {
             // if character selected etc. else return false
+            lobbyServerToClientListener.setLobbyFX(this);
             boolean returnValue =  lobbyClientToServer.checkReady(myAccount);
-            if(returnValue)
-            {
-                lobbyServerToClientListener.setLobbyFX(this);
-            }
             return returnValue;
         } catch (RemoteException ex)
         {

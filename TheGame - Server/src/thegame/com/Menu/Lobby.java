@@ -170,4 +170,23 @@ public class Lobby implements Serializable{
     {
         return chosenCharacters;
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Lobby)
+        {
+            Lobby lobby = (Lobby) o;
+            return id == lobby.getID();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 37 * hash + this.id;
+        return hash;
+    }
 }
