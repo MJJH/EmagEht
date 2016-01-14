@@ -30,4 +30,8 @@ public class IntColor {
 
         return new Color(r, g, b, opacity);
     }
+
+    public static Color[] fromDB(String string) {
+        return new Color[7];
+    }
 }

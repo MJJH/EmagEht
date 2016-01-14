@@ -19,16 +19,19 @@ public abstract class ObjectType implements Serializable {
     public transient Skin skin;
     public String name;
     
-    protected Skin getSkin() throws IOException
+    public ObjectType(String name, Skin skin)
     {
-        if (skin == null)
-        {
-            createSkin();
-        }
-
-        return skin;
+        this.name = name;
+        this.skin = skin;
     }
     
-    protected abstract void createSkin() throws IOException;
+    public String getName() {
+        return name;
+    }
+    
+    protected Skin getSkin() throws IOException
+    {
+        return skin;
+    }
     
 }

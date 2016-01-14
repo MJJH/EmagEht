@@ -28,7 +28,7 @@ public class BlockType extends ObjectType {
      */
     public BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid)
     {
-        this.name = name;
+        super(name);
         this.strength = strength;
         this.reqToolLvl = reqLvl;
         this.reqTool = req;

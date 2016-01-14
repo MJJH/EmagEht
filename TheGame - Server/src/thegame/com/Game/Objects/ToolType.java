@@ -40,9 +40,9 @@ public class ToolType extends ObjectType {
      * @param height
      * @param width
      */
-    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, float height, float width)
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb)
     {
-        this.name = name;
+        super(name);
         this.strength = strength;
         this.speed = speed;
         this.range = range;

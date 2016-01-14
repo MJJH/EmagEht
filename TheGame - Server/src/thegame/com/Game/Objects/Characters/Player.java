@@ -40,11 +40,11 @@ public class Player extends CharacterGame {
         spawnX = playing.getSpawnX();
         spawnY = playing.getSpawnY();
 
-        ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f, 1, 1);
+        ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f);
         Tool equip = new Tool(test, map);
         equipTool(equip);
 
-        this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0, 1, 1), playing));
+        this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0), playing));
         for (int c = 0; c < 103; c++)
         {
             this.addToBackpack(new Block(BlockType.blocktypes.get("Stone"), 0, 0, playing));

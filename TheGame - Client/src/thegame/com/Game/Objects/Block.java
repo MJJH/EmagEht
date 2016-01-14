@@ -30,7 +30,7 @@ public class Block extends MapObject {
         } catch (IOException ex) {
         }
         
-        
+        /*
         if(type.skin == null || type.getName() == "Dirt")
         {
             Block t = playing.getBlock((int) yPosition + 1, (int) xPosition);
@@ -38,7 +38,7 @@ public class Block extends MapObject {
             Block r = playing.getBlock((int) yPosition, (int) xPosition + 1);
             Block l = playing.getBlock((int) yPosition, (int) xPosition - 1);
             skin = type.createSkin(t, b, l, r);
-        } 
+        } */
     }
 
     public BlockType getType()

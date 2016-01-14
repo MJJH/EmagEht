@@ -133,7 +133,7 @@ public class TheGameServer extends Application {
         rs = db.executeQuery(armorQuery);
         while (rs.next())
         {
-            new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorTypeID")));
+            new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorType")));
         }
 
         // Tool
@@ -141,12 +141,12 @@ public class TheGameServer extends Application {
         rs = db.executeQuery(toolQuery);
         while (rs.next())
         {
-            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"), 0, 0);
+            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"));
         }
 
         // Item
-        String itemQuery = "SELECT * FROM Item";
-        rs = db.executeQuery(toolQuery);
+        String itemQuery = "SELECT * FROM item";
+        rs = db.executeQuery(itemQuery);
         while (rs.next())
         {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"));

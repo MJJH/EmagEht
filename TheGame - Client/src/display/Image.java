@@ -32,7 +32,6 @@ import javax.imageio.ImageIO;
  */
 public class Image extends Skin {
 
-    private int getal = 1;
     private WritableImage image;
     private Map<Parts, PartImage> parts;
     private Color background;
@@ -80,49 +79,14 @@ public class Image extends Skin {
             Parts t = (Parts) texture;
             i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
             parts.put(t, new PartImage(i, 0, 0));
-            getal++;
         } else if (texture instanceof Sets)
         {
 
             Sets s = (Sets) texture;
             for (CombineParts cp : s.parts)
             {
-
-                if (cp.part.equals(Parts.playerFrontLeg))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 2, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
-                if (cp.part.equals(Parts.playerBackLeg))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 1, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
-                if (cp.part.equals(Parts.playerTorso))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 0, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
-
-                if (cp.part.equals(Parts.playerBackArm))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 8, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                } else if (cp.part.equals(Parts.playerFrontArm))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 9, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                } else
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, getal, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                add((LinkedHashMap<Parts, PartImage>) parts, 0, cp.part, new PartImage(i, cp.x, cp.y));
 
             }
         }
@@ -156,25 +120,14 @@ public class Image extends Skin {
             calculateNewSize(t);
             Parts parent = getParent(t);
 
-            if (texture.equals(Parts.Sword))
+            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
+            if(parent != null)
             {
-                i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts, 7, t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-                getal++;
-            } 
+                parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
+            }
             else
             {
-                i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-                if(parent != null)
-                {
-                    parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-                }
-                else
-                {
-                    parts.put(t, new PartImage(i, 0, 0));
-                }
-                getal++;
-
+                parts.put(t, new PartImage(i, 0, 0));
             }
 
         } else if (texture instanceof Sets)
@@ -182,44 +135,12 @@ public class Image extends Skin {
             Sets s = (Sets) texture;
             for (CombineParts cp : s.parts)
             {
-
                 calculateNewSize(cp.part);
                 Parts parent = getParent(cp.part);
 
-                if (cp.part.equals(Parts.armorFront))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 4, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
-                if (cp.part.equals(Parts.armorBack))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 5, cp.part, new PartImage(i, cp.x, cp.y));
-                    getal++;
-                }
-                if (cp.part.equals(Parts.armorBody))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 3, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-                    getal++;
-                } else if (cp.part.equals(Parts.armorShoulderBack))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 10, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-                    getal++;
-                } else if (cp.part.equals(Parts.armorShoulderFront))
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    add((LinkedHashMap<Parts, PartImage>) parts, 6, cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-                    getal++;
-                } else
-                {
-                    i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                    parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
-                    getal++;
-                }
 
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
             }
         }
 
@@ -450,11 +371,11 @@ public class Image extends Skin {
 
     private Parts getParent(Parts t)
     {
-        if (t.getType() != Type.BODY)
+        if (!t.isBody())
         {
             for (Parts p : parts.keySet())
             {
-                if (p.getPart() == t.getPart() && p.getType() == Type.BODY)
+                if (p.getPart() == t.getPart() && p.isBody())
                 {
                     return p;
                 }

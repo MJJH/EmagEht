@@ -5,9 +5,12 @@
  */
 package thegame.com.Game.Objects;
 
+import display.Image;
+import display.iTexture;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -20,18 +23,13 @@ public class ItemType extends ObjectType {
     public final int width;
     public final int height;
     
-    public ItemType(String name, int width, int height)
+    public ItemType(String name, int width, int height, iTexture skin, Color[] colors) throws IOException
     {
-        this.name = name;
+        super(name, new Image(skin){{recolour(colors);}});
         this.width = width;
         this.height = height;
         
         itemtypes.put(name, this);
-    }
-
-    @Override
-    protected void createSkin() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

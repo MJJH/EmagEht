@@ -116,7 +116,7 @@ public class Map implements Serializable {
 
                             if (first.contains(x))
                             {
-                                blocks[y][x] = new Background(BlockType.blocktypes.get("CaveBackground"), x, y, this);
+                                blocks[y][x] = new Background(BlockType.blocktypes.get("CaveStone"), x, y, this);
                             }
 
                             break;
@@ -134,7 +134,7 @@ public class Map implements Serializable {
                             blocks[y][x] = new Block(BlockType.blocktypes.get("Sand"), x, y, this);
                             break;
                         case 'O':
-                            blocks[y][x] = new Block(BlockType.blocktypes.get("Obisidian"), x, y, this);
+                            blocks[y][x] = new Block(BlockType.blocktypes.get("Obsidian"), x, y, this);
                             break;
                         case 'c':
                             blocks[y][x] = new Block(BlockType.blocktypes.get("Coal"), x, y, this);

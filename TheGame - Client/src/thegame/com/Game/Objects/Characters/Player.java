@@ -135,7 +135,7 @@ public class Player extends CharacterGame {
                 new Color(1, 1, 1, 1)
             };
 
-            Image d = new Image(Sets.player);
+            Image d = new Image(Sets.sets.get("player"));
 
             d.recolour(h);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 40);
@@ -144,7 +144,7 @@ public class Player extends CharacterGame {
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
             skins.put("standRight", d);
             
-            Image d2 = new Image(Sets.player);
+            Image d2 = new Image(Sets.sets.get("player"));
             d2.recolour(h);
             d2.flipHorizontal();
 

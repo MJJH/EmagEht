@@ -20,7 +20,7 @@ public class ArmorType extends ObjectType {
     
     public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodypart) 
     {
-        this.name = name;
+        super(name);
         this.multiplier = multiplier;
         this.reqLvl = reqLvl;
         this.bodypart = bodypart;

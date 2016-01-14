@@ -93,7 +93,7 @@ import javafx.scene.shape.Rectangle;
               LegColorArray = temp;
               
 
-             
+             /*
               body = new display.Image(display.Parts.playerTorso);
               body.Scale(3);
               TshirtBody = new display.Image(Parts.tShirtBody);
@@ -118,7 +118,7 @@ import javafx.scene.shape.Rectangle;
               shortBack.Scale(3);
               shortFront = new display.Image(display.Parts.shortFront);
               shortFront.Scale(3);
-              
+              */
               
 
             final Canvas canvas = new Canvas(primaryStage.getScene().getWidth(),primaryStage.getScene().getHeight());

@@ -7,6 +7,7 @@ package gui;
 
 import display.Animation;
 import display.IntColor;
+import display.Parts;
 import display.Sets;
 import display.Skin;
 import java.io.IOException;
@@ -84,14 +85,14 @@ public class GameUtilities {
             {
                 new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
             };
-            heart = new display.Image(display.Parts.Heart);
-            shield = new display.Image(display.Parts.Shield);
+            heart = new display.Image(Sets.sets.get("heart"));
+            shield = new display.Image(Sets.sets.get("shield"));
             shield.recolour(t);
-            head = new display.Image(display.Parts.playerHead);
+            head = new display.Image(Parts.parts.get("playerHead"));
             head.recolour(t);
-            body = new display.Image(Sets.tShirt);
+            body = new display.Image(Sets.sets.get("tShirt"));
             body.recolour(t);
-            greaves = new display.Image(Sets.shorts);
+            greaves = new display.Image(Sets.sets.get("shorts"));
             greaves.recolour(t);
         } catch (IOException ex) {
         }

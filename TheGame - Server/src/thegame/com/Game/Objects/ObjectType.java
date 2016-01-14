@@ -6,6 +6,8 @@
 package thegame.com.Game.Objects;
 
 import java.io.Serializable;
+import javafx.scene.control.Skin;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -14,6 +16,10 @@ import java.io.Serializable;
 public abstract class ObjectType implements Serializable {
     private static final long serialVersionUID = 6522685098267700690L;
     
-    public String name;
+    public final String name;
+
+    public ObjectType(String name) {
+        this.name = name;
+    }
     
 }

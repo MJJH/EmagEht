@@ -134,23 +134,23 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
 
     private void setH(float h)
     {
-        if (h > 0)
+        if (h >= 0)
         {
             this.height = h;
         } else
         {
-            throw new IllegalArgumentException("Height cant be 0.");
+            throw new IllegalArgumentException("Height cant be below 0.");
         }
     }
 
     private void setW(float w)
     {
-        if (w > 0)
+        if (w >= 0)
         {
             this.width = w;
         } else
         {
-            throw new IllegalArgumentException("Width cant be 0.");
+            throw new IllegalArgumentException("Width cant be below 0.");
         }
     }
 

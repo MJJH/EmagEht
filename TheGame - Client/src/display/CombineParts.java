@@ -15,7 +15,7 @@ public class CombineParts {
     public final int x;
     public final int y;
 
-    public CombineParts(Parts p, int x, int y)
+    public CombineParts(Parts p, int index, int x, int y)
     {
         part = p;
         this.x = x;

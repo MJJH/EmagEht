@@ -21,7 +21,7 @@ public class ItemType extends ObjectType {
     
     public ItemType(String name, int width, int height)
     {
-        this.name = name;
+        super(name);
         this.width = width;
         this.height = height;
         
