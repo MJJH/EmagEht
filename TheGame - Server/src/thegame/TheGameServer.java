@@ -16,8 +16,6 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.ArmorType;
@@ -62,23 +60,30 @@ public class TheGameServer extends Application {
              }
              });
              */
-            System.out.println("Server is starting up");
 
             // Lobby
             LobbyServerToClientHandler lobbyServerToClientHandler = new LobbyServerToClientHandler();
-            lobbyClientToServerHandler = new LobbyClientToServerHandler(lobbyServerToClientHandler);
+            lobbyClientToServerHandler = new LobbyClientToServerHandler();
             lobbyClientToServerRegistry = LocateRegistry.createRegistry(config.lobbyServerToClientPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
             lobbyClientToServerRegistry.rebind(config.lobbyClientToServerName, lobbyClientToServerHandler);
             UnicastRemoteObject.exportObject(lobbyClientToServerHandler, config.lobbyClientToServerPort);
+            System.out.println("The lobby component is running");
 
             // Game
             GameServerToClientHandler gameServerToClientHandler = new GameServerToClientHandler();
-            gameClientToServerHandler = new GameClientToServerHandler(gameServerToClientHandler);
+            gameClientToServerHandler = new GameClientToServerHandler();
             gameClientToServerRegistry = LocateRegistry.createRegistry(config.gameServerToClientPort, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
             gameClientToServerRegistry.rebind(config.gameClientToServerName, gameClientToServerHandler);
             UnicastRemoteObject.exportObject(gameClientToServerHandler, config.gameClientToServerPort);
+            System.out.println("The game component is running");
+            
+            // Register components
+            lobbyServerToClientHandler.registerComponents(lobbyClientToServerHandler, gameServerToClientHandler, gameClientToServerHandler);
+            lobbyClientToServerHandler.registerComponents(lobbyServerToClientHandler, gameServerToClientHandler, gameClientToServerHandler);
+            gameServerToClientHandler.registerComponents(lobbyServerToClientHandler, lobbyClientToServerHandler, gameClientToServerHandler);
+            gameClientToServerHandler.registerComponents(lobbyServerToClientHandler, lobbyClientToServerHandler, gameServerToClientHandler);
+            System.out.println("Components registered and running");
 
-            System.out.println("Server is up and running");
         } catch (RemoteException ex)
         {
             lobbyClientToServerHandler = null;
@@ -107,15 +112,15 @@ public class TheGameServer extends Application {
         primaryStage.show();
 
         System.setProperty("java.rmi.server.hostname", config.ip);
-        
-        loadDatabase();
+
+        //loadDatabase();
         startServer();
         primaryStage.setOnCloseRequest(event ->
         {
             System.exit(0);
         });
     }
-    
+
     private void loadDatabase() throws SQLException, ClassNotFoundException
     {
         Database db = Database.getDatabase();

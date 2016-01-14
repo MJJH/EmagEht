@@ -5,13 +5,31 @@
  */
 package thegame;
 
-import thegame.shared.ILobbyServerToClient;
+import gui.pages.LobbyFX;
+import java.rmi.RemoteException;
+import thegame.shared.ILobbyServerToClientListener;
 
 
 /**
  *
  * @author laure
  */
-public class LobbyServerToClientListener implements ILobbyServerToClient{
+public class LobbyServerToClientListener implements ILobbyServerToClientListener{
     
+    private transient LobbyFX lobbyFX;
+
+    public LobbyServerToClientListener()
+    {
+    }
+    
+    public void setLobbyFX(LobbyFX lobbyFX)
+    {
+        this.lobbyFX = lobbyFX;
+    }
+    
+    @Override
+    public void requestConnectToGame() throws RemoteException
+    {
+        lobbyFX.connectToGame();
+    }
 }

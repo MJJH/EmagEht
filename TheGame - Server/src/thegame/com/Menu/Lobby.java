@@ -1,9 +1,12 @@
 package thegame.com.Menu;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import thegame.com.Game.Map;
+import thegame.config;
+import thegame.com.Game.Objects.Characters.Character;
 
 /**
  * This class contains code for the game lobby. The game lobby contains
@@ -11,23 +14,27 @@ import thegame.com.Game.Map;
  *
  * @author laure
  */
-public class Lobby {
+public class Lobby implements Serializable{
 
     private static final long serialVersionUID = 6529682158264757690L;
-    
+    private transient static int idCounter = 1;
     private int id;
     private ArrayList<Message> chat;
     private Map plays;
     private ArrayList<Account> accounts;
+    private ArrayList<Account> ready;
+    private HashMap<Account, Character> chosenCharacters;
 
     /**
      * This method creates a new gamelobby.
      */
     public Lobby()
     {
-        // TODO - implement Lobby.Lobby
+        id = idCounter++;
         chat = new ArrayList();
         accounts = new ArrayList();
+        ready = new ArrayList<>();
+        chosenCharacters = new HashMap<>();
     }
 
     /**
@@ -62,6 +69,7 @@ public class Lobby {
             if (!accounts.contains(account))
             {
                 accounts.add(account);
+                chosenCharacters.put(account, new Character("test", 0));
                 return true;
             }
         }
@@ -117,5 +125,49 @@ public class Lobby {
     public int getID()
     {
         return id;
+    }
+
+    public boolean setReady(Account account)
+    {
+        if(ready.contains(account) || !chosenCharacters.containsKey(account))
+        {
+            return false;
+        }
+        ready.add(account);
+        return true;
+    }
+    
+    public boolean setNotReady (Account account)
+    {
+        if(!ready.contains(account))
+        {
+            return false;
+        }
+        ready.remove(account);
+        return true;
+    }
+
+    public boolean readyToStart()
+    {
+        if(accounts.size() == config.minimumRequiredPlayers && ready.containsAll(accounts))
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    public ArrayList<Character> getCharacters()
+    {
+        ArrayList<Character> characters = new ArrayList<>();
+        for(Account account : accounts)
+        {
+            characters.add(chosenCharacters.get(account));
+        }
+        return characters;
+    }
+    
+    public HashMap<Account,Character> getChosenCharacters()
+    {
+        return chosenCharacters;
     }
 }

@@ -5,10 +5,15 @@
  */
 package thegame.shared;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 /**
  *
  * @author laure
  */
-public interface ILobbyServerToClient {
+public interface ILobbyServerToClientListener extends Remote{
+
+    public void requestConnectToGame() throws RemoteException;
     
 }

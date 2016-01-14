@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Lobby;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameServerToClientListener;
 
@@ -25,24 +28,57 @@ import thegame.shared.IGameServerToClientListener;
  * @author laure
  */
 public class GameServerToClientHandler {
-
-    private transient Map map;
+    private transient LobbyServerToClientHandler lobbyServerToClientHandler;
+    private transient LobbyClientToServerHandler lobbyClientToServerHandler;
+    private transient GameClientToServerHandler gameClientToServerHandler;
+    
+    private transient final ConcurrentHashMap<Lobby, Map> gameTable;
     private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
+    
     private transient final List<IGameServerToClientListener> connectionLossTable;
     private transient final List<IGameServerToClientListener> isSending;
     private transient ExecutorService threadPoolSend;
 
     public GameServerToClientHandler()
     {
+        gameTable = new ConcurrentHashMap<>();
         playerListenersTable = new ConcurrentHashMap<>();
         connectionLossTable = new ArrayList<>();
         isSending = new ArrayList<>();
         threadPoolSend = Executors.newCachedThreadPool();
     }
-
-    public void registerMap(Map map)
+    
+    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameClientToServerHandler gameClientToServerHandler)
     {
-        this.map = map;
+        this.lobbyServerToClientHandler = lobbyServerToClientHandler;
+        this.lobbyClientToServerHandler = lobbyClientToServerHandler;
+        this.gameClientToServerHandler = gameClientToServerHandler;
+    }
+    
+    public ConcurrentHashMap<Lobby,Map> getGameTable()
+    {
+        return gameTable;
+    }
+    
+    public ConcurrentHashMap<IGameServerToClientListener, Player> getPlayerListenerTable()
+    {
+        return playerListenersTable;
+    }
+    
+    public void startNewGame(Lobby lobby)
+    {
+        Map game = new Map(lobby, this, gameClientToServerHandler);
+        gameTable.put(lobby, game);
+        lobbyServerToClientHandler.requestConnectToGame(lobby);
+        Timer update = new Timer("Game"+Integer.toString(lobby.getID()));
+        update.schedule(new TimerTask() {
+
+            @Override
+            public void run()
+            {
+                game.update();
+            }
+        }, 0, 1000 / 60);
     }
 
     public void joinPlayer(IGameServerToClientListener listener, Player listenerPlayer)
@@ -57,7 +93,7 @@ public class GameServerToClientHandler {
     {
         MapObject removePlayer = playerListenersTable.get(listener);
         connectionLossTable.add(listener);
-        map.removeMapObject(removePlayer);
+        //map.removeMapObject(removePlayer);
         playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
@@ -92,49 +128,6 @@ public class GameServerToClientHandler {
         }
     }
 
-    /*
-     public void updatePlayer(Player toSendPlayer)
-     {
-     for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
-     {
-     IGameServerToClientListener listener = entry.getKey();
-     if (connectionLossTable.contains(listener) || (isSending.contains(listener) && isSending.get(listener).equals("updatePlayer")))
-     {
-     continue;
-     }
-     Player player = entry.getValue();
-
-     if (toSendPlayer == player)
-     {
-     continue;
-     }
-
-     threadPoolSend.submit(() ->
-     {
-     int direction = 1;
-     if (toSendPlayer.getDirection() == MapObject.sides.LEFT)
-     {
-     direction = 0;
-     }
-     try
-     {
-     isSending.put(listener, "updatePlayer");
-     listener.updatePlayer(toSendPlayer.getID(), toSendPlayer.getX(), toSendPlayer.getY(), direction);
-     } catch (RemoteException ex)
-     {
-     Calendar cal = Calendar.getInstance();
-     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-     System.err.println(sdf.format(cal.getTime()) + " Could not updatePlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
-     System.err.println(ex.getMessage());
-     leavePlayer(listener);
-     } finally
-     {
-     isSending.remove(listener, "updatePlayer");
-     }
-     });
-     }
-     }
-     */
     public void addMapObject(MapObject mo)
     {
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
