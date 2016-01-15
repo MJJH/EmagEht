@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javafx.application.Application;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.BlockType;
@@ -107,11 +108,14 @@ public class TheGameServer extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        primaryStage.setWidth(100);
-        primaryStage.setHeight(100);
+        primaryStage.setWidth(200);
+        primaryStage.setHeight(200);
         primaryStage.show();
 
         System.setProperty("java.rmi.server.hostname", config.ip);
+        
+        Label connectedPlayers = new Label("Test");
+        
 
         loadDatabase();
         startServer();
@@ -127,7 +131,7 @@ public class TheGameServer extends Application {
         ResultSet rs;
         // Blocks
         String blockQuery = "SELECT * FROM Resource";
-        rs = db.executeQuery(blockQuery);
+        rs = db.executeUnsafeQuery(blockQuery);
         while (rs.next())
         {
             new BlockType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("ToolType")), (float) rs.getDouble("Solid"));
@@ -135,7 +139,7 @@ public class TheGameServer extends Application {
 
         // Armor
         String armorQuery = "SELECT * FROM Armor";
-        rs = db.executeQuery(armorQuery);
+        rs = db.executeUnsafeQuery(armorQuery);
         while (rs.next())
         {
             new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorType")));
@@ -143,7 +147,7 @@ public class TheGameServer extends Application {
 
         // Tool
         String toolQuery = "SELECT * FROM Tool";
-        rs = db.executeQuery(toolQuery);
+        rs = db.executeUnsafeQuery(toolQuery);
         while (rs.next())
         {
             new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"));
@@ -151,15 +155,16 @@ public class TheGameServer extends Application {
 
         // Item
         String itemQuery = "SELECT * FROM item";
-        rs = db.executeQuery(itemQuery);
+        rs = db.executeUnsafeQuery(itemQuery);
         while (rs.next())
         {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"));
         }
-
+        db.closeConnection();
+        
         // Crafting
         /*String craftQuery = "SELECT * FROM Craft";
-         rs = db.executeQuery(toolQuery);
+         rs = db.executeUnsafeQuery(toolQuery);
          while(rs.next()) 
          {
          int id = rs.getInt("ID");

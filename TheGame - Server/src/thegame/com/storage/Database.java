@@ -7,9 +7,13 @@ package thegame.com.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import thegame.com.Menu.Account;
 
 /**
  *
@@ -27,10 +31,9 @@ public class Database {
     //static final String PASS = "lZoCxvXKps";
     static final String USER = "thegame";
     static final String PASS = "@thegame1";
-    Connection conn = null;
-    
+
     private static Database database;
-    
+
     public static Database getDatabase()
     {
         if (database == null)
@@ -40,7 +43,9 @@ public class Database {
         return database;
     }
 
-    public void openConnection() throws ClassNotFoundException
+    Connection conn = null;
+
+    public void openConnection()
     {
         try
         {
@@ -51,46 +56,49 @@ public class Database {
             {
                 System.out.println("Where is your MySQL JDBC Driver?");
             }
-            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             System.out.println("Connection Successful");
         } catch (SQLException e)
         {
+            System.out.println(e.getMessage());
             System.out.println("Connection Failed!");
         }
     }
 
-public ResultSet executeQuery(String sql) throws SQLException, ClassNotFoundException{
+    public ResultSet executeUnsafeQuery(String sql) throws SQLException
+    {
         //Execute a query
         Statement statement;
         ResultSet resultSet = null;
-        try{
-            openConnection();
-            System.out.println("Creating statement...");
+        try
+        {
+            if (conn == null || conn.isClosed())
+            {
+                openConnection();
+            }
             statement = conn.createStatement();
-            //String sql = "SELECT id, first, last, age FROM Employees";
             resultSet = statement.executeQuery(sql);
-        }
-        catch(SQLException ex){
+        } catch (SQLException ex)
+        {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
         return resultSet;
-        /*
-        //Extract data from result set
-        while(rs.next()){
-        //Retrieve by column name
-        int id  = rs.getInt("id");
-        int age = rs.getInt("age");
-        String first = rs.getString("first");
-        String last = rs.getString("last");
-        //Display values
-        System.out.print("ID: " + id);
-        System.out.print(", Age: " + age);
-        System.out.print(", First: " + first);
-        System.out.println(", Last: " + last);
+    }
+
+    public void closeConnection()
+    {
+        try
+        {
+            if (conn != null || !conn.isClosed())
+            {
+                conn.close();
+                System.out.println("Connection closed");
+            }
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
     }
 }

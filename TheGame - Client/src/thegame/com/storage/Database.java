@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Menu.Account;
 
 /**
@@ -54,7 +56,6 @@ public class Database {
             {
                 System.out.println("Where is your MySQL JDBC Driver?");
             }
-            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             System.out.println("Connection Successful");
         } catch (SQLException e)
@@ -64,17 +65,18 @@ public class Database {
         }
     }
 
-    public ResultSet executeQuery(String sql) throws SQLException
+    public ResultSet executeUnsafeQuery(String sql) throws SQLException
     {
         //Execute a query
         Statement statement;
         ResultSet resultSet = null;
         try
         {
-            openConnection();
-            System.out.println("Creating statement...");
+            if (conn == null || conn.isClosed())
+            {
+                openConnection();
+            }
             statement = conn.createStatement();
-            //String sql = "SELECT id, first, last, age FROM Employees";
             resultSet = statement.executeQuery(sql);
         } catch (SQLException ex)
         {
@@ -83,21 +85,6 @@ public class Database {
             System.out.println("VendorError: " + ex.getErrorCode());
         }
         return resultSet;
-        /*
-         //Extract data from result set
-         while(rs.next()){
-         //Retrieve by column name
-         int id  = rs.getInt("id");
-         int age = rs.getInt("age");
-         String first = rs.getString("first");
-         String last = rs.getString("last");
-         //Display values
-         System.out.print("ID: " + id);
-         System.out.print(", Age: " + age);
-         System.out.print(", First: " + first);
-         System.out.println(", Last: " + last);
-         }
-         */
     }
 
     public Account checkCredentials(String username, String password)
@@ -110,17 +97,32 @@ public class Database {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next())
             {
                 account = new Account(rs.getInt("id"), rs.getString("username"), rs.getString("password"));
             }
-            
-            conn.close();
+
+            closeConnection();
         } catch (SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
         return account;
+    }
+
+    public void closeConnection()
+    {
+        try
+        {
+            if (conn != null || !conn.isClosed())
+            {
+                conn.close();
+                System.out.println("Connection closed");
+            }
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

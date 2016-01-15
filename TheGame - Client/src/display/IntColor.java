@@ -37,7 +37,7 @@ public class IntColor {
     {
         // Get color ints
         String colorQuery = "SELECT Index_0, Index_1, Index_2, Index_3, Index_4, Index_5, Index_6, Index_7 FROM color_set WHERE Name = '"+color+"'";
-        ResultSet rs = db.executeQuery(colorQuery);
+        ResultSet rs = db.executeUnsafeQuery(colorQuery);
 
         rs.first();
         

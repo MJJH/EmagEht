@@ -76,7 +76,7 @@ public class Startup extends Application {
 
         // Parts
         String partsQuery = "SELECT * FROM Image";
-        rs = db.executeQuery(partsQuery);
+        rs = db.executeUnsafeQuery(partsQuery);
         while (rs.next())
         {
             new Parts(rs.getString("Name"), iTexture.Part.valueOf(rs.getString("Part")), rs.getBoolean("Body"), rs.getInt("X"), rs.getInt("Y"), rs.getInt("Width"), rs.getInt("Height"), rs.getInt("ConnectX"), rs.getInt("ConnectY"));
@@ -84,13 +84,13 @@ public class Startup extends Application {
 
         // Sets
         String setQuery = "SELECT * FROM image_set";
-        rs = db.executeQuery(setQuery);
+        rs = db.executeUnsafeQuery(setQuery);
         ResultSet rsI;
         while (rs.next())
         {
             List<CombineParts> cb = new ArrayList<>();
             String setpartQuery = "SELECT * FROM set_piece WHERE `set` = '" + rs.getString("Name") + "'";
-            rsI = db.executeQuery(setpartQuery);
+            rsI = db.executeUnsafeQuery(setpartQuery);
             while (rsI.next())
             {
                 cb.add(new CombineParts(Parts.parts.get(rsI.getString("image")), rsI.getInt("place"), rsI.getInt("X"), rsI.getInt("Y")));
@@ -100,7 +100,7 @@ public class Startup extends Application {
 
         // Tool
         String toolQuery = "SELECT * FROM Tool";
-        rs = db.executeQuery(toolQuery);
+        rs = db.executeUnsafeQuery(toolQuery);
         while (rs.next())
         {
             new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
@@ -108,7 +108,7 @@ public class Startup extends Application {
 
         // Blocks
         String blockQuery = "SELECT * FROM Resource";
-        rs = db.executeQuery(blockQuery);
+        rs = db.executeUnsafeQuery(blockQuery);
         while (rs.next())
         {
             new BlockType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("ToolType")), (float) rs.getDouble("Solid"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
@@ -116,7 +116,7 @@ public class Startup extends Application {
 
         // Armor
         String armorQuery = "SELECT * FROM Armor";
-        rs = db.executeQuery(armorQuery);
+        rs = db.executeUnsafeQuery(armorQuery);
         while (rs.next())
         {
             new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorType")), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
@@ -124,15 +124,15 @@ public class Startup extends Application {
 
         // Item
         String itemQuery = "SELECT * FROM Item";
-        rs = db.executeQuery(itemQuery);
+        rs = db.executeUnsafeQuery(itemQuery);
         while (rs.next())
         {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
-
+        db.closeConnection();
         // Crafting
         /*String craftQuery = "SELECT * FROM Craft";
-         rs = db.executeQuery(toolQuery);
+         rs = db.executeUnsafeQuery(toolQuery);
          while(rs.next()) 
          {
          int id = rs.getInt("ID");
