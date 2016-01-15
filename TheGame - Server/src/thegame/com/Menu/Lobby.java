@@ -189,4 +189,11 @@ public class Lobby implements Serializable{
         hash = 37 * hash + this.id;
         return hash;
     }
+
+    public void leaveLobby(Account removeAccount)
+    {
+        accounts.remove(removeAccount);
+        ready.remove(removeAccount);
+        chosenCharacters.remove(removeAccount);
+    }
 }

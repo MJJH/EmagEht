@@ -37,9 +37,11 @@ import thegame.engine.Collision;
 public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
+    private transient static int idCounter = 1;
     
     private Lobby lobby;
 
+    private int id;
     private int mapObjectID;
     private int height;
     private int width;
@@ -74,6 +76,7 @@ public class Map implements Serializable {
      */
     public Map(Lobby lobby, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
     {
+        id = idCounter++;
         width = 500;
         height = 100;
 
@@ -235,7 +238,7 @@ public class Map implements Serializable {
         if (teamlifes > 0)
         {
             teamlifes--;
-            gameServerToClientHandler.setTeamLifes(teamlifes);
+            gameServerToClientHandler.setTeamLifes(this, teamlifes);
             return true;
         }
         return false;
@@ -246,7 +249,7 @@ public class Map implements Serializable {
         if (teamlifes < 4)
         {
             teamlifes++;
-            gameServerToClientHandler.setTeamLifes(teamlifes);
+            gameServerToClientHandler.setTeamLifes(this, teamlifes);
             return true;
         }
         return false;
@@ -370,7 +373,7 @@ public class Map implements Serializable {
                 {
                     type = 4;
                 }
-                gameServerToClientHandler.removeMapObject(removeObject.getID(), type, removeObject.getX(), removeObject.getY());
+                gameServerToClientHandler.removeMapObject(removeObject, type);
 
                 synchronized (toUpdate)
                 {
@@ -659,5 +662,29 @@ public class Map implements Serializable {
     public float getGravity()
     {
         return gravity;
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Map)
+        {
+            Map map = (Map) o;
+            return id == map.getID();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 17 * hash + this.id;
+        return hash;
+    }
+
+    private int getID()
+    {
+        return id;
     }
 }

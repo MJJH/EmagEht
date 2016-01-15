@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Menu.Account;
 import thegame.com.Menu.Lobby;
 import thegame.com.Menu.Message;
 import thegame.shared.IGameServerToClientListener;
@@ -28,13 +29,14 @@ import thegame.shared.IGameServerToClientListener;
  * @author laure
  */
 public class GameServerToClientHandler {
+
     private transient LobbyServerToClientHandler lobbyServerToClientHandler;
     private transient LobbyClientToServerHandler lobbyClientToServerHandler;
     private transient GameClientToServerHandler gameClientToServerHandler;
-    
+
     private transient final ConcurrentHashMap<Lobby, Map> gameTable;
     private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
-    
+
     private transient final List<IGameServerToClientListener> connectionLossTable;
     private transient final List<IGameServerToClientListener> isSending;
     private transient ExecutorService threadPoolSend;
@@ -47,30 +49,30 @@ public class GameServerToClientHandler {
         isSending = new ArrayList<>();
         threadPoolSend = Executors.newCachedThreadPool();
     }
-    
+
     public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameClientToServerHandler gameClientToServerHandler)
     {
         this.lobbyServerToClientHandler = lobbyServerToClientHandler;
         this.lobbyClientToServerHandler = lobbyClientToServerHandler;
         this.gameClientToServerHandler = gameClientToServerHandler;
     }
-    
-    public ConcurrentHashMap<Lobby,Map> getGameTable()
+
+    public ConcurrentHashMap<Lobby, Map> getGameTable()
     {
         return gameTable;
     }
-    
+
     public ConcurrentHashMap<IGameServerToClientListener, Player> getPlayerListenerTable()
     {
         return playerListenersTable;
     }
-    
+
     public void startNewGame(Lobby lobby)
     {
         Map game = new Map(lobby, this, gameClientToServerHandler);
         gameTable.put(lobby, game);
         lobbyServerToClientHandler.requestConnectToGame(lobby);
-        Timer update = new Timer("Game"+Integer.toString(lobby.getID()));
+        Timer update = new Timer("Game" + Integer.toString(lobby.getID()));
         update.schedule(new TimerTask() {
 
             @Override
@@ -89,19 +91,25 @@ public class GameServerToClientHandler {
         System.out.println(sdf.format(cal.getTime()) + " " + listenerPlayer.getName() + " has joined the game.");
     }
 
-    public void leavePlayer(IGameServerToClientListener listener)
+    public void connectionLossPlayer(IGameServerToClientListener listener)
     {
-        MapObject removePlayer = playerListenersTable.get(listener);
         connectionLossTable.add(listener);
-        //map.removeMapObject(removePlayer);
+        Player removePlayer = playerListenersTable.get(listener);
+        Account removeAccount = removePlayer.getAccount();
+        removePlayer.getMap().removeMapObject(removePlayer);
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(removeAccount);
+        lobby.leaveLobby(removeAccount);
+        lobbyServerToClientHandler.getOnlinePlayers().remove(removeAccount);
+        lobbyServerToClientHandler.getAccountsInLobbies().remove(removeAccount);
         playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-        System.out.println(sdf.format(cal.getTime()) + " Connection to " + ((Player) removePlayer).getName() + " has been lost");
+        System.out.println(sdf.format(cal.getTime()) + " Connection to " + removeAccount.getUsername() + " has been lost");
     }
 
     public void sendGameChatMessage(Message message)
     {
+        List<Player> toSendTo = gameTable.get(lobbyServerToClientHandler.getAccountsInLobbies().get(message.getSender())).getPlayers();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
@@ -110,6 +118,10 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
 
             threadPoolSend.submit(() ->
             {
@@ -122,7 +134,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not sendGameChatMessage(" + message.getSender().getUsername() + ": " + message.getText() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
         }
@@ -130,6 +142,7 @@ public class GameServerToClientHandler {
 
     public void addMapObject(MapObject mo)
     {
+        List<Player> toSendTo = mo.getMap().getPlayers();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
@@ -138,6 +151,10 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
 
             threadPoolSend.submit(() ->
             {
@@ -150,14 +167,15 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not addMapObject(" + mo.getID() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
         }
     }
 
-    public void removeMapObject(int id, int type, float x, float y)
+    public void removeMapObject(MapObject mo, int type)
     {
+        List<Player> toSendTo = mo.getMap().getPlayers();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
@@ -166,18 +184,23 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
+
             threadPoolSend.submit(() ->
             {
                 try
                 {
-                    listener.removeMapObject(id, type, x, y);
+                    listener.removeMapObject(mo.getID(), type, mo.getX(), mo.getY());
                 } catch (RemoteException ex)
                 {
                     Calendar cal = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-                    System.err.println(sdf.format(cal.getTime()) + " Could not removeMapObject(" + id + ") to player " + player.getName() + " because:");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not removeMapObject(" + mo.getID() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
         }
@@ -210,7 +233,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not knockBackPlayer(" + toSendPlayer.getName() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
             break;
@@ -219,6 +242,11 @@ public class GameServerToClientHandler {
 
     public void updateObjects(List<MapObject> toSend)
     {
+        if (toSend.size() < 1)
+        {
+            return;
+        }
+        List<Player> toSendTo = toSend.get(0).getMap().getPlayers();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
@@ -227,6 +255,11 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
+
             threadPoolSend.submit(() ->
             {
                 try
@@ -239,7 +272,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not updateObjects(" + toSend.toString() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 } finally
                 {
                     isSending.remove(listener);
@@ -275,7 +308,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not addToBackpack(" + object.getClass() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
             break;
@@ -309,15 +342,16 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not addToEmptyBackpack(" + object.getClass() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
             break;
         }
     }
 
-    public void setTeamLifes(int lifes)
+    public void setTeamLifes(Map map, int lifes)
     {
+        List<Player> toSendTo = map.getPlayers();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {
             IGameServerToClientListener listener = entry.getKey();
@@ -326,6 +360,11 @@ public class GameServerToClientHandler {
                 continue;
             }
             Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
+            
             threadPoolSend.submit(() ->
             {
                 try
@@ -337,7 +376,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not setTeamLifes(" + lifes + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
         }
@@ -371,7 +410,7 @@ public class GameServerToClientHandler {
                     SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
                     System.err.println(sdf.format(cal.getTime()) + " Could not respawn " + toSendPlayer.getName() + " because:");
                     System.err.println(ex.getMessage());
-                    leavePlayer(listener);
+                    connectionLossPlayer(listener);
                 }
             });
             break;
