@@ -103,7 +103,7 @@ public class Startup extends Application {
         rs = db.executeQuery(toolQuery);
         while (rs.next())
         {
-            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set")));
+            new ToolType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("Speed"), rs.getInt("Radius"), rs.getInt("reqLvl"), ToolType.toolType.valueOf(rs.getString("Type")), (float) rs.getDouble("KnockBack"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
 
         // Blocks
@@ -111,7 +111,7 @@ public class Startup extends Application {
         rs = db.executeQuery(blockQuery);
         while (rs.next())
         {
-            new BlockType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("ToolType")), (float) rs.getDouble("Solid"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set")));
+            new BlockType(rs.getString("Name"), rs.getInt("Strength"), rs.getInt("ToolLevel"), ToolType.toolType.valueOf(rs.getString("ToolType")), (float) rs.getDouble("Solid"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
 
         // Armor
@@ -119,7 +119,7 @@ public class Startup extends Application {
         rs = db.executeQuery(armorQuery);
         while (rs.next())
         {
-            new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorType")), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set")));
+            new ArmorType(rs.getString("Name"), rs.getInt("DIA"), rs.getInt("RequiredLvl"), ArmorType.bodyPart.valueOf(rs.getString("ArmorType")), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
 
         // Item
@@ -127,7 +127,7 @@ public class Startup extends Application {
         rs = db.executeQuery(itemQuery);
         while (rs.next())
         {
-            new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set")));
+            new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
 
         // Crafting
