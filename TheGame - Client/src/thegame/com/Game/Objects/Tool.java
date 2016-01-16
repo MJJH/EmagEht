@@ -32,4 +32,9 @@ public class Tool extends MapObject {
     public void update(MapObject update)
     {
     }
+    
+    @Override
+    public void setType() {
+        this.type = ToolType.tooltypes.get(this.type.name);
+    }
 }

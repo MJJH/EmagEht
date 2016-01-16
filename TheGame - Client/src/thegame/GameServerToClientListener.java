@@ -90,6 +90,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             return;
         }
         mo.setMap(map);
+        mo.setType();
         map.addMapObject(mo);
     }
 
@@ -103,6 +104,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         for (MapObject mo : toSend)
         {
             mo.setMap(map);
+            mo.setType();
             map.updateMapObject(mo);
         }
     }
@@ -115,6 +117,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             return;
         }
         object.setMap(map);
+        object.setType();
         me.addToBackpack(object, spot);
     }
 
@@ -126,6 +129,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
             return;
         }
         object.setMap(map);
+        object.setType();
         me.addToEmptyBackpack(object);
     }
 

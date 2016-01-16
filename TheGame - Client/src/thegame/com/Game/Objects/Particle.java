@@ -59,4 +59,9 @@ public class Particle extends MapObject {
         this.playing = set;
         object.setMap(set);
     }
+
+    @Override
+    public void setType() {
+        
+    }
 }

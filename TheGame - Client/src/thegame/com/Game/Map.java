@@ -63,6 +63,7 @@ public class Map implements Serializable {
                 {
                     Block cur = blocks[y][x];
                     cur.setMap(this);
+                    cur.setType();
                 } catch (NullPointerException e)
                 {
                 }
@@ -72,16 +73,19 @@ public class Map implements Serializable {
         for (MapObject object : objects)
         {
             object.setMap(this);
+            object.setType();
         }
 
         for (Player player : players)
         {
             player.setMap(this);
+            player.setType();
         }
 
         for (Enemy enemy : enemies)
         {
             enemy.setMap(this);
+            enemy.setType();
         }
 
         playerUpdateThread = Executors.newFixedThreadPool(1);

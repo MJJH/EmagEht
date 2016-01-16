@@ -447,4 +447,9 @@ public abstract class CharacterGame extends MapObject {
             }
         }
     }
+    
+    @Override
+    public void setType() {
+        
+    }
 }

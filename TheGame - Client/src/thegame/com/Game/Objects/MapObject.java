@@ -259,4 +259,6 @@ public abstract class MapObject implements Serializable {
     public abstract void createSkin();
 
     public abstract void update(MapObject update);
+    
+    public abstract void setType();
 }

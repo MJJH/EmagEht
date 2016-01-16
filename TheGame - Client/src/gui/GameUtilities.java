@@ -138,7 +138,7 @@ public class GameUtilities {
     public void drawMap() {
         // Clear sceen
         //g.clearRect(0, 0, s.getWidth(), s.getHeight());
-        g.setFill(Color.BLACK);
+        g.setFill(Color.SKYBLUE);
         g.fillRect(0, 0, s.getWidth(), s.getHeight());
         
         // Set player variables (So they can't change mid method)

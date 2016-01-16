@@ -15,6 +15,7 @@ import thegame.com.Game.Objects.MapObject;
 public class Item extends MapObject {
     private String name;
     private MapObject[] inventory;
+    private ItemType type;
 
     @Override
     public void createSkin() {
@@ -24,6 +25,11 @@ public class Item extends MapObject {
     @Override
     public void update(MapObject update) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+@Override
+    public void setType() {
+        this.type = ItemType.itemtypes.get(this.type.name);
     }
 
     

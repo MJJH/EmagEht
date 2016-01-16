@@ -28,6 +28,7 @@ public class Block extends MapObject {
         try {
             skin = type.getSkin();
         } catch (IOException ex) {
+            System.err.println(ex.getMessage());
         }
         
         /*
@@ -51,5 +52,10 @@ public class Block extends MapObject {
     {
         setX(update.getX());
         setY(update.getY());
+    }
+
+    @Override
+    public void setType() {
+        this.type = BlockType.blocktypes.get(this.type.name);
     }
 }
