@@ -687,4 +687,9 @@ public class Map implements Serializable {
     {
         return id;
     }
+
+    public void joinPlayer(Account account)
+    {
+        players.add(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
+    }
 }

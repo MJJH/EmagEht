@@ -24,6 +24,7 @@ public class Lobby implements Serializable{
     private ArrayList<Account> accounts;
     private ArrayList<Account> ready;
     private HashMap<Account, Character> chosenCharacters;
+    private boolean started;
 
     /**
      * This method creates a new gamelobby.
@@ -35,6 +36,7 @@ public class Lobby implements Serializable{
         accounts = new ArrayList();
         ready = new ArrayList<>();
         chosenCharacters = new HashMap<>();
+        started = false;
     }
 
     /**
@@ -149,11 +151,7 @@ public class Lobby implements Serializable{
 
     public boolean readyToStart()
     {
-        if(accounts.size() == config.minimumRequiredPlayers && ready.containsAll(accounts))
-        {
-            return true;
-        }
-        return false;
+        return started ||(accounts.size() == config.minimumRequiredPlayers && ready.containsAll(accounts));
     }
     
     public ArrayList<Character> getCharacters()
@@ -195,5 +193,15 @@ public class Lobby implements Serializable{
         accounts.remove(removeAccount);
         ready.remove(removeAccount);
         chosenCharacters.remove(removeAccount);
+    }
+
+    public void setGameStarted(boolean b)
+    {
+        started = b;
+    }
+    
+    public boolean getGameStarted()
+    {
+        return started;
     }
 }

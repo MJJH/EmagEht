@@ -86,12 +86,12 @@ public class GameServerToClientHandler {
         theGameServer.changeGames(1);
     }
 
-    public void joinPlayer(IGameServerToClientListener listener, Player listenerPlayer)
+    public void joinPlayer(Lobby lobby, Account account)
     {
-        playerListenersTable.put(listener, listenerPlayer);
+        gameTable.get(lobby).joinPlayer(account);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-        System.out.println(sdf.format(cal.getTime()) + " " + listenerPlayer.getName() + " has joined the game.");
+        System.out.println(sdf.format(cal.getTime()) + " " + account.getUsername() + " has joined the game.");
     }
 
     public void connectionLossPlayer(IGameServerToClientListener listener)
@@ -109,6 +109,21 @@ public class GameServerToClientHandler {
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
         System.out.println(sdf.format(cal.getTime()) + " Connection to " + removeAccount.getUsername() + " has been lost");
         theGameServer.changeConnectedPlayer(-1);
+    }
+    
+    public void leaveGame(IGameServerToClientListener listener)
+    {
+        connectionLossTable.add(listener);
+        Player removePlayer = playerListenersTable.get(listener);
+        Account removeAccount = removePlayer.getAccount();
+        removePlayer.getMap().removeMapObject(removePlayer);
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(removeAccount);
+        lobby.leaveLobby(removeAccount);
+        lobbyServerToClientHandler.getAccountsInLobbies().remove(removeAccount);
+        playerListenersTable.remove(listener);
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+        System.out.println(sdf.format(cal.getTime()) + " " + removeAccount.getUsername() + " has left the game");
     }
 
     public void sendGameChatMessage(Message message)

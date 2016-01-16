@@ -18,10 +18,12 @@ import thegame.com.Menu.Message;
  * @author laure
  */
 public interface IGameClientToServer extends Remote {
-    
+
     public Player getMe(IGameServerToClientListener listener, Account account) throws RemoteException;
 
-    public void leavePlayer(IGameServerToClientListener listener) throws RemoteException;
+    public void quitGame(IGameServerToClientListener listener) throws RemoteException;
+
+    public void leaveGame(IGameServerToClientListener listener) throws RemoteException;
 
     public Map getMap(Lobby lobby) throws RemoteException;
 

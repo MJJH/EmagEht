@@ -46,6 +46,7 @@ import thegame.shared.ILobbyClientToServer;
 public class LobbyFX {
 
     private Stage primaryStage;
+    private boolean started;
 
     // LOBBY
     private Registry lobbyServer;
@@ -72,14 +73,14 @@ public class LobbyFX {
         this.lobby = lobby;
         myAccount = account;
         this.primaryStage = primaryStage;
-        
+
         primaryStage.setOnCloseRequest(event ->
         {
             if (gameClientToServer != null && gameServerToClientListener != null)
             {
                 try
                 {
-                    gameClientToServer.leavePlayer(gameServerToClientListener);
+                    gameClientToServer.quitGame(gameServerToClientListener);
                 } catch (RemoteException ex)
                 {
                     System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
@@ -91,7 +92,7 @@ public class LobbyFX {
             }
             System.exit(0);
         });
-        
+
         StackPane root = new StackPane();
         Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
@@ -115,14 +116,14 @@ public class LobbyFX {
         //GUI CLICK
         checkReady();
     }
-    
+
     private boolean checkReady()
     {
         try
         {
             // if character selected etc. else return false
             lobbyServerToClientListener.setLobbyFX(this);
-            boolean returnValue =  lobbyClientToServer.checkReady(myAccount);
+            boolean returnValue = lobbyClientToServer.checkReady(myAccount);
             return returnValue;
         } catch (RemoteException ex)
         {
@@ -133,6 +134,10 @@ public class LobbyFX {
 
     public void connectToGame()
     {
+        if(started)
+        {
+            return;
+        }
         loadingScreen(primaryStage);
 
         Thread updateListenerThread = new Thread(() ->

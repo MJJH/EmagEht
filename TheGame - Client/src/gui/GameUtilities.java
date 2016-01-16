@@ -34,54 +34,57 @@ import thegame.config;
  * @author Martijn
  */
 public class GameUtilities {
+
     private GraphicsContext g;
     private Player me;
     private Map play;
     private Scene s;
-    
+
     private boolean inventory,
-                    chat,
-                    lines;
-    
+            chat,
+            lines,
+            menu;
+
     private String typing;
-    
+
     // Drawing
     private int startX,
-                startY;
-    
+            startY;
+
     private Color guiBackground;
     private Color guiFontColor;
     private Font guiFont;
-    
+
     private display.Image shield,
-                          head,
-                          body,
-                          greaves,
-                          heart;
-    
+            head,
+            body,
+            greaves,
+            heart;
+
     private Timer notificationTimer;
-    
+
     // Crafting
     private int selected;
     private int offset;
-                         
-    
-    public GameUtilities (Player me, Map playing, GraphicsContext g, Scene scene) {
+
+    public GameUtilities(Player me, Map playing, GraphicsContext g, Scene scene)
+    {
         this.me = me;
         this.g = g;
         play = playing;
         s = scene;
-        
+
         guiBackground = new Color(0.35f, 0.35f, 0.35f, 1f);
         guiFontColor = Color.WHITE;
         guiFont = Font.font("monospaced", 10);
-        
+
         notificationTimer = new Timer();
         typing = "~";
-        inventory = chat = lines = false;
+        inventory = chat = lines = menu = false;
         startX = startY = 0;
-        try {
-             Color[] t = new Color[]
+        try
+        {
+            Color[] t = new Color[]
             {
                 new Color(0, 0, 0, 0.3), new Color(0.2, 0.2, 0.2, 0.3), new Color(0.4, 0.4, 0.4, 0.3), new Color(0.6, 0.6, 0.6, 0.3), new Color(0.8, 0.8, 0.8, 0.3), new Color(1, 1, 1, 0.3)
             };
@@ -94,75 +97,103 @@ public class GameUtilities {
             body.recolour(t);
             greaves = new display.Image(Sets.sets.get("shorts"));
             greaves.recolour(t);
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
         }
     }
-    
-    public int[] getStartXstartY() {
-        return new int[] { startX, startY };
+
+    public int[] getStartXstartY()
+    {
+        return new int[]
+        {
+            startX, startY
+        };
     }
-    
+
     public void setChat(String chat)
     {
         typing = chat;
         this.chat = true;
     }
-    
+
     public void closeChat()
     {
         typing = "~";
         this.chat = false;
     }
-    
+
     public boolean isInventory()
     {
         return inventory;
     }
-    
-    public boolean toggleInventory() {
+
+    public boolean toggleInventory()
+    {
         return inventory = !inventory;
     }
-    
+
+    public boolean toggleMenu()
+    {
+        menu = !menu;
+        if (chat)
+        {
+            chat = false;
+        }
+        if (inventory)
+        {
+            inventory = false;
+        }
+        return menu;
+    }
+
+    public boolean isMenu()
+    {
+        return menu;
+    }
+
     public boolean isChat()
     {
         return chat;
     }
-    
-    public boolean toggleChat() {
-        if(chat && typing != "~") {
+
+    public boolean toggleChat()
+    {
+        if (chat && typing != "~")
+        {
             typing = "~";
         }
         return chat = !chat;
     }
-    
-    public void drawMap() {
+
+    public void drawMap()
+    {
         // Clear sceen
         //g.clearRect(0, 0, s.getWidth(), s.getHeight());
         g.setFill(Color.SKYBLUE);
         g.fillRect(0, 0, s.getWidth(), s.getHeight());
-        
+
         // Set player variables (So they can't change mid method)
         float pX = me.getX();
         float pY = me.getY();
         float pW = me.getW();
         float pH = me.getH();
-        
+
         // Get world size
         int playH = play.getHeight();
         int playW = play.getWidth();
-        
+
         // Get viewable blocks
         List<MapObject> view = getViewable();
-        
+
         // Calculate players offset
         float[] dydx = calculateDXDY(playW, playH, pX, pY, pW, pH);
         float dx = dydx[0];
         float dy = dydx[1];
-        
-        for (MapObject draw : view) 
+
+        for (MapObject draw : view)
         {
             float x, y;
-            if(draw == me) 
+            if (draw == me)
             {
                 x = pX;
                 y = pY;
@@ -171,38 +202,43 @@ public class GameUtilities {
                 x = draw.getX();
                 y = draw.getY();
             }
-            
+
             x = (x + startX) * config.block.val - dx;
             y = ((float) s.getHeight() - (y + startY) * config.block.val + dy);
-                  
+
             drawObject(draw, x, y);
-            
-            if(draw instanceof CharacterGame && !draw.equals(me)) 
+
+            if (draw instanceof CharacterGame && !draw.equals(me))
             {
                 drawHealth(draw, x, y);
             }
         }
-        
+
         drawInfo();
-        
-        if(inventory) 
+
+        if (inventory)
         {
             drawInventory();
             drawCrafting();
             drawArmor();
         }
-        
+
         if (inventory || me.getHolding() != null)
         {
             drawTool();
         }
-        
-        if(chat)
+
+        if (chat)
         {
             drawChat();
         }
-        
-        if(lines)
+
+        if (menu)
+        {
+            drawMenu();
+        }
+
+        if (lines)
         {
             g.beginPath();
             g.setLineWidth(1);
@@ -212,7 +248,7 @@ public class GameUtilities {
             g.closePath();
         }
     }
-    
+
     private void drawChat()
     {
         g.beginPath();
@@ -221,12 +257,12 @@ public class GameUtilities {
         g.setFont(guiFont);
         int RectHeight = 250;
         int RectWidth = 400;
-        g.fillRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);        
-        
+        g.fillRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
+
         g.setStroke(Color.BLACK);
         g.strokeRoundRect(9, (s.getHeight() - RectHeight) - 11, RectWidth + 2, RectHeight + 2, 5, 5);
         g.strokeRoundRect(11, (s.getHeight() - RectHeight) - 9, RectWidth - 2, RectHeight - 2, 5, 5);
-        
+
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(10, (s.getHeight() - RectHeight) - 10, RectWidth, RectHeight, 5, 5);
 
@@ -250,11 +286,11 @@ public class GameUtilities {
             g.fillRoundRect(12, (s.getHeight() - 29), RectWidth - 4, 17, 5, 5);
             g.strokeText(typing, 15, s.getHeight() - 17);
             g.setStroke(Color.BLACK);
-            g.strokeLine(11, (s.getHeight() - 29), RectWidth+9, (s.getHeight() - 29));
+            g.strokeLine(11, (s.getHeight() - 29), RectWidth + 9, (s.getHeight() - 29));
             g.setStroke(Color.WHITE);
-            g.strokeLine(11, (s.getHeight() - 28), RectWidth+9, (s.getHeight() - 28));
+            g.strokeLine(11, (s.getHeight() - 28), RectWidth + 9, (s.getHeight() - 28));
             g.closePath();
-        } else 
+        } else
         {
             notificationTimer.schedule(new TimerTask() {
                 @Override
@@ -266,17 +302,17 @@ public class GameUtilities {
         }
         g.closePath();
     }
-    
+
     private void drawInfo()
     {
         g.beginPath();
         g.setFill(guiBackground);
         g.fillRoundRect(s.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
-        
+
         g.setStroke(Color.BLACK);
         g.strokeRoundRect(s.getWidth() - 131, 9, 122f, 62.0f, 5, 5);
         g.strokeRoundRect(s.getWidth() - 129, 11, 118f, 58.0f, 5, 5);
-        
+
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(s.getWidth() - 130, 10, 120f, 60.0f, 5, 5);
 
@@ -305,17 +341,17 @@ public class GameUtilities {
         g.fillRect(s.getWidth() - 120, 51, breedte, 11.0f);
         g.closePath();
     }
-    
+
     private void drawTool()
     {
         g.beginPath();
         g.setFill(guiBackground);
-        g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);        
-        
+        g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);
+
         g.setStroke(Color.BLACK);
         g.strokeRoundRect(s.getWidth() - 51, s.getHeight() - 51, 42f, 42.0f, 5, 5);
         g.strokeRoundRect(s.getWidth() - 49, s.getHeight() - 49, 38f, 38.0f, 5, 5);
-        
+
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);
 
@@ -334,22 +370,22 @@ public class GameUtilities {
         }
         g.closePath();
     }
-    
+
     private void drawArmor()
     {
         g.beginPath();
         for (int y = 0; y < 4; y++)
         {
             g.setFill(guiBackground);
-            g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);            
-            
+            g.fillRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
+
             g.setStroke(Color.BLACK);
             g.strokeRoundRect(s.getWidth() - 51, s.getHeight() - 1 - 100 - 50 * y, 42f, 42.0f, 5, 5);
             g.strokeRoundRect(s.getWidth() - 49, s.getHeight() + 1 - 100 - 50 * y, 38f, 38.0f, 5, 5);
-            
+
             g.setStroke(Color.WHITE);
             g.strokeRoundRect(s.getWidth() - 50, s.getHeight() - 100 - 50 * y, 40, 40, 5, 5);
-            
+
             display.Image i;
 
             switch (y)
@@ -402,8 +438,8 @@ public class GameUtilities {
         }
         g.closePath();
     }
-    
-    private void drawInventory() 
+
+    private void drawInventory()
     {
         g.beginPath();
         for (int y = 0; y < 3; y++)
@@ -411,12 +447,12 @@ public class GameUtilities {
             for (int x = 0; x < 10; x++)
             {
                 g.setFill(guiBackground);
-                g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);                
-                
+                g.fillRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
+
                 g.setStroke(Color.BLACK);
                 g.strokeRoundRect(-1 + 10 + 50 * x, -1 + 10 + 50 * y, 42, 42, 5, 5);
                 g.strokeRoundRect(1 + 10 + 50 * x, 1 + 10 + 50 * y, 38, 38, 5, 5);
-                
+
                 g.setStroke(Color.WHITE);
                 g.strokeRoundRect(10 + 50 * x, 10 + 50 * y, 40, 40, 5, 5);
 
@@ -446,7 +482,7 @@ public class GameUtilities {
         }
         g.closePath();
     }
-    
+
     private void drawHealth(MapObject mo, float x, float y)
     {
         g.beginPath();
@@ -462,8 +498,8 @@ public class GameUtilities {
         g.fillRect(x, y - 9, breedte, 3.0f);
         g.closePath();
     }
-    
-    private void drawObject(MapObject mo, float x, float y) 
+
+    private void drawObject(MapObject mo, float x, float y)
     {
         g.beginPath();
         Skin s = mo.getSkin();
@@ -475,8 +511,8 @@ public class GameUtilities {
         {
             float divX = ((mo.getW() * config.block.val) - s.getWidth()) / 2;
             float divY = ((mo.getH() * config.block.val) - s.getHeight());
-        
-            if(s instanceof display.Image || ((Animation) s).getFrame() == null)
+
+            if (s instanceof display.Image || ((Animation) s).getFrame() == null)
             {
                 g.drawImage(s.show(), x + divX, y + divY, s.getWidth(), s.getHeight());
             } else
@@ -487,8 +523,8 @@ public class GameUtilities {
         }
         g.closePath();
     }
-    
-    private List<MapObject> getViewable() 
+
+    private List<MapObject> getViewable()
     {
         // Get amount of blocks that need te be loaded 
         int blockHorizontal = (int) Math.ceil(s.getWidth() / config.block.val) + 4;
@@ -545,13 +581,13 @@ public class GameUtilities {
         // Ask the map for the blocks and objects that should be drawn in this area.
         return play.getBlocksAndObjects(startX, startY, endX, endY);
     }
-    
-    public float[] calculateDXDY(int w, int h, float px, float py, float pw, float ph) 
+
+    public float[] calculateDXDY(int w, int h, float px, float py, float pw, float ph)
     {
         // Get amount of blocks that fit on screen
         int blockHorizontal = (int) Math.ceil(s.getWidth() / config.block.val) + 4;
         int blockVertical = (int) Math.ceil(s.getHeight() / config.block.val) + 4;
-        
+
         // preset Delta values
         float dx = 0;
         float dy = 0;
@@ -592,44 +628,54 @@ public class GameUtilities {
             // Dit is het goede moment. Hier moet iets gebeuren waardoor de aller laatste blok helemaal rechts wordt getekent en niet meer beweegt
             dy = (h - blockVertical + 2) * config.block.val * 2;
         }
-        
-        
-        if(w < blockHorizontal - 4) {
+
+        if (w < blockHorizontal - 4)
+        {
             dx = (float) (s.getWidth() / 2 - ((w / 2) * config.block.val)) * -1;
         }
-        if(h < blockVertical - 4) {
+        if (h < blockVertical - 4)
+        {
             dy = (float) (s.getHeight() / 2 - ((h / 2) * config.block.val)) * -1;
         }
-        
-        return new float[] { dx, dy };
+
+        return new float[]
+        {
+            dx, dy
+        };
     }
 
-    private void drawCrafting() {
+    private void drawCrafting()
+    {
         g.beginPath();
-        
+
         // Get craftings
         //List<Crafting> toCraft = me.getCrafting();
         List<Crafting> toCraft = new ArrayList<>(5);
-        
+
         int maxX = toCraft.size();
-        if(maxX > 10)
+        if (maxX > 10)
+        {
             maxX = 10;
-        
+        }
+
         for (int x = 0; x < maxX; x++)
         {
             g.setFill(guiBackground);
-            g.fillRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);                
+            g.fillRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);
 
             g.setStroke(Color.BLACK);
             g.strokeRoundRect(-1 + 10 + 50 * x, -1 + 200, 42, 42, 5, 5);
             g.strokeRoundRect(1 + 10 + 50 * x, 1 + 200, 38, 38, 5, 5);
 
-            if(x == selected)
+            if (x == selected)
+            {
                 g.setStroke(Color.BLACK);
-            else
+            } else
+            {
                 g.setStroke(Color.WHITE);
+            }
             g.strokeRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);
-            
+
             Skin i = toCraft.get(x + offset).crafting.skin;
             if (i != null)
             {
@@ -640,13 +686,13 @@ public class GameUtilities {
                 g.fillRect(10 + 50 * x + 10, 200 + 10, 20, 20);
             }
         }
-        
-        if(selected + offset - 1 >= toCraft.size() && toCraft.get(selected + offset) != null && toCraft.get(selected + offset).recources != null)
+
+        if (selected + offset - 1 >= toCraft.size() && toCraft.get(selected + offset) != null && toCraft.get(selected + offset).recources != null)
         {
             for (int y = 0; y < toCraft.get(selected + offset).recources.size(); y++)
             {
                 g.setFill(guiBackground);
-                g.fillRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);                
+                g.fillRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);
 
                 g.setStroke(Color.BLACK);
                 g.strokeRoundRect(-1 + 10 + 50 * (selected), -1 + 245 + y * 35, 32, 32, 5, 5);
@@ -654,7 +700,7 @@ public class GameUtilities {
 
                 g.setStroke(Color.BLACK);
                 g.strokeRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);
-                
+
                 Skin i = ((ObjectType) toCraft.get(selected + offset).recources.keySet().toArray()[y]).skin;
                 if (i != null)
                 {
@@ -674,8 +720,12 @@ public class GameUtilities {
                 }
             }
         }
-        
-        
+
         g.closePath();
+    }
+
+    private void drawMenu()
+    {
+        // MENU GUI
     }
 }

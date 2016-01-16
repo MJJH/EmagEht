@@ -55,9 +55,15 @@ public class GameClientToServerHandler implements IGameClientToServer {
     }
     
     @Override
-    public void leavePlayer(IGameServerToClientListener listener) throws RemoteException
+    public void quitGame(IGameServerToClientListener listener) throws RemoteException
     {
         gameServerToClientHandler.connectionLossPlayer(listener);
+    }
+    
+    @Override
+    public void leaveGame(IGameServerToClientListener listener) throws RemoteException
+    {
+        gameServerToClientHandler.leaveGame(listener);
     }
 
     @Override

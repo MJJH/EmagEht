@@ -85,9 +85,15 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
     {
         Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(myAccount);
         boolean returnValue = lobby.setReady(myAccount);
-        if (returnValue && lobby.readyToStart())
+        if (returnValue && lobby.readyToStart() && !lobby.getGameStarted())
         {
+            lobby.setGameStarted(true);
             gameServerToClientHandler.startNewGame(lobby);
+        }
+        else if(returnValue && lobby.getGameStarted())
+        {
+            gameServerToClientHandler.joinPlayer(lobby, myAccount);
+            lobbyServerToClientHandler.requestConnectToGame(lobby);
         }
         return returnValue;
     }

@@ -21,6 +21,7 @@ public class Lobby implements Serializable{
     private ArrayList<Account> accounts;
     private ArrayList<Account> ready;
     private HashMap<Account, thegame.com.Game.Objects.Characters.Character> chosenCharacters;
+    private boolean started;
 
     /**
      * This method creates a new gamelobby.
