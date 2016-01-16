@@ -62,6 +62,6 @@ public class Particle extends MapObject {
 
     @Override
     public void setType() {
-        
+        object.setType();
     }
 }

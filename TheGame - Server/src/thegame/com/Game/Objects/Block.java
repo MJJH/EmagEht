@@ -81,14 +81,14 @@ public class Block extends MapObject {
                         if (block.type == type)
                         {
                             particle.addObjectCount();
-                            playing.addMapObject(new Background(BlockType.blocktypes.get("CaveBackground"), xPosition, yPosition, playing));
+                            playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
                             return false;
                         }
                     }
                 }
 
                 playing.addMapObject(new Particle(this, xPosition, yPosition, playing));
-                playing.addMapObject(new Background(BlockType.blocktypes.get("CaveBackground"), xPosition, yPosition, playing));
+                playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
                 return false;
             }
             interaction = false;
