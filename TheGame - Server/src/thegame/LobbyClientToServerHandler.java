@@ -21,16 +21,18 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
     private transient LobbyServerToClientHandler lobbyServerToClientHandler;
     private transient GameServerToClientHandler gameServerToClientHandler;
     private transient GameClientToServerHandler gameClientToServerHandler;
+    private transient TheGameServer theGameServer;
 
     public LobbyClientToServerHandler()
     {
     }
 
-    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
+    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler, TheGameServer theGameServer)
     {
         this.lobbyServerToClientHandler = lobbyServerToClientHandler;
         this.gameServerToClientHandler = gameServerToClientHandler;
         this.gameClientToServerHandler = gameClientToServerHandler;
+        this.theGameServer = theGameServer;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
             return false;
         }
         lobbyServerToClientHandler.getOnlinePlayers().put(account, lobbyServerToClientListener);
+        theGameServer.changeConnectedPlayer(1);
         return true;
     }
 
@@ -55,6 +58,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
         newLobby.joinLobby(account);
         lobbyServerToClientHandler.getLobbies().add(newLobby);
         lobbyServerToClientHandler.getAccountsInLobbies().put(account, newLobby);
+        theGameServer.changeLobbies(1);
         return newLobby;
     }
 

@@ -24,6 +24,7 @@ public class LobbyServerToClientHandler {
     private transient LobbyClientToServerHandler lobbyClientToServerHandler;
     private transient GameServerToClientHandler gameServerToClientHandler;
     private transient GameClientToServerHandler gameClientToServerHandler;
+    private transient TheGameServer theGameServer;
 
     private final transient ArrayList<Lobby> lobbies;
     private final transient HashMap<Account, ILobbyServerToClientListener> onlinePlayers;
@@ -36,11 +37,12 @@ public class LobbyServerToClientHandler {
         this.accountsInLobbies = new HashMap<>();
     }
 
-    public void registerComponents(LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
+    public void registerComponents(LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler, TheGameServer theGameServer)
     {
         this.lobbyClientToServerHandler = lobbyClientToServerHandler;
         this.gameServerToClientHandler = gameServerToClientHandler;
         this.gameClientToServerHandler = gameClientToServerHandler;
+        this.theGameServer = theGameServer;
     }
     
     public ArrayList<Lobby> getLobbies()

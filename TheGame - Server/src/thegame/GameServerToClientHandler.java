@@ -33,6 +33,7 @@ public class GameServerToClientHandler {
     private transient LobbyServerToClientHandler lobbyServerToClientHandler;
     private transient LobbyClientToServerHandler lobbyClientToServerHandler;
     private transient GameClientToServerHandler gameClientToServerHandler;
+    private transient TheGameServer theGameServer;
 
     private transient final ConcurrentHashMap<Lobby, Map> gameTable;
     private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
@@ -50,11 +51,12 @@ public class GameServerToClientHandler {
         threadPoolSend = Executors.newCachedThreadPool();
     }
 
-    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameClientToServerHandler gameClientToServerHandler)
+    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameClientToServerHandler gameClientToServerHandler, TheGameServer theGameServer)
     {
         this.lobbyServerToClientHandler = lobbyServerToClientHandler;
         this.lobbyClientToServerHandler = lobbyClientToServerHandler;
         this.gameClientToServerHandler = gameClientToServerHandler;
+        this.theGameServer = theGameServer;
     }
 
     public ConcurrentHashMap<Lobby, Map> getGameTable()
@@ -81,6 +83,7 @@ public class GameServerToClientHandler {
                 game.update();
             }
         }, 0, 1000 / 60);
+        theGameServer.changeGames(1);
     }
 
     public void joinPlayer(IGameServerToClientListener listener, Player listenerPlayer)
@@ -105,6 +108,7 @@ public class GameServerToClientHandler {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
         System.out.println(sdf.format(cal.getTime()) + " Connection to " + removeAccount.getUsername() + " has been lost");
+        theGameServer.changeConnectedPlayer(-1);
     }
 
     public void sendGameChatMessage(Message message)

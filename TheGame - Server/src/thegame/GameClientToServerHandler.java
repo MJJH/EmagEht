@@ -24,16 +24,18 @@ public class GameClientToServerHandler implements IGameClientToServer {
     private transient LobbyServerToClientHandler lobbyServerToClientHandler;
     private transient LobbyClientToServerHandler lobbyClientToServerHandler;
     private transient GameServerToClientHandler gameServerToClientHandler;
+    private transient TheGameServer theGameServer;
 
     public GameClientToServerHandler()
     {
     }
     
-    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler)
+    public void registerComponents(LobbyServerToClientHandler lobbyServerToClientHandler, LobbyClientToServerHandler lobbyClientToServerHandler, GameServerToClientHandler gameServerToClientHandler, TheGameServer theGameServer)
     {
         this.lobbyServerToClientHandler = lobbyServerToClientHandler;
         this.lobbyClientToServerHandler = lobbyClientToServerHandler;
         this.gameServerToClientHandler = gameServerToClientHandler;
+        this.theGameServer = theGameServer;
     }
     
     @Override
