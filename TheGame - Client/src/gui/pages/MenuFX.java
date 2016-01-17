@@ -24,6 +24,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -65,6 +66,22 @@ public class MenuFX {
         {
             new LoginFX(primaryStage);
         }
+
+        primaryStage.setOnCloseRequest(event ->
+        {
+            if (lobbyServer != null && lobbyClientToServer != null)
+            {
+                try
+                {
+                    lobbyClientToServer.signOut(account);
+                } catch (RemoteException ex)
+                {
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                }
+            }
+            System.exit(0);
+        });
+
         primaryStage.setTitle("Menu");
         primaryStage.setScene(createMenu());
         primaryStage.show();
@@ -102,24 +119,8 @@ public class MenuFX {
         Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
-
-        MenuItem itemExit = new MenuItem("EXIT");
-        itemExit.setOnMouseClicked(event -> System.exit((0)));
-
-        MenuItem startMultiPlayerNew = new MenuItem("MULTIPLAYER - NEW");
-        startMultiPlayerNew.setOnMouseClicked(event ->
-        {
-            try
-            {
-                Lobby lobby = lobbyClientToServer.findNewLobby(account);
-                new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
-            } catch (RemoteException ex)
-            {
-                Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-
-        MenuItem startMultiPlayerFind = new MenuItem("MULTIPLAYER - JOIN");
+        
+        MenuItem startMultiPlayerFind = new MenuItem("MULTIPLAYER - QUICK");
         startMultiPlayerFind.setOnMouseClicked(event ->
         {
             try
@@ -135,6 +136,19 @@ public class MenuFX {
             }
         });
 
+        MenuItem startMultiPlayerNew = new MenuItem("MULTIPLAYER - NEW");
+        startMultiPlayerNew.setOnMouseClicked(event ->
+        {
+            try
+            {
+                Lobby lobby = lobbyClientToServer.findNewLobby(account);
+                new LobbyFX(primaryStage, lobby, account, lobbyServer, lobbyClientToServer, lobbyServerToClientListener);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(MenuFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
         MenuItem startTut = new MenuItem("TUTORIAL [WIP]");
         startTut.setOnMouseClicked(event ->
         {
@@ -142,7 +156,7 @@ public class MenuFX {
         }
         );
 
-        MenuItem CustomizeCharacter = new MenuItem("Customize Character [WIP]");
+        MenuItem CustomizeCharacter = new MenuItem("CUSTOMIZE CHARACTER [WIP]");
         CustomizeCharacter.setOnMouseClicked(event ->
         {
             JavaFXColorPicker p = new JavaFXColorPicker();
@@ -156,12 +170,33 @@ public class MenuFX {
         }
         );
 
+        MenuItem logOut = new MenuItem("LOG OUT");
+        logOut.setOnMouseClicked(event ->
+        {
+            if (lobbyServer != null && lobbyClientToServer != null)
+            {
+                try
+                {
+                    lobbyClientToServer.signOut(account);
+                } catch (RemoteException ex)
+                {
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                }
+            }
+            new LoginFX(primaryStage);
+        }
+        );
+
+        MenuItem itemExit = new MenuItem("EXIT");
+        itemExit.setOnMouseClicked(event -> System.exit((0)));
+
         MenuBox menu = new MenuBox(
-                startMultiPlayerNew,
                 startMultiPlayerFind,
+                startMultiPlayerNew,
                 startTut,
                 CustomizeCharacter,
                 new MenuItem("OPTIONS [soon]"),
+                logOut,
                 itemExit);
         menu.setTranslateX(100);
         menu.setTranslateY(300);

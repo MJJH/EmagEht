@@ -17,6 +17,8 @@ import thegame.com.Menu.Lobby;
 public interface ILobbyClientToServer extends Remote {
 
     public boolean signIn(Account account, ILobbyServerToClientListener lobbyServerToClientListener) throws RemoteException;
+    
+    public void signOut(Account account) throws RemoteException;
 
     public Lobby findNewLobby(Account account) throws RemoteException;
 

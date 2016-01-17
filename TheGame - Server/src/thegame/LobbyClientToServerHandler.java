@@ -46,6 +46,13 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
         theGameServer.changeConnectedPlayer(1);
         return true;
     }
+    
+    @Override
+    public void signOut(Account account)
+    {
+        lobbyServerToClientHandler.getOnlinePlayers().remove(account);
+        theGameServer.changeConnectedPlayer(-1);
+    }
 
     @Override
     public Lobby findNewLobby(Account account) throws RemoteException
@@ -76,6 +83,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
                     return lobby;
                 }
             }
+            return findNewLobby(account);
         }
         return null;
     }
