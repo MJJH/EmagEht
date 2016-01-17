@@ -341,6 +341,15 @@ public class GameUtilities {
         g.fillRect(s.getWidth() - 120, 51, breedte, 11.0f);
         g.closePath();
     }
+    
+    private void drawMenu()
+    {
+        // MENU GUI
+        g.beginPath();
+        g.setFill(guiBackground.deriveColor(0, 0, 0, 0.5));
+        g.fillRect(0, 0, s.getWidth(), s.getHeight());
+        g.closePath();
+    }
 
     private void drawTool()
     {
@@ -722,10 +731,5 @@ public class GameUtilities {
         }
 
         g.closePath();
-    }
-
-    private void drawMenu()
-    {
-        // MENU GUI
     }
 }
