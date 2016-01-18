@@ -112,4 +112,9 @@ public class Particle extends MapObject {
         return pickedUp;
     }
 
+    @Override
+    public ObjectType getType() {
+        return object.getType();
+    }
+
 }

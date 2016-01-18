@@ -20,7 +20,7 @@ public abstract class CharacterGame extends MapObject {
     protected final String name;
     protected float solid;
 
-    protected Tool holding;
+    protected List<MapObject> holding;
 
     protected sides direction;
 
@@ -180,35 +180,36 @@ public abstract class CharacterGame extends MapObject {
         return null;
     }
 
-    /**
-     * This method let the in game character equip an armor piece.
-     *
-     * @param armorAdd, the armor that you want to wear
-     */
-    public void equipArmor(int spot)
+   public void equipArmor(int spot)
     {
-        if (!backpack[spot].isEmpty() && backpack[spot].get(0) instanceof Armor)
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
+            return;
+        
+        Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
+        
+        if (armor.get(add.getArmorType().bodypart) == null)
         {
-            Armor a = (Armor) backpack[spot];
-            Armor old = armor.get(a.getArmorType().bodypart);
-
-            backpack[spot].clear();
-            armor.put(a.getArmorType().bodypart, a);
-            addToBackpack(old);
+            armor.put(add.getArmorType().bodypart, add);
+        } else
+        {
+            if (addToBackpack(armor.get(add.getArmorType().bodypart)))
+            {
+                armor.put(add.getArmorType().bodypart, add);
+            }
         }
     }
 
     /**
      * This method lets the in game character unequip an armor piece.
      *
-     * @param armorDel
+     * @param partToUnequip
      */
-    public void unequipArmor(Armor armorDel)
+    public void unequipArmor(ArmorType.bodyPart partToUnequip)
     {
-        if (armor.containsValue(armorDel))
+        if (armor.get(partToUnequip) != null)
         {
-            armor.remove(armorDel.getArmorType(), armorDel);
-            addToBackpack(armorDel);
+            addToBackpack(armor.get(partToUnequip));
+            armor.put(partToUnequip, null);
         }
     }
 
@@ -217,24 +218,97 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    public void equipTool(Tool toolAdd)
+    private void equipTool(int spot)
     {
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return;
+        
+        List<MapObject> add = removeFromBackpack(spot);
+        
         if (holding == null)
         {
-            holding = toolAdd;
-        } else if (!holding.equals(toolAdd))
+            holding = add;
+        } else
         {
-            addToBackpack(holding);
-            holding = toolAdd;
+            for(MapObject mo : holding){
+                addToBackpack(mo);
+            }
+            holding = add;
         }
     }
+    
+    protected void equipTool(Tool t) {
+        holding = new ArrayList<MapObject>() {{ this.add(t); }};
+    }
+    
+    protected void equipArmor(Armor a) {
+        armor.put(a.getArmorType().bodypart, a);
+    } 
 
     /**
      * This method lets the in game character unequip a tool.
      */
     public void unequipTool()
     {
-        holding = null;
+        if (holding != null)
+        {
+            for(MapObject mo : holding){
+                addToBackpack(mo);
+            }
+            holding = null;
+        }
+
+    }
+    
+    public List<MapObject> removeFromBackpack(ObjectType ot, int amount)
+    {
+        List<MapObject> removed = new ArrayList<>();
+        for (int i = 0; i < backpack.length; i++)
+        {
+            List<MapObject> l = backpack[i];
+            if (l == null)
+            {
+                continue;
+            }
+
+            if (!l.isEmpty() && l.get(0).getType() == ot)
+            {
+                while(amount > 0 && l.size() > 0) {
+                    removed.add(l.remove(l.size() - 1));
+                }
+            }
+            if (amount <= 0)
+                return removed;
+        }
+        return removed;
+    }
+    
+    public List<MapObject> removeFromBackpack(int spot, int amount)
+    {
+        List<MapObject> removed = new ArrayList<>();
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return removed;
+        
+        List<MapObject> l = backpack[spot];
+
+        if (!l.isEmpty())
+        {
+            while(amount > 0 && l.size() > 0) {
+                removed.add(l.remove(l.size() - 1));
+            }
+        }
+
+        return removed;
+    }
+    
+    public List<MapObject> removeFromBackpack(int spot) {
+        List<MapObject> removed = new ArrayList<>();
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return removed;
+        
+        removed = backpack[spot];
+        backpack[spot].clear();
+        return removed;
     }
 
     /**
@@ -300,7 +374,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return tool
      */
-    public MapObject getHolding()
+    public List<MapObject> getHolding()
     {
         return holding;
     }
@@ -381,14 +455,14 @@ public abstract class CharacterGame extends MapObject {
 
     public boolean useTool(float x, float y)
     {
-        if (holding instanceof Tool)
+        if (holding.get(0) instanceof Tool)
         {
-            Tool h = (Tool) holding;
+            Tool h = (Tool) holding.get(0);
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
-                if (click != null && holding != null && holding.type.range >= distance(click))
+                if (click != null && holding != null && h.type.range >= distance(click))
                 {
                     if (!(click instanceof Block))
                     {
@@ -398,21 +472,9 @@ public abstract class CharacterGame extends MapObject {
                         }
                     }
 
-                    click.hit(holding, direction);
+                    click.hit(h, direction);
                     return true;
                 }
-                /*
-                 else if (click == null)
-                 {
-                 Block block = new Block(BlockType.Dirt, Math.round(x), Math.round(y), 1, playing);
-                 if(holding.type.range >= distance(block))
-                 {
-                 playing.addBlock(block, Math.round(x), Math.round(y));
-                 return true;
-                 }
-                 return false;
-                 }
-                 */
             }
         }
         return false;
@@ -459,5 +521,10 @@ public abstract class CharacterGame extends MapObject {
         {
             playing.addToPlayerUpdate((Player) this);
         }
+    }
+    
+    @Override
+    public ObjectType getType() {
+        return null;
     }
 }

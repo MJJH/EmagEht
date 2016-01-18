@@ -45,4 +45,9 @@ public class Armor extends MapObject {
     public void setType() {
         this.type = ArmorType.armortypes.get(this.type.name);
     }
+
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
 }

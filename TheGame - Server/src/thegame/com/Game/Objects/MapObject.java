@@ -46,6 +46,7 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     {
         sY = f;
     }
+    public abstract ObjectType getType();
 
     public enum sides implements Serializable {
 

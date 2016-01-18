@@ -15,11 +15,13 @@ import thegame.com.Game.Objects.MapObject;
 public class Item extends MapObject {
     private String name;
     private MapObject[] inventory;
+    private ItemType type;
 
     public Item(ItemType type, Map playing) {
         super(1, 1, playing, true, true);
         this.inventory = new MapObject[0];
         this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -30,6 +32,11 @@ public class Item extends MapObject {
     @Override
     public void hit(Tool used, sides hitDirection) {
         // Break
+    }
+
+    @Override
+    public ObjectType getType() {
+        return type;
     }
     
 }

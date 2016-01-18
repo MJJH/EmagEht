@@ -64,4 +64,9 @@ public class Particle extends MapObject {
     public void setType() {
         object.setType();
     }
+
+    @Override
+    public ObjectType getType() {
+        return object.getType();
+    }
 }

@@ -223,7 +223,7 @@ public class GameUtilities {
             drawArmor();
         }
 
-        if (inventory || me.getHolding() != null)
+        if (inventory || me.getHolding() != null && me.getHolding().size() > 0)
         {
             drawTool();
         }
@@ -364,9 +364,9 @@ public class GameUtilities {
         g.setStroke(Color.WHITE);
         g.strokeRoundRect(s.getWidth() - 50, s.getHeight() - 50, 40, 40, 5, 5);
 
-        if (me.getHolding() != null)
+        if (me.getHolding() != null && me.getHolding().size() > 0)
         {
-            display.Skin i = me.getHolding().getSkin();
+            display.Skin i = me.getHolding().get(0).getSkin();
             g.setFill(Color.RED);
             if (i == null)
             {
@@ -375,6 +375,13 @@ public class GameUtilities {
             } else
             {
                 g.drawImage(i.show(), s.getWidth() - 50 + (40 - i.getWidth()) / 2, s.getHeight() - 50 + (40 - i.getHeight()) / 2);
+            }
+            if (me.getHolding().size() > 1)
+            {
+                g.setFill(guiFontColor);
+                g.setFont(guiFont);
+                String t = me.getHolding().size() + "";
+                g.fillText(t, s.getWidth() - 50 + 40 - ((t.length() - 1) * 5) - 8, s.getHeight() - 50 + 38);
             }
         }
         g.closePath();

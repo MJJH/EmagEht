@@ -17,7 +17,7 @@ public abstract class CharacterGame extends MapObject {
     protected int hp;
     protected String name;
     protected int maxHP;
-    protected MapObject holding;
+    protected List<MapObject> holding;
     protected long used;
 
     protected sides direction;
@@ -135,10 +135,9 @@ public abstract class CharacterGame extends MapObject {
         }
     }
 
-    public void removeFromBackpack(MapObject object)
+    public List<MapObject> removeFromBackpack(ObjectType ot, int amount)
     {
-        int spot = -1;
-
+        List<MapObject> removed = new ArrayList<>();
         for (int i = 0; i < backpack.length; i++)
         {
             List<MapObject> l = backpack[i];
@@ -147,19 +146,44 @@ public abstract class CharacterGame extends MapObject {
                 continue;
             }
 
-            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
+            if (!l.isEmpty() && l.get(0).getType() == ot)
             {
-                if (l.contains(object))
-                {
-                    spot = i;
+                while(amount > 0 && l.size() > 0) {
+                    removed.add(l.remove(l.size() - 1));
                 }
+            }
+            if (amount <= 0)
+                return removed;
+        }
+        return removed;
+    }
+    
+    public List<MapObject> removeFromBackpack(int spot, int amount)
+    {
+        List<MapObject> removed = new ArrayList<>();
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return removed;
+        
+        List<MapObject> l = backpack[spot];
+
+        if (!l.isEmpty())
+        {
+            while(amount > 0 && l.size() > 0) {
+                removed.add(l.remove(l.size() - 1));
             }
         }
 
-        if (spot > -1)
-        {
-            backpack[spot].clear();
-        }
+        return removed;
+    }
+    
+    public List<MapObject> removeFromBackpack(int spot) {
+        List<MapObject> removed = new ArrayList<>();
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return removed;
+        
+        removed = backpack[spot];
+        backpack[spot].clear();
+        return removed;
     }
 
     /**
@@ -179,41 +203,23 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param armorAdd, the armor that you want to wear
      */
-    public void equipArmor(Armor armorAdd)
+    public void equipArmor(int spot)
     {
-        if (armor.get(armorAdd.getArmorType().bodypart) == null)
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
+            return;
+        
+        Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
+        
+        if (armor.get(add.getArmorType().bodypart) == null)
         {
-            armor.put(armorAdd.getArmorType().bodypart, armorAdd);
-            removeFromBackpack(armorAdd);
+            armor.put(add.getArmorType().bodypart, add);
         } else
         {
-            if (addToBackpack(armor.get(armorAdd.getArmorType().bodypart)))
+            if (addToBackpack(armor.get(add.getArmorType().bodypart)))
             {
-                removeFromBackpack(armorAdd);
-                armor.put(armorAdd.getArmorType().bodypart, armorAdd);
+                armor.put(add.getArmorType().bodypart, add);
             }
         }
-
-        /*if (this instanceof Player)
-         {
-         Player p = (Player) this;
-         Image i = (Image) p.skins.get("standLeft");
-         Image i2 = (Image) p.skins.get("standRight");
-
-         for(Armor a : armor.values()) {
-         for (iTexture it : ((display.Image) a.getSkin()).getParts().keySet())
-         {
-         try
-         {
-         i.addTexture(it);
-         i.flipHorizontal((Parts) it);
-         i2.addTexture(it);
-         } catch (IOException ex)
-         {
-         }
-         }
-         }
-         }*/
     }
 
     /**
@@ -235,39 +241,23 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    private void equipTool(MapObject toolAdd)
+    private void equipTool(int spot)
     {
+        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+            return;
+        
+        List<MapObject> add = removeFromBackpack(spot);
+        
         if (holding == null)
         {
-            removeFromBackpack(toolAdd);
-            holding = toolAdd;
-        } else if (!holding.equals(toolAdd))
+            holding = add;
+        } else
         {
-            if (addToBackpack(holding))
-            {
-                removeFromBackpack(toolAdd);
-                holding = toolAdd;
+            for(MapObject mo : holding){
+                addToBackpack(mo);
             }
+            holding = add;
         }
-
-        /* if (this instanceof Player)
-         {
-         Player p = (Player) this;
-         Image i = (Image) p.skins.get("standLeft");
-         Image i2 = (Image) p.skins.get("standRight");
-
-         for (iTexture it : ((display.Image) toolAdd.getSkin()).getParts().keySet())
-         {
-         try
-         {
-         i.addTexture(it);
-         i.flipHorizontal((Parts) it);
-         i2.addTexture(it);
-         } catch (IOException ex)
-         {
-         }
-         }
-         }*/
     }
 
     /**
@@ -277,20 +267,9 @@ public abstract class CharacterGame extends MapObject {
     {
         if (holding != null)
         {
-            addToBackpack(holding);
-
-            /*if (this instanceof Player)
-             {
-             Player p = (Player) this;
-             Image i = (Image) p.skins.get("standLeft");
-             Image i2 = (Image) p.skins.get("standRight");
-
-             for (iTexture it : ((display.Image) holding.getSkin()).getParts().keySet())
-             {
-             i.removeTexture(it);
-             i2.removeTexture(it);
-             }
-             }*/
+            for(MapObject mo : holding){
+                addToBackpack(mo);
+            }
             holding = null;
         }
 
@@ -366,7 +345,7 @@ public abstract class CharacterGame extends MapObject {
      *
      * @return tool
      */
-    public MapObject getHolding()
+    public List<MapObject> getHolding()
     {
         return holding;
     }
@@ -440,10 +419,10 @@ public abstract class CharacterGame extends MapObject {
             List<MapObject> content = backpack[spot];
             if (content.get(0) instanceof Armor)
             {
-                equipArmor((Armor) content.get(0));
+                equipArmor(spot);
             } else
             {
-                equipTool(content.get(0));
+                equipTool(spot);
             }
         }
     }
@@ -451,5 +430,10 @@ public abstract class CharacterGame extends MapObject {
     @Override
     public void setType() {
         
+    }
+    
+    @Override
+    public ObjectType getType() {
+        return null;
     }
 }

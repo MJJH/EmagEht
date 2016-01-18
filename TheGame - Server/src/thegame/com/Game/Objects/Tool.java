@@ -37,4 +37,8 @@ public class Tool extends MapObject {
     {
     }
 
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
 }

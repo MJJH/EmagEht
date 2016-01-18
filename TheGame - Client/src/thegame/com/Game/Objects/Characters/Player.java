@@ -8,12 +8,14 @@ import java.rmi.RemoteException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Menu.Account;
@@ -207,6 +209,19 @@ public class Player extends CharacterGame {
     }
     
     public boolean Craft(Crafting to_craft) {
-        return false;
+        Map<ObjectType, Integer> need = to_craft.recources;
+        for(ObjectType ot : need.keySet()) {
+            int left = need.get(ot);
+            int i = 0;
+            while (left > 0 && i < 30) {
+                if(backpack[i].get(0).getType() == ot)
+                    left -= backpack[i].size();
+                i++;
+            }
+            if (left > 0)
+                return false;
+        }
+        // TODO @LaurensAdema hier je hebt goede resources, stuur naar server
+        return true;
     }
 }

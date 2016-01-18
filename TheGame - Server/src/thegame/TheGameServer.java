@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -28,9 +29,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.ItemType;
+import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.ToolType;
 import thegame.com.storage.Database;
 
@@ -261,23 +264,42 @@ public class TheGameServer extends Application {
         {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"));
         }
-        db.closeConnection();
 
         // Crafting
-        /*String craftQuery = "SELECT * FROM Craft";
-         rs = db.executeUnsafeQuery(toolQuery);
-         while(rs.next()) 
-         {
-         int id = rs.getInt("ID");
-         ObjectType ot;
-         int Level = rs.getInt("Level");
-            
-         switch(rs.getString("Type")) 
-         {
-         case "Item":
-         ot = 
-         }
-         }*/
+        String craftQuery = "SELECT * FROM Craft Order by Level";
+        rs = db.executeUnsafeQuery(craftQuery);
+        while(rs.next()) 
+        {
+            ObjectType to_craft = getType(db, rs.getString("type"), rs.getInt("ObjectID"));
+            int level = rs.getInt("Level");
+            String needed = "SELECT * FROM need WHERE CraftID = "+rs.getInt("ID");
+            ResultSet rs2 = db.executeUnsafeQuery(needed);
+            HashMap<ObjectType, Integer> n = new HashMap<>(); 
+            while(rs2.next()) {
+                n.put(getType(db, rs2.getString("Type"), rs2.getInt("ObjectID")), rs2.getInt("Amount"));
+            }
+            new Crafting(to_craft, n, level, null);
+        }
+        db.closeConnection();
+    }
+         
+    public ObjectType getType(Database db, String type, int id) throws SQLException {
+        String query = "SELECT Name FROM "+type+" WHERE ID ="+id;
+        ResultSet rs = db.executeUnsafeQuery(query);
+
+        
+        rs.first();
+        switch(type){
+            case "Item":
+                return ItemType.itemtypes.get(rs.getString("Name"));
+            case "Resource":
+                return BlockType.blocktypes.get(rs.getString("Name"));
+            case "Tool":
+                return ToolType.tooltypes.get(rs.getString("Name"));
+            case "Armor":
+                return ArmorType.armortypes.get(rs.getString("Name"));
+        }
+        return null;
     }
 
     private void displayMemory()

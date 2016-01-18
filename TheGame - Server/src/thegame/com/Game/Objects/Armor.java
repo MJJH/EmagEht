@@ -47,4 +47,9 @@ public class Armor extends MapObject {
     public void hit(Tool use, sides hitDirection)
     {
     }
+    
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
 }

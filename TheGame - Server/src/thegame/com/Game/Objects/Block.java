@@ -110,4 +110,8 @@ public class Block extends MapObject {
         }
     }
 
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
 }

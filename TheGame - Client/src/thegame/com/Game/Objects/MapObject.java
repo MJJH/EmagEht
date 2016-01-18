@@ -261,4 +261,6 @@ public abstract class MapObject implements Serializable {
     public abstract void update(MapObject update);
     
     public abstract void setType();
+    
+    public abstract ObjectType getType();
 }

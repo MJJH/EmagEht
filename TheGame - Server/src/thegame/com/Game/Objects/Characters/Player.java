@@ -1,11 +1,13 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.util.ArrayList;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Game.Objects.ToolType;
 import thegame.com.Menu.Account;
@@ -47,7 +49,7 @@ public class Player extends CharacterGame {
         this.character = character;
         this.account = account;
 
-        ToolType test = new ToolType("Flintje", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f);
+        ToolType test = new ToolType("Flint", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f);
         Tool equip = new Tool(test, map);
         equipTool(equip);
 
@@ -163,7 +165,24 @@ public class Player extends CharacterGame {
         return character;
     }
     
+            // TODO @LaurensAdema hier is een tweede check
     public boolean Craft(Crafting to_craft) {
-        return false;
+        java.util.Map<ObjectType, Integer> need = to_craft.recources;
+        for(ObjectType ot : need.keySet()) {
+            int left = need.get(ot);
+            int i = 0;
+            while (left > 0 && i < 30) {
+                if(backpack[i].get(0).getType() == ot)
+                    left -= backpack[i].size();
+                i++;
+            }
+            if (left > 0)
+                return false;
+        }
+        // Success!
+        for(ObjectType ot : need.keySet()) {
+            //this.
+        }
+        return true;
     }
 }

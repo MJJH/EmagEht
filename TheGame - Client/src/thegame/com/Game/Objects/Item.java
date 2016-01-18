@@ -32,5 +32,10 @@ public class Item extends MapObject {
         this.type = ItemType.itemtypes.get(this.type.name);
     }
 
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
+
     
 }

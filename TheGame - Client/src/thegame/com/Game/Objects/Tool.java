@@ -37,4 +37,9 @@ public class Tool extends MapObject {
     public void setType() {
         this.type = ToolType.tooltypes.get(this.type.name);
     }
+
+    @Override
+    public ObjectType getType() {
+        return type;
+    }
 }
