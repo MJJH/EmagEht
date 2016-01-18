@@ -24,7 +24,7 @@ public class Crafting {
     public final int level;
     public final ObjectType near;
     
-    Crafting(ObjectType object, HashMap<ObjectType, Integer> need, int level, ObjectType near)
+    public Crafting(ObjectType object, HashMap<ObjectType, Integer> need, int level, ObjectType near)
     {
         this.crafting = object;
         this.recources = need;

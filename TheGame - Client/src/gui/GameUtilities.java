@@ -659,7 +659,7 @@ public class GameUtilities {
 
         // Get craftings
         //List<Crafting> toCraft = me.getCrafting();
-        List<Crafting> toCraft = new ArrayList<>(5);
+        List<Crafting> toCraft = Crafting.recipes;
 
         int maxX = toCraft.size();
         if (maxX > 10)
@@ -696,7 +696,7 @@ public class GameUtilities {
             }
         }
 
-        if (selected + offset - 1 >= toCraft.size() && toCraft.get(selected + offset) != null && toCraft.get(selected + offset).recources != null)
+        if (toCraft.get(selected + offset) != null && toCraft.get(selected + offset).recources != null)
         {
             for (int y = 0; y < toCraft.get(selected + offset).recources.size(); y++)
             {
@@ -725,7 +725,7 @@ public class GameUtilities {
                     g.setFill(guiFontColor);
                     g.setFont(guiFont);
                     String t = (Integer) toCraft.get(selected + offset).recources.values().toArray()[y] + "";
-                    g.fillText(t, 10 + 50 * selected + 30 - ((t.length() - 1) * 5) - 8, 245 * y + 38);
+                    g.fillText(t, 10 + 50 * selected + 30 - ((t.length() - 1) * 5) - 8, 270 + y * 35);
                 }
             }
         }
