@@ -7,6 +7,7 @@ package thegame.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
@@ -34,4 +35,6 @@ public interface IGameClientToServer extends Remote {
     public boolean useTool(int lobbyID, int id, float x, float y) throws RemoteException;
 
     public void pickUpParticle(int lobbyID, int particleID, float particleX, float particleY, int playerID) throws RemoteException;
+
+    public boolean craft(int lobbyID, int playerID, Crafting to_craft) throws RemoteException;
 }

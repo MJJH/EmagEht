@@ -1,10 +1,7 @@
 package thegame.com.Game.Objects.Characters;
 
-import java.util.ArrayList;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
-import thegame.com.Game.Objects.Armor;
-import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.ObjectType;
@@ -60,8 +57,8 @@ public class Player extends CharacterGame {
         }
 
         /*this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 1, 1, playing));
-        this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
-        this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));*/
+         this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
+         this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));*/
     }
 
     /**
@@ -148,39 +145,47 @@ public class Player extends CharacterGame {
 
         return hp;
     }
-    
+
     public void setSpawn(float x, float y)
     {
         spawnX = x;
         spawnY = y;
     }
-    
+
     public Account getAccount()
     {
         return account;
     }
-    
+
     public Character getCharacter()
     {
         return character;
     }
-    
-            // TODO @LaurensAdema hier is een tweede check
-    public boolean Craft(Crafting to_craft) {
+
+    // TODO @LaurensAdema hier is een tweede check
+    public boolean Craft(Crafting to_craft)
+    {
         java.util.Map<ObjectType, Integer> need = to_craft.recources;
-        for(ObjectType ot : need.keySet()) {
+        for (ObjectType ot : need.keySet())
+        {
             int left = need.get(ot);
             int i = 0;
-            while (left > 0 && i < 30) {
-                if(backpack[i].get(0).getType() == ot)
+            while (left > 0 && i < 30)
+            {
+                if (backpack[i].get(0).getType() == ot)
+                {
                     left -= backpack[i].size();
+                }
                 i++;
             }
             if (left > 0)
+            {
                 return false;
+            }
         }
         // Success!
-        for(ObjectType ot : need.keySet()) {
+        for (ObjectType ot : need.keySet())
+        {
             //this.
         }
         return true;

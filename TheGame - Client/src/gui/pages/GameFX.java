@@ -125,7 +125,6 @@ public class GameFX {
 
         stages.setTitle("The Game");
         ui = new GameUtilities(me, play, canvas.getGraphicsContext2D(), scene);
-        music = new Sound("GameSound.wav");
         music.loop();
     }
 

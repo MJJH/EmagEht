@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
+import sound.Sound;
+import thegame.Startup;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.ObjectType;
@@ -74,19 +76,19 @@ public class Player extends CharacterGame {
         }
     }
 
-    public void useTool(float x, float y, IGameClientToServer gameLogic)
+    public void useTool(float x, float y, IGameClientToServer gameClientToServer)
     {
-        if (holding instanceof Tool)
+        if (holding.get(0) instanceof Tool)
         {
-            Tool h = (Tool) holding;
+            Tool h = (Tool) holding.get(0);
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();
                 try
                 {
-                    if (gameLogic.useTool(playing.getLobby().getID(), id, x, y))
+                    if (gameClientToServer.useTool(playing.getLobby().getID(), id, x, y))
                     {
-                        //feedback
+                        Startup.hit.play();
                     }
                 } catch (RemoteException ex)
                 {
@@ -221,7 +223,12 @@ public class Player extends CharacterGame {
             if (left > 0)
                 return false;
         }
-        // TODO @LaurensAdema hier je hebt goede resources, stuur naar server
-        return true;
+        try
+        {
+            return playing.getGameClientToServer().craft(playing.getLobby().getID(), id, to_craft);
+        } catch (RemoteException e)
+        {
+            return false;
+        }
     }
 }

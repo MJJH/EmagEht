@@ -6,6 +6,7 @@
 package thegame;
 
 import java.rmi.RemoteException;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -194,5 +195,31 @@ public class GameClientToServerHandler implements IGameClientToServer {
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean craft(int lobbyID, int playerID, Crafting to_craft) throws RemoteException
+    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return false;
+        }
+        for(Player player : map.getPlayers())
+        {
+            if(player.getID() == playerID)
+            {
+                return player.Craft(to_craft);
+            }
+        }
+        return false;
     }
 }

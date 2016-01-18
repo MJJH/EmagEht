@@ -39,6 +39,7 @@ public class Startup extends Application {
 
     private Stage primaryStage;
     public static Sound music;
+    public static Sound hit;
 
     /**
      * @param args the command line arguments
@@ -61,6 +62,7 @@ public class Startup extends Application {
             System.err.println(ex.getMessage());
             System.exit(0);
         }
+        loadSound();
 
         Pane root = new Pane();
         Scene scene = new Scene(root, 1280, 720);
@@ -170,5 +172,11 @@ public class Startup extends Application {
                 return ArmorType.armortypes.get(rs.getString("Name"));
         }
         return null;
+    }
+
+    private void loadSound()
+    {
+        music = new Sound("GameSound.wav");
+        hit = new Sound("Hit.wav");
     }
 }
