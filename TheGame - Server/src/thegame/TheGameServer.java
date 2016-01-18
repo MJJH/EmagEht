@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -55,27 +57,25 @@ public class TheGameServer extends Application {
     {
         try
         {
-            /*
-             RMISocketFactory.setSocketFactory(new RMISocketFactory() {
-             @Override
-             public Socket createSocket(String host, int port)
-             throws IOException
-             {
-             Socket socket = new Socket();
-             socket.setSoTimeout(config.timeOutTime);
-             socket.setSoLinger(false, 0);
-             socket.connect(new InetSocketAddress(host, port), config.timeOutTime);
-             return socket;
-             }
+            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
+                @Override
+                public Socket createSocket(String host, int port)
+                        throws IOException
+                {
+                    Socket socket = new Socket();
+                    socket.setSoTimeout(config.timeOutTime);
+                    socket.setSoLinger(false, 0);
+                    socket.connect(new InetSocketAddress(host, port), config.timeOutTime);
+                    return socket;
+                }
 
-             @Override
-             public ServerSocket createServerSocket(int port)
-             throws IOException
-             {
-             return new ServerSocket(port);
-             }
-             });
-             */
+                @Override
+                public ServerSocket createServerSocket(int port)
+                        throws IOException
+                {
+                    return new ServerSocket(port);
+                }
+            });
 
             // Lobby
             LobbyServerToClientHandler lobbyServerToClientHandler = new LobbyServerToClientHandler();
@@ -109,6 +109,9 @@ public class TheGameServer extends Application {
             System.out.println("Server could not be started (" + ex.getMessage() + ")");
             System.out.println("Shutting down now");
             System.exit(0);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(TheGameServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -294,7 +297,7 @@ public class TheGameServer extends Application {
             lbFreeMemoryN.setText(format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024));
         });
     }
-    
+
     public void changeConnectedPlayer(int change)
     {
         Platform.runLater(() ->
@@ -304,7 +307,7 @@ public class TheGameServer extends Application {
             lbConnectedPlayersN.setText(Integer.toString(connectedPlayers));
         });
     }
-    
+
     public void changeLobbies(int change)
     {
         Platform.runLater(() ->
@@ -314,7 +317,7 @@ public class TheGameServer extends Application {
             lbLobbiesN.setText(Integer.toString(lobbies));
         });
     }
-    
+
     public void changeGames(int change)
     {
         Platform.runLater(() ->

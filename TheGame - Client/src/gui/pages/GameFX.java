@@ -33,7 +33,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sound.Sound;
-import thegame.GameServerToClientListener;
+import static thegame.Startup.music;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.Player;
@@ -61,8 +61,6 @@ public class GameFX {
     public IGameClientToServer gameClientToServer;
 
     private List<KeyCode> keys = new ArrayList<>();
-
-    private Sound sound;
 
     // fps 
     private final long ONE_SECOND = 1000000000;
@@ -127,8 +125,8 @@ public class GameFX {
 
         stages.setTitle("The Game");
         ui = new GameUtilities(me, play, canvas.getGraphicsContext2D(), scene);
-        sound = new Sound("GameSound.wav");
-        sound.loop();
+        music = new Sound("GameSound.wav");
+        music.loop();
     }
 
     private void startTimers()
@@ -339,6 +337,7 @@ public class GameFX {
             {
                 Logger.getLogger(GameFX.class.getName()).log(Level.SEVERE, null, ex);
             }
+            music.stop();
             new MenuFX(stages, myAccount);
             return;
         }

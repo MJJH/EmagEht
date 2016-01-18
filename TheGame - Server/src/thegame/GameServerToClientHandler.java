@@ -16,6 +16,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -37,17 +39,17 @@ public class GameServerToClientHandler {
 
     private transient final ConcurrentHashMap<Lobby, Map> gameTable;
     private transient final ConcurrentHashMap<IGameServerToClientListener, Player> playerListenersTable;
+    private transient final ConcurrentHashMap<Map, Timer> gameTimerTable;
 
     private transient final List<IGameServerToClientListener> connectionLossTable;
-    private transient final List<IGameServerToClientListener> isSending;
     private transient ExecutorService threadPoolSend;
 
     public GameServerToClientHandler()
     {
         gameTable = new ConcurrentHashMap<>();
         playerListenersTable = new ConcurrentHashMap<>();
+        gameTimerTable = new ConcurrentHashMap<>();
         connectionLossTable = new ArrayList<>();
-        isSending = new ArrayList<>();
         threadPoolSend = Executors.newCachedThreadPool();
     }
 
@@ -75,6 +77,7 @@ public class GameServerToClientHandler {
         gameTable.put(lobby, game);
         lobbyServerToClientHandler.requestConnectToGame(lobby);
         Timer update = new Timer("Game" + Integer.toString(lobby.getID()));
+        gameTimerTable.put(game, update);
         update.schedule(new TimerTask() {
 
             @Override
@@ -99,26 +102,48 @@ public class GameServerToClientHandler {
         connectionLossTable.add(listener);
         Player removePlayer = playerListenersTable.get(listener);
         Account removeAccount = removePlayer.getAccount();
-        removePlayer.getMap().removeMapObject(removePlayer);
+        Map map = removePlayer.getMap();
+        map.removeMapObject(removePlayer);
+        if (map.getPlayers().size() < 1)
+        {
+            stopGame(map);
+        }
         Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(removeAccount);
         lobby.leaveLobby(removeAccount);
-        lobbyServerToClientHandler.getOnlinePlayers().remove(removeAccount);
-        lobbyServerToClientHandler.getAccountsInLobbies().remove(removeAccount);
+        try
+        {
+            lobbyClientToServerHandler.quitLobby(removeAccount);
+            lobbyClientToServerHandler.signOut(removeAccount);
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         playerListenersTable.remove(listener);
+        connectionLossTable.remove(listener);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
         System.out.println(sdf.format(cal.getTime()) + " Connection to " + removeAccount.getUsername() + " has been lost");
-        theGameServer.changeConnectedPlayer(-1);
     }
-    
+
     public void leaveGame(IGameServerToClientListener listener)
     {
         connectionLossTable.add(listener);
         Player removePlayer = playerListenersTable.get(listener);
         Account removeAccount = removePlayer.getAccount();
-        removePlayer.getMap().removeMapObject(removePlayer);
-        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(removeAccount);
-        lobby.leaveLobby(removeAccount);
+        Map map = removePlayer.getMap();
+        map.removeMapObject(removePlayer);
+        if (map.getPlayers().size() < 1)
+        {
+            stopGame(map);
+        }
+        try
+        {
+            lobbyClientToServerHandler.quitLobby(removeAccount);
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        removePlayer.getMap().getLobby().leaveLobby(removeAccount);
         lobbyServerToClientHandler.getAccountsInLobbies().remove(removeAccount);
         playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
@@ -283,7 +308,6 @@ public class GameServerToClientHandler {
             {
                 try
                 {
-                    isSending.add(listener);
                     listener.updateObjects(toSend);
                 } catch (RemoteException ex)
                 {
@@ -292,9 +316,6 @@ public class GameServerToClientHandler {
                     System.err.println(sdf.format(cal.getTime()) + " Could not updateObjects(" + toSend.toString() + ") to player " + player.getName() + " because:");
                     System.err.println(ex.getMessage());
                     connectionLossPlayer(listener);
-                } finally
-                {
-                    isSending.remove(listener);
                 }
             });
         }
@@ -383,7 +404,7 @@ public class GameServerToClientHandler {
             {
                 continue;
             }
-            
+
             threadPoolSend.submit(() ->
             {
                 try
@@ -434,5 +455,49 @@ public class GameServerToClientHandler {
             });
             break;
         }
+    }
+
+    public void stopGame(Map map)
+    {
+        List<Player> toSendTo = map.getPlayers();
+        List<IGameServerToClientListener> toRemoveListeners = new ArrayList<>();
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+            if (!toSendTo.contains(player))
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.stopGame();
+                    toRemoveListeners.add(listener);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not stop the game for player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    connectionLossPlayer(listener);
+                }
+            });
+        }
+        Timer update = gameTimerTable.get(map);
+        update.cancel();
+        for (IGameServerToClientListener listener : toRemoveListeners)
+        {
+            playerListenersTable.remove(listener);
+        }
+        gameTimerTable.remove(map);
+        gameTable.remove(map.getLobby());
+        theGameServer.changeGames(-1);
     }
 }

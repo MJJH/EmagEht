@@ -6,7 +6,6 @@
 package thegame;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Lobby;
 import thegame.shared.ILobbyClientToServer;
@@ -46,7 +45,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
         theGameServer.changeConnectedPlayer(1);
         return true;
     }
-    
+
     @Override
     public void signOut(Account account)
     {
@@ -97,12 +96,26 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
         {
             lobby.setGameStarted(true);
             gameServerToClientHandler.startNewGame(lobby);
-        }
-        else if(returnValue && lobby.getGameStarted())
+        } else if (returnValue && lobby.getGameStarted())
         {
             gameServerToClientHandler.joinPlayer(lobby, myAccount);
             lobbyServerToClientHandler.requestConnectToGame(lobby);
         }
         return returnValue;
+    }
+
+    @Override
+    public void quitLobby(Account account) throws RemoteException
+    {
+        Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().remove(account);
+        if (lobby != null)
+        {
+            lobby.leaveLobby(account);
+        }
+        if(!lobbyServerToClientHandler.getAccountsInLobbies().containsValue(lobby))
+        {
+            lobbyServerToClientHandler.getLobbies().remove(lobby);
+            theGameServer.changeLobbies(-1);
+        }
     }
 }

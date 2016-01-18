@@ -152,4 +152,10 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         }
         me.spawn();
     }
+
+    @Override
+    public void stopGame() throws RemoteException
+    {
+        map.getLobbyFX().stopGame();
+    }
 }

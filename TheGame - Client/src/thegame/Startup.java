@@ -22,6 +22,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import sound.Sound;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.BlockType;
@@ -37,6 +38,7 @@ import thegame.com.storage.Database;
 public class Startup extends Application {
 
     private Stage primaryStage;
+    public static Sound music;
 
     /**
      * @param args the command line arguments

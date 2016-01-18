@@ -74,13 +74,18 @@ public class LobbyFX {
         myAccount = account;
         this.primaryStage = primaryStage;
 
+        drawLobby();
+    }
+    
+    private void drawLobby()
+    {
         primaryStage.setOnCloseRequest(event ->
         {
-            if (gameClientToServer != null && gameServerToClientListener != null)
+            if (lobbyClientToServer != null && lobbyServerToClientListener != null)
             {
                 try
                 {
-                    gameClientToServer.quitGame(gameServerToClientListener);
+                    lobbyClientToServer.signOut(myAccount);
                 } catch (RemoteException ex)
                 {
                     System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
@@ -134,7 +139,7 @@ public class LobbyFX {
 
     public void connectToGame()
     {
-        if(started)
+        if (started)
         {
             return;
         }
@@ -147,25 +152,21 @@ public class LobbyFX {
                 server = LocateRegistry.getRegistry(config.ip, config.gameServerToClientPort);
                 gameClientToServer = (IGameClientToServer) server.lookup(config.gameClientToServerName);
                 splash.countTill(25);
-                Thread.sleep(500);
                 gameServerToClientListener = new GameServerToClientListener();
                 UnicastRemoteObject.exportObject(gameServerToClientListener, config.gameServerToClientListenerPort);
                 splash.countTill(50);
-                Thread.sleep(500);
                 me = gameClientToServer.getMe(gameServerToClientListener, myAccount);
                 play = (Map) gameClientToServer.getMap(lobby);
                 gameServerToClientListener.loadAfterRecieve(myAccount, play, me);
                 splash.countTill(75);
-                Thread.sleep(500);
                 play.loadAfterRecieve(gameClientToServer, myAccount, me, this);
                 me.setMap(play);
                 splash.countTill(100);
-                Thread.sleep(1000);
                 Platform.runLater(() ->
                 {
                     startagame(primaryStage);
                 });
-            } catch (NotBoundException | InterruptedException ex)
+            } catch (NotBoundException ex)
             {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
             } catch (RemoteException ex)
@@ -221,6 +222,16 @@ public class LobbyFX {
         alert.setHeaderText("Connection to server lost");
         alert.setContentText("You lost the connection to the server. Please try again in a minute.");
         alert.showAndWait();
-        new MenuFX(primaryStage, myAccount);
+        new LoginFX(primaryStage);
+    }
+
+    public void stopGame()
+    {
+        play = null;
+        me = null;
+        server = null;
+        gameClientToServer = null;
+        gameServerToClientListener = null;
+        drawLobby();
     }
 }

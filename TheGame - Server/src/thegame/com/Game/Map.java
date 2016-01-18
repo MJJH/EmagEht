@@ -616,36 +616,18 @@ public class Map implements Serializable {
             {
                 MapObject key = entrySet.getKey();
                 boolean value = entrySet.getValue().get();
-                
-                if (key instanceof Enemy)
-                {
-                    toSend.add(key);
-                    continue;
-                }
 
                 if (value)
                 {
                     toSend.add(key);
-                    /*
-                     for (java.util.Map.Entry<MapObject.sides, List<MapObject>> collision : Collision.collision(key, true).entrySet())
-                     {
-                     for (MapObject toUpdateMO : collision.getValue())
-                     {
-                     if (!(toUpdateMO instanceof CharacterGame))
-                     {
-                     synchronized (toUpdate)
-                     {
-                     toUpdate.add(toUpdateMO);
-                     }
-                     }
-                     }
-                     }
-                     */
                 } else
                 {
                     synchronized (toUpdate)
                     {
-                        toUpdate.remove(key);
+                        if(!(key instanceof Enemy))
+                        {
+                            toUpdate.remove(key);
+                        }
                     }
                 }
             } catch (InterruptedException | ExecutionException ex)
@@ -691,5 +673,10 @@ public class Map implements Serializable {
     public void joinPlayer(Account account)
     {
         players.add(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
+    }
+
+    public Lobby getLobby()
+    {
+        return lobby;
     }
 }

@@ -441,7 +441,7 @@ public abstract class CharacterGame extends MapObject {
                     playing.getGameServerToClientHandler().respawnPlayer((Player) this);
                 } else
                 {
-                    //game over
+                    playing.getGameServerToClientHandler().stopGame(playing);
                 }
             } else
             {

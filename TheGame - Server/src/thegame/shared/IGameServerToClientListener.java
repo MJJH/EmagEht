@@ -35,4 +35,6 @@ public interface IGameServerToClientListener extends Remote {
     public void setTeamLifes(int lifes) throws RemoteException;
 
     public void respawnMe() throws RemoteException;
+
+    public void stopGame() throws RemoteException;
 }
