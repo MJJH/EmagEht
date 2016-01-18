@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects.Characters;
 
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.ArmorType;
@@ -160,5 +161,9 @@ public class Player extends CharacterGame {
     public Character getCharacter()
     {
         return character;
+    }
+    
+    public boolean Craft(Crafting to_craft) {
+        return false;
     }
 }

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
@@ -203,5 +204,9 @@ public class Player extends CharacterGame {
             setDirection(updatePlayer.getDirection());
             updateHP(updatePlayer.getHP());
         }
+    }
+    
+    public boolean Craft(Crafting to_craft) {
+        return false;
     }
 }
