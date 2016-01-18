@@ -1,6 +1,5 @@
 package thegame.com.Game.Objects;
 
-import thegame.GameClientToServerHandler;
 import thegame.com.Game.Map;
 
 /**
@@ -12,7 +11,7 @@ public class Tool extends MapObject {
 
     private static final long serialVersionUID = 6529585098267757690L;
 
-    public final ToolType type;
+    public ToolType type;
 
     /**
      * Create a usable tool
@@ -38,7 +37,8 @@ public class Tool extends MapObject {
     }
 
     @Override
-    public ObjectType getType() {
+    public ObjectType getType()
+    {
         return type;
     }
 }

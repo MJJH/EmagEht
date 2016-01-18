@@ -14,24 +14,27 @@ import java.io.Serializable;
  * @author Martijn
  */
 public abstract class ObjectType implements Serializable {
+
     private static final long serialVersionUID = 6522685098267700690L;
-    
-    public transient Skin skin;
+
     public String name;
-    
+
+    public transient Skin skin;
+
     public ObjectType(String name, Skin skin)
     {
         this.name = name;
         this.skin = skin;
     }
-    
-    public String getName() {
+
+    public String getName()
+    {
         return name;
     }
-    
+
     protected Skin getSkin() throws IOException
     {
         return skin;
     }
-    
+
 }

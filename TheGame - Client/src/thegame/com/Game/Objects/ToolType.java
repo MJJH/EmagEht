@@ -1,8 +1,6 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
-import display.Parts;
-import display.Skin;
 import display.iTexture;
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,16 +14,21 @@ import javafx.scene.paint.Color;
  * @author Martijn
  */
 public class ToolType extends ObjectType {
+
     private static final long serialVersionUID = 6522685098267757690L;
+    
     public static Map<String, ToolType> tooltypes = new HashMap<>();
+    
     public int strength;
     public float speed;
     public float range;
     public int reqLvl;
     public float kb;
+    public float height;
+    public float width;
     public toolType type;
 
-    public enum toolType {
+    public enum toolType implements Serializable {
 
         PICKAXE, AXE, SWORD, SHOVEL, FLINT
     }
@@ -40,17 +43,23 @@ public class ToolType extends ObjectType {
      * @param type
      * @param kb
      * @param skin
+     * @param colors
+     * @throws java.io.IOException
      */
     public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, iTexture skin, Color[] colors) throws IOException
     {
-        super(name, new Image(skin){{recolour(colors);}});
+        super(name, new Image(skin) {
+            {
+                recolour(colors);
+            }
+        });
         this.strength = strength;
         this.speed = speed;
         this.range = range;
         this.reqLvl = reqLvl;
         this.kb = kb;
         this.type = type;
-        
+
         tooltypes.put(name, this);
     }
 

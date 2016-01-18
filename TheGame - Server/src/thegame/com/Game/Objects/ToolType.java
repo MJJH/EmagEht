@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import java.util.Map;
  * @author Martijn
  */
 public class ToolType extends ObjectType {
+
     private static final long serialVersionUID = 6522685098267757690L;
 
     public static Map<String, ToolType> tooltypes = new HashMap<>();
@@ -22,7 +24,7 @@ public class ToolType extends ObjectType {
     public float width;
     public toolType type;
 
-    public enum toolType {
+    public enum toolType implements Serializable {
 
         PICKAXE, AXE, SWORD, SHOVEL, FLINT
     }
@@ -51,7 +53,7 @@ public class ToolType extends ObjectType {
         this.height = height;
         this.width = width;
         this.type = type;
-        
+
         tooltypes.put(name, this);
     }
 

@@ -18,15 +18,14 @@ public abstract class CharacterGame extends MapObject {
     protected String name;
     protected int maxHP;
     protected List<MapObject> holding;
-    protected long used;
-
     protected sides direction;
+    protected boolean jumping = false;
 
     protected java.util.Map<SkillType, Integer> skills;
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected List<MapObject>[] backpack;
 
-    protected boolean jumping = false;
+    protected transient long used;
 
     public void walkRight()
     {
@@ -148,39 +147,48 @@ public abstract class CharacterGame extends MapObject {
 
             if (!l.isEmpty() && l.get(0).getType() == ot)
             {
-                while(amount > 0 && l.size() > 0) {
+                while (amount > 0 && l.size() > 0)
+                {
                     removed.add(l.remove(l.size() - 1));
                 }
             }
             if (amount <= 0)
+            {
                 return removed;
+            }
         }
         return removed;
     }
-    
+
     public List<MapObject> removeFromBackpack(int spot, int amount)
     {
         List<MapObject> removed = new ArrayList<>();
-        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        {
             return removed;
-        
+        }
+
         List<MapObject> l = backpack[spot];
 
         if (!l.isEmpty())
         {
-            while(amount > 0 && l.size() > 0) {
+            while (amount > 0 && l.size() > 0)
+            {
                 removed.add(l.remove(l.size() - 1));
             }
         }
 
         return removed;
     }
-    
-    public List<MapObject> removeFromBackpack(int spot) {
+
+    public List<MapObject> removeFromBackpack(int spot)
+    {
         List<MapObject> removed = new ArrayList<>();
-        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        {
             return removed;
-        
+        }
+
         removed = backpack[spot];
         backpack[spot].clear();
         return removed;
@@ -205,11 +213,13 @@ public abstract class CharacterGame extends MapObject {
      */
     public void equipArmor(int spot)
     {
-        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
+        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
+        {
             return;
-        
+        }
+
         Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
-        
+
         if (armor.get(add.getArmorType().bodypart) == null)
         {
             armor.put(add.getArmorType().bodypart, add);
@@ -243,17 +253,20 @@ public abstract class CharacterGame extends MapObject {
      */
     private void equipTool(int spot)
     {
-        if(spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
+        {
             return;
-        
+        }
+
         List<MapObject> add = removeFromBackpack(spot);
-        
+
         if (holding == null)
         {
             holding = add;
         } else
         {
-            for(MapObject mo : holding){
+            for (MapObject mo : holding)
+            {
                 addToBackpack(mo);
             }
             holding = add;
@@ -267,7 +280,8 @@ public abstract class CharacterGame extends MapObject {
     {
         if (holding != null)
         {
-            for(MapObject mo : holding){
+            for (MapObject mo : holding)
+            {
                 addToBackpack(mo);
             }
             holding = null;
@@ -426,14 +440,16 @@ public abstract class CharacterGame extends MapObject {
             }
         }
     }
-    
+
     @Override
-    public void setType() {
-        
+    public void setType()
+    {
+
     }
-    
+
     @Override
-    public ObjectType getType() {
+    public ObjectType getType()
+    {
         return null;
     }
 }

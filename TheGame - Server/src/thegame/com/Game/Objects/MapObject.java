@@ -26,11 +26,16 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
     protected float height;
     protected float width;
     protected float solid;
-    protected transient Map playing;
     protected boolean placeable;
     protected boolean stackable;
 
-    public boolean debug = false;
+    public transient boolean debug = false;
+    protected transient Map playing;
+    
+    public enum sides implements Serializable {
+
+        TOP, BOTTOM, LEFT, RIGHT, CENTER
+    }
 
     public Map getMap()
     {
@@ -47,11 +52,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         sY = f;
     }
     public abstract ObjectType getType();
-
-    public enum sides implements Serializable {
-
-        TOP, BOTTOM, LEFT, RIGHT, CENTER
-    }
 
     /**
      * Create a new MapObject to use in the game

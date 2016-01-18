@@ -1,10 +1,6 @@
 package thegame.com.Game.Objects;
 
-import display.IntColor;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.paint.Color;
 
 /**
  * A tool is an object that a character can use to mine, fight, dig or chop
@@ -32,14 +28,16 @@ public class Tool extends MapObject {
     public void update(MapObject update)
     {
     }
-    
+
     @Override
-    public void setType() {
+    public void setType()
+    {
         this.type = ToolType.tooltypes.get(this.type.name);
     }
 
     @Override
-    public ObjectType getType() {
+    public ObjectType getType()
+    {
         return type;
     }
 }
