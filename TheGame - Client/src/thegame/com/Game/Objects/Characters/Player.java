@@ -87,8 +87,8 @@ public class Player extends CharacterGame {
                 used = System.currentTimeMillis();
                 used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
-                float test = Calculate.distance(this,click);
-                if (click != null && h.type.range >= Calculate.distance(this,click))
+                float distance = Calculate.distance(this,click);
+                if (click != null && h.type.range >= distance)
                 {
                     try
                     {
