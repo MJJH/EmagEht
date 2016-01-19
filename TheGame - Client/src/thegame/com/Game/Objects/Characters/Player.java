@@ -231,4 +231,25 @@ public class Player extends CharacterGame {
             return false;
         }
     }
+
+    public void loadAfterRecieve(thegame.com.Game.Map play)
+    {
+        setMap(play);
+        for(MapObject holdObject: holding)
+        {
+            holdObject.setType();
+            holdObject.setMap(play);
+        }
+        for(List<MapObject> listBP : backpack)
+        {
+            if(listBP != null)
+            {
+                for(MapObject bpObject : listBP)
+                {
+                    bpObject.setType();
+                    bpObject.setMap(play);
+                }
+            }
+        }
+    }
 }

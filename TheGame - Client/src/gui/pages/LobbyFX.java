@@ -160,7 +160,7 @@ public class LobbyFX {
                 gameServerToClientListener.loadAfterRecieve(myAccount, play, me);
                 splash.countTill(75);
                 play.loadAfterRecieve(gameClientToServer, myAccount, me, this);
-                me.setMap(play);
+                me.loadAfterRecieve(play);
                 splash.countTill(100);
                 Platform.runLater(() ->
                 {
