@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -32,7 +33,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import sound.Sound;
 import static thegame.Startup.music;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
@@ -98,6 +98,15 @@ public class GameFX {
                 }
             }
             System.exit(0);
+        });
+        
+        primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
+            {
+                keys.clear();
+            }
         });
 
         myAccount = a;

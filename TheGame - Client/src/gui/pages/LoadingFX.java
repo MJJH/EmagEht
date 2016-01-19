@@ -6,15 +6,12 @@
 package gui.pages;
 
 import gui.GameUtilities;
-import gui.GameUtilities;
-import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -30,13 +27,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sound.Sound;
-import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
-import thegame.com.Menu.Message;
 import thegame.config;
-import thegame.shared.IGameClientToServer;
 import thegame.tutorial.TutPlayer;
 import thegame.tutorial.Tutorial;
 
@@ -77,6 +71,16 @@ public class LoadingFX {
         stages.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11, KeyCombination.SHORTCUT_DOWN));
         stages.setFullScreenExitHint("");
         StackPane root = new StackPane();
+        
+        ps.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
+            {
+                keys.clear();
+            }
+        });
+        
         scene = new Scene(root, ps.getScene().getWidth(), ps.getScene().getHeight(), Color.LIGHTBLUE);
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();

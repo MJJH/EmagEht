@@ -48,9 +48,9 @@ public class TutPlayer extends Player {
     }
 
     public void useTool(float x, float y) {
-        if (holding instanceof Tool)
+        if (holding.get(0) instanceof Tool)
         {
-            Tool h = (Tool) holding;
+            Tool h = (Tool) holding.get(0);
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();

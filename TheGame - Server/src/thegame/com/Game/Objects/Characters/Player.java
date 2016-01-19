@@ -2,6 +2,8 @@ package thegame.com.Game.Objects.Characters;
 
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Armor;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.ObjectType;
@@ -46,18 +48,23 @@ public class Player extends CharacterGame {
         this.character = character;
         this.account = account;
 
-        ToolType test = new ToolType("Flint", 20, 1000, 3f, 1, ToolType.toolType.FLINT, 0.3f);
+        ToolType test = ToolType.tooltypes.get("Flint");
         Tool equip = new Tool(test, map);
         equipTool(equip);
 
-        this.addToBackpack(new Tool(new ToolType("Test", 0, 0, 0, 0, ToolType.toolType.AXE, 0), playing));
+        this.addToBackpack(new Tool(ToolType.tooltypes.get("Wooden Shovel"), playing));
         for (int c = 0; c < 103; c++)
         {
             this.addToBackpack(new Block(BlockType.blocktypes.get("Stone"), 0, 0, playing));
         }
 
-        /*this.addToBackpack(new Armor(new ArmorType("Helm", 10, 0, ArmorType.bodyPart.HELMET), 1, 1, playing));
-         this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Helmet"), 0, 0, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Stone Helmet"), 0, 0, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Steel Helmet"), 0, 0, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Shield"), 0, 0, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Greaves"), 0, 0, playing));
+        this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Chestplate"), 0, 0, playing));
+         /*this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
          this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));*/
     }
 

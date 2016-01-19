@@ -189,7 +189,9 @@ public abstract class CharacterGame extends MapObject {
             return removed;
         }
 
-        removed = backpack[spot];
+        for(MapObject mo : backpack[spot]) {
+            removed.add(mo);
+        }
         backpack[spot].clear();
         return removed;
     }
