@@ -61,7 +61,7 @@ public class Player extends CharacterGame {
                         System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
                         Platform.runLater(() ->
                         {
-                            playing.getLobbyFX().connectionLoss();
+                            playing.getGameFX().connectionLoss();
                         });
                     }
                 }
@@ -88,7 +88,7 @@ public class Player extends CharacterGame {
                 used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
                 float distance = Calculate.distance(this,click);
-                if (click != null && h.type.range >= distance)
+                if (click != null && h.type.range > distance)
                 {
                     try
                     {

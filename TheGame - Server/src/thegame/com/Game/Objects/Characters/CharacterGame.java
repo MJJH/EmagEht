@@ -480,7 +480,7 @@ public abstract class CharacterGame extends MapObject {
                 used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
                 float distance = Calculate.distance(this,click);
-                if (click != null && h.type.range >= distance)
+                if (click != null && h.type.range > distance)
                 {
                     if (!(click instanceof Block))
                     {

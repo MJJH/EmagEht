@@ -1,5 +1,6 @@
 package thegame.com.Game;
 
+import gui.pages.GameFX;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
@@ -51,6 +52,7 @@ public class Map implements Serializable {
     protected transient Player me;
     private transient IGameClientToServer gameClientToServer;
     private transient gui.pages.LobbyFX lobbyFX;
+    private transient gui.pages.GameFX gameFX;
     private transient List<Message> chatMessages;
 
     public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, gui.pages.LobbyFX lobbyFX)
@@ -368,7 +370,7 @@ public class Map implements Serializable {
                 System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
                 Platform.runLater(() ->
                 {
-                    lobbyFX.connectionLoss();
+                    gameFX.connectionLoss();
                 });
             }
         }
@@ -423,6 +425,16 @@ public class Map implements Serializable {
     public gui.pages.LobbyFX getLobbyFX()
     {
         return lobbyFX;
+    }
+    
+    public void setGameFX(GameFX gameFX)
+    {
+        this.gameFX = gameFX;
+    }
+    
+    public GameFX getGameFX()
+    {
+        return gameFX;
     }
 
     public Lobby getLobby()

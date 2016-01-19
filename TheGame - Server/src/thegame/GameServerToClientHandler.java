@@ -132,6 +132,7 @@ public class GameServerToClientHandler {
         Account removeAccount = removePlayer.getAccount();
         Map map = removePlayer.getMap();
         map.removeMapObject(removePlayer);
+        playerListenersTable.remove(listener);
         if (map.getPlayers().size() < 1)
         {
             stopGame(map);
@@ -143,9 +144,6 @@ public class GameServerToClientHandler {
         {
             Logger.getLogger(GameServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        removePlayer.getMap().getLobby().leaveLobby(removeAccount);
-        lobbyServerToClientHandler.getAccountsInLobbies().remove(removeAccount);
-        playerListenersTable.remove(listener);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
         System.out.println(sdf.format(cal.getTime()) + " " + removeAccount.getUsername() + " has left the game");
@@ -459,6 +457,8 @@ public class GameServerToClientHandler {
 
     public void stopGame(Map map)
     {
+        Timer update = gameTimerTable.get(map);
+        update.cancel();
         List<Player> toSendTo = map.getPlayers();
         List<IGameServerToClientListener> toRemoveListeners = new ArrayList<>();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
@@ -490,8 +490,7 @@ public class GameServerToClientHandler {
                 }
             });
         }
-        Timer update = gameTimerTable.get(map);
-        update.cancel();
+        
         for (IGameServerToClientListener listener : toRemoveListeners)
         {
             playerListenersTable.remove(listener);

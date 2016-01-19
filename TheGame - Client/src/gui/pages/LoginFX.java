@@ -5,19 +5,13 @@
  */
 package gui.pages;
 
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javax.swing.event.HyperlinkEvent;
 import thegame.com.Menu.Account;
 import thegame.com.storage.Database;
 
@@ -34,6 +28,11 @@ public class LoginFX {
     public LoginFX(Stage primaryStage)
     {
         this.primaryStage = primaryStage;
+        primaryStage.setOnCloseRequest(event ->
+        {
+            System.exit(0);
+        });
+
         primaryStage.setTitle("Login");
         primaryStage.setScene(createLogin());
         primaryStage.show();
@@ -50,12 +49,12 @@ public class LoginFX {
         Button confirm = new Button();
         confirm.setText("Confirm");
 
-        AnchorPane.setTopAnchor(login, height / 2);
-        AnchorPane.setLeftAnchor(login, width / 2);
-        AnchorPane.setTopAnchor(wachtwoord, (height / 2) + 75);
-        AnchorPane.setLeftAnchor(wachtwoord, width / 2);
-        AnchorPane.setTopAnchor(confirm, (height / 2) + 100);
-        AnchorPane.setLeftAnchor(confirm, width / 2);
+        AnchorPane.setTopAnchor(login, height / 2.5);
+        AnchorPane.setLeftAnchor(login, width / 2.5);
+        AnchorPane.setTopAnchor(wachtwoord, (height / 2.5) + 50);
+        AnchorPane.setLeftAnchor(wachtwoord, width / 2.5);
+        AnchorPane.setTopAnchor(confirm, (height / 2.5) + 100);
+        AnchorPane.setLeftAnchor(confirm, (width / 2.5) + 50);
 
         root.getChildren().add(login);
         root.getChildren().add(wachtwoord);
@@ -73,20 +72,20 @@ public class LoginFX {
     {
         String username = login.getText();
         String password = wachtwoord.getText();
-        if(username == null || username.isEmpty())
+        if (username == null || username.isEmpty())
         {
             System.out.println("Username is leeg");
             return;
         }
-        if(password == null || password.isEmpty())
+        if (password == null || password.isEmpty())
         {
             System.out.println("Password is leeg");
             return;
         }
         Account account = Database.getDatabase().checkCredentials(username, password);
-        if(account != null)
+        if (account != null)
         {
-            new MenuFX(primaryStage, account);
+            new MenuFX(primaryStage, account, false);
         }
     }
 }

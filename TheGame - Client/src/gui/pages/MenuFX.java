@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -53,10 +54,12 @@ public class MenuFX {
     private Registry lobbyServer;
     private ILobbyClientToServer lobbyClientToServer;
     private LobbyServerToClientListener lobbyServerToClientListener;
+    private boolean signedIn;
 
-    public MenuFX(Stage primaryStage, Account account)
+    public MenuFX(Stage primaryStage, Account account, boolean signedIn)
     {
         this.account = account;
+        this.signedIn = signedIn;
         this.primaryStage = primaryStage;
 
         try
@@ -65,6 +68,12 @@ public class MenuFX {
         } catch (RemoteException | NotBoundException ex)
         {
             new LoginFX(primaryStage);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Can't connect to server");
+            alert.setHeaderText("Server can't be found");
+            alert.setContentText("You can't connect to the server. Please try again in a minute.");
+            alert.showAndWait();
+            return;
         }
 
         primaryStage.setOnCloseRequest(event ->
@@ -93,10 +102,17 @@ public class MenuFX {
         lobbyClientToServer = (ILobbyClientToServer) lobbyServer.lookup(config.lobbyClientToServerName);
         lobbyServerToClientListener = new LobbyServerToClientListener();
         UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
-        if (!lobbyClientToServer.signIn(account, lobbyServerToClientListener))
+        if (!signedIn && !lobbyClientToServer.signIn(account, lobbyServerToClientListener))
         {
             new LoginFX(primaryStage);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Can't connect to server");
+            alert.setHeaderText("Server can't be found");
+            alert.setContentText("You can't connect to the server. Please try again in a minute.");
+            alert.showAndWait();
+            return;
         }
+        signedIn = true;
     }
 
     private Scene createMenu()
@@ -119,7 +135,7 @@ public class MenuFX {
         Title title = new Title("The Game");
         title.setTranslateX(75);
         title.setTranslateY(200);
-        
+
         MenuItem startMultiPlayerFind = new MenuItem("MULTIPLAYER - QUICK");
         startMultiPlayerFind.setOnMouseClicked(event ->
         {
