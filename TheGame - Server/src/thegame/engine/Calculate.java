@@ -38,7 +38,7 @@ public class Calculate {
         {
             sides.add(MapObject.sides.BOTTOM);
         }
-        if(sides.size() == 4)
+        if (sides.size() == 4)
         {
             sides.clear();
             sides.add(MapObject.sides.CENTER);
@@ -52,7 +52,7 @@ public class Calculate {
                     y2 -= m2.getH();
                     break;
                 case BOTTOM:
-                    y1 += m1.getH();
+                    y1 -= m1.getH();
                     break;
                 case LEFT:
                     x2 += m2.getW();
