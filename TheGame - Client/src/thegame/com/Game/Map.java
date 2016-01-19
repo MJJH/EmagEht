@@ -429,4 +429,64 @@ public class Map implements Serializable {
     {
         return lobby;
     }
+    
+    public MapObject GetTile(float x, float y, MapObject self)
+    {
+        // Find in enemies
+
+        for (Enemy mo : enemies)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in players
+        for (Player mo : players)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in objects
+        for (MapObject mo : objects)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in blocks
+        try
+        {
+            int bx = (int) Math.floor(x);
+            int by = (int) Math.ceil(y);
+            MapObject mo = blocks[by][bx];
+
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+
+        } catch (Exception e)
+        {
+        }
+        return null;
+    }
 }

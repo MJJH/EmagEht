@@ -21,6 +21,7 @@ import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Menu.Account;
+import thegame.engine.Calculate;
 import thegame.engine.Collision;
 import thegame.engine.Movement;
 import thegame.engine.Physics;
@@ -38,7 +39,7 @@ public class Player extends CharacterGame {
     private float spawnY;
     private Account account;
     private Character character;
-    
+
     private transient boolean toUpdate;
     public transient HashMap<String, Skin> skins;
 
@@ -84,15 +85,21 @@ public class Player extends CharacterGame {
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();
-                try
+                used = System.currentTimeMillis();
+                MapObject click = playing.GetTile(x, y, this);
+                float test = Calculate.distance(this,click);
+                if (click != null && h.type.range >= Calculate.distance(this,click))
                 {
-                    if (gameClientToServer.useTool(playing.getLobby().getID(), id, x, y))
+                    try
                     {
-                        Startup.hit.play();
+                        if (gameClientToServer.useTool(playing.getLobby().getID(), id, x, y))
+                        {
+                            Startup.hit.play();
+                        }
+                    } catch (RemoteException ex)
+                    {
+                        Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (RemoteException ex)
-                {
-                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -151,7 +158,7 @@ public class Player extends CharacterGame {
             //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
             skins.put("standRight", d);
-            
+
             Image d2 = new Image(Sets.sets.get("player"));
             d2.recolour(h);
             d2.flipHorizontal();
@@ -209,19 +216,26 @@ public class Player extends CharacterGame {
             updateHP(updatePlayer.getHP());
         }
     }
-    
-    public boolean Craft(Crafting to_craft) {
+
+    public boolean Craft(Crafting to_craft)
+    {
         Map<ObjectType, Integer> need = to_craft.recources;
-        for(ObjectType ot : need.keySet()) {
+        for (ObjectType ot : need.keySet())
+        {
             int left = need.get(ot);
             int i = 0;
-            while (left > 0 && i < 30) {
-                if(backpack[i].get(0).getType() == ot)
+            while (left > 0 && i < 30)
+            {
+                if (backpack[i].get(0).getType() == ot)
+                {
                     left -= backpack[i].size();
+                }
                 i++;
             }
             if (left > 0)
+            {
                 return false;
+            }
         }
         try
         {
@@ -235,16 +249,16 @@ public class Player extends CharacterGame {
     public void loadAfterRecieve(thegame.com.Game.Map play)
     {
         setMap(play);
-        for(MapObject holdObject: holding)
+        for (MapObject holdObject : holding)
         {
             holdObject.setType();
             holdObject.setMap(play);
         }
-        for(List<MapObject> listBP : backpack)
+        for (List<MapObject> listBP : backpack)
         {
-            if(listBP != null)
+            if (listBP != null)
             {
-                for(MapObject bpObject : listBP)
+                for (MapObject bpObject : listBP)
                 {
                     bpObject.setType();
                     bpObject.setMap(play);

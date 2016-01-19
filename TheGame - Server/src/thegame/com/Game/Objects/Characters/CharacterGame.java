@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
+import thegame.engine.Calculate;
 import thegame.engine.Collision;
 
 /**
@@ -478,7 +479,8 @@ public abstract class CharacterGame extends MapObject {
             {
                 used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
-                if (click != null && holding != null && h.type.range >= distance(click))
+                float test = Calculate.distance(this,click);
+                if (click != null && h.type.range >= Calculate.distance(this,click))
                 {
                     if (!(click instanceof Block))
                     {
