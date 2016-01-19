@@ -1,8 +1,16 @@
 package thegame.com.Game.Objects.Characters;
 
+import display.Image;
+import display.Sets;
+import display.Skin;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.paint.Color;
 import thegame.com.Game.Objects.*;
 import thegame.engine.Collision;
 
@@ -25,6 +33,8 @@ public abstract class CharacterGame extends MapObject {
     protected java.util.Map<ArmorType.bodyPart, Armor> armor;
     protected List<MapObject>[] backpack;
 
+    public transient HashMap<String, Skin> skins;
+    
     protected transient long used;
 
     public void walkRight()
@@ -222,16 +232,31 @@ public abstract class CharacterGame extends MapObject {
 
         Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
 
+        for(Skin i : this.skins.values())
+        {
+            try {
+                Image im = (Image)i;
+                if(armor.get(add.getArmorType().bodypart) != null)
+                    im.removeTexture(armor.get(add.getArmorType().bodypart).getType().texture);
+                im.addTexture(add.getType().texture);
+                // TODO RECOLOR
+            } catch (IOException ex) {
+                Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         if (armor.get(add.getArmorType().bodypart) == null)
         {
             armor.put(add.getArmorType().bodypart, add);
         } else
-        {
+        {   
             if (addToBackpack(armor.get(add.getArmorType().bodypart)))
             {
                 armor.put(add.getArmorType().bodypart, add);
+
             }
         }
+        
     }
 
     /**
@@ -243,6 +268,13 @@ public abstract class CharacterGame extends MapObject {
     {
         if (armor.get(partToUnequip) != null)
         {
+            for(Skin i : this.skins.values())
+            {
+                Image im = (Image)i;
+                if(armor.get(partToUnequip) != null)
+                    im.removeTexture(armor.get(partToUnequip).getType().texture);
+            }
+            
             addToBackpack(armor.get(partToUnequip));
             armor.put(partToUnequip, null);
         }
@@ -262,6 +294,19 @@ public abstract class CharacterGame extends MapObject {
 
         List<MapObject> add = removeFromBackpack(spot);
 
+        for(Skin i : this.skins.values())
+        {
+            try {
+                Image im = (Image)i;
+                if(holding != null && holding.size() > 0)
+                    im.removeTexture(holding.get(0).getType().texture);
+                im.addTexture(add.get(0).getType().texture);
+                // TODO RECOLOR
+            } catch (IOException ex) {
+                Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+         
         if (holding == null)
         {
             holding = add;
@@ -280,6 +325,12 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipTool()
     {
+        for(Skin i : this.skins.values())
+        {
+            Image im = (Image)i;
+            if(holding != null && holding.size() > 0)
+                im.removeTexture(holding.get(0).getType().texture);
+        }
         if (holding != null)
         {
             for (MapObject mo : holding)
@@ -440,6 +491,66 @@ public abstract class CharacterGame extends MapObject {
             {
                 equipTool(spot);
             }
+        }
+    }
+    
+    @Override
+    public Skin getSkin()
+    {
+        try
+        {
+            if (skins == null)
+            {
+                createSkin();
+            }
+
+            if (direction == sides.RIGHT)
+            {
+                return skins.get("standRight");
+            } else
+            {
+                return skins.get("standLeft");
+            }
+        } catch (Exception exc)
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public void createSkin()
+    {
+        try
+        {
+            skins = new HashMap<>();
+            Color[] h = new Color[]
+            {
+                new Color(0, 0, 0, 1),
+                new Color(0.26, 0.15, 0.065, 1),
+                new Color(0.36, 0.205, 0.095, 1),
+                new Color(0.42, 0.29, 0.195, 1),
+                new Color(0.445, 0.355, 0.29, 1),
+                new Color(1, 1, 1, 1)
+            };
+
+            Image d = new Image(Sets.sets.get("player"));
+
+            d.recolour(h);
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 40);
+
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
+            //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
+            skins.put("standRight", d);
+            
+            Image d2 = new Image(Sets.sets.get("player"));
+            d2.recolour(h);
+            d2.flipHorizontal();
+
+            skins.put("standLeft", d2);
+
+        } catch (IOException ex)
+        {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

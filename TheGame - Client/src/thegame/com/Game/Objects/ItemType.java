@@ -25,7 +25,7 @@ public class ItemType extends ObjectType {
     
     public ItemType(String name, int width, int height, iTexture skin, Color[] colors) throws IOException
     {
-        super(name, new Image(skin){{recolour(colors);}});
+        super(name, skin, colors);
         this.width = width;
         this.height = height;
         

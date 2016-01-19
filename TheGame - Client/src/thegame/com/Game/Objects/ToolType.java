@@ -48,11 +48,7 @@ public class ToolType extends ObjectType {
      */
     public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, iTexture skin, Color[] colors) throws IOException
     {
-        super(name, new Image(skin) {
-            {
-                recolour(colors);
-            }
-        });
+        super(name, skin, colors);
         this.strength = strength;
         this.speed = speed;
         this.range = range;

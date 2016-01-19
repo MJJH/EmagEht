@@ -24,11 +24,7 @@ public class ArmorType extends ObjectType {
 
     public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodypart, iTexture skin, Color[] colors) throws IOException
     {
-        super(name, new Image(skin) {
-            {
-                recolour(colors);
-            }
-        });
+        super(name, skin, colors);
         this.multiplier = multiplier;
         this.reqLvl = reqLvl;
         this.bodypart = bodypart;

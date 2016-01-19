@@ -13,6 +13,10 @@ public abstract class Skin implements Cloneable {
 
     protected int height;
     protected int width;
+    protected int offsetTop;
+    protected int offsetLeft;
+    protected int offsetRight;
+    protected int offsetBottom;
 
     public abstract javafx.scene.image.Image show();
 
@@ -34,6 +38,10 @@ public abstract class Skin implements Cloneable {
     public void setWidth(int width)
     {
         this.width = width;
+    }
+    
+    public int[] getOffset() {
+        return new int[] { offsetTop, offsetLeft, offsetBottom, offsetRight };
     }
 
     @Override

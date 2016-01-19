@@ -40,7 +40,7 @@ public class BlockType extends ObjectType {
      */
     public BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid, iTexture skin, Color[] colors) throws IOException
     {
-        super(name, new Image(skin){{recolour(colors);}});
+        super(name, skin, colors);
         this.strength = strength;
         this.reqToolLvl = reqLvl;
         this.reqTool = req;

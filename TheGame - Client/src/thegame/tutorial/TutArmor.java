@@ -5,15 +5,15 @@
  */
 package thegame.tutorial;
 
-import thegame.com.Game.Objects.Tool;
-import thegame.com.Game.Objects.ToolType;
+import thegame.com.Game.Objects.Armor;
+import thegame.com.Game.Objects.ArmorType;
 
 /**
  *
  * @author Martijn
  */
-public class TutTool extends Tool {
-    public TutTool(ToolType t, Tutorial w) {
+public class TutArmor extends Armor {
+    public TutArmor(ArmorType t, Tutorial w) {
         this.type = t;
         
         this.playing = w;

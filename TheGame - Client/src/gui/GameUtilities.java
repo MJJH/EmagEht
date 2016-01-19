@@ -525,8 +525,9 @@ public class GameUtilities {
             g.fillRect(x, y, mo.getW() * config.block.val, mo.getH() * config.block.val);
         } else
         {
-            float divX = ((mo.getW() * config.block.val) - s.getWidth()) / 2;
+            float divX = ((mo.getW() * config.block.val) - (s.getWidth() - s.getOffset()[1] - s.getOffset()[3])) / 2;
             float divY = ((mo.getH() * config.block.val) - s.getHeight());
+            divX -= s.getOffset()[1];
 
             if (s instanceof display.Image || ((Animation) s).getFrame() == null)
             {

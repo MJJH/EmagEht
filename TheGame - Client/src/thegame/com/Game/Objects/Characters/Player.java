@@ -40,7 +40,6 @@ public class Player extends CharacterGame {
     private Character character;
     
     private transient boolean toUpdate;
-    public transient HashMap<String, Skin> skins;
 
     public void update()
     {
@@ -102,66 +101,6 @@ public class Player extends CharacterGame {
     {
         xPosition = x;
         yPosition = y;
-    }
-
-    @Override
-    public Skin getSkin()
-    {
-        try
-        {
-            if (skins == null)
-            {
-                createSkin();
-            }
-
-            if (direction == sides.RIGHT)
-            {
-                return skins.get("standRight");
-            } else
-            {
-                return skins.get("standLeft");
-            }
-        } catch (Exception exc)
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public void createSkin()
-    {
-        try
-        {
-            skins = new HashMap<>();
-            Color[] h = new Color[]
-            {
-                new Color(0, 0, 0, 1),
-                new Color(0.26, 0.15, 0.065, 1),
-                new Color(0.36, 0.205, 0.095, 1),
-                new Color(0.42, 0.29, 0.195, 1),
-                new Color(0.445, 0.355, 0.29, 1),
-                new Color(1, 1, 1, 1)
-            };
-
-            Image d = new Image(Sets.sets.get("player"));
-
-            d.recolour(h);
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 40);
-
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
-            //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
-            skins.put("standRight", d);
-            
-            Image d2 = new Image(Sets.sets.get("player"));
-            d2.recolour(h);
-            d2.flipHorizontal();
-
-            skins.put("standLeft", d2);
-
-        } catch (IOException ex)
-        {
-            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public void knockBack(float hSpeed, float vSpeed)

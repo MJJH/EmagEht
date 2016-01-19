@@ -13,11 +13,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import thegame.com.Game.Objects.Armor;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
+import thegame.com.Game.Objects.ToolType;
 import thegame.engine.Collision;
 import thegame.engine.Movement;
 import thegame.engine.Physics;
@@ -37,7 +40,16 @@ public class TutPlayer extends Player {
         this.hp = 100;
         this.maxHP = 100;
         
+        
         backpack = new ArrayList[30];
+        addToBackpack(new TutTool(ToolType.tooltypes.get("Flint"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Wooden Helmet"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Stone Helmet"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Steel Helmet"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Wooden Shield"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Wooden Greaves"), t));
+        this.addToBackpack(new TutArmor(ArmorType.armortypes.get("Wooden Chestplate"), t));
+        
         armor = new HashMap();
         
         sXDecay = 0.04f;
@@ -48,6 +60,9 @@ public class TutPlayer extends Player {
     }
 
     public void useTool(float x, float y) {
+        if(holding == null || holding.isEmpty())
+            return;
+                    
         if (holding.get(0) instanceof Tool)
         {
             Tool h = (Tool) holding.get(0);

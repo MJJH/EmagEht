@@ -12,7 +12,7 @@ public class Armor extends MapObject {
 
     private static final long serialVersionUID = 5529685098264757290L;
 
-    private ArmorType type;
+    protected ArmorType type;
 
     /**
      * The method to get the armor type.

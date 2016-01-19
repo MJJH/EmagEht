@@ -7,6 +7,7 @@ package display;
 
 import display.iTexture.Type;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -113,7 +114,7 @@ public class Image extends Skin {
         bI = ImageIO.read(new File(iTexture.path));
         WritableImage i;
 
-        if (texture instanceof Parts)
+        /*if (texture instanceof Parts)
         {
             Parts t = (Parts) texture;
 
@@ -130,17 +131,16 @@ public class Image extends Skin {
                 parts.put(t, new PartImage(i, 0, 0));
             }
 
-        } else if (texture instanceof Sets)
+        } else*/ 
+        if (texture instanceof Sets)
         {
             Sets s = (Sets) texture;
             for (CombineParts cp : s.parts)
             {
-                calculateNewSize(cp.part);
-                Parts parent = getParent(cp.part);
-
+                Point p = calculateNewSize(cp.part);
 
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, parent.getConnectX() - cp.part.getConnectX() + parts.get(parent).x, parent.getConnectY() - cp.part.getConnectY() + parts.get(parent).y));
+                parts.put(cp.part, new PartImage(i, p.x, p.y));
             }
         }
 
@@ -384,39 +384,47 @@ public class Image extends Skin {
         return null;
     }
 
-    private void calculateNewSize(Parts t)
+    private Point calculateNewSize(Parts t)
     {
         Parts parent = getParent(t);
-
-        int difTop = 0, difBot = 0, difLeft = 0, difRight = 0;
-        if (parent != null)
+        PartImage par = parts.get(parent);
+        
+        int x = par.x - ( parent.getConnectX() - t.getConnectX() );
+        int y = par.y - ( parent.getConnectY() - t.getConnectY() );
+        int val;
+        if(x < 0)
         {
-            if (parent.getConnectY() - t.getConnectY() < 0)
+            val = Math.abs(x);
+            width += val;
+            x += val;
+            for(PartImage p : parts.values())
             {
-                difTop = Math.abs(parent.getConnectY() - t.getConnectY());
+                p.x += val;
             }
-            if (parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()) > height)
-            {
-                difBot = Math.abs(parent.getY() + parent.getConnectY() + (t.getHeight() - t.getConnectY()));
-            }
-            if (parent.getConnectX() - t.getConnectX() < 0)
-            {
-                difLeft = Math.abs(parent.getConnectX() - t.getConnectX());
-            }
-            if (parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()) < width)
-            {
-                difRight = Math.abs(parent.getX() + parent.getConnectX() + (t.getWidth() - t.getConnectX()));
-            }
-
-            for (PartImage p : parts.values())
-            {
-                p.x += difLeft;
-                p.y += difTop;
-            }
-
-            height += difTop + difBot;
-            width += difLeft + difRight;
+            offsetLeft = val;
         }
+        if(x + t.getWidth() > width) 
+        {
+            offsetRight = x + t.getWidth() - width;
+            width = x + t.getWidth();
+        }
+        if(y < 0)
+        {
+            val = Math.abs(y);
+            height += val;
+            y += val;
+            for(PartImage p : parts.values())
+            {
+                p.y += val;
+            }
+            offsetTop = val;
+        }
+        if(y + t.getHeight() > height)
+        {
+            offsetBottom = y + t.getHeight() - height;
+            height = y + t.getHeight();
+        }
+        return new Point(x, y);
     }
 
     public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value)
@@ -445,7 +453,13 @@ public class Image extends Skin {
 
     public void removeTexture(iTexture it)
     {
-        parts.remove(it);
+        if(it instanceof Sets)
+        {
+            for(CombineParts p : ((Sets) it).parts)
+                parts.remove(p.part);
+        } else {
+            parts.remove(it);
+        }
         repaint();
     }
     
