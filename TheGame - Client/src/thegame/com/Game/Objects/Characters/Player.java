@@ -21,6 +21,7 @@ import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Particle;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Menu.Account;
+import thegame.engine.Calculate;
 import thegame.engine.Collision;
 import thegame.engine.Movement;
 import thegame.engine.Physics;
@@ -83,15 +84,21 @@ public class Player extends CharacterGame {
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();
-                try
+                used = System.currentTimeMillis();
+                MapObject click = playing.GetTile(x, y, this);
+                float test = Calculate.distance(this,click);
+                if (click != null && h.type.range >= Calculate.distance(this,click))
                 {
-                    if (gameClientToServer.useTool(playing.getLobby().getID(), id, x, y))
+                    try
                     {
-                        Startup.hit.play();
+                        if (gameClientToServer.useTool(playing.getLobby().getID(), id, x, y))
+                        {
+                            Startup.hit.play();
+                        }
+                    } catch (RemoteException ex)
+                    {
+                        Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (RemoteException ex)
-                {
-                    Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
