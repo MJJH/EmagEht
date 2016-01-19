@@ -57,7 +57,7 @@ public class GameFX {
 
     // server
     private Registry server;
-    private IGameServerToClientListener listener;
+    private IGameServerToClientListener gameServerToClientListener;
     public IGameClientToServer gameClientToServer;
 
     private List<KeyCode> keys = new ArrayList<>();
@@ -99,9 +99,8 @@ public class GameFX {
             }
             System.exit(0);
         });
-        
-        primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>()
-        {
+
+        primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
             {
@@ -114,7 +113,7 @@ public class GameFX {
         this.me = me;
         this.play = play;
         this.gameClientToServer = gameClientToServer;
-        this.listener = gameServerToClientListener;
+        this.gameServerToClientListener = gameServerToClientListener;
 
         stages.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11, KeyCombination.SHORTCUT_DOWN));
         stages.setFullScreenExitHint("");
@@ -336,17 +335,18 @@ public class GameFX {
 
     private void clickHandler(double clickX, double clickY)
     {
-        if(ui.isMenu())
+        if (ui.isMenu())
         {
+            stopTimers();
             try
             {
-                gameClientToServer.leaveGame(listener);
+                gameClientToServer.leaveGame(gameServerToClientListener);
             } catch (RemoteException ex)
             {
                 Logger.getLogger(GameFX.class.getName()).log(Level.SEVERE, null, ex);
             }
             music.stop();
-            new MenuFX(stages, myAccount);
+            new MenuFX(stages, myAccount, true);
             return;
         }
         if (ui.isInventory())
@@ -431,42 +431,22 @@ public class GameFX {
 
     public void connectionLoss()
     {
+        stopTimers();
+        music.stop();
+
+        new LoginFX(stages);
+
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Connectionn loss");
+        alert.setTitle("Connection lost");
         alert.setHeaderText("Connection to server lost");
         alert.setContentText("You lost the connection to the server. Please try again in a minute.");
         alert.showAndWait();
-        System.exit(0);
     }
 
-    /*
-     public void connectionLoss()
-     {
-     myAccount = null;
-     play = null;
-     me = null;
-     server = null;
-     gameServerToClientListener = null;
-     gameClientToServer = null;
-     keys = new ArrayList<>();
-     draw.stop();
-     movement.cancel();
-     sound.stop();
-     sound = null;
-
-     Alert alert = new Alert(AlertType.ERROR);
-     alert.setTitle("Connectionn loss");
-     alert.setHeaderText("Connection to server lost");
-     alert.setContentText("You lost the connection to the server. Please try again in a minute.");
-     alert.showAndWait();
-        
-     try
-     {
-     start(stages);
-     } catch (IOException ex)
-     {
-     Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
-     }
-     }
-     */
+    public void stopTimers()
+    {
+        draw.stop();
+        movement.cancel();
+        update.cancel();
+    }
 }

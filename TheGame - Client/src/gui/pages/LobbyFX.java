@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import thegame.GameServerToClientListener;
 import thegame.LobbyServerToClientListener;
 import thegame.Startup;
+import static thegame.Startup.music;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
@@ -164,7 +165,8 @@ public class LobbyFX {
                 splash.countTill(100);
                 Platform.runLater(() ->
                 {
-                    startagame(primaryStage);
+                    
+                    play.setGameFX(new GameFX(primaryStage, me, myAccount, play, gameClientToServer, gameServerToClientListener));
                 });
             } catch (NotBoundException ex)
             {
@@ -179,11 +181,6 @@ public class LobbyFX {
             }
         }, "updateListenerThread");
         updateListenerThread.start();
-    }
-
-    public void startagame(Stage primaryStage)
-    {
-        new GameFX(primaryStage, me, myAccount, play, gameClientToServer, gameServerToClientListener);
     }
 
     private void loadingScreen(Stage primaryStage)
@@ -227,6 +224,8 @@ public class LobbyFX {
 
     public void stopGame()
     {
+        music.stop();
+        play.getGameFX().stopTimers();
         play = null;
         me = null;
         server = null;

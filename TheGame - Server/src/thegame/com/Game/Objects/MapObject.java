@@ -266,16 +266,6 @@ public abstract class MapObject implements Callable<Boolean>, Serializable {
         return sYIncrease;
     }
 
-    public float distance(MapObject to)
-    {
-        float x1 = this.xPosition + this.width / 2;
-        float x2 = to.xPosition + to.width / 2;
-        float y1 = this.yPosition + this.height / 2;
-        float y2 = to.yPosition + to.height / 2;
-
-        return (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    }
-
     public abstract void hit(Tool used, sides hitDirection);
 
     @Override

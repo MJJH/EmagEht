@@ -1,5 +1,6 @@
 package thegame.com.Game;
 
+import gui.pages.GameFX;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
@@ -51,6 +52,7 @@ public class Map implements Serializable {
     protected transient Player me;
     private transient IGameClientToServer gameClientToServer;
     private transient gui.pages.LobbyFX lobbyFX;
+    private transient gui.pages.GameFX gameFX;
     private transient List<Message> chatMessages;
 
     public void loadAfterRecieve(IGameClientToServer gameClientToServer, Account myAccount, Player me, gui.pages.LobbyFX lobbyFX)
@@ -368,7 +370,7 @@ public class Map implements Serializable {
                 System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
                 Platform.runLater(() ->
                 {
-                    lobbyFX.connectionLoss();
+                    gameFX.connectionLoss();
                 });
             }
         }
@@ -424,9 +426,79 @@ public class Map implements Serializable {
     {
         return lobbyFX;
     }
+    
+    public void setGameFX(GameFX gameFX)
+    {
+        this.gameFX = gameFX;
+    }
+    
+    public GameFX getGameFX()
+    {
+        return gameFX;
+    }
 
     public Lobby getLobby()
     {
         return lobby;
+    }
+    
+    public MapObject GetTile(float x, float y, MapObject self)
+    {
+        // Find in enemies
+
+        for (Enemy mo : enemies)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in players
+        for (Player mo : players)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in objects
+        for (MapObject mo : objects)
+        {
+            if (mo.equals(self) || mo.getS() == 0)
+            {
+                continue;
+            }
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+        }
+
+        // Find in blocks
+        try
+        {
+            int bx = (int) Math.floor(x);
+            int by = (int) Math.ceil(y);
+            MapObject mo = blocks[by][bx];
+
+            if (mo.getX() <= x && mo.getX() + mo.getW() >= x && mo.getY() >= y && mo.getY() - mo.getH() <= y)
+            {
+                return mo;
+            }
+
+        } catch (Exception e)
+        {
+        }
+        return null;
     }
 }
