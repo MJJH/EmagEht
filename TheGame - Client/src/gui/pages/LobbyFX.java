@@ -22,9 +22,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -65,6 +69,13 @@ public class LobbyFX {
 
     private List<KeyCode> keys = new ArrayList<>();
     private SplashScreen splash;
+    private double width;
+    private double height;
+    private CheckBox cbchar1;
+    private CheckBox cbchar2;
+    private CheckBox cbchar3;
+    private CheckBox cbchar4;
+    private Button back;
 
     public LobbyFX(Stage primaryStage, Lobby lobby, Account account, Registry lobbyServer, ILobbyClientToServer lobbyClientToServer, LobbyServerToClientListener lobbyServerToClientListener)
     {
@@ -99,14 +110,66 @@ public class LobbyFX {
             System.exit(0);
         });
 
-        StackPane root = new StackPane();
+        AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
         final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        height = primaryStage.getHeight();
+        width = primaryStage.getWidth();
         primaryStage.setTitle("Lobby");
         primaryStage.setScene(scene);
         primaryStage.show();
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
+        Label character1 = new Label("Character1");
+        Label character2 = new Label("Character2");
+        Label character3 = new Label("Character3");
+        Label character4 = new Label("Character4");
+        
+         cbchar1 = new CheckBox();
+         cbchar2 = new CheckBox();
+         cbchar3 = new CheckBox();
+         cbchar4 = new CheckBox();
+        
+        AnchorPane.setLeftAnchor(cbchar1, width * 0.1);        
+        AnchorPane.setTopAnchor(cbchar1, height * 0.3);
+        root.getChildren().add(cbchar1);
+        AnchorPane.setTopAnchor(character1, height * 0.3);
+        AnchorPane.setLeftAnchor(character1, width * 0.15);
+        root.getChildren().add(character1);
+ 
+        AnchorPane.setLeftAnchor(cbchar2, width * 0.1);        
+        AnchorPane.setTopAnchor(cbchar2, height * 0.35);
+        root.getChildren().add(cbchar2);
+        AnchorPane.setTopAnchor(character2, height * 0.35);
+        AnchorPane.setLeftAnchor(character2, width * 0.15);
+        root.getChildren().add(character2);
+
+        AnchorPane.setLeftAnchor(cbchar3, width * 0.1);        
+        AnchorPane.setTopAnchor(cbchar3, height * 0.4);
+        root.getChildren().add(cbchar3);
+        AnchorPane.setTopAnchor(character3, height * 0.4);
+        AnchorPane.setLeftAnchor(character3, width * 0.15);
+        root.getChildren().add(character3);
+  
+        AnchorPane.setLeftAnchor(cbchar4, width * 0.1);        
+        AnchorPane.setTopAnchor(cbchar4, height * 0.45);
+        root.getChildren().add(cbchar4);
+        AnchorPane.setTopAnchor(character4, height * 0.45);
+        AnchorPane.setLeftAnchor(character4, width * 0.15);
+        root.getChildren().add(character4);
+        
+        cbchar1.setDisable(true);
+        cbchar2.setDisable(true);
+        cbchar3.setDisable(true);
+        cbchar4.setDisable(true);
+        
+        back = new Button("Back");
+
+        AnchorPane.setLeftAnchor(back,width * 0.95);
+        root.getChildren().add(back);
+        
+
+        
     }
 
     private final EventHandler<MouseEvent> mouseListener = (MouseEvent event) ->
@@ -120,6 +183,7 @@ public class LobbyFX {
     private void clickHandler(double clickX, double clickY)
     {
         //GUI CLICK
+        cbchar1.setSelected(true);
         checkReady();
     }
 
