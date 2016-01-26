@@ -8,6 +8,7 @@ package thegame;
 import java.rmi.RemoteException;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -245,6 +246,58 @@ public class GameClientToServerHandler implements IGameClientToServer {
             if(player.getID() == playerID)
             {
                 return player.interactWithBackpack(spot, action);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unequipTool(int lobbyID, int playerID) throws RemoteException
+    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return false;
+        }
+        for(Player player : map.getPlayers())
+        {
+            if(player.getID() == playerID)
+            {
+                return player.unequipTool();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unequipArmor(int lobbyID, int playerID, ArmorType.bodyPart partToUnequip) throws RemoteException
+    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return false;
+        }
+        for(Player player : map.getPlayers())
+        {
+            if(player.getID() == playerID)
+            {
+                return player.unequipArmor(partToUnequip);
             }
         }
         return false;

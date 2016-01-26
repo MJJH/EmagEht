@@ -9,6 +9,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
@@ -40,4 +41,8 @@ public interface IGameClientToServer extends Remote {
     public boolean craft(int lobbyID, int playerID, Crafting to_craft) throws RemoteException;
     
     public boolean interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException;
+    
+    public boolean unequipTool(int lobbyID, int playerID) throws RemoteException;
+    
+    public boolean unequipArmor(int lobbyID, int playerID, ArmorType.bodyPart partToUnequip) throws RemoteException;
 }

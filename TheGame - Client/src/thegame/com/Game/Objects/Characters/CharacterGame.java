@@ -278,19 +278,25 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipArmor(ArmorType.bodyPart partToUnequip)
     {
-        if (armor.get(partToUnequip) != null)
+        try
         {
-            for (Skin i : this.skins.values())
+            if (armor.get(partToUnequip) != null && playing.getGameClientToServer().unequipArmor(playing.getLobby().getID(), id, partToUnequip))
             {
-                Image im = (Image) i;
-                if (armor.get(partToUnequip) != null)
+                for (Skin i : this.skins.values())
                 {
-                    im.removeTexture(armor.get(partToUnequip).getType().texture);
+                    Image im = (Image) i;
+                    if (armor.get(partToUnequip) != null)
+                    {
+                        im.removeTexture(armor.get(partToUnequip).getType().texture);
+                    }
                 }
-            }
 
-            addToBackpack(armor.get(partToUnequip));
-            armor.put(partToUnequip, null);
+                addToBackpack(armor.get(partToUnequip));
+                armor.put(partToUnequip, null);
+            }
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -342,23 +348,29 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipTool()
     {
-        for (Skin i : this.skins.values())
+        try
         {
-            Image im = (Image) i;
-            if (holding != null && holding.size() > 0)
+            if (holding != null && playing.getGameClientToServer().unequipTool(playing.getLobby().getID(), id))
             {
-                im.removeTexture(holding.get(0).getType().texture);
+                for (MapObject mo : holding)
+                {
+                    addToBackpack(mo);
+                }
+                holding = null;
+                
+                for (Skin i : this.skins.values())
+                {
+                    Image im = (Image) i;
+                    if (holding != null && holding.size() > 0)
+                    {
+                        im.removeTexture(holding.get(0).getType().texture);
+                    }
+                }
             }
-        }
-        if (holding != null)
+        } catch (RemoteException ex)
         {
-            for (MapObject mo : holding)
-            {
-                addToBackpack(mo);
-            }
-            holding = null;
+            Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**
