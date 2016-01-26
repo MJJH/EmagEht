@@ -79,7 +79,7 @@ public class Player extends CharacterGame {
 
     public void useTool(float x, float y, IGameClientToServer gameClientToServer)
     {
-        if (holding.get(0) instanceof Tool)
+        if (holding != null && holding.get(0) instanceof Tool)
         {
             Tool h = (Tool) holding.get(0);
             if (System.currentTimeMillis() - used >= h.type.speed)

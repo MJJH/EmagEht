@@ -78,25 +78,26 @@ public class MenuFX {
             try
             {
                 connectToLobby();
-
-                Platform.runLater(() ->
+                if (signedIn)
                 {
-                    primaryStage.setTitle("Menu");
-                    primaryStage.setScene(createMenu());
-                    primaryStage.show();
-                });
+                    Platform.runLater(() ->
+                    {
+                        primaryStage.setTitle("Menu");
+                        primaryStage.setScene(createMenu());
+                        primaryStage.show();
+                    });
+                }
             } catch (RemoteException | NotBoundException ex)
             {
                 Platform.runLater(() ->
                 {
                     new LoginFX(primaryStage);
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Can't connect to server");
                     alert.setHeaderText("Server can't be found");
                     alert.setContentText("You can't connect to the server. Please try again in a minute.");
                     alert.showAndWait();
-                    return;
                 });
+                return;
             }
         });
         connectThread.start();
@@ -110,12 +111,14 @@ public class MenuFX {
         UnicastRemoteObject.exportObject(lobbyServerToClientListener, config.lobbyServerToClientListenerPort);
         if (!signedIn && !lobbyClientToServer.signIn(account, lobbyServerToClientListener))
         {
-            new LoginFX(primaryStage);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Can't connect to server");
-            alert.setHeaderText("Server can't be found");
-            alert.setContentText("You can't connect to the server. Please try again in a minute.");
-            alert.showAndWait();
+            Platform.runLater(() ->
+            {
+                new LoginFX(primaryStage);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Already logged in");
+                alert.setContentText("You can't login twice.");
+                alert.showAndWait();
+            });
             return;
         }
         signedIn = true;
