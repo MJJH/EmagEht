@@ -5,6 +5,7 @@
  */
 package thegame.com.Menu;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -168,7 +169,7 @@ public class LobbyTest {
      * Test of generateMap method, of class Lobby.
      */
     @Test
-    public void testGenerateMap()
+    public void testGenerateMap() throws RemoteException
     {
         System.out.println("generateMap");
         Lobby instance = new Lobby();
@@ -213,7 +214,7 @@ public class LobbyTest {
      * Test of getMap method, of class Lobby.
      */
     @Test
-    public void testGetMap()
+    public void testGetMap() throws RemoteException
     {
         System.out.println("getMap");
         Lobby instance = new Lobby();
@@ -235,6 +236,37 @@ public class LobbyTest {
         int expResult = 0;
         int result = instance.getID();
         assertEquals("The ID isn't correct.", expResult, result);
+    }
+
+    /**
+     * Test of sendMessage method, of class Lobby.
+     */
+    @Test
+    public void testSendMessage() {
+        System.out.println("sendMessage");
+        Account sender = null;
+        String message = "";
+        Lobby instance = new Lobby();
+        boolean expResult = false;
+        boolean result = instance.sendMessage(sender, message);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of joinLobby method, of class Lobby.
+     */
+    @Test
+    public void testJoinLobby() {
+        System.out.println("joinLobby");
+        Account account = null;
+        Lobby instance = new Lobby();
+        boolean expResult = false;
+        boolean result = instance.joinLobby(account);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
     
 }

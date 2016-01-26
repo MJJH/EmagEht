@@ -5,7 +5,9 @@
  */
 package thegame.com.Game.Objects.Characters;
 
+import display.Skin;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,7 +16,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import thegame.com.Game.Objects.Armor;
+import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Tool;
 
 /**
@@ -63,187 +67,284 @@ public class CharacterGameTest {
     }
 
     /**
+     * Test of walkRight method, of class CharacterGame.
+     */
+    @Test
+    public void testWalkRight() {
+        System.out.println("walkRight");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.walkRight();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of walkLeft method, of class CharacterGame.
+     */
+    @Test
+    public void testWalkLeft() {
+        System.out.println("walkLeft");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.walkLeft();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of jump method, of class CharacterGame.
+     */
+    @Test
+    public void testJump() {
+        System.out.println("jump");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.jump();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of stopJump method, of class CharacterGame.
+     */
+    @Test
+    public void testStopJump() {
+        System.out.println("stopJump");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.stopJump();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
      * Test of addToBackpack method, of class CharacterGame.
      */
     @Test
-    public void testAddToBackpack()
-    {
+    public void testAddToBackpack_MapObject() {
         System.out.println("addToBackpack");
         MapObject object = null;
-        CharacterGame instance = null;
+        CharacterGame instance = new CharacterGameImpl();
         boolean expResult = false;
         boolean result = instance.addToBackpack(object);
         assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of dropItem method, of class CharacterGame.
+     * Test of removeFromBackpack method, of class CharacterGame.
      */
     @Test
-    public void testDropItem()
-    {
-        System.out.println("dropItem");
+    public void testRemoveFromBackpack_ObjectType_int() {
+        System.out.println("removeFromBackpack");
+        ObjectType ot = null;
+        int amount = 0;
+        CharacterGame instance = new CharacterGameImpl();
+        List<MapObject> expResult = null;
+        List<MapObject> result = instance.removeFromBackpack(ot, amount);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of removeFromBackpack method, of class CharacterGame.
+     */
+    @Test
+    public void testRemoveFromBackpack_int_int() {
+        System.out.println("removeFromBackpack");
+        int spot = 0;
+        int amount = 0;
+        CharacterGame instance = new CharacterGameImpl();
+        List<MapObject> expResult = null;
+        List<MapObject> result = instance.removeFromBackpack(spot, amount);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of removeFromBackpack method, of class CharacterGame.
+     */
+    @Test
+    public void testRemoveFromBackpack_int() {
+        System.out.println("removeFromBackpack");
+        int spot = 0;
+        CharacterGame instance = new CharacterGameImpl();
+        List<MapObject> expResult = null;
+        List<MapObject> result = instance.removeFromBackpack(spot);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getMaxHP method, of class CharacterGame.
+     */
+    @Test
+    public void testGetMaxHP() {
+        System.out.println("getMaxHP");
+        CharacterGame instance = new CharacterGameImpl();
+        int expResult = 0;
+        int result = instance.getMaxHP();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setArmor method, of class CharacterGame.
+     */
+    @Test
+    public void testSetArmor() {
+        System.out.println("setArmor");
+        Map<ArmorType.bodyPart, Armor> armor = null;
+        CharacterGame instance = new CharacterGameImpl();
+        instance.setArmor(armor);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDirection method, of class CharacterGame.
+     */
+    @Test
+    public void testGetDirection() {
+        System.out.println("getDirection");
+        CharacterGame instance = new CharacterGameImpl();
+        MapObject.sides expResult = null;
+        MapObject.sides result = instance.getDirection();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setDirection method, of class CharacterGame.
+     */
+    @Test
+    public void testSetDirection() {
+        System.out.println("setDirection");
+        MapObject.sides direction = null;
+        CharacterGame instance = new CharacterGameImpl();
+        instance.setDirection(direction);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addToBackpack method, of class CharacterGame.
+     */
+    @Test
+    public void testAddToBackpack_MapObject_int() {
+        System.out.println("addToBackpack");
         MapObject object = null;
-        CharacterGame instance = null;
-        Map expResult = null;
-        Map result = instance.dropItem(object);
+        int spot = 0;
+        CharacterGame instance = new CharacterGameImpl();
+        boolean expResult = false;
+        boolean result = instance.addToBackpack(object, spot);
         assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of equipArmor method, of class CharacterGame.
+     * Test of addToEmptyBackpack method, of class CharacterGame.
      */
     @Test
-    public void testEquipArmor()
-    {
-        System.out.println("equipArmor");
-        Armor armorAdd = null;
-        CharacterGame instance = null;
-        instance.equipArmor(armorAdd);
-    }
-
-    /**
-     * Test of unequipArmor method, of class CharacterGame.
-     */
-    @Test
-    public void testUnequipArmor()
-    {
-        System.out.println("unequipArmor");
-        Armor armorDel = null;
-        CharacterGame instance = null;
-        instance.unequipArmor(armorDel);
-    }
-
-    /**
-     * Test of equipTool method, of class CharacterGame.
-     */
-    @Test
-    public void testEquipTool()
-    {
-        System.out.println("equipTool");
-        Tool toolAdd = null;
-        CharacterGame instance = null;
-        //instance.equipTool(toolAdd);
-    }
-
-    /**
-     * Test of unequipTool method, of class CharacterGame.
-     */
-    @Test
-    public void testUnequipTool()
-    {
-        System.out.println("unequipTool");
-        CharacterGame instance = null;
-        instance.unequipTool();
-    }
-
-    /**
-     * Test of updateHP method, of class CharacterGame.
-     */
-    @Test
-    public void testUpdateHP()
-    {
-        /*System.out.println("updateHP");
-        int change = 40;
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        int expResult = 40;
-        int result = instance.updateHP(change);
-        assertEquals(expResult, result);*/
-    }
-
-    /**
-     * Test of getHP method, of class CharacterGame.
-     */
-    @Test
-    public void testGetHP()
-    {
-        /*System.out.println("getHP");
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        int expResult = 100;
-        int result = instance.getHP();
-        assertEquals(expResult, result);*/
-    }
-
-    /**
-     * Test of getName method, of class CharacterGame.
-     */
-    @Test
-    public void testGetName()
-    {
-        /*System.out.println("getName");
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        String expResult = "John";
-        String result = instance.getName();
-        assertEquals(expResult, result);*/
-    }
-
-    /**
-     * Test of getSkills method, of class CharacterGame.
-     */
-    @Test
-    public void testGetSkills()
-    {
-        /*System.out.println("getSkills");
-        
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        
-        Map<SkillType, Integer> expResult = new EnumMap<SkillType, Integer>(SkillType.class);
-        Map<SkillType, Integer> result = instance.getSkills();
-        
-        assertEquals(expResult, result);*/
-    }
-
-    /**
-     * Test of getSolid method, of class CharacterGame.
-     */
-    @Test
-    public void testGetSolid()
-    {
-        
-        /*System.out.println("getSolid");
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        float expResult = 0.0F;
-        float result = instance.getSolid();
-        assertEquals(expResult, result, 0.0);*/
-    }
-
-    /**
-     * Test of getArmor method, of class CharacterGame.
-     */
-    @Test
-    public void testGetArmor()
-    {
-        /*System.out.println("getArmor");
-        CharacterGame instance = new CharacterGame("John", 100, null, 1, 1, null, 1, 1);
-        Map<String, Armor> expResult = null;
-        Map<String, Armor> result = instance.getArmor();
-        assertEquals(expResult, result);*/
-    }
-
-    /**
-     * Test of getHolding method, of class CharacterGame.
-     */
-    @Test
-    public void testGetHolding()
-    {
-        System.out.println("getHolding");
-        CharacterGame instance = null;
-        Tool expResult = null;
-        Tool result = instance.getHolding();
+    public void testAddToEmptyBackpack() {
+        System.out.println("addToEmptyBackpack");
+        MapObject object = null;
+        CharacterGame instance = new CharacterGameImpl();
+        boolean expResult = false;
+        boolean result = instance.addToEmptyBackpack(object);
         assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getBackpackMap method, of class CharacterGame.
+     * Test of interactWithBackpack method, of class CharacterGame.
      */
     @Test
-    public void testGetBackpackMap()
-    {
-        System.out.println("getBackpackMap");
-        CharacterGame instance = null;
-        Map<MapObject, Integer> expResult = null;
-        Map<MapObject, Integer> result = instance.getBackpackMap();
+    public void testInteractWithBackpack() {
+        System.out.println("interactWithBackpack");
+        int spot = 0;
+        CharacterGame instance = new CharacterGameImpl();
+        instance.interactWithBackpack(spot);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getSkin method, of class CharacterGame.
+     */
+    @Test
+    public void testGetSkin() {
+        System.out.println("getSkin");
+        CharacterGame instance = new CharacterGameImpl();
+        Skin expResult = null;
+        Skin result = instance.getSkin();
         assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of createSkin method, of class CharacterGame.
+     */
+    @Test
+    public void testCreateSkin() {
+        System.out.println("createSkin");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.createSkin();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setType method, of class CharacterGame.
+     */
+    @Test
+    public void testSetType() {
+        System.out.println("setType");
+        CharacterGame instance = new CharacterGameImpl();
+        instance.setType();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getType method, of class CharacterGame.
+     */
+    @Test
+    public void testGetType() {
+        System.out.println("getType");
+        CharacterGame instance = new CharacterGameImpl();
+        ObjectType expResult = null;
+        ObjectType result = instance.getType();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setHolding method, of class CharacterGame.
+     */
+    @Test
+    public void testSetHolding() {
+        System.out.println("setHolding");
+        List<MapObject> holding = null;
+        CharacterGame instance = new CharacterGameImpl();
+        instance.setHolding(holding);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    public class CharacterGameImpl extends CharacterGame {
+
+        @Override
+        public void update(MapObject update) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
     
 }

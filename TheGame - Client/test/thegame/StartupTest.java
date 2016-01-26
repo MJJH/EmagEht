@@ -12,58 +12,51 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import thegame.com.Game.Objects.ObjectType;
+import thegame.com.storage.Database;
 
 /**
  *
- * @author laure
+ * @author robin
  */
-public class Startup {
+public class StartupTest {
     
-    /**
-     *
-     */
-    public Startup()
-    {
+    public StartupTest() {
     }
     
-    /**
-     *
-     */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
     
-    /**
-     *
-     */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
     
-    /**
-     *
-     */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
     
-    /**
-     *
-     */
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
+    }
+
+    /**
+     * Test of main method, of class Startup.
+     */
+    @Test
+    public void testMain() {
+        System.out.println("main");
+        String[] args = null;
+        Startup.main(args);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
      * Test of start method, of class Startup.
      */
     @Test
-    public void testStart()
-    {
+    public void testStart() throws Exception {
         System.out.println("start");
         Stage primaryStage = null;
         Startup instance = new Startup();
@@ -73,14 +66,18 @@ public class Startup {
     }
 
     /**
-     * Test of main method, of class Startup.
+     * Test of getType method, of class Startup.
      */
     @Test
-    public void testMain()
-    {
-        System.out.println("main");
-        String[] args = null;
-        Startup.main(args);
+    public void testGetType() throws Exception {
+        System.out.println("getType");
+        Database db = null;
+        String type = "";
+        int id = 0;
+        Startup instance = new Startup();
+        ObjectType expResult = null;
+        ObjectType result = instance.getType(db, type, id);
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
