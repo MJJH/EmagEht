@@ -3,8 +3,8 @@ package thegame.com.Game.Objects;
 import display.Image;
 import display.IntColor;
 import display.Parts;
+import display.Sets;
 import display.Skin;
-import display.iTexture;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class BlockType extends ObjectType {
     public final int reqToolLvl;
     public final ToolType.toolType reqTool;
     public final float solid;
-    private iTexture texture;
+    private Sets texture;
 
     public final Color[] colors;
 
@@ -38,7 +38,7 @@ public class BlockType extends ObjectType {
      * @param btx
      * @param bty
      */
-    public BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid, iTexture skin, Color[] colors) throws IOException
+    public BlockType(String name, int strength, int reqLvl, ToolType.toolType req, float solid, Sets skin, Color[] colors) throws IOException
     {
         super(name, skin, colors);
         this.strength = strength;

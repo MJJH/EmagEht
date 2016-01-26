@@ -73,7 +73,7 @@ public class Frame {
         PixelWriter pw = image.getPixelWriter();
         PixelReader pr;
 
-        for (Parts p : original.getParts().keySet())
+        for (CombineParts p : original.getParts().keySet())
         {
             PartImage pi = original.getParts().get(p);
 
@@ -85,19 +85,9 @@ public class Frame {
             {
                 int rx = (int) Math.round(pi.image.getWidth() / 2);
 
-                /*if(p.getType() != iTexture.Type.BODY)
-                 {
-                 for(Parts tp : original.getParts().keySet()) {
-                 if(tp.getType() == iTexture.Type.BODY && tp.getPart() == p.getPart()) {
-                 PartImage tpi = original.getParts().get(tp);
-                 rx = (int) Math.round(tpi.image.getWidth() / 2 + tpi.x - pi.x);
-                 ry = (int) Math.round(tpi.y - pi.y);
-                 }
-                 }
-                 }*/
                 double rad = Math.toRadians((rotation.get(p) + 360) % 360);
 
-                Point size = getRotPoint((int) p.getWidth(), (int) p.getHeight(), 0, 0, rad);
+                Point size = getRotPoint((int) p.part.getWidth(), (int) p.part.getHeight(), 0, 0, rad);
 
                 //pi.x += p.getWidth()- size.x - zero.x;
                 //pi.y -= pi.image.getWidth() - size.y - zero.y;

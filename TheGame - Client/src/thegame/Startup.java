@@ -9,7 +9,6 @@ import display.CombineParts;
 import display.IntColor;
 import display.Parts;
 import display.Sets;
-import display.iTexture;
 import gui.pages.LoginFX;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -86,7 +85,7 @@ public class Startup extends Application {
         rs = db.executeUnsafeQuery(partsQuery);
         while (rs.next())
         {
-            new Parts(rs.getString("Name"), iTexture.Part.valueOf(rs.getString("Part")), rs.getBoolean("Body"), rs.getInt("X"), rs.getInt("Y"), rs.getInt("Width"), rs.getInt("Height"), rs.getInt("ConnectX"), rs.getInt("ConnectY"));
+            new Parts(rs.getString("Name"), display.iTexture.Part.valueOf(rs.getString("Part")), rs.getBoolean("Body"), rs.getInt("X"), rs.getInt("Y"), rs.getInt("Width"), rs.getInt("Height"), rs.getInt("ConnectX"), rs.getInt("ConnectY"));
         }
 
         // Sets
@@ -100,7 +99,7 @@ public class Startup extends Application {
             rsI = db.executeUnsafeQuery(setpartQuery);
             while (rsI.next())
             {
-                cb.add(new CombineParts(Parts.parts.get(rsI.getString("image")), rsI.getInt("place"), rsI.getInt("X"), rsI.getInt("Y")));
+                cb.add(new CombineParts(Parts.parts.get(rsI.getString("image")), rsI.getInt("place"), rsI.getInt("X"), rsI.getInt("Y"), rsI.getInt("place")));
             }
             new Sets(rs.getString("Name"), cb);
         }

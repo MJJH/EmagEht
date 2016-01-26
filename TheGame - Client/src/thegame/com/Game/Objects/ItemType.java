@@ -6,7 +6,7 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
-import display.iTexture;
+import display.Sets;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class ItemType extends ObjectType {
     public final int width;
     public final int height;
     
-    public ItemType(String name, int width, int height, iTexture skin, Color[] colors) throws IOException
+    public ItemType(String name, int width, int height, Sets skin, Color[] colors) throws IOException
     {
         super(name, skin, colors);
         this.width = width;

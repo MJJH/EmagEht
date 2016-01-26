@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
-import display.iTexture;
+import display.Sets;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class ArmorType extends ObjectType {
     public int reqLvl;
     public bodyPart bodypart;
 
-    public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodypart, iTexture skin, Color[] colors) throws IOException
+    public ArmorType(String name, int multiplier, int reqLvl, bodyPart bodypart, Sets skin, Color[] colors) throws IOException
     {
         super(name, skin, colors);
         this.multiplier = multiplier;

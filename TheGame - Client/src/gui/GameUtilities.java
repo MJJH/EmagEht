@@ -91,7 +91,7 @@ public class GameUtilities {
             heart = new display.Image(Sets.sets.get("heart"));
             shield = new display.Image(Sets.sets.get("shield"));
             shield.recolour(t);
-            head = new display.Image(Parts.parts.get("playerHead"));
+            head = new display.Image(Sets.sets.get("spikeHelmet"));
             head.recolour(t);
             body = new display.Image(Sets.sets.get("tShirt"));
             body.recolour(t);
@@ -670,19 +670,35 @@ public class GameUtilities {
         List<Crafting> toCraft = Crafting.recipes;
 
         int maxX = toCraft.size();
-        if (maxX > 10)
+        if (maxX > 8)
         {
-            maxX = 10;
+            maxX = 8;
+        }
+        
+        if(!toCraft.isEmpty()){
+            
+            g.setFill(guiBackground);
+            g.fillPolygon(new double[]{10, 50, 50}, new double[]{220, 200, 240}, 3);
+            
+            g.setStroke(Color.BLACK);
+            g.strokePolygon(new double[]{9, 51, 51}, new double[]{ 220, 199, 241}, 3);
+            g.strokePolygon(new double[]{11, 49, 49}, new double[]{ 220, 201, 239}, 3);
+            
+            g.setStroke(Color.LIGHTGRAY);
+            g.strokePolygon(new double[]{10, 50, 50}, new double[]{220, 200, 240}, 3);
+            
+
         }
 
         for (int x = 0; x < maxX; x++)
         {
+            int px = x+1;
             g.setFill(guiBackground);
-            g.fillRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);
+            g.fillRoundRect(10 + 50 * px, 200, 40, 40, 5, 5);
 
             g.setStroke(Color.BLACK);
-            g.strokeRoundRect(-1 + 10 + 50 * x, -1 + 200, 42, 42, 5, 5);
-            g.strokeRoundRect(1 + 10 + 50 * x, 1 + 200, 38, 38, 5, 5);
+            g.strokeRoundRect(-1 + 10 + 50 * px, -1 + 200, 42, 42, 5, 5);
+            g.strokeRoundRect(1 + 10 + 50 * px, 1 + 200, 38, 38, 5, 5);
 
             if (x == selected)
             {
@@ -691,16 +707,16 @@ public class GameUtilities {
             {
                 g.setStroke(Color.WHITE);
             }
-            g.strokeRoundRect(10 + 50 * x, 200, 40, 40, 5, 5);
+            g.strokeRoundRect(10 + 50 * px, 200, 40, 40, 5, 5);
 
             Skin i = toCraft.get(x + offset).crafting.skin;
             if (i != null)
             {
-                g.drawImage(i.show(), 10 + 50 * x + (40 - i.getWidth()) / 2, 200 + (40 - i.getHeight()) / 2);
+                g.drawImage(i.show(), 10 + 50 * px + (40 - i.getWidth()) / 2, 200 + (40 - i.getHeight()) / 2);
             } else
             {
                 g.setFill(Color.RED);
-                g.fillRect(10 + 50 * x + 10, 200 + 10, 20, 20);
+                g.fillRect(10 + 50 * px + 10, 200 + 10, 20, 20);
             }
         }
 
@@ -709,23 +725,23 @@ public class GameUtilities {
             for (int y = 0; y < toCraft.get(selected + offset).recources.size(); y++)
             {
                 g.setFill(guiBackground);
-                g.fillRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);
+                g.fillRoundRect(10 + 50 * (selected + 1), 245 + y * 35, 30, 30, 5, 5);
 
                 g.setStroke(Color.BLACK);
-                g.strokeRoundRect(-1 + 10 + 50 * (selected), -1 + 245 + y * 35, 32, 32, 5, 5);
-                g.strokeRoundRect(1 + 10 + 50 * (selected), 1 + 245 + y * 35, 28, 28, 5, 5);
+                g.strokeRoundRect(-1 + 10 + 50 * (selected + 1), -1 + 245 + y * 35, 32, 32, 5, 5);
+                g.strokeRoundRect(1 + 10 + 50 * (selected + 1), 1 + 245 + y * 35, 28, 28, 5, 5);
 
                 g.setStroke(Color.BLACK);
-                g.strokeRoundRect(10 + 50 * (selected), 245 + y * 35, 30, 30, 5, 5);
+                g.strokeRoundRect(10 + 50 * (selected + 1), 245 + y * 35, 30, 30, 5, 5);
 
                 Skin i = ((ObjectType) toCraft.get(selected + offset).recources.keySet().toArray()[y]).skin;
                 if (i != null)
                 {
-                    g.drawImage(i.show(), 10 + 50 * selected + (30 - i.getWidth()) / 2, 245 + y * 35 + (30 - i.getHeight()) / 2);
+                    g.drawImage(i.show(), 10 + 50 * (selected + 1) + (30 - i.getWidth()) / 2, 245 + y * 35 + (30 - i.getHeight()) / 2);
                 } else
                 {
                     g.setFill(Color.RED);
-                    g.fillRect(10 + 50 * selected + 5, 245 + y * 35 + 5, 20, 20);
+                    g.fillRect(10 + 50 * (selected + 1) + 5, 245 + y * 35 + 5, 20, 20);
                 }
 
                 if ((Integer) toCraft.get(selected + offset).recources.values().toArray()[y] > 1)
@@ -733,7 +749,7 @@ public class GameUtilities {
                     g.setFill(guiFontColor);
                     g.setFont(guiFont);
                     String t = (Integer) toCraft.get(selected + offset).recources.values().toArray()[y] + "";
-                    g.fillText(t, 10 + 50 * selected + 30 - ((t.length() - 1) * 5) - 8, 270 + y * 35);
+                    g.fillText(t, 10 + 50 * (selected + 1) + 30 - ((t.length() - 1) * 5) - 8, 270 + y * 35);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
-import display.iTexture;
+import display.Sets;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class ToolType extends ObjectType {
      * @param colors
      * @throws java.io.IOException
      */
-    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, iTexture skin, Color[] colors) throws IOException
+    public ToolType(String name, int strength, float speed, float range, int reqLvl, toolType type, float kb, Sets skin, Color[] colors) throws IOException
     {
         super(name, skin, colors);
         this.strength = strength;

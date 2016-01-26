@@ -45,8 +45,9 @@ public class Animation extends Skin {
     public void addFrameByPart(Part p, int angle)
     {
         Frame f = new Frame(image);
-        for (Parts pa : image.getParts().keySet())
+        for (CombineParts cp : image.getParts().keySet())
         {
+            Parts pa = cp.part;
             if (pa.getPart() == p)
             {
                 f.getRotations().put(pa, angle);

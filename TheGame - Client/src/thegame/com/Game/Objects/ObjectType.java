@@ -6,8 +6,8 @@
 package thegame.com.Game.Objects;
 
 import display.Image;
+import display.Sets;
 import display.Skin;
-import display.iTexture;
 import java.io.IOException;
 import java.io.Serializable;
 import javafx.scene.paint.Color;
@@ -21,11 +21,11 @@ public abstract class ObjectType implements Serializable {
     private static final long serialVersionUID = 6522685098267700690L;
 
     public String name;
-    public iTexture texture;
+    public Sets texture;
     public Color[] colorset;
     public transient Skin skin;
 
-    public ObjectType(String name, iTexture t, Color[] c) throws IOException
+    public ObjectType(String name, Sets t, Color[] c) throws IOException
     {
         texture = t;
         colorset = c;

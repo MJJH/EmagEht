@@ -5,18 +5,14 @@
  */
 package display;
 
-import display.iTexture.Type;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,23 +30,19 @@ import javax.imageio.ImageIO;
 public class Image extends Skin {
 
     private WritableImage image;
-    private Map<Parts, PartImage> parts;
+    private Map<CombineParts, PartImage> parts;
     private Color background;
     private Map<borderSide, Color> border;
     private int scale;
-    public enum borderSide { TOP, LEFT, BOTTOM, RIGHT };
-    
-    public Image(Image i) {
-        image = (WritableImage) i.show();
-        parts = i.getParts();
-        width = i.getWidth();
-        height = i.getHeight();
-        border = new HashMap<>();
-        background = i.getBackground();
-        scale = 1;
-        
-        repaint();
+    private boolean flippedHorizontal;
+    private boolean flippedVertical;
+
+    private List<CombineParts> sortList() {
+        List<CombineParts> cps = new ArrayList<>(parts.keySet());
+        Collections.sort(cps);
+        return cps;
     }
+    public enum borderSide { TOP, LEFT, BOTTOM, RIGHT };
     
     public Image(int height, int width, Color background) {
         this.height = height;
@@ -62,7 +54,7 @@ public class Image extends Skin {
         repaint();
     }
 
-    public Image(iTexture texture) throws IOException
+    public Image(Sets texture) throws IOException
     {
         this.border = new HashMap<>();
         this.height = texture.getHeight();
@@ -75,21 +67,12 @@ public class Image extends Skin {
         WritableImage i;
         scale = 1;
 
-        if (texture instanceof Parts)
-        {
-            Parts t = (Parts) texture;
-            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            parts.put(t, new PartImage(i, 0, 0));
-        } else if (texture instanceof Sets)
-        {
 
-            Sets s = (Sets) texture;
-            for (CombineParts cp : s.parts)
-            {
-                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                add((LinkedHashMap<Parts, PartImage>) parts, 0, cp.part, new PartImage(i, cp.x, cp.y));
-
-            }
+        Sets s = texture;
+        for (CombineParts cp : s.parts)
+        {
+            i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+            parts.put(cp, new PartImage(i, cp.x, cp.y));
         }
 
         repaint();
@@ -108,30 +91,12 @@ public class Image extends Skin {
         return border;
     }
 
-    public void addTexture(iTexture texture) throws IOException
+    public void addTexture(Sets texture) throws IOException
     {
         BufferedImage bI;
         bI = ImageIO.read(new File(iTexture.path));
         WritableImage i;
 
-        /*if (texture instanceof Parts)
-        {
-            Parts t = (Parts) texture;
-
-            calculateNewSize(t);
-            Parts parent = getParent(t);
-
-            i = SwingFXUtils.toFXImage(bI.getSubimage(t.getX(), t.getY(), t.getWidth(), t.getHeight()), null);
-            if(parent != null)
-            {
-                parts.put(t, new PartImage(i, parent.getConnectX() - t.getConnectX() + parts.get(parent).x, parent.getConnectY() - t.getConnectY() + parts.get(parent).y));
-            }
-            else
-            {
-                parts.put(t, new PartImage(i, 0, 0));
-            }
-
-        } else*/ 
         if (texture instanceof Sets)
         {
             Sets s = (Sets) texture;
@@ -140,15 +105,20 @@ public class Image extends Skin {
                 Point p = calculateNewSize(cp.part);
 
                 i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
-                parts.put(cp.part, new PartImage(i, p.x, p.y));
+                
+                PartImage ad = new PartImage(i, p.x, p.y);
+                ad.hFlip = flippedHorizontal;
+                ad.vFlip = flippedVertical;
+                parts.put(cp, ad);
             }
         }
 
         repaint();
 
     }
+    
 
-    public Map<Parts, PartImage> getParts()
+    public Map<CombineParts, PartImage> getParts()
     {
         return parts;
     }
@@ -162,7 +132,7 @@ public class Image extends Skin {
         repaint();
     }
 
-    public void recolour(Parts p, Color[] colors)
+    public void recolour(CombineParts p, Color[] colors)
     {
         if (parts.containsKey(p))
         {
@@ -177,10 +147,11 @@ public class Image extends Skin {
         {
             pi.hFlip = !pi.hFlip;
         }
+        this.flippedHorizontal = !this.flippedHorizontal;
         repaint();
     }
 
-    public void flipHorizontal(Parts p)
+    public void flipHorizontal(CombineParts p)
     {
         if (parts.containsValue(p))
         {
@@ -195,10 +166,11 @@ public class Image extends Skin {
         {
             pi.vFlip = !pi.vFlip;
         }
+        this.flippedVertical = !this.flippedVertical;
         repaint();
     }
 
-    public void flipVorizontal(Parts p)
+    public void flipVorizontal(CombineParts p)
     {
         if (parts.containsValue(p))
         {
@@ -231,8 +203,9 @@ public class Image extends Skin {
             }
         }
         
-        for (PartImage pi : parts.values())
+        for (CombineParts cp : sortList())
         {
+            PartImage pi = parts.get(cp);
             pr = pi.image.getPixelReader();
 
             for (int y = 0; y < pi.image.getHeight(); y++)
@@ -369,15 +342,16 @@ public class Image extends Skin {
             }
     }
 
-    private Parts getParent(Parts t)
+    private CombineParts getParent(Parts t)
     {
         if (!t.isBody())
         {
-            for (Parts p : parts.keySet())
+            for (CombineParts cp : parts.keySet())
             {
+                Parts p = cp.part;
                 if (p.getPart() == t.getPart() && p.isBody())
                 {
-                    return p;
+                    return cp;
                 }
             }
         }
@@ -386,12 +360,18 @@ public class Image extends Skin {
 
     private Point calculateNewSize(Parts t)
     {
-        Parts parent = getParent(t);
+        CombineParts parent = getParent(t);
         PartImage par = parts.get(parent);
         
-        int x = par.x - ( parent.getConnectX() - t.getConnectX() );
-        int y = par.y - ( parent.getConnectY() - t.getConnectY() );
+        int x = par.x - ( parent.part.getConnectX() - t.getConnectX() );
+        int y = par.y - ( parent.part.getConnectY() - t.getConnectY() );
         int val;
+        
+        if(flippedHorizontal)
+            x = par.x + ( parent.part.getConnectX() + t.getConnectX() ) - 1;
+        if(flippedVertical)
+            y = par.y + ( parent.part.getConnectY() + t.getConnectY() ) - 1;
+        
         if(x < 0)
         {
             val = Math.abs(x);
@@ -403,10 +383,10 @@ public class Image extends Skin {
             }
             offsetLeft = val;
         }
-        if(x + t.getWidth() > width) 
+        if((x + t.getWidth() > width)) 
         {
             offsetRight = x + t.getWidth() - width;
-            width = x + t.getWidth();
+            width = x + t.getWidth();                  
         }
         if(y < 0)
         {
@@ -427,39 +407,13 @@ public class Image extends Skin {
         return new Point(x, y);
     }
 
-    public static void add(LinkedHashMap<Parts, PartImage> map, int index, Parts key, PartImage value)
-    {
-        assert (map != null);
-        assert !map.containsKey(key);
-        assert (index >= 0) && (index < map.size());
-
-        int i = 0;
-        List<Map.Entry<Parts, PartImage>> rest = new ArrayList<Map.Entry<Parts, PartImage>>();
-        for (Map.Entry<Parts, PartImage> entry : map.entrySet())
-        {
-            if (i++ >= index)
-            {
-                rest.add(entry);
-            }
-        }
-        map.put(key, value);
-        for (int j = 0; j < rest.size(); j++)
-        {
-            Map.Entry<Parts, PartImage> entry = rest.get(j);
-            map.remove(entry.getKey());
-            map.put(entry.getKey(), entry.getValue());
-        }
-    }
-
-    public void removeTexture(iTexture it)
+    public void removeTexture(Sets it)
     {
         if(it instanceof Sets)
         {
             for(CombineParts p : ((Sets) it).parts)
-                parts.remove(p.part);
-        } else {
-            parts.remove(it);
-        }
+                parts.remove(p);
+        } 
         repaint();
     }
     
