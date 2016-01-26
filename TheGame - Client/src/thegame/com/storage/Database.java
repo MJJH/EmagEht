@@ -110,6 +110,26 @@ public class Database {
         }
         return account;
     }
+    
+    public void RegisterAccount(String username, String password)
+    {
+        
+        try
+        {
+            openConnection();
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO account(Username,Password) VALUES (?,?)");
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.executeUpdate();
+
+            
+            closeConnection();
+        } catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+    }
 
     public void closeConnection()
     {

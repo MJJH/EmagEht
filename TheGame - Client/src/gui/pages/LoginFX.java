@@ -64,6 +64,12 @@ public class LoginFX {
         root.getChildren().add(login);
         root.getChildren().add(wachtwoord);
         root.getChildren().add(confirm);
+        
+        Button Registreren = new Button("Registreren");
+        
+        AnchorPane.setLeftAnchor(Registreren, width * 0.93);
+        root.getChildren().add(Registreren);
+        
 
         confirm.setOnMouseClicked((MouseEvent t) ->
         {
@@ -74,6 +80,13 @@ public class LoginFX {
                 loginThread.start();
             }
         });
+        
+        Registreren.setOnMouseClicked((MouseEvent t) ->
+        {
+            new RegisterFX(primaryStage);
+        });
+        
+        
 
         return new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
     }
