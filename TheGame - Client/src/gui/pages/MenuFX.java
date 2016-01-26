@@ -6,12 +6,8 @@
 package gui.pages;
 
 import gui.JavaFXColorPicker;
-import gui.JavaFXColorPicker;
-import gui.MenuBox;
 import gui.MenuBox;
 import gui.MenuItem;
-import gui.MenuItem;
-import gui.Title;
 import gui.Title;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,20 +58,6 @@ public class MenuFX {
         this.signedIn = signedIn;
         this.primaryStage = primaryStage;
 
-        try
-        {
-            connectToLobby();
-        } catch (RemoteException | NotBoundException ex)
-        {
-            new LoginFX(primaryStage);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Can't connect to server");
-            alert.setHeaderText("Server can't be found");
-            alert.setContentText("You can't connect to the server. Please try again in a minute.");
-            alert.showAndWait();
-            return;
-        }
-
         primaryStage.setOnCloseRequest(event ->
         {
             if (lobbyServer != null && lobbyClientToServer != null)
@@ -91,9 +73,33 @@ public class MenuFX {
             System.exit(0);
         });
 
-        primaryStage.setTitle("Menu");
-        primaryStage.setScene(createMenu());
-        primaryStage.show();
+        Thread connectThread = new Thread(() ->
+        {
+            try
+            {
+                connectToLobby();
+
+                Platform.runLater(() ->
+                {
+                    primaryStage.setTitle("Menu");
+                    primaryStage.setScene(createMenu());
+                    primaryStage.show();
+                });
+            } catch (RemoteException | NotBoundException ex)
+            {
+                Platform.runLater(() ->
+                {
+                    new LoginFX(primaryStage);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Can't connect to server");
+                    alert.setHeaderText("Server can't be found");
+                    alert.setContentText("You can't connect to the server. Please try again in a minute.");
+                    alert.showAndWait();
+                    return;
+                });
+            }
+        });
+        connectThread.start();
     }
 
     private void connectToLobby() throws RemoteException, NotBoundException

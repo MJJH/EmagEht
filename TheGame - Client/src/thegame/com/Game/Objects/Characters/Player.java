@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import sound.Sound;
 import thegame.Startup;
 import thegame.com.Game.Crafting;
+import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Particle;
@@ -39,7 +40,7 @@ public class Player extends CharacterGame {
     private float spawnY;
     private Account account;
     private Character character;
-    
+
     private transient boolean toUpdate;
 
     public void update()
@@ -84,9 +85,8 @@ public class Player extends CharacterGame {
             if (System.currentTimeMillis() - used >= h.type.speed)
             {
                 used = System.currentTimeMillis();
-                used = System.currentTimeMillis();
                 MapObject click = playing.GetTile(x, y, this);
-                if (click != null && h.type.range >= Calculate.distance(this,click))
+                if (click != null && h.type.range > Calculate.distance(this, click))
                 {
                     try
                     {
@@ -152,21 +152,44 @@ public class Player extends CharacterGame {
             setCords(updatePlayer.getX(), updatePlayer.getY());
             setDirection(updatePlayer.getDirection());
             updateHP(updatePlayer.getHP());
+            if (!getArmor().equals(updatePlayer.getArmor()) || !updatePlayer.getHolding().equals(getHolding()))
+            {
+                for(MapObject mo : updatePlayer.getHolding())
+                {
+                    mo.setMap(playing);
+                    mo.setType();
+                }
+                for (Armor armorPiece : updatePlayer.getArmor().values())
+                {
+                    armorPiece.setMap(playing);
+                    armorPiece.setType();
+                }
+                setHolding(updatePlayer.getHolding());
+                setArmor(updatePlayer.getArmor());
+                createSkin();
+            }
         }
     }
-    
-    public boolean Craft(Crafting to_craft) {
+
+    public boolean Craft(Crafting to_craft)
+    {
         Map<ObjectType, Integer> need = to_craft.recources;
-        for(ObjectType ot : need.keySet()) {
+        for (ObjectType ot : need.keySet())
+        {
             int left = need.get(ot);
             int i = 0;
-            while (left > 0 && i < 30) {
-                if(backpack[i].get(0).getType() == ot)
+            while (left > 0 && i < 30)
+            {
+                if (backpack[i].get(0).getType() == ot)
+                {
                     left -= backpack[i].size();
+                }
                 i++;
             }
             if (left > 0)
+            {
                 return false;
+            }
         }
         try
         {
@@ -180,16 +203,16 @@ public class Player extends CharacterGame {
     public void loadAfterRecieve(thegame.com.Game.Map play)
     {
         setMap(play);
-        for(MapObject holdObject: holding)
+        for (MapObject holdObject : holding)
         {
             holdObject.setType();
             holdObject.setMap(play);
         }
-        for(List<MapObject> listBP : backpack)
+        for (List<MapObject> listBP : backpack)
         {
-            if(listBP != null)
+            if (listBP != null)
             {
-                for(MapObject bpObject : listBP)
+                for (MapObject bpObject : listBP)
                 {
                     bpObject.setType();
                     bpObject.setMap(play);

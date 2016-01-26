@@ -34,7 +34,7 @@ public abstract class CharacterGame extends MapObject {
     protected List<MapObject>[] backpack;
 
     public transient HashMap<String, Skin> skins;
-    
+
     protected transient long used;
 
     public void walkRight()
@@ -199,7 +199,8 @@ public abstract class CharacterGame extends MapObject {
             return removed;
         }
 
-        for(MapObject mo : backpack[spot]) {
+        for (MapObject mo : backpack[spot])
+        {
             removed.add(mo);
         }
         backpack[spot].clear();
@@ -232,31 +233,35 @@ public abstract class CharacterGame extends MapObject {
 
         Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
 
-        for(Skin i : this.skins.values())
+        for (Skin i : this.skins.values())
         {
-            try {
-                Image im = (Image)i;
-                if(armor.get(add.getArmorType().bodypart) != null)
+            try
+            {
+                Image im = (Image) i;
+                if (armor.get(add.getArmorType().bodypart) != null)
+                {
                     im.removeTexture(armor.get(add.getArmorType().bodypart).getType().texture);
+                }
                 im.addTexture(add.getType().texture);
                 // TODO RECOLOR
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         if (armor.get(add.getArmorType().bodypart) == null)
         {
             armor.put(add.getArmorType().bodypart, add);
         } else
-        {   
+        {
             if (addToBackpack(armor.get(add.getArmorType().bodypart)))
             {
                 armor.put(add.getArmorType().bodypart, add);
 
             }
         }
-        
+
     }
 
     /**
@@ -268,13 +273,15 @@ public abstract class CharacterGame extends MapObject {
     {
         if (armor.get(partToUnequip) != null)
         {
-            for(Skin i : this.skins.values())
+            for (Skin i : this.skins.values())
             {
-                Image im = (Image)i;
-                if(armor.get(partToUnequip) != null)
+                Image im = (Image) i;
+                if (armor.get(partToUnequip) != null)
+                {
                     im.removeTexture(armor.get(partToUnequip).getType().texture);
+                }
             }
-            
+
             addToBackpack(armor.get(partToUnequip));
             armor.put(partToUnequip, null);
         }
@@ -294,19 +301,23 @@ public abstract class CharacterGame extends MapObject {
 
         List<MapObject> add = removeFromBackpack(spot);
 
-        for(Skin i : this.skins.values())
+        for (Skin i : this.skins.values())
         {
-            try {
-                Image im = (Image)i;
-                if(holding != null && holding.size() > 0)
+            try
+            {
+                Image im = (Image) i;
+                if (holding != null && holding.size() > 0)
+                {
                     im.removeTexture(holding.get(0).getType().texture);
+                }
                 im.addTexture(add.get(0).getType().texture);
                 // TODO RECOLOR
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-         
+
         if (holding == null)
         {
             holding = add;
@@ -325,11 +336,13 @@ public abstract class CharacterGame extends MapObject {
      */
     public void unequipTool()
     {
-        for(Skin i : this.skins.values())
+        for (Skin i : this.skins.values())
         {
-            Image im = (Image)i;
-            if(holding != null && holding.size() > 0)
+            Image im = (Image) i;
+            if (holding != null && holding.size() > 0)
+            {
                 im.removeTexture(holding.get(0).getType().texture);
+            }
         }
         if (holding != null)
         {
@@ -405,6 +418,11 @@ public abstract class CharacterGame extends MapObject {
     public java.util.Map<ArmorType.bodyPart, Armor> getArmor()
     {
         return armor;
+    }
+
+    public void setArmor(java.util.Map<ArmorType.bodyPart, Armor> armor)
+    {
+        this.armor = armor;
     }
 
     /**
@@ -493,7 +511,7 @@ public abstract class CharacterGame extends MapObject {
             }
         }
     }
-    
+
     @Override
     public Skin getSkin()
     {
@@ -541,12 +559,36 @@ public abstract class CharacterGame extends MapObject {
             //a.addFrameByPart(iTexture.Part.FRONTARM, 0);
             //a.addFrameByPart(iTexture.Part.FRONTARM, 50);
             skins.put("standRight", d);
-            
+
             Image d2 = new Image(Sets.sets.get("player"));
             d2.recolour(h);
             d2.flipHorizontal();
 
             skins.put("standLeft", d2);
+
+            for (Armor armorPiece : this.getArmor().values())
+            {
+                for (Skin i : this.skins.values())
+                {
+                    try
+                    {
+                        Image im = (Image) i;
+                        im.addTexture(armorPiece.getType().texture);
+                        // TODO RECOLOR
+                    } catch (IOException ex)
+                    {
+                        Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            
+            if (holding != null && holding.size() > 0)
+            {
+                for (Skin i : this.skins.values())
+                {
+                    ((Image)i).addTexture(holding.get(0).getType().texture);
+                }
+            }
 
         } catch (IOException ex)
         {
@@ -564,5 +606,10 @@ public abstract class CharacterGame extends MapObject {
     public ObjectType getType()
     {
         return null;
+    }
+
+    public void setHolding(List<MapObject> holding)
+    {
+        this.holding = holding;
     }
 }

@@ -5,6 +5,8 @@
  */
 package gui.pages;
 
+import java.awt.Panel;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -24,6 +26,8 @@ public class LoginFX {
     Stage primaryStage;
     private TextField login;
     private TextField wachtwoord;
+    private Button confirm;
+    private boolean confirmDisabled;
 
     public LoginFX(Stage primaryStage)
     {
@@ -46,8 +50,9 @@ public class LoginFX {
         AnchorPane root = new AnchorPane();
         login = new TextField();
         wachtwoord = new TextField();
-        Button confirm = new Button();
+        confirm = new Button();
         confirm.setText("Confirm");
+        confirmDisabled = false;
 
         AnchorPane.setTopAnchor(login, height / 2.5);
         AnchorPane.setLeftAnchor(login, width / 2.5);
@@ -62,7 +67,12 @@ public class LoginFX {
 
         confirm.setOnMouseClicked((MouseEvent t) ->
         {
-            login();
+            if (!confirmDisabled)
+            {
+                confirmDisabled = true;
+                Thread loginThread = new Thread(this::login, "loginThread");
+                loginThread.start();
+            }
         });
 
         return new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
@@ -75,17 +85,25 @@ public class LoginFX {
         if (username == null || username.isEmpty())
         {
             System.out.println("Username is leeg");
+            confirmDisabled = false;
             return;
         }
         if (password == null || password.isEmpty())
         {
             System.out.println("Password is leeg");
+            confirmDisabled = false;
             return;
         }
         Account account = Database.getDatabase().checkCredentials(username, password);
         if (account != null)
         {
-            new MenuFX(primaryStage, account, false);
+            Platform.runLater(() ->
+            {
+                new MenuFX(primaryStage, account, false);
+            });
+        } else
+        {
+            confirmDisabled = false;
         }
     }
 }

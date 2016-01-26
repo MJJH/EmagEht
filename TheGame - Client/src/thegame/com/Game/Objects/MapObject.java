@@ -233,7 +233,9 @@ public abstract class MapObject implements Serializable {
     @Override
     public int hashCode()
     {
-        return id;
+        int hash = 7;
+        hash = 47 * hash + this.id;
+        return hash;
     }
 
     public void setMap(Map set)
