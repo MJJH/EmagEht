@@ -315,10 +315,9 @@ public abstract class CharacterGame extends MapObject {
                 Image im = (Image) i;
                 if (holding != null && holding.size() > 0)
                 {
-                    im.removeTexture(holding.get(0).getType().texture, add.get(0).getType().colorset);
+                    im.removeTexture(holding.get(0).getType().texture);
                 }
-                im.addTexture(add.get(0).getType().texture);
-                // TODO RECOLOR
+                im.addTexture(add.get(0).getType().texture, add.get(0).getType().colorset);
             } catch (IOException ex)
             {
                 Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
