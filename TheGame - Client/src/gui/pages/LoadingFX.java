@@ -28,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sound.Sound;
 import thegame.com.Game.Objects.ArmorType;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
 import thegame.config;
@@ -208,13 +209,13 @@ public class LoadingFX {
     
     private final EventHandler<MouseEvent> mouseListener = (MouseEvent event) ->
     {
-        if (event.getButton().equals(MouseButton.PRIMARY))
+        if (event.getButton().equals(MouseButton.PRIMARY) || event.getButton().equals(MouseButton.SECONDARY) || event.getButton().equals(MouseButton.MIDDLE))
         {
-            clickHandler(event.getSceneX(), event.getSceneY());
+            clickHandler(event.getSceneX(), event.getSceneY(), event.getButton());
         }
     };
 
-    private void clickHandler(double clickX, double clickY)
+    private void clickHandler(double clickX, double clickY, MouseButton button)
     {
         if (ui.isInventory())
         {
@@ -236,8 +237,11 @@ public class LoadingFX {
 
                 if (horizontalSlot != -1 && verticalSlot != -1)
                 {
-                    me.interactWithBackpack(verticalSlot * 10 + horizontalSlot);
-                    return;
+                    if(button == MouseButton.PRIMARY)
+                    {
+                        me.interactWithBackpack(verticalSlot * 10 + horizontalSlot, CharacterGame.action.CLICK);
+                        return;
+                    }
                 }
             }
         }

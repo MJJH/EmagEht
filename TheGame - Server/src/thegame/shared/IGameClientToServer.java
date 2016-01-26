@@ -9,6 +9,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Lobby;
@@ -37,4 +38,6 @@ public interface IGameClientToServer extends Remote {
     public void pickUpParticle(int lobbyID, int particleID, float particleX, float particleY, int playerID) throws RemoteException;
 
     public boolean craft(int lobbyID, int playerID, Crafting to_craft) throws RemoteException;
+    
+    public boolean interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException;
 }

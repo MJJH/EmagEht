@@ -38,9 +38,8 @@ public class Enemy extends CharacterGame {
         super(name, hp, skills, x, y, height, width, map);
         sXMax = 0.2f;
         sYMax = 0.2f;
-        ToolType test = new ToolType("Zwaardje", 20, 1000, 3f, 1, ToolType.toolType.SWORD, 0.3f);
-        Tool equip = new Tool(test, map);
-        equipTool(equip);
+        addToBackpack(new Tool(ToolType.tooltypes.get("Stone Sword"), map));
+        equipTool(0);
     }
 
     @Override

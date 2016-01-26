@@ -4,6 +4,8 @@ import display.Image;
 import display.Sets;
 import display.Skin;
 import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -36,6 +38,11 @@ public abstract class CharacterGame extends MapObject {
     public transient HashMap<String, Skin> skins;
 
     protected transient long used;
+
+    public enum action implements Serializable {
+
+        DROP, SELECT, CLICK
+    }
 
     public void walkRight()
     {
@@ -242,7 +249,7 @@ public abstract class CharacterGame extends MapObject {
                 {
                     im.removeTexture(armor.get(add.getArmorType().bodypart).getType().texture);
                 }
-                im.addTexture(add.getType().texture);
+                im.addTexture(add.getType().texture, add.getType().colorset);
                 // TODO RECOLOR
             } catch (IOException ex)
             {
@@ -308,7 +315,7 @@ public abstract class CharacterGame extends MapObject {
                 Image im = (Image) i;
                 if (holding != null && holding.size() > 0)
                 {
-                    im.removeTexture(holding.get(0).getType().texture);
+                    im.removeTexture(holding.get(0).getType().texture, add.get(0).getType().colorset);
                 }
                 im.addTexture(add.get(0).getType().texture);
                 // TODO RECOLOR
@@ -497,17 +504,35 @@ public abstract class CharacterGame extends MapObject {
         return false;
     }
 
-    public void interactWithBackpack(int spot)
+    public void interactWithBackpack(int spot, CharacterGame.action action)
     {
         if (backpack[spot] != null && !backpack[spot].isEmpty())
         {
-            List<MapObject> content = backpack[spot];
-            if (content.get(0) instanceof Armor)
+            try
             {
-                equipArmor(spot);
-            } else
+                if (playing.getGameClientToServer().interactWithBackpack(playing.getLobby().getID(), id, spot, action))
+                {
+                    switch (action)
+                    {
+                        case CLICK:
+                            List<MapObject> content = backpack[spot];
+                            if (content.get(0) instanceof Armor)
+                            {
+                                equipArmor(spot);
+                            } else
+                            {
+                                equipTool(spot);
+                            }
+                            break;
+                        case DROP:
+                            break;
+                        case SELECT:
+                            break;
+                    }
+                }
+            } catch (RemoteException ex)
             {
-                equipTool(spot);
+                Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -574,25 +599,29 @@ public abstract class CharacterGame extends MapObject {
                     {
                         Image im = (Image) i;
                         im.addTexture(armorPiece.getType().texture);
-                        // TODO RECOLOR
+                        armorPiece.setType();
+                        im.addTexture(armorPiece.getType().texture, armorPiece.getType().colorset);
                     } catch (IOException ex)
                     {
-                        Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CharacterGame.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
-            
+
             if (holding != null && holding.size() > 0)
             {
                 for (Skin i : this.skins.values())
                 {
-                    ((Image)i).addTexture(holding.get(0).getType().texture);
+                    holding.get(0).setType();
+                    ((Image) i).addTexture(holding.get(0).getType().texture, holding.get(0).getType().colorset);
                 }
             }
 
         } catch (IOException ex)
         {
-            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Player.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

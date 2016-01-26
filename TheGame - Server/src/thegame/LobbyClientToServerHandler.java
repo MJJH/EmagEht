@@ -99,7 +99,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
         } else if (returnValue && lobby.getGameStarted())
         {
             gameServerToClientHandler.joinPlayer(lobby, myAccount);
-            lobbyServerToClientHandler.requestConnectToGame(lobby);
+            lobbyServerToClientHandler.requestConnectToStartedGame(myAccount);
         }
         return returnValue;
     }

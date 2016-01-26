@@ -8,6 +8,7 @@ package thegame;
 import java.rmi.RemoteException;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.Particle;
@@ -218,6 +219,32 @@ public class GameClientToServerHandler implements IGameClientToServer {
             if(player.getID() == playerID)
             {
                 return player.Craft(to_craft);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException
+    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return false;
+        }
+        for(Player player : map.getPlayers())
+        {
+            if(player.getID() == playerID)
+            {
+                return player.interactWithBackpack(spot, action);
             }
         }
         return false;

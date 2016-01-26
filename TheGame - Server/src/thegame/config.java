@@ -31,5 +31,6 @@ public enum config {
     public static int gameServerToClientListenerPort = 1101;
     public static int lobbyServerToClientListenerPort = 1102;
     public static int timeOutTime = 500;
-    public static int minimumRequiredPlayers = 1;
+    public static int minimumRequiredPlayers = 2;
+    public static int teamLifes = 0;
 }

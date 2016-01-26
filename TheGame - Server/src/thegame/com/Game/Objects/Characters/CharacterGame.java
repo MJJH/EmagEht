@@ -1,9 +1,13 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.*;
 import thegame.engine.Calculate;
@@ -56,6 +60,11 @@ public abstract class CharacterGame extends MapObject {
         sYIncrease = 0.05f;
         sXMax = 0.3f;
         sYMax = 0.3f;
+    }
+    
+    public enum action implements Serializable
+    {
+        DROP, SELECT, CLICK
     }
 
     public abstract void knockBack(float kb, sides hitDirection);
@@ -170,7 +179,6 @@ public abstract class CharacterGame extends MapObject {
     /**
      * This method will drop an object from your backpack to the map.
      *
-     * @param object, the object you want to drop
      * @return returns the object and value
      */
     public Particle dropItem(int spot)
@@ -179,11 +187,16 @@ public abstract class CharacterGame extends MapObject {
         return null;
     }
 
-    public void equipArmor(int spot)
+    /**
+     * This method let the in game character equip an armor piece.
+     *
+     */
+    public boolean equipArmor(int spot)
     {
+        boolean returnValue = false;
         if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
         {
-            return;
+            return returnValue;
         }
 
         Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
@@ -191,13 +204,16 @@ public abstract class CharacterGame extends MapObject {
         if (armor.get(add.getArmorType().bodypart) == null)
         {
             armor.put(add.getArmorType().bodypart, add);
+            returnValue = true;
         } else
         {
             if (addToBackpack(armor.get(add.getArmorType().bodypart)))
             {
                 armor.put(add.getArmorType().bodypart, add);
+                returnValue = true;
             }
         }
+        return returnValue;
     }
 
     /**
@@ -205,13 +221,16 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param partToUnequip
      */
-    public void unequipArmor(ArmorType.bodyPart partToUnequip)
+    public boolean unequipArmor(ArmorType.bodyPart partToUnequip)
     {
+        boolean returnValue = false;
         if (armor.get(partToUnequip) != null)
         {
             addToBackpack(armor.get(partToUnequip));
             armor.put(partToUnequip, null);
+            returnValue = true;
         }
+        return returnValue;
     }
 
     /**
@@ -219,11 +238,12 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    private void equipTool(int spot)
+    public boolean equipTool(int spot)
     {
+        boolean returnValue = false;
         if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
         {
-            return;
+            return returnValue;
         }
 
         List<MapObject> add = removeFromBackpack(spot);
@@ -231,6 +251,7 @@ public abstract class CharacterGame extends MapObject {
         if (holding == null)
         {
             holding = add;
+            returnValue = true;
         } else
         {
             for (MapObject mo : holding)
@@ -238,25 +259,17 @@ public abstract class CharacterGame extends MapObject {
                 addToBackpack(mo);
             }
             holding = add;
+            returnValue = true;
         }
-    }
-
-    protected void equipTool(Tool t)
-    {
-        holding = new ArrayList<>();
-        holding.add(t);
-    }
-
-    protected void equipArmor(Armor a)
-    {
-        armor.put(a.getArmorType().bodypart, a);
+        return returnValue;
     }
 
     /**
      * This method lets the in game character unequip a tool.
      */
-    public void unequipTool()
+    public boolean unequipTool()
     {
+        boolean returnValue = false;
         if (holding != null)
         {
             for (MapObject mo : holding)
@@ -264,8 +277,9 @@ public abstract class CharacterGame extends MapObject {
                 addToBackpack(mo);
             }
             holding = null;
+            returnValue = true;
         }
-
+        return returnValue;
     }
 
     public List<MapObject> removeFromBackpack(ObjectType ot, int amount)

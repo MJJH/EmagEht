@@ -44,7 +44,7 @@ public class LobbyServerToClientHandler {
         this.gameClientToServerHandler = gameClientToServerHandler;
         this.theGameServer = theGameServer;
     }
-    
+
     public ArrayList<Lobby> getLobbies()
     {
         return lobbies;
@@ -79,6 +79,17 @@ public class LobbyServerToClientHandler {
             {
                 Logger.getLogger(LobbyServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    public void requestConnectToStartedGame(Account myAccount)
+    {
+        try
+        {
+            onlinePlayers.get(myAccount).requestConnectToGame();
+        } catch (RemoteException ex)
+        {
+            Logger.getLogger(LobbyServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

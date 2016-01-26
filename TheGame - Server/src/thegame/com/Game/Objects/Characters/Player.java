@@ -1,11 +1,13 @@
 package thegame.com.Game.Objects.Characters;
 
+import java.util.List;
 import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
+import thegame.com.Game.Objects.MapObject;
 import thegame.com.Game.Objects.ObjectType;
 import thegame.com.Game.Objects.Tool;
 import thegame.com.Game.Objects.ToolType;
@@ -48,9 +50,10 @@ public class Player extends CharacterGame {
         this.character = character;
         this.account = account;
 
-        ToolType test = ToolType.tooltypes.get("Flint");
-        Tool equip = new Tool(test, map);
-        equipTool(equip);
+        ToolType flint = ToolType.tooltypes.get("Flint");
+        Tool equip = new Tool(flint, map);
+        this.addToBackpack(equip);
+        equipTool(0);
 
         this.addToBackpack(new Tool(ToolType.tooltypes.get("Wooden Shovel"), playing));
         for (int c = 0; c < 103; c++)
@@ -64,8 +67,7 @@ public class Player extends CharacterGame {
         this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Shield"), 0, 0, playing));
         this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Greaves"), 0, 0, playing));
         this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Chestplate"), 0, 0, playing));
-         /*this.addToBackpack(new Armor(new ArmorType("ChestBrah", 1, 0, ArmorType.bodyPart.CHESTPLATE), 1, 1, playing));
-         this.addToBackpack(new Armor(new ArmorType("Broekie!", 0, 0, ArmorType.bodyPart.GREAVES), 1, 1, playing));*/
+        this.addToBackpack(new Tool(ToolType.tooltypes.get("Cheat Flint"), playing));
     }
 
     /**
@@ -89,19 +91,6 @@ public class Player extends CharacterGame {
     @Override
     public Boolean call()
     {
-        /*EnumMap<sides, List<MapObject>> collision = collision();
-         Boolean ret = false;
-         if(fall(collision))
-         ret = true;
-        
-         if(moveH(collision))
-         ret = true;
-        
-         if(moveV(collision))
-         ret = true;
-        
-         return ret;*/
-
         return false;
     }
 
@@ -196,5 +185,32 @@ public class Player extends CharacterGame {
             //this.
         }
         return true;
+    }
+
+    public boolean interactWithBackpack(int spot, action action)
+    {
+        boolean returnValue = false;
+        if (backpack[spot] != null && !backpack[spot].isEmpty())
+        {
+            switch (action)
+            {
+                case CLICK:
+                    List<MapObject> content = backpack[spot];
+                    if (content.get(0) instanceof Armor)
+                    {
+                        returnValue = equipArmor(spot);
+                    } else
+                    {
+                        returnValue = equipTool(spot);
+                    }
+                    break;
+                case DROP:
+                    break;
+                case SELECT:
+                    break;
+            }
+        }
+        
+        return returnValue;
     }
 }

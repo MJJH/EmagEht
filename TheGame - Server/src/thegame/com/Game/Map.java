@@ -80,7 +80,7 @@ public class Map implements Serializable {
         width = 500;
         height = 100;
 
-        teamlifes = 4;
+        teamlifes = thegame.config.teamLifes;
         gravity = .025f;
         
         this.lobby = lobby;
@@ -672,7 +672,7 @@ public class Map implements Serializable {
 
     public void joinPlayer(Account account)
     {
-        players.add(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
+        addMapObject(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
     }
 
     public Lobby getLobby()
