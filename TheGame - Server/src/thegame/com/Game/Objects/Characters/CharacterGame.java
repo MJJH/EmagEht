@@ -476,7 +476,7 @@ public abstract class CharacterGame extends MapObject {
                 backpack[i].add(object);
                 if (this instanceof Player)
                 {
-                    playing.getGameServerToClientHandler().addToEmptyBackpack(object, (Player) this);
+                    playing.getGameServerToClientHandler().addToBackpack(object, i, (Player) this);
                 }
                 return true;
             }

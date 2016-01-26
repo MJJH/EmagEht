@@ -353,40 +353,6 @@ public class GameServerToClientHandler {
         }
     }
 
-    public void addToEmptyBackpack(MapObject object, Player toSendPlayer)
-    {
-        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
-        {
-            IGameServerToClientListener listener = entry.getKey();
-            if (connectionLossTable.contains(listener))
-            {
-                continue;
-            }
-            Player player = entry.getValue();
-
-            if (toSendPlayer != player)
-            {
-                continue;
-            }
-
-            threadPoolSend.submit(() ->
-            {
-                try
-                {
-                    listener.addToEmptyBackpack(object);
-                } catch (RemoteException ex)
-                {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
-                    System.err.println(sdf.format(cal.getTime()) + " Could not addToEmptyBackpack(" + object.getClass() + ") to player " + player.getName() + " because:");
-                    System.err.println(ex.getMessage());
-                    connectionLossPlayer(listener);
-                }
-            });
-            break;
-        }
-    }
-
     public void setTeamLifes(Map map, int lifes)
     {
         List<Player> toSendTo = map.getPlayers();

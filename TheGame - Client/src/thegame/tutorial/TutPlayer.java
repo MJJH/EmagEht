@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.ArmorType;
+import thegame.com.Game.Objects.Block;
 import thegame.com.Game.Objects.BlockType;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
@@ -57,6 +58,62 @@ public class TutPlayer extends Player {
         sYIncrease = 0.05f;
         sXMax = 0.3f;
         sYMax = 0.3f;
+    }
+    
+    public boolean addToBackpack(MapObject object)
+    {
+        int spot = -1;
+
+        for (int i = 0; i < backpack.length; i++)
+        {
+            List<MapObject> l = backpack[i];
+            if (l == null)
+            {
+                continue;
+            }
+
+            if (object instanceof Tool || object instanceof Armor)
+            {
+                continue;
+            }
+
+            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
+            {
+                if (l.get(0) instanceof Block && object instanceof Block)
+                {
+                    Block b = (Block) l.get(0);
+                    Block b2 = (Block) object;
+                    if (!b.getType().getName().equals(b2.getType().getName()))
+                    {
+                        continue;
+                    }
+                }
+
+                spot = i;
+            }
+        }
+
+        if (spot > -1)
+        {
+            return addToBackpack(object, spot);
+        } else
+        {
+            return addToEmptyBackpack(object);
+        }
+    }
+    
+    public boolean addToEmptyBackpack(MapObject object)
+    {
+        for (int i = 0; i < backpack.length; i++)
+        {
+            if (backpack[i] == null || backpack[i].isEmpty())
+            {
+                backpack[i] = new ArrayList<>();
+                backpack[i].add(object);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void useTool(float x, float y) {

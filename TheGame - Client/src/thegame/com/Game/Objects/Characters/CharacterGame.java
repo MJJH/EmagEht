@@ -103,54 +103,6 @@ public abstract class CharacterGame extends MapObject {
         jumping = false;
     }
 
-    /**
-     * This method will let you add an object to your backpack.
-     *
-     * @param object, the specific object you want to add to your backpack
-     * @return
-     */
-    public boolean addToBackpack(MapObject object)
-    {
-        int spot = -1;
-
-        for (int i = 0; i < backpack.length; i++)
-        {
-            List<MapObject> l = backpack[i];
-            if (l == null)
-            {
-                continue;
-            }
-
-            if (object instanceof Tool || object instanceof Armor)
-            {
-                continue;
-            }
-
-            if (!l.isEmpty() && l.get(0).getClass().equals(object.getClass()) && l.size() < 99)
-            {
-                if (l.get(0) instanceof Block && object instanceof Block)
-                {
-                    Block b = (Block) l.get(0);
-                    Block b2 = (Block) object;
-                    if (!b.getType().getName().equals(b2.getType().getName()))
-                    {
-                        continue;
-                    }
-                }
-
-                spot = i;
-            }
-        }
-
-        if (spot > -1)
-        {
-            return addToBackpack(object, spot);
-        } else
-        {
-            return addToEmptyBackpack(object);
-        }
-    }
-
     public List<MapObject> removeFromBackpack(ObjectType ot, int amount)
     {
         List<MapObject> removed = new ArrayList<>();
@@ -262,11 +214,7 @@ public abstract class CharacterGame extends MapObject {
             armor.put(add.getArmorType().bodypart, add);
         } else
         {
-            if (addToBackpack(armor.get(add.getArmorType().bodypart)))
-            {
-                armor.put(add.getArmorType().bodypart, add);
-
-            }
+            armor.put(add.getArmorType().bodypart, add);
         }
 
     }
@@ -290,8 +238,6 @@ public abstract class CharacterGame extends MapObject {
                         im.removeTexture(armor.get(partToUnequip).getType().texture);
                     }
                 }
-
-                addToBackpack(armor.get(partToUnequip));
                 armor.put(partToUnequip, null);
             }
         } catch (RemoteException ex)
@@ -312,7 +258,7 @@ public abstract class CharacterGame extends MapObject {
             return;
         }
 
-        List<MapObject> add = removeFromBackpack(spot);
+        List<MapObject> add = backpack[spot];
 
         for (Skin i : this.skins.values())
         {
@@ -335,10 +281,6 @@ public abstract class CharacterGame extends MapObject {
             holding = add;
         } else
         {
-            for (MapObject mo : holding)
-            {
-                addToBackpack(mo);
-            }
             holding = add;
         }
     }
@@ -352,12 +294,8 @@ public abstract class CharacterGame extends MapObject {
         {
             if (holding != null && playing.getGameClientToServer().unequipTool(playing.getLobby().getID(), id))
             {
-                for (MapObject mo : holding)
-                {
-                    addToBackpack(mo);
-                }
                 holding = null;
-                
+
                 for (Skin i : this.skins.values())
                 {
                     Image im = (Image) i;
@@ -499,20 +437,6 @@ public abstract class CharacterGame extends MapObject {
 
         backpack[spot].add(object);
         return true;
-    }
-
-    public boolean addToEmptyBackpack(MapObject object)
-    {
-        for (int i = 0; i < backpack.length; i++)
-        {
-            if (backpack[i] == null || backpack[i].isEmpty())
-            {
-                backpack[i] = new ArrayList<>();
-                backpack[i].add(object);
-                return true;
-            }
-        }
-        return false;
     }
 
     public void interactWithBackpack(int spot, CharacterGame.action action)
