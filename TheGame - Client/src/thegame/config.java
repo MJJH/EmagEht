@@ -20,8 +20,8 @@ public enum config {
         this.val = val;
     }
 
-    //public static String ip = "84.24.141.120";
-    public static String ip = "localhost";
+    public static String ip = "145.93.57.121";
+    //public static String ip = "localhost";
     public static String lobbyClientToServerName = "lobbyClientToServer";
     public static String gameClientToServerName = "gameClientToServer";
     public static int lobbyServerToClientPort = 1097;

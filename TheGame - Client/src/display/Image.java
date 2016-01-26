@@ -79,6 +79,15 @@ public class Image extends Skin {
 
     }
     
+    public CombineParts findCombineParts(Parts key){
+        for(CombineParts cp : parts.keySet()) {
+            if(cp.part == key) {
+                return cp;
+            }
+        }
+        return null;
+    }
+    
     public void setBackground(Color background) {
         this.background = background;
     }
@@ -115,6 +124,31 @@ public class Image extends Skin {
 
         repaint();
 
+    }
+    
+    public void addTexture(Sets texture, Color[] colorset) throws IOException {
+        BufferedImage bI;
+        bI = ImageIO.read(new File(iTexture.path));
+        WritableImage i;
+
+        if (texture instanceof Sets)
+        {
+            Sets s = (Sets) texture;
+            for (CombineParts cp : s.parts)
+            {
+                Point p = calculateNewSize(cp.part);
+
+                i = SwingFXUtils.toFXImage(bI.getSubimage(cp.part.getX(), cp.part.getY(), cp.part.getWidth(), cp.part.getHeight()), null);
+                
+                PartImage ad = new PartImage(i, p.x, p.y);
+                ad.hFlip = flippedHorizontal;
+                ad.vFlip = flippedVertical;
+                parts.put(cp, ad);
+                recolour(cp, colorset);
+            }
+        }
+
+        repaint();
     }
     
 
@@ -183,7 +217,6 @@ public class Image extends Skin {
     public javafx.scene.image.Image show()
     {
         return image;
-
     }
 
     private void repaint()
@@ -362,16 +395,22 @@ public class Image extends Skin {
     {
         CombineParts parent = getParent(t);
         PartImage par = parts.get(parent);
-        
-        int x = par.x - ( parent.part.getConnectX() - t.getConnectX() );
-        int y = par.y - ( parent.part.getConnectY() - t.getConnectY() );
+        int x = 0;
+        int y = 0;
         int val;
         
-        if(flippedHorizontal)
-            x = par.x + ( parent.part.getConnectX() + t.getConnectX() ) - 1;
-        if(flippedVertical)
-            y = par.y + ( parent.part.getConnectY() + t.getConnectY() ) - 1;
-        
+        if(par != null) {
+            x = par.x - ( parent.part.getConnectX() - t.getConnectX() );
+            y = par.y - ( parent.part.getConnectY() - t.getConnectY() );
+
+            if(flippedHorizontal)
+                x = par.x + ( parent.part.getConnectX() + t.getConnectX() );
+            if(flippedVertical)
+                y = par.y + ( parent.part.getConnectY() + t.getConnectY() );
+        } else {
+            x = t.getConnectX();
+            y = t.getConnectY();
+        }
         if(x < 0)
         {
             val = Math.abs(x);
@@ -420,7 +459,7 @@ public class Image extends Skin {
     public void Scale(int Scale)
     {
         scale = Scale;
-        height =  height * scale;
+        height = height * scale;
         width = width * scale;
     }
 }

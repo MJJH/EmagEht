@@ -503,6 +503,7 @@ public class GameUtilities {
     {
         g.beginPath();
         CharacterGame character = (CharacterGame) mo;
+        g.setStroke(Color.BLACK);
         g.strokeRect(x - 1, y - 10, mo.getW() * config.block.val + 2, 5.0f);
         g.setFill(Color.RED);
         g.fillRect(x, y - 9, mo.getW() * config.block.val, 3.0f);
@@ -675,19 +676,21 @@ public class GameUtilities {
             maxX = 8;
         }
         
-        if(!toCraft.isEmpty()){
-            
+        if(toCraft.size() > 8)
+        {    
             g.setFill(guiBackground);
             g.fillPolygon(new double[]{10, 50, 50}, new double[]{220, 200, 240}, 3);
+            g.fillPolygon(new double[]{460, 460, 500}, new double[]{200, 240, 220}, 3);
             
             g.setStroke(Color.BLACK);
             g.strokePolygon(new double[]{9, 51, 51}, new double[]{ 220, 199, 241}, 3);
             g.strokePolygon(new double[]{11, 49, 49}, new double[]{ 220, 201, 239}, 3);
+            g.strokePolygon(new double[]{459, 459, 501}, new double[]{ 199, 241, 220}, 3);
+            g.strokePolygon(new double[]{461, 461, 499}, new double[]{ 201, 239, 220}, 3);
             
             g.setStroke(Color.LIGHTGRAY);
             g.strokePolygon(new double[]{10, 50, 50}, new double[]{220, 200, 240}, 3);
-            
-
+            g.strokePolygon(new double[]{460, 460, 500}, new double[]{200, 240, 220}, 3);
         }
 
         for (int x = 0; x < maxX; x++)

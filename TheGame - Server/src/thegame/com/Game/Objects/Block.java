@@ -51,7 +51,7 @@ public class Block extends MapObject {
     {
         if (interaction)
         {
-            if (damage > type.strength)
+            if (damage >= type.strength)
             {
                 MapObject particleStack = null;
                 float curDifX = 100;

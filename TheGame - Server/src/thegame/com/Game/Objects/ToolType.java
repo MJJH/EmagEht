@@ -50,8 +50,6 @@ public class ToolType extends ObjectType {
         this.range = range;
         this.reqLvl = reqLvl;
         this.kb = kb;
-        this.height = height;
-        this.width = width;
         this.type = type;
 
         tooltypes.put(name, this);
