@@ -187,7 +187,7 @@ public class MenuFX {
             JavaFXColorPicker p = new JavaFXColorPicker();
             try
             {
-                p.start(primaryStage);
+            p.start(primaryStage);
             } catch (IOException ex)
             {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
