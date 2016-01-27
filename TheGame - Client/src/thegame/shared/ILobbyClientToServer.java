@@ -27,4 +27,6 @@ public interface ILobbyClientToServer extends Remote {
     public boolean checkReady(Account myAccount) throws RemoteException;
 
     public void quitLobby(Account account) throws RemoteException;
+
+    public Lobby getLobby(Account myAccount) throws RemoteException;
 }

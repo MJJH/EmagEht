@@ -78,8 +78,8 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
                 if (lobby.getAccounts().size() < config.minimumRequiredPlayers)
                 {
                     lobby.joinLobby(account);
-                    lobbyServerToClientHandler.getAccountsInLobbies().put(account, lobby);
                     lobbyServerToClientHandler.updateLobby(lobby);
+                    lobbyServerToClientHandler.getAccountsInLobbies().put(account, lobby);
                     return lobby;
                 }
             }
@@ -119,5 +119,15 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
             lobbyServerToClientHandler.getLobbies().remove(lobby);
             theGameServer.changeLobbies(-1);
         }
+    }
+
+    @Override
+    public Lobby getLobby(Account myAccount) throws RemoteException
+    {
+        if(myAccount != null && lobbyServerToClientHandler != null)
+        {
+            return lobbyServerToClientHandler.getAccountsInLobbies().get(myAccount);
+        }
+        return null;
     }
 }
