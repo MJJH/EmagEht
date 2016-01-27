@@ -10,6 +10,7 @@ import display.IntColor;
 import display.Parts;
 import display.Sets;
 import gui.pages.LoginFX;
+import gui.pages.MenuFX;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +38,13 @@ import thegame.com.storage.Database;
 public class Startup extends Application {
 
     private Stage primaryStage;
+
+    //SOUND
     public static Sound music;
     public static Sound hit;
+
+    //INTERFACE
+    public static MenuFX menuFX;
 
     /**
      * @param args the command line arguments
@@ -46,6 +52,14 @@ public class Startup extends Application {
     public static void main(String[] args)
     {
         launch(args);
+    }
+    
+    public static void showMenuFX()
+    {
+        if (menuFX != null)
+        {
+            menuFX.show();
+        }
     }
 
     @Override
@@ -136,31 +150,33 @@ public class Startup extends Application {
             new ItemType(rs.getString("Name"), rs.getInt("Width"), rs.getInt("Height"), Sets.sets.get(rs.getString("image")), IntColor.fromDB(rs.getString("color_set"), db));
         }
         db.closeConnection();
-        
+
         // Crafting
         String craftQuery = "SELECT * FROM Craft Order by Level";
-         rs = db.executeUnsafeQuery(craftQuery);
-         while(rs.next()) 
-         {
-             ObjectType to_craft = getType(db, rs.getString("type"), rs.getInt("ObjectID"));
-             int level = rs.getInt("Level");
-             String needed = "SELECT * FROM need WHERE CraftID = "+rs.getInt("ID");
-             ResultSet rs2 = db.executeUnsafeQuery(needed);
-             HashMap<ObjectType, Integer> n = new HashMap<>(); 
-             while(rs2.next()) {
-                 n.put(getType(db, rs2.getString("Type"), rs2.getInt("ObjectID")), rs2.getInt("Amount"));
-             }
-             new Crafting(to_craft, n, level, null);
-         }
+        rs = db.executeUnsafeQuery(craftQuery);
+        while (rs.next())
+        {
+            ObjectType to_craft = getType(db, rs.getString("type"), rs.getInt("ObjectID"));
+            int level = rs.getInt("Level");
+            String needed = "SELECT * FROM need WHERE CraftID = " + rs.getInt("ID");
+            ResultSet rs2 = db.executeUnsafeQuery(needed);
+            HashMap<ObjectType, Integer> n = new HashMap<>();
+            while (rs2.next())
+            {
+                n.put(getType(db, rs2.getString("Type"), rs2.getInt("ObjectID")), rs2.getInt("Amount"));
+            }
+            new Crafting(to_craft, n, level, null);
+        }
     }
-         
-    public ObjectType getType(Database db, String type, int id) throws SQLException {
-        String query = "SELECT Name FROM "+type+" WHERE ID ="+id;
+
+    public ObjectType getType(Database db, String type, int id) throws SQLException
+    {
+        String query = "SELECT Name FROM " + type + " WHERE ID =" + id;
         ResultSet rs = db.executeUnsafeQuery(query);
 
-        
         rs.first();
-        switch(type){
+        switch (type)
+        {
             case "Item":
                 return ItemType.itemtypes.get(rs.getString("Name"));
             case "Resource":

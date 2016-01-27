@@ -8,10 +8,9 @@ import javax.swing.*;
 
 public class SplashScreen extends JWindow {
 
-    private static JProgressBar progressBar = new JProgressBar();
-    private static SplashScreen splashScreen;
-    private static int count = 1, TIMER_PAUSE = 1, PROGBAR_MAX = 100;
-    private static Timer progressBarTimer;
+    private JProgressBar progressBar = new JProgressBar();
+    private int count = 1, TIMER_PAUSE = 1, PROGBAR_MAX = 100;
+    private Timer progressBarTimer;
     private int counttill;
 
     ActionListener al = new ActionListener() {
@@ -28,7 +27,7 @@ public class SplashScreen extends JWindow {
 
             if (PROGBAR_MAX == count)
             {
-                splashScreen.dispose();
+                dispose();
                 progressBarTimer.stop();
             }
             count++;
@@ -75,7 +74,7 @@ public class SplashScreen extends JWindow {
             @Override
             public void run()
             {
-                splashScreen = new SplashScreen();
+                new SplashScreen();
             }
         });
     }
@@ -89,10 +88,5 @@ public class SplashScreen extends JWindow {
     public int returnCount()
     {
         return count;
-    }
-
-    public void giveSplash(SplashScreen splash)
-    {
-        splashScreen = splash;
     }
 }

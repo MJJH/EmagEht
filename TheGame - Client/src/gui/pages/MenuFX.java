@@ -187,7 +187,7 @@ public class MenuFX {
             JavaFXColorPicker p = new JavaFXColorPicker();
             try
             {
-            p.start(primaryStage);
+                p.start(primaryStage);
             } catch (IOException ex)
             {
                 Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
@@ -203,6 +203,7 @@ public class MenuFX {
                 try
                 {
                     lobbyClientToServer.signOut(account);
+                    UnicastRemoteObject.unexportObject(lobbyServerToClientListener, false);
                 } catch (RemoteException ex)
                 {
                     System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
@@ -227,5 +228,30 @@ public class MenuFX {
         menu.setTranslateY(300);
         root.getChildren().addAll(title, menu);
         return new Scene(root);
+    }
+
+    public void show()
+    {
+        primaryStage.setOnCloseRequest(event ->
+        {
+            if (lobbyServer != null && lobbyClientToServer != null)
+            {
+                try
+                {
+                    lobbyClientToServer.signOut(account);
+                } catch (RemoteException ex)
+                {
+                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                }
+            }
+            System.exit(0);
+        });
+
+        if (this.signedIn)
+        {
+            primaryStage.setTitle("Menu");
+            primaryStage.setScene(createMenu());
+            primaryStage.show();
+        }
     }
 }

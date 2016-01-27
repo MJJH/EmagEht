@@ -259,9 +259,7 @@ public class LobbyFX {
         try
         {
             splash = new SplashScreen();
-            splash.giveSplash(splash);
             splash.SplashScreen();
-
         } catch (Exception e)
         {
         }

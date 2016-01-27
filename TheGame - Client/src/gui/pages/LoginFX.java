@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import thegame.Startup;
 import thegame.com.Menu.Account;
 import thegame.com.storage.Database;
 
@@ -127,7 +128,7 @@ public class LoginFX {
         {
             Platform.runLater(() ->
             {
-                new MenuFX(primaryStage, account, false);
+                Startup.menuFX = new MenuFX(primaryStage, account, false);
             });
         } else
         {

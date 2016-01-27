@@ -6,8 +6,10 @@
 package gui.pages;
 
 import gui.GameUtilities;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -33,6 +35,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import thegame.Startup;
 import static thegame.Startup.music;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
@@ -347,7 +350,14 @@ public class GameFX {
                 Logger.getLogger(GameFX.class.getName()).log(Level.SEVERE, null, ex);
             }
             music.stop();
-            new MenuFX(stages, myAccount, true);
+            try
+            {
+                UnicastRemoteObject.unexportObject(gameServerToClientListener, true);
+            } catch (NoSuchObjectException ex)
+            {
+                Logger.getLogger(GameFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Startup.showMenuFX();
             return;
         }
         if (ui.isInventory())
