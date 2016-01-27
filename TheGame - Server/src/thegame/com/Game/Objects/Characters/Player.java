@@ -68,6 +68,10 @@ public class Player extends CharacterGame {
         this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Greaves"), 0, 0, playing));
         this.addToBackpack(new Armor(ArmorType.armortypes.get("Wooden Chestplate"), 0, 0, playing));
         this.addToBackpack(new Tool(ToolType.tooltypes.get("Cheat Flint"), playing));
+        this.addToBackpack(new Tool(ToolType.tooltypes.get("Wooden Axe"), playing));
+        this.addToBackpack(new Tool(ToolType.tooltypes.get("Wooden Pickaxe"), playing));
+        this.addToBackpack(new Tool(ToolType.tooltypes.get("Wooden Sword"), playing));
+        
     }
 
     /**
