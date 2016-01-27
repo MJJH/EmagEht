@@ -7,6 +7,7 @@ import display.Sets;
 import java.util.ArrayList;
 import java.util.Random;
     import javafx.application.Application;
+import javafx.event.ActionEvent;
     import javafx.event.Event;
     import javafx.event.EventHandler;
     import javafx.geometry.Insets;
@@ -23,6 +24,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import sun.security.pkcs11.wrapper.PKCS11Constants;
+import thegame.com.Menu.Account;
+import thegame.com.storage.Database;
 
 
 
@@ -62,6 +66,7 @@ import javafx.scene.shape.Rectangle;
     private Image tshirt;
     private Image shorts;
     private Color[] shortColorArray;
+    private Account account;
     
     
 
@@ -164,7 +169,7 @@ import javafx.scene.shape.Rectangle;
             double[] pointMiddleLeft = new double[]{(width * 0.4) , (height * 0.40) , (width * 0.4) , (height * 0.448), (width * 0.36) , (height * 0.424)};
             Polygon TriangleMiddleLeft = new Polygon(pointMiddleLeft);
             
-            double[] pointBottomLeft = new double[]{(width * 0.4) , (height * 0.51) , (width * 0.4) , (height * 0.538), (width * 0.36) , (height * 0.514)};
+            double[] pointBottomLeft = new double[]{(width * 0.4) , (height * 0.49) , (width * 0.4) , (height * 0.538), (width * 0.36) , (height * 0.514)};
             Polygon TriangleBottomLeft = new Polygon(pointBottomLeft);
             
          //   double[] pointTopRight = new double[]{(width * 0.6) , (height * 0.33) , (width * 0.6) , (height * 0.378), (width * 0.64) , (height * 0.354)};
@@ -229,8 +234,7 @@ import javafx.scene.shape.Rectangle;
                 float g = rand.nextFloat();
                 float b = rand.nextFloat();
                 Color shirtPaint = new Color(r, g, b, 1);
-                //test
-                System.out.println(shirtPaint.getRed());
+               
                 ShirtColorArray = new Color[]
                 {
                     null,
@@ -337,7 +341,48 @@ import javafx.scene.shape.Rectangle;
                 }
 
             });
+            Save.setOnAction(new EventHandler() {
 
+                    @Override
+                    public void handle(Event event) {
+                    
+                    
+                    java.awt.Color bodycolorone = new java.awt.Color((float)BodyColorArray[0].getRed(),(float)BodyColorArray[0].getGreen(),(float) BodyColorArray[0].getBlue(), (float)BodyColorArray[0].getOpacity());
+                    java.awt.Color bodycolortwo = new java.awt.Color((float)BodyColorArray[1].getRed(),(float)BodyColorArray[1].getGreen(),(float) BodyColorArray[1].getBlue(), (float)BodyColorArray[1].getOpacity());
+                    java.awt.Color bodycolorthree = new java.awt.Color((float)BodyColorArray[2].getRed(),(float)BodyColorArray[2].getGreen(),(float) BodyColorArray[2].getBlue(), (float)BodyColorArray[2].getOpacity());
+                    java.awt.Color bodycolorfour = new java.awt.Color((float)BodyColorArray[3].getRed(),(float)BodyColorArray[3].getGreen(),(float) BodyColorArray[3].getBlue(), (float)BodyColorArray[3].getOpacity());
+                    java.awt.Color bodycolorfive = new java.awt.Color((float)BodyColorArray[4].getRed(),(float)BodyColorArray[4].getGreen(),(float) BodyColorArray[4].getBlue(), (float)BodyColorArray[4].getOpacity());
+                    java.awt.Color bodycolorsix = new java.awt.Color((float)BodyColorArray[5].getRed(),(float)BodyColorArray[5].getGreen(),(float) BodyColorArray[5].getBlue(), (float)BodyColorArray[5].getOpacity());
+                    
+                    java.awt.Color shirtcolorone = new java.awt.Color(0,0,0,0);
+                    java.awt.Color shirtcolortwo = new java.awt.Color((float)ShirtColorArray[1].getRed(),(float)ShirtColorArray[1].getGreen(),(float) ShirtColorArray[1].getBlue(), (float)ShirtColorArray[1].getOpacity());
+                    java.awt.Color shirtcolorthree = new java.awt.Color((float)ShirtColorArray[2].getRed(),(float)ShirtColorArray[2].getGreen(),(float) ShirtColorArray[2].getBlue(), (float)ShirtColorArray[2].getOpacity());
+                    java.awt.Color shirtcolorfour = new java.awt.Color((float)ShirtColorArray[3].getRed(),(float)ShirtColorArray[3].getGreen(),(float) ShirtColorArray[3].getBlue(), (float)ShirtColorArray[3].getOpacity());
+                    java.awt.Color shirtcolorfive = new java.awt.Color((float)ShirtColorArray[4].getRed(),(float)ShirtColorArray[4].getGreen(),(float) ShirtColorArray[4].getBlue(), (float)ShirtColorArray[4].getOpacity());
+                    java.awt.Color shirtcolorsix = new java.awt.Color((float)ShirtColorArray[5].getRed(),(float)ShirtColorArray[5].getGreen(),(float) ShirtColorArray[5].getBlue(), (float)ShirtColorArray[5].getOpacity());
+                    
+                    java.awt.Color shortscolorone = new java.awt.Color(0,0,0,0);
+                    java.awt.Color shortscolortwo = new java.awt.Color((float)shortColorArray[1].getRed(),(float)shortColorArray[1].getGreen(),(float) shortColorArray[1].getBlue(), (float)shortColorArray[1].getOpacity());
+                    java.awt.Color shortscolorthree = new java.awt.Color((float)shortColorArray[2].getRed(),(float)shortColorArray[2].getGreen(),(float) shortColorArray[2].getBlue(), (float)shortColorArray[2].getOpacity());
+                    java.awt.Color shortscolorfour = new java.awt.Color((float)shortColorArray[3].getRed(),(float)shortColorArray[3].getGreen(),(float) shortColorArray[3].getBlue(), (float)shortColorArray[3].getOpacity());
+                    java.awt.Color shortscolorfive   = new java.awt.Color((float)shortColorArray[4].getRed(),(float)shortColorArray[4].getGreen(),(float) shortColorArray[4].getBlue(), (float)shortColorArray[4].getOpacity());
+                    java.awt.Color shortscolorsix = new java.awt.Color((float)shortColorArray[5].getRed(),(float)shortColorArray[5].getGreen(),(float) shortColorArray[5].getBlue(), (float)shortColorArray[5].getOpacity());
+                    
+                    
+                    
+                    
+                    
+                    int accountid = 1;
+                    Database s = Database.getDatabase();
+                 
+                    s.insertColors(account.id, name.getText(), "body" , bodycolorone, bodycolortwo, bodycolorthree, bodycolorfour, bodycolorfive, bodycolorsix);
+                    s.insertColors(account.id, name.getText(), "shorts" , shortscolorone, shortscolortwo, shortscolorthree, shortscolorfour, shortscolorfive, shortscolorsix);
+                    s.insertColors(account.id, name.getText(), "shirt" , shirtcolorone, shirtcolortwo, shirtcolorthree, shirtcolorfour, shirtcolorfive, shirtcolorsix);
+                    
+                    }
+                });
+                   
+                    
                /*
              LegColor.setOnAction(new EventHandler(){
 
@@ -414,6 +459,11 @@ import javafx.scene.shape.Rectangle;
 
 
         }
+        public JavaFXColorPicker(Account account)
+        {
+            this.account = account;
+        }
+        
 
         public static void main(String[] args) {
             launch(args);

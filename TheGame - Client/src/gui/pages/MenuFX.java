@@ -184,7 +184,7 @@ public class MenuFX {
         MenuItem CustomizeCharacter = new MenuItem("CUSTOMIZE CHARACTER [WIP]");
         CustomizeCharacter.setOnMouseClicked(event ->
         {
-            JavaFXColorPicker p = new JavaFXColorPicker();
+            JavaFXColorPicker p = new JavaFXColorPicker(account);
             try
             {
                 p.start(primaryStage);

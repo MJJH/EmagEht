@@ -5,6 +5,7 @@
  */
 package thegame.com.storage;
 
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -130,7 +131,31 @@ public class Database {
         }
         
     }
+     public void insertColors(int accountid , String charactername, String type, Color colorone,Color colortwo,Color colorthree,Color colorfour,Color colorfive,Color colorsix)
+    {
+        
+        try
+        {
+            openConnection();
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO color_set_player (accountid,type, index_1,index_2,index_3,index_4,index_5,index_6) VALUES (?, ?, ? , ? , ? , ? , ? ,?)");
+            stmt.setInt(1, accountid);
+            stmt.setString(2, type);
+            stmt.setInt(3, colorone.getRGB());
+            stmt.setInt(4, colortwo.getRGB());
+            stmt.setInt(5, colorthree.getRGB());
+            stmt.setInt(6, colorfour.getRGB());
+            stmt.setInt(7, colorfive.getRGB());
+            stmt.setInt(8, colorsix.getRGB());         
+            stmt.executeUpdate();
 
+            
+            closeConnection();
+        } catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        
+    }
     public void closeConnection()
     {
         try

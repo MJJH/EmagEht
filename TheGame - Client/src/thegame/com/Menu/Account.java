@@ -14,7 +14,7 @@ public class Account implements Serializable {
     private static final long serialVersionUID = 5539422509825657690L;
 
     private Party party;
-    private int id;
+    public int id;
     private final String name;
     private String password;
     private final ArrayList<FriendRequest> requests;
