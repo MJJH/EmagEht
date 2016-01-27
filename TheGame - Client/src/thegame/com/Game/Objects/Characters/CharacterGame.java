@@ -378,20 +378,20 @@ public abstract class CharacterGame extends MapObject {
         {
             return false;
         }
-
-        if (!backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
-        {
-            return false;
-        }
-
+        
         if (backpack[spot] == null || backpack[spot].isEmpty())
         {
             backpack[spot] = new ArrayList<>();
             backpack[spot].add(object);
             return true;
         }
-
+        
         if (object instanceof Tool || object instanceof Armor)
+        {
+            return false;
+        }
+
+        if (!backpack[spot].isEmpty() && !backpack[spot].get(0).getClass().equals(object.getClass()))
         {
             return false;
         }

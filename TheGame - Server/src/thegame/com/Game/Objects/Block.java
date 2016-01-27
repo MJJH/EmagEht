@@ -54,7 +54,14 @@ public class Block extends MapObject {
             if (damage >= type.strength)
             {
                 playing.dropItem(this, xPosition, yPosition);
-                playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
+                if (!type.name.equals("Wood"))
+                {
+                    playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
+                }
+                else
+                {
+                    playing.removeMapObject(this);
+                }
                 return false;
             }
             interaction = false;
@@ -77,7 +84,8 @@ public class Block extends MapObject {
     }
 
     @Override
-    public ObjectType getType() {
+    public ObjectType getType()
+    {
         return type;
     }
 }
