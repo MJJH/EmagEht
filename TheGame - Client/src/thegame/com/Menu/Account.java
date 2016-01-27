@@ -2,6 +2,7 @@ package thegame.com.Menu;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Contains methods to create accounts
@@ -273,5 +274,24 @@ public class Account implements Serializable {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o instanceof Account)
+        {
+            Account account = (Account) o;
+            return account.getUsername().equals(name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.name);
+        return hash;
     }
 }

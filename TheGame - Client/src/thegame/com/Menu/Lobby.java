@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import thegame.com.Game.Map;
 
 /**
@@ -119,5 +120,29 @@ public class Lobby implements Serializable{
     public int getID()
     {
         return id;
+    }
+    
+    public List<Account> getReady()
+    {
+        return ready;
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o instanceof Lobby)
+        {
+            Lobby lobby = (Lobby) o;
+            return id == lobby.getID();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 29 * hash + this.id;
+        return hash;
     }
 }

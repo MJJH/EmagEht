@@ -13,6 +13,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +91,16 @@ public class LobbyFX {
 
     private void drawLobby()
     {
+        while(lobby == null)
+        {
+            try
+            {
+                Thread.sleep(1);
+            } catch (InterruptedException ex)
+            {
+                Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         Platform.runLater(() ->
         {
             primaryStage.setOnCloseRequest(event ->
@@ -123,26 +135,43 @@ public class LobbyFX {
 
             double verticalOffset = 0.3;
 
-            for (Account account : lobby.getAccounts())
+            List<Account> accounts = lobby.getAccounts();
+            Collections.reverse(accounts);
+            HashMap<Account,Label> labels = new HashMap<>();
+            HashMap<Account,CheckBox> checkBoxes = new HashMap<>();
+            
+
+            for (Account account : accounts)
             {
-                Label character = new Label(account.getUsername());
-                CheckBox cbchar = new CheckBox();
-                AnchorPane.setLeftAnchor(cbchar, width * 0.1);
-                AnchorPane.setTopAnchor(cbchar, height * verticalOffset);
-                root.getChildren().add(cbchar);
-                AnchorPane.setTopAnchor(character, height * 0.3);
-                AnchorPane.setLeftAnchor(character, width * 0.15);
-                root.getChildren().add(character);
-                cbchar.setDisable(true);
-                if (account.getUsername().equals(myAccount.getUsername()))
-                {
-                    cbchar.setDisable(false);
-                    cbchar.setOnMouseClicked((MouseEvent event) ->
-                    {
-                        checkReady();
-                    });
-                }
+                checkBoxes.put(account, new CheckBox());
+                AnchorPane.setLeftAnchor(checkBoxes.get(account), width * 0.1);
+                AnchorPane.setTopAnchor(checkBoxes.get(account), height * verticalOffset);
+                root.getChildren().add(checkBoxes.get(account));
+                
+                labels.put(account, new Label(account.getUsername()));
+                AnchorPane.setTopAnchor(labels.get(account), height * verticalOffset);
+                AnchorPane.setLeftAnchor(labels.get(account), width * 0.15);
+                root.getChildren().add(labels.get(account));
+                
                 verticalOffset += 0.05;
+                
+                checkBoxes.get(account).setDisable(true);
+                if (!lobby.getReady().contains(myAccount))
+                {
+                    if (account.getUsername().equals(myAccount.getUsername()))
+                    {
+                        checkBoxes.get(account).setDisable(false);
+                        checkBoxes.get(account).setOnMouseClicked((MouseEvent event) ->
+                        {
+                            checkReady();
+                            checkBoxes.get(account).setDisable(true);
+                        });
+                    }
+                }
+                else
+                {
+                    checkBoxes.get(account).setSelected(true);
+                }
             }
 
             back = new Button("Back");
@@ -283,7 +312,7 @@ public class LobbyFX {
         drawLobby();
     }
 
-    public void setLobby(Lobby lobby)
+    public void updateLobby(Lobby lobby)
     {
         this.lobby = lobby;
         drawLobby();
