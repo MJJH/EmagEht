@@ -223,6 +223,8 @@ public class GameFX {
         }
         if (event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.ESCAPE)
         {
+            play.setGlobalMessage("Pressed ENTER!");
+            
             if (typing)
             {
                 ui.toggleChat();
@@ -407,6 +409,9 @@ public class GameFX {
                     if(clicked == ui.getSelect()) {
                         //System.out.println("Craft: " + toCraft.get(ui.getOffset() + ui.getSelect()).crafting.name);
                         me.Craft(toCraft.get(ui.getOffset() + ui.getSelect()));
+                        play.addChatMessage(new Message("You crafted a " + toCraft.get(ui.getOffset() + ui.getSelect()).crafting.name));
+                        ui.setChat("~");
+                        
                     } else if(clicked < maxX) {
                         ui.setCraftSelect(clicked);
                     }

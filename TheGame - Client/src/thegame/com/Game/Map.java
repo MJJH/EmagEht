@@ -171,6 +171,7 @@ public class Map implements Serializable {
             blocks[(int) mo.getY()][(int) mo.getX()] = (Block) mo;
         } else if (mo instanceof Player)
         {
+            
             players.add((Player) mo);
         } else
         {
@@ -185,6 +186,7 @@ public class Map implements Serializable {
         {
             case 1:
                 //delete block
+                //setGlobalMessage("Test van global");
                 blocks[y][x] = null;
                 break;
             case 2:
@@ -397,6 +399,24 @@ public class Map implements Serializable {
         }
     }
 
+    private String global = "";
+    public String getGlobalMessage(){
+        return global;
+    }
+    
+    public void setGlobalMessage(String message){
+        global = message;
+        new java.util.Timer().schedule( 
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    global = "";
+                }
+            }, 
+            5000 
+        );
+    }
+    
     public void addChatMessage(Message message)
     {
         chatMessages.add(message);

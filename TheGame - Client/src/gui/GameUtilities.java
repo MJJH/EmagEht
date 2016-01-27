@@ -247,6 +247,12 @@ public class GameUtilities {
             g.strokeLine(0, s.getHeight() / 2, s.getWidth(), s.getHeight() / 2);
             g.closePath();
         }
+        
+        if(play.getGlobalMessage() != "" && play.getGlobalMessage() != null) {
+            g.setFont(new Font("monospaced", 40));
+            g.setFill(Color.YELLOW);
+            g.fillText(play.getGlobalMessage(), (s.getWidth() / 2) - (play.getGlobalMessage().length() / 2) * 40, 100);
+        }
     }
 
     private void drawChat()
@@ -272,7 +278,13 @@ public class GameUtilities {
         {
             for (Message message : chatMessages)
             {
-                g.strokeText((message.getSender().getUsername() + ": " + message.getText()), 15, (s.getHeight() - RectHeight) + textPosition);
+                if(message.getSender() != null){
+                    g.setFill(guiFontColor);
+                    g.strokeText((message.getSender().getUsername() + ": " + message.getText()), 15, (s.getHeight() - RectHeight) + textPosition);
+                } else {
+                    g.setFill(Color.YELLOW);
+                    g.strokeText(message.getText(), 15, (s.getHeight() - RectHeight) + textPosition);
+                }
                 textPosition += 15;
             }
         } else

@@ -29,6 +29,13 @@ public class Message implements Serializable {
         this.text = text;
         time = new Date();
     }
+    
+    public Message(String text)
+    {
+        this.account = null;
+        this.text = text;
+        time = new Date();
+    }
 
     /**
      * This method gets the message text.
