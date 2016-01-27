@@ -351,12 +351,13 @@ public abstract class CharacterGame extends MapObject {
 
         List<MapObject> l = backpack[spot];
 
+        int counter = amount;
         if (!l.isEmpty())
         {
-            while (amount > 0 && l.size() > 0)
+            while (counter > 0 && l.size() > 0)
             {
                 removed.add(l.remove(l.size() - 1));
-                amount--;
+                counter--;
             }
         }
 

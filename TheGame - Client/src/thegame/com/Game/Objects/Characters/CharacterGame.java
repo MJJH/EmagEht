@@ -139,7 +139,7 @@ public abstract class CharacterGame extends MapObject {
 
         List<MapObject> l = backpack[spot];
 
-        if (!l.isEmpty())
+        if (l.size()>0)
         {
             while (amount > 0 && l.size() > 0)
             {
