@@ -229,6 +229,31 @@ import javafx.scene.shape.Rectangle;
                 float g = rand.nextFloat();
                 float b = rand.nextFloat();
                 Color shirtPaint = new Color(r, g, b, 1);
+                //test
+                System.out.println(shirtPaint.getRed());
+                ShirtColorArray = new Color[]
+                {
+                    null,
+                    shirtPaint.darker().darker(),
+                    shirtPaint.darker(),
+                    shirtPaint,
+                    shirtPaint.brighter(),
+                    shirtPaint.brighter().brighter(),
+                };
+                    ColorChanged(gc);
+            }
+            });
+             
+             TriangleMiddleRight.setOnMouseClicked(new EventHandler<MouseEvent>()
+            {
+            @Override
+            public void handle(MouseEvent t) {
+                Random rand = new Random();
+
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+                Color shirtPaint = new Color(r, g, b, 1);
 
                 ShirtColorArray = new Color[]
                 {
@@ -244,6 +269,30 @@ import javafx.scene.shape.Rectangle;
             });
              
               TriangleBottomLeft.setOnMouseClicked(new EventHandler<MouseEvent>()
+            {
+            @Override
+            public void handle(MouseEvent t) {
+                Random rand = new Random();
+
+                float r = rand.nextFloat();
+                float g = rand.nextFloat();
+                float b = rand.nextFloat();
+                Color ShortsPaint = new Color(r, g, b, 1);
+
+                shortColorArray = new Color[]
+                {
+                    null,
+                    ShortsPaint.darker().darker(),
+                    ShortsPaint.darker(),
+                    ShortsPaint,
+                    ShortsPaint.brighter(),
+                    ShortsPaint.brighter().brighter(),
+                };
+                    ColorChanged(gc);
+            }
+            });
+              
+             TriangleBottomRight.setOnMouseClicked(new EventHandler<MouseEvent>()
             {
             @Override
             public void handle(MouseEvent t) {
@@ -360,6 +409,7 @@ import javafx.scene.shape.Rectangle;
             primaryStage.setScene(scene);
             primaryStage.show();
 
+            
 
 
 
