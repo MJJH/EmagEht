@@ -442,6 +442,10 @@ public class GameServerToClientHandler {
         Timer update = gameTimerTable.get(map);
         update.cancel();
         List<Player> toSendTo = map.getPlayers();
+        for(Player player : toSendTo)
+        {
+            map.getLobby().setNotReady(player.getAccount());
+        }
         List<IGameServerToClientListener> toRemoveListeners = new ArrayList<>();
         for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
         {

@@ -38,7 +38,7 @@ public class LobbyServerToClientListener implements ILobbyServerToClientListener
     @Override
     public void updateLobby(Lobby lobby) throws RemoteException
     {
-        if(lobby != null)
+        if(lobbyFX != null && lobby != null)
         {
             lobbyFX.setLobby(lobby);
         }
