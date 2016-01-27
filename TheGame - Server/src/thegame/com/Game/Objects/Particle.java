@@ -1,5 +1,6 @@
 package thegame.com.Game.Objects;
 
+import java.util.Random;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.engine.Movement;

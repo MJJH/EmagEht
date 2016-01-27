@@ -41,7 +41,7 @@ public abstract class CharacterGame extends MapObject {
 
     public enum action implements Serializable {
 
-        DROP, SELECT, CLICK
+        DROP, DROPALL, SELECT, CLICK
     }
 
     public void walkRight()
@@ -144,6 +144,7 @@ public abstract class CharacterGame extends MapObject {
             while (amount > 0 && l.size() > 0)
             {
                 removed.add(l.remove(l.size() - 1));
+                amount--;
             }
         }
 
@@ -162,20 +163,8 @@ public abstract class CharacterGame extends MapObject {
         {
             removed.add(mo);
         }
-        backpack[spot].clear();
+        backpack[spot] = new ArrayList<>();
         return removed;
-    }
-
-    /**
-     * This method will drop an object from your backpack to the map.
-     *
-     * @param object, the object you want to drop
-     * @return returns the object and value
-     */
-    public Particle dropItem(int spot)
-    {
-        //backpack[spot].get(backpack[spot].size()-1);
-        return null;
     }
 
     /**
@@ -183,15 +172,8 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param armorAdd, the armor that you want to wear
      */
-    public void equipArmor(int spot)
+    public void equipArmor(Armor add)
     {
-        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null || !(backpack[spot].get(0) instanceof Armor))
-        {
-            return;
-        }
-
-        Armor add = (Armor) removeFromBackpack(spot, 1).get(0);
-
         for (Skin i : this.skins.values())
         {
             try
@@ -202,7 +184,6 @@ public abstract class CharacterGame extends MapObject {
                     im.removeTexture(armor.get(add.getArmorType().bodypart).getType().texture);
                 }
                 im.addTexture(add.getType().texture, add.getType().colorset);
-                // TODO RECOLOR
             } catch (IOException ex)
             {
                 Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);
@@ -251,15 +232,8 @@ public abstract class CharacterGame extends MapObject {
      *
      * @param toolAdd tool to equip
      */
-    private void equipTool(int spot)
+    public void equipTool(List<MapObject> add)
     {
-        if (spot < 0 || spot > backpack.length - 1 || backpack[spot] == null)
-        {
-            return;
-        }
-
-        List<MapObject> add = backpack[spot];
-
         for (Skin i : this.skins.values())
         {
             try
@@ -445,26 +419,7 @@ public abstract class CharacterGame extends MapObject {
         {
             try
             {
-                if (playing.getGameClientToServer().interactWithBackpack(playing.getLobby().getID(), id, spot, action))
-                {
-                    switch (action)
-                    {
-                        case CLICK:
-                            List<MapObject> content = backpack[spot];
-                            if (content.get(0) instanceof Armor)
-                            {
-                                equipArmor(spot);
-                            } else
-                            {
-                                equipTool(spot);
-                            }
-                            break;
-                        case DROP:
-                            break;
-                        case SELECT:
-                            break;
-                    }
-                }
+                playing.getGameClientToServer().interactWithBackpack(playing.getLobby().getID(), id, spot, action);
             } catch (RemoteException ex)
             {
                 Logger.getLogger(CharacterGame.class.getName()).log(Level.SEVERE, null, ex);

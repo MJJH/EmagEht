@@ -370,11 +370,19 @@ public class GameFX {
 
                 if (horizontalSlot != -1 && verticalSlot != -1)
                 {
-                    if(button == MouseButton.PRIMARY)
+                    switch (button)
                     {
-                        me.interactWithBackpack(verticalSlot * 10 + horizontalSlot, CharacterGame.action.CLICK);
-                        return;
+                        case PRIMARY:
+                            me.interactWithBackpack(verticalSlot * 10 + horizontalSlot, CharacterGame.action.CLICK);
+                            break;
+                        case MIDDLE:
+                            me.interactWithBackpack(verticalSlot * 10 + horizontalSlot, CharacterGame.action.DROPALL);
+                            break;
+                        case SECONDARY:
+                            me.interactWithBackpack(verticalSlot * 10 + horizontalSlot, CharacterGame.action.DROP);
+                            break;
                     }
+                    return;
                 }
             }
         }

@@ -8,6 +8,7 @@ package thegame;
 import java.rmi.RemoteException;
 import java.util.List;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
@@ -37,31 +38,6 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         map.addChatMessage(message);
     }
 
-    /*
-     @Override
-     public void updatePlayer(int id, float x, float y, int direction) throws RemoteException
-     {
-     if (map == null || me == null)
-     {
-     return;
-     }
-     MapObject.sides directionSide = MapObject.sides.RIGHT;
-     if (direction == 0)
-     {
-     directionSide = MapObject.sides.LEFT;
-     }
-
-     for (Player player : map.getPlayers())
-     {
-     if (player.getID() == id)
-     {
-     player.setCords(x, y);
-     player.setDirection(directionSide);
-     return;
-     }
-     }
-     }
-     */
     @Override
     public void knockBackPlayer(float hSpeed, float vSpeed) throws RemoteException
     {
@@ -144,6 +120,57 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     @Override
     public void stopGame() throws RemoteException
     {
+        if (map == null)
+        {
+            return;
+        }
         map.getLobbyFX().stopGame();
+    }
+
+    @Override
+    public void equipArmor(Armor equipArmor) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        equipArmor.setMap(map);
+        equipArmor.setType();
+        me.equipArmor(equipArmor);
+    }
+
+    @Override
+    public void equipTool(List<MapObject> equipTool) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        for(MapObject object : equipTool)
+        {
+            object.setMap(map);
+            object.setType();
+        }
+        me.equipTool(equipTool);
+    }
+
+    @Override
+    public void removeFromBackpack(int spot, int amount) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        me.removeFromBackpack(spot, amount);
+    }
+
+    @Override
+    public void removeFromBackpack(int spot) throws RemoteException
+    {
+        if (map == null || me == null)
+        {
+            return;
+        }
+        me.removeFromBackpack(spot);
     }
 }

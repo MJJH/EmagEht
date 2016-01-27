@@ -226,7 +226,7 @@ public class GameClientToServerHandler implements IGameClientToServer {
     }
 
     @Override
-    public boolean interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException
+    public void interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException
     {
         Map map = null;
         for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
@@ -239,16 +239,15 @@ public class GameClientToServerHandler implements IGameClientToServer {
         }
         if(map == null)
         {
-            return false;
+            return;
         }
         for(Player player : map.getPlayers())
         {
             if(player.getID() == playerID)
             {
-                return player.interactWithBackpack(spot, action);
+                player.interactWithBackpack(spot, action);
             }
         }
-        return false;
     }
 
     @Override

@@ -183,8 +183,7 @@ public class LobbyFX {
     private void clickHandler(double clickX, double clickY)
     {
         //GUI CLICK
-        cbchar1.setSelected(true);
-        checkReady();
+        cbchar1.setSelected(checkReady());
     }
 
     private boolean checkReady()

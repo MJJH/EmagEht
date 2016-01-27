@@ -8,6 +8,7 @@ package thegame.shared;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Message;
 
@@ -34,4 +35,12 @@ public interface IGameServerToClientListener extends Remote {
     public void respawnMe() throws RemoteException;
 
     public void stopGame() throws RemoteException;
+
+    public void equipArmor(Armor equipArmor) throws RemoteException;
+
+    public void equipTool(List<MapObject> equipTool) throws RemoteException;
+
+    public void removeFromBackpack(int spot, int amount) throws RemoteException;
+
+    public void removeFromBackpack(int spot) throws RemoteException;
 }

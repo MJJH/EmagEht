@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import thegame.com.Game.Map;
+import thegame.com.Game.Objects.Armor;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
@@ -108,6 +109,13 @@ public class GameServerToClientHandler {
         {
             stopGame(map);
         }
+        else if(map.getPlayers().size() == 1)
+        {
+            if(map.getPlayers().get(0).equals(removePlayer))
+            {
+                stopGame(map);
+            }
+        }
         Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(removeAccount);
         lobby.leaveLobby(removeAccount);
         try
@@ -133,9 +141,17 @@ public class GameServerToClientHandler {
         Map map = removePlayer.getMap();
         map.removeMapObject(removePlayer);
         playerListenersTable.remove(listener);
+        
         if (map.getPlayers().size() < 1)
         {
             stopGame(map);
+        }
+        else if(map.getPlayers().size() == 1)
+        {
+            if(map.getPlayers().get(0).equals(removePlayer))
+            {
+                stopGame(map);
+            }
         }
         try
         {
@@ -464,5 +480,141 @@ public class GameServerToClientHandler {
         gameTimerTable.remove(map);
         gameTable.remove(map.getLobby());
         theGameServer.changeGames(-1);
+    }
+
+    public void equipArmor(Armor equipArmor, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.equipArmor(equipArmor);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not equipArmor to " + toSendPlayer.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    connectionLossPlayer(listener);
+                }
+            });
+            break;
+        }
+    }
+
+    public void equipTool(List<MapObject> equipTool, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.equipTool(equipTool);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not equipArmor to " + toSendPlayer.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    connectionLossPlayer(listener);
+                }
+            });
+            break;
+        }
+    }
+
+    public void removeFromBackpack(int spot, int amount, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.removeFromBackpack(spot, amount);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not removeFromBackpack (spot: " + spot + " amount: " + amount + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    connectionLossPlayer(listener);
+                }
+            });
+            break;
+        }
+    }
+
+    public void removeFromBackpack(int spot, Player toSendPlayer)
+    {
+        for (Entry<IGameServerToClientListener, Player> entry : playerListenersTable.entrySet())
+        {
+            IGameServerToClientListener listener = entry.getKey();
+            if (connectionLossTable.contains(listener))
+            {
+                continue;
+            }
+            Player player = entry.getValue();
+
+            if (toSendPlayer != player)
+            {
+                continue;
+            }
+
+            threadPoolSend.submit(() ->
+            {
+                try
+                {
+                    listener.removeFromBackpack(spot);
+                } catch (RemoteException ex)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-M-y HH:mm:ss");
+                    System.err.println(sdf.format(cal.getTime()) + " Could not removeFromBackpack (spot: " + spot + ") to player " + player.getName() + " because:");
+                    System.err.println(ex.getMessage());
+                    connectionLossPlayer(listener);
+                }
+            });
+            break;
+        }
     }
 }

@@ -77,8 +77,8 @@ public class MenuFX {
         {
             try
             {
-                connectToLobby();
-                if (signedIn)
+                connectToLobbyServer();
+                if (this.signedIn)
                 {
                     Platform.runLater(() ->
                     {
@@ -103,7 +103,7 @@ public class MenuFX {
         connectThread.start();
     }
 
-    private void connectToLobby() throws RemoteException, NotBoundException
+    private void connectToLobbyServer() throws RemoteException, NotBoundException
     {
         lobbyServer = LocateRegistry.getRegistry(config.ip, config.lobbyServerToClientPort);
         lobbyClientToServer = (ILobbyClientToServer) lobbyServer.lookup(config.lobbyClientToServerName);

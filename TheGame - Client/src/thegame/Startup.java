@@ -175,7 +175,7 @@ public class Startup extends Application {
 
     private void loadSound()
     {
-        music = new Sound("GameSound.wav");
-        hit = new Sound("Hit.wav");
+        music = new Sound("GameSound.wav", -10);
+        hit = new Sound("Hit.wav", 0);
     }
 }

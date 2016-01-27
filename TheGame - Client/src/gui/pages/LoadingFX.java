@@ -27,6 +27,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sound.Sound;
+import thegame.Startup;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Player;
@@ -97,8 +98,7 @@ public class LoadingFX {
         
         stages.setTitle("The Game");
         ui = new GameUtilities(me, play, canvas.getGraphicsContext2D(), scene);
-        sound = new Sound("GameSound.wav");
-        sound.loop();
+        Startup.music.loop();
     }
     
     private void startTimers()

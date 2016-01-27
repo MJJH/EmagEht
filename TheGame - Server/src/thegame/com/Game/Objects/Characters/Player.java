@@ -187,30 +187,39 @@ public class Player extends CharacterGame {
         return true;
     }
 
-    public boolean interactWithBackpack(int spot, action action)
+    public void interactWithBackpack(int spot, action action)
     {
-        boolean returnValue = false;
         if (backpack[spot] != null && !backpack[spot].isEmpty())
         {
+            List<MapObject> content = backpack[spot];
             switch (action)
             {
                 case CLICK:
-                    List<MapObject> content = backpack[spot];
                     if (content.get(0) instanceof Armor)
                     {
-                        returnValue = equipArmor(spot);
+                        Armor armorPiece = equipArmor(spot);
+                        if (armor != null)
+                        {
+                            playing.getGameServerToClientHandler().equipArmor(armorPiece, this);
+                        }
                     } else
                     {
-                        returnValue = equipTool(spot);
+                        List<MapObject> objects = equipTool(spot);
+                        if (objects != null || objects.size() > 0)
+                        {
+                            playing.getGameServerToClientHandler().equipTool(objects, this);
+                        }
                     }
                     break;
                 case DROP:
+                    dropItem(spot, 1);
+                    break;
+                case DROPALL:
+                    dropItem(spot, content.size());
                     break;
                 case SELECT:
                     break;
             }
         }
-        
-        return returnValue;
     }
 }

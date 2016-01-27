@@ -40,7 +40,7 @@ public interface IGameClientToServer extends Remote {
 
     public boolean craft(int lobbyID, int playerID, Crafting to_craft) throws RemoteException;
     
-    public boolean interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException;
+    public void interactWithBackpack(int lobbyID, int playerID, int spot, CharacterGame.action action) throws RemoteException;
     
     public boolean unequipTool(int lobbyID, int playerID) throws RemoteException;
     

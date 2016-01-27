@@ -31,7 +31,8 @@ public class Lobby implements Serializable{
      */
     public Lobby()
     {
-        id = idCounter++;
+        id = idCounter;
+        idCounter++;
         chat = new ArrayList();
         accounts = new ArrayList();
         ready = new ArrayList<>();

@@ -12,7 +12,7 @@ public class Sound {
     static Object sound1;
     private Clip clip;
 
-    public Sound(String fileName)
+    public Sound(String fileName, float gainAmount)
     {
         AudioInputStream aiStream = null;
 
@@ -21,6 +21,8 @@ public class Sound {
             aiStream = AudioSystem.getAudioInputStream(new File("src/resources/" + fileName));
             clip = AudioSystem.getClip();
             clip.open(aiStream);
+            FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(gainAmount);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex)
         {
             Logger.getLogger(Sound.class.getName()).log(Level.SEVERE, null, ex);

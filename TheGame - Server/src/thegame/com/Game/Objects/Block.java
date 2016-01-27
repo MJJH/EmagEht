@@ -53,41 +53,7 @@ public class Block extends MapObject {
         {
             if (damage >= type.strength)
             {
-                MapObject particleStack = null;
-                float curDifX = 100;
-                for (MapObject object : playing.getObjects(xPosition, yPosition, 1.1f))
-                {
-                    if (object instanceof Particle)
-                    {
-                        if (particleStack == null)
-                        {
-                            particleStack = object;
-                        } else
-                        {
-                            if (curDifX > Math.abs(object.getX() - xPosition))
-                            {
-                                curDifX = Math.abs(object.getX() - xPosition);
-                                particleStack = object;
-                            }
-                        }
-                    }
-                }
-                if (particleStack != null)
-                {
-                    Particle particle = (Particle) particleStack;
-                    if (particle.getObject() instanceof Block)
-                    {
-                        Block block = (Block) particle.getObject();
-                        if (block.type == type)
-                        {
-                            particle.addObjectCount();
-                            playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
-                            return false;
-                        }
-                    }
-                }
-
-                playing.addMapObject(new Particle(this, xPosition, yPosition, playing));
+                playing.dropItem(this, xPosition, yPosition);
                 playing.addMapObject(new Background(BlockType.blocktypes.get("CaveStone"), xPosition, yPosition, playing));
                 return false;
             }

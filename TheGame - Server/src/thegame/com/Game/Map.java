@@ -25,6 +25,7 @@ import thegame.com.Game.Objects.Characters.CharacterGame;
 import thegame.com.Game.Objects.Characters.Enemy;
 import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
+import thegame.com.Game.Objects.Particle;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Lobby;
 import thegame.engine.Collision;
@@ -38,7 +39,7 @@ public class Map implements Serializable {
 
     private static final long serialVersionUID = 5529685098267757690L;
     private transient static int idCounter = 1;
-    
+
     private Lobby lobby;
 
     private int id;
@@ -82,7 +83,7 @@ public class Map implements Serializable {
 
         teamlifes = thegame.config.teamLifes;
         gravity = .025f;
-        
+
         this.lobby = lobby;
 
         objects = new ArrayList<>();
@@ -170,14 +171,14 @@ public class Map implements Serializable {
 
                 y--;
             }
-            
-            for(Account account : lobby.getAccounts())
+
+            for (Account account : lobby.getAccounts())
             {
                 players.add(new Player(account, lobby.getChosenCharacters().get(account), account.getUsername(), 100, null, null, spawnX, spawnY, 2f, 1f, this));
             }
 
             addMapObject(new Enemy("Loser", 100, null, getWidth() - 10, 25, 1, 1, this));
-            addMapObject(new Boss("TheBoss",1000,null,getWidth()-10,100,5,5,this));
+            addMapObject(new Boss("TheBoss", 1000, null, getWidth() - 10, 100, 5, 5, this));
 
         } catch (IOException ex)
         {
@@ -624,7 +625,7 @@ public class Map implements Serializable {
                 {
                     synchronized (toUpdate)
                     {
-                        if(!(key instanceof Enemy))
+                        if (!(key instanceof Enemy))
                         {
                             toUpdate.remove(key);
                         }
@@ -645,7 +646,7 @@ public class Map implements Serializable {
     {
         return gravity;
     }
-    
+
     @Override
     public boolean equals(Object o)
     {
@@ -678,5 +679,44 @@ public class Map implements Serializable {
     public Lobby getLobby()
     {
         return lobby;
+    }
+
+    public void dropItem(MapObject item, float x, float y)
+    {
+        MapObject particleStack = null;
+        float curDifX = 100;
+        for (MapObject object : getObjects(x, y, 1.1f))
+        {
+            if (object instanceof Particle)
+            {
+                if (particleStack == null)
+                {
+                    particleStack = object;
+                } else
+                {
+                    if (curDifX > Math.abs(object.getX() - x))
+                    {
+                        curDifX = Math.abs(object.getX() - y);
+                        particleStack = object;
+                    }
+                }
+            }
+        }
+        if (particleStack != null)
+        {
+            Particle particle = (Particle) particleStack;
+            if (particle.getObject() instanceof Block && item instanceof Block)
+            {
+                Block blockObject = (Block) particle.getObject();
+                Block blockItem = (Block) item;
+                if (blockObject.getType() == item.getType())
+                {
+                    particle.addObjectCount();
+                    return;
+                }
+            }
+        }
+
+        addMapObject(new Particle(item, x, y, this));
     }
 }
