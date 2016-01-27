@@ -79,6 +79,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
                 {
                     lobby.joinLobby(account);
                     lobbyServerToClientHandler.getAccountsInLobbies().put(account, lobby);
+                    lobbyServerToClientHandler.updateLobby(lobby);
                     return lobby;
                 }
             }
@@ -92,6 +93,7 @@ public class LobbyClientToServerHandler implements ILobbyClientToServer {
     {
         Lobby lobby = lobbyServerToClientHandler.getAccountsInLobbies().get(myAccount);
         boolean returnValue = lobby.setReady(myAccount);
+        lobbyServerToClientHandler.updateLobby(lobby);
         if (returnValue && lobby.readyToStart() && !lobby.getGameStarted())
         {
             lobby.setGameStarted(true);

@@ -6,6 +6,7 @@
 package gui.pages;
 
 import gui.SplashScreen;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -52,6 +53,7 @@ public class LobbyFX {
 
     private Stage primaryStage;
     private boolean started;
+    private boolean ready;
 
     // LOBBY
     private Registry lobbyServer;
@@ -71,10 +73,6 @@ public class LobbyFX {
     private SplashScreen splash;
     private double width;
     private double height;
-    private CheckBox cbchar1;
-    private CheckBox cbchar2;
-    private CheckBox cbchar3;
-    private CheckBox cbchar4;
     private Button back;
 
     public LobbyFX(Stage primaryStage, Lobby lobby, Account account, Registry lobbyServer, ILobbyClientToServer lobbyClientToServer, LobbyServerToClientListener lobbyServerToClientListener)
@@ -88,117 +86,100 @@ public class LobbyFX {
 
         drawLobby();
     }
-    
+
     private void drawLobby()
     {
-        primaryStage.setOnCloseRequest(event ->
+        Platform.runLater(() ->
         {
-            if (lobbyClientToServer != null && lobbyServerToClientListener != null)
+            primaryStage.setOnCloseRequest(event ->
+            {
+                if (lobbyClientToServer != null && lobbyServerToClientListener != null)
+                {
+                    try
+                    {
+                        lobbyClientToServer.signOut(myAccount);
+                    } catch (RemoteException ex)
+                    {
+                        System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
+                        Platform.runLater(() ->
+                        {
+                            connectionLoss();
+                        });
+                    }
+                }
+                System.exit(0);
+            });
+
+            AnchorPane root = new AnchorPane();
+            Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
+            final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            height = primaryStage.getHeight();
+            width = primaryStage.getWidth();
+
+            primaryStage.setTitle("Lobby");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+            double verticalOffset = 0.3;
+
+            for (Account account : lobby.getAccounts())
+            {
+                Label character = new Label(account.getUsername());
+                CheckBox cbchar = new CheckBox();
+                AnchorPane.setLeftAnchor(cbchar, width * 0.1);
+                AnchorPane.setTopAnchor(cbchar, height * verticalOffset);
+                root.getChildren().add(cbchar);
+                AnchorPane.setTopAnchor(character, height * 0.3);
+                AnchorPane.setLeftAnchor(character, width * 0.15);
+                root.getChildren().add(character);
+                cbchar.setDisable(true);
+                if (account.getUsername().equals(myAccount.getUsername()))
+                {
+                    cbchar.setDisable(false);
+                    cbchar.setOnMouseClicked((MouseEvent event) ->
+                    {
+                        checkReady();
+                    });
+                }
+                verticalOffset += 0.05;
+            }
+
+            back = new Button("Back");
+            back.setOnMouseClicked((MouseEvent t) ->
             {
                 try
                 {
-                    lobbyClientToServer.signOut(myAccount);
+                    lobbyClientToServer.quitLobby(myAccount);
                 } catch (RemoteException ex)
                 {
-                    System.out.println("Could not reach the server. (Exception: " + ex.getMessage() + ")");
-                    Platform.runLater(() ->
-                    {
-                        connectionLoss();
-                    });
+                    Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-            System.exit(0);
+                Startup.showMenuFX();
+            });
+
+            AnchorPane.setLeftAnchor(back, width * 0.95);
+            root.getChildren().add(back);
         });
-
-        AnchorPane root = new AnchorPane();
-        Scene scene = new Scene(root, primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight(), Color.BLACK);
-        final Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        height = primaryStage.getHeight();
-        width = primaryStage.getWidth();
-        primaryStage.setTitle("Lobby");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        scene.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseListener);
-        Label character1 = new Label("Character1");
-        Label character2 = new Label("Character2");
-        Label character3 = new Label("Character3");
-        Label character4 = new Label("Character4");
-        
-         cbchar1 = new CheckBox();
-         cbchar2 = new CheckBox();
-         cbchar3 = new CheckBox();
-         cbchar4 = new CheckBox();
-        
-        AnchorPane.setLeftAnchor(cbchar1, width * 0.1);        
-        AnchorPane.setTopAnchor(cbchar1, height * 0.3);
-        root.getChildren().add(cbchar1);
-        AnchorPane.setTopAnchor(character1, height * 0.3);
-        AnchorPane.setLeftAnchor(character1, width * 0.15);
-        root.getChildren().add(character1);
- 
-        AnchorPane.setLeftAnchor(cbchar2, width * 0.1);        
-        AnchorPane.setTopAnchor(cbchar2, height * 0.35);
-        root.getChildren().add(cbchar2);
-        AnchorPane.setTopAnchor(character2, height * 0.35);
-        AnchorPane.setLeftAnchor(character2, width * 0.15);
-        root.getChildren().add(character2);
-
-        AnchorPane.setLeftAnchor(cbchar3, width * 0.1);        
-        AnchorPane.setTopAnchor(cbchar3, height * 0.4);
-        root.getChildren().add(cbchar3);
-        AnchorPane.setTopAnchor(character3, height * 0.4);
-        AnchorPane.setLeftAnchor(character3, width * 0.15);
-        root.getChildren().add(character3);
-  
-        AnchorPane.setLeftAnchor(cbchar4, width * 0.1);        
-        AnchorPane.setTopAnchor(cbchar4, height * 0.45);
-        root.getChildren().add(cbchar4);
-        AnchorPane.setTopAnchor(character4, height * 0.45);
-        AnchorPane.setLeftAnchor(character4, width * 0.15);
-        root.getChildren().add(character4);
-        
-        cbchar1.setDisable(true);
-        cbchar2.setDisable(true);
-        cbchar3.setDisable(true);
-        cbchar4.setDisable(true);
-        
-        back = new Button("Back");
-
-        AnchorPane.setLeftAnchor(back,width * 0.95);
-        root.getChildren().add(back);
-        
-
-        
-    }
-
-    private final EventHandler<MouseEvent> mouseListener = (MouseEvent event) ->
-    {
-        if (event.getButton().equals(MouseButton.PRIMARY))
-        {
-            clickHandler(event.getSceneX(), event.getSceneY());
-        }
-    };
-
-    private void clickHandler(double clickX, double clickY)
-    {
-        //GUI CLICK
-        cbchar1.setSelected(checkReady());
     }
 
     private boolean checkReady()
     {
-        try
+        if (!ready)
         {
-            // if character selected etc. else return false
-            lobbyServerToClientListener.setLobbyFX(this);
-            boolean returnValue = lobbyClientToServer.checkReady(myAccount);
-            return returnValue;
-        } catch (RemoteException ex)
-        {
-            Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            try
+            {
+                // if character selected etc. else return false
+                lobbyServerToClientListener.setLobbyFX(this);
+                ready = lobbyClientToServer.checkReady(myAccount);
+                return ready;
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
         }
+        return false;
     }
 
     public void connectToGame()
@@ -228,7 +209,7 @@ public class LobbyFX {
                 splash.countTill(100);
                 Platform.runLater(() ->
                 {
-                    
+
                     play.setGameFX(new GameFX(primaryStage, me, myAccount, play, gameClientToServer, gameServerToClientListener));
                 });
             } catch (NotBoundException ex)
@@ -291,7 +272,20 @@ public class LobbyFX {
         me = null;
         server = null;
         gameClientToServer = null;
+        try
+        {
+            UnicastRemoteObject.unexportObject(gameServerToClientListener, false);
+        } catch (NoSuchObjectException ex)
+        {
+            Logger.getLogger(LobbyFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
         gameServerToClientListener = null;
+        drawLobby();
+    }
+
+    public void setLobby(Lobby lobby)
+    {
+        this.lobby = lobby;
         drawLobby();
     }
 }

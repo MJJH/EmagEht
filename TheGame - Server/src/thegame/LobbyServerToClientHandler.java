@@ -92,4 +92,26 @@ public class LobbyServerToClientHandler {
             Logger.getLogger(LobbyServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void updateLobby(Lobby lobby)
+    {
+        ArrayList<Account> accountsInLobby = new ArrayList<>();
+        for (Map.Entry<Account, Lobby> entry : accountsInLobbies.entrySet())
+        {
+            if (entry.getValue().equals(lobby))
+            {
+                accountsInLobby.add(entry.getKey());
+            }
+        }
+        for (Account account : accountsInLobby)
+        {
+            try
+            {
+                onlinePlayers.get(account).updateLobby(lobby);
+            } catch (RemoteException ex)
+            {
+                Logger.getLogger(LobbyServerToClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

@@ -8,6 +8,7 @@ package thegame;
 import gui.pages.LobbyFX;
 import java.rmi.RemoteException;
 import javafx.application.Platform;
+import thegame.com.Menu.Lobby;
 import thegame.shared.ILobbyServerToClientListener;
 
 
@@ -32,5 +33,14 @@ public class LobbyServerToClientListener implements ILobbyServerToClientListener
     public void requestConnectToGame() throws RemoteException
     {
         Platform.runLater(lobbyFX::connectToGame);
+    }
+
+    @Override
+    public void updateLobby(Lobby lobby) throws RemoteException
+    {
+        if(lobby != null)
+        {
+            lobbyFX.setLobby(lobby);
+        }
     }
 }

@@ -7,6 +7,7 @@ package thegame.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import thegame.com.Menu.Lobby;
 
 /**
  *
@@ -15,5 +16,7 @@ import java.rmi.RemoteException;
 public interface ILobbyServerToClientListener extends Remote{
 
     public void requestConnectToGame() throws RemoteException;
+
+    public void updateLobby(Lobby lobby) throws RemoteException;
     
 }
