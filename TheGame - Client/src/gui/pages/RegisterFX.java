@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -29,8 +30,8 @@ public class RegisterFX {
     private final Button Register;
     private final Button Back;
     private final TextField username;
-    private final TextField password;
-    private final TextField confirmpassword;
+    private final PasswordField password;
+    private final PasswordField confirmpassword;
 
     RegisterFX(Stage primaryStage) {
     AnchorPane root = new AnchorPane();
@@ -44,8 +45,8 @@ public class RegisterFX {
      Back = new Button("Go Back");
      
      username = new TextField();
-     password = new TextField();
-     confirmpassword = new TextField();
+     password = new PasswordField();
+     confirmpassword = new PasswordField();
      
      username.setPrefSize(230, 20);
      password.setPrefSize(230, 20);
