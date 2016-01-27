@@ -191,7 +191,7 @@ public abstract class CharacterGame extends MapObject {
         }
         for (MapObject removed : removeFromBackpack(spot, ammount))
         {
-            playing.dropItem(removed, xPosition + width + 0.2f, yPosition + (height/2));
+            playing.dropItem(removed, xPosition + (width/2), yPosition + (height / 2));
         }
 
         return true;
@@ -220,6 +220,11 @@ public abstract class CharacterGame extends MapObject {
                 armor.put(add.getArmorType().bodypart, add);
             }
         }
+        if (this instanceof Player)
+        {
+            playing.addToPlayerUpdate((Player) this);
+        }
+
         return add;
     }
 
@@ -236,6 +241,10 @@ public abstract class CharacterGame extends MapObject {
             addToBackpack(armor.get(partToUnequip));
             armor.put(partToUnequip, null);
             returnValue = true;
+            if (this instanceof Player)
+            {
+                playing.addToPlayerUpdate((Player) this);
+            }
         }
         return returnValue;
     }
@@ -272,10 +281,14 @@ public abstract class CharacterGame extends MapObject {
             {
                 for (MapObject object : holding)
                 {
-                    playing.dropItem(object, xPosition + (width/2), yPosition + (height/2));
+                    playing.dropItem(object, xPosition + (width / 2), yPosition + (height / 2));
                 }
             }
             holding = add;
+        }
+        if (this instanceof Player)
+        {
+            playing.addToPlayerUpdate((Player) this);
         }
         return add;
     }
@@ -294,6 +307,10 @@ public abstract class CharacterGame extends MapObject {
             }
             holding = null;
             returnValue = true;
+            if (this instanceof Player)
+            {
+                playing.addToPlayerUpdate((Player) this);
+            }
         }
         return returnValue;
     }
@@ -342,7 +359,7 @@ public abstract class CharacterGame extends MapObject {
                 amount--;
             }
         }
-        
+
         if (this instanceof Player)
         {
             playing.getGameServerToClientHandler().removeFromBackpack(spot, amount, (Player) this);
@@ -570,7 +587,7 @@ public abstract class CharacterGame extends MapObject {
         {
             if (used.type.kb > 0)
             {
-                knockBack(used.type.kb/10, hitDirection);
+                knockBack(used.type.kb / 10, hitDirection);
             }
         }
 

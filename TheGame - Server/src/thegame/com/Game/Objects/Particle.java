@@ -39,6 +39,7 @@ public class Particle extends MapObject {
         sYIncrease = 0.05f;
         sXMax = 0.3f;
         sYMax = 0.3f;
+        sX = 0.25f;
     }
 
     private void setObject(MapObject object)
