@@ -180,7 +180,7 @@ public class Player extends CharacterGame {
             int i = 0;
             while (left > 0 && i < 30)
             {
-                if (backpack[i].get(0).getType() == ot)
+                if (backpack[i] != null && backpack[i].size() > 0 && backpack[i].get(0).getType() == ot)
                 {
                     left -= backpack[i].size();
                 }

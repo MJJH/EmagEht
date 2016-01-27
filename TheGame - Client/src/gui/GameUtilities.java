@@ -513,6 +513,12 @@ public class GameUtilities {
         double breedte = (double) hp / maxhp;
         breedte = breedte * mo.getW() * config.block.val;
         g.fillRect(x, y - 9, breedte, 3.0f);
+        
+        if(mo instanceof Player) {
+            Player p = (Player) mo;
+            // PRINT NAME
+        }
+        
         g.closePath();
     }
 
@@ -662,6 +668,16 @@ public class GameUtilities {
         };
     }
 
+    public void setCraftSelect(int i) {
+        selected = i;
+    }
+    
+    public void addOffset() { offset++; }
+    public void remOffset() { offset--; }
+
+    public int getSelect() { return selected; }
+    public int getOffset() { return offset; }
+    
     private void drawCrafting()
     {
         g.beginPath();

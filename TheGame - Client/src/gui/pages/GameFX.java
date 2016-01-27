@@ -6,6 +6,7 @@
 package gui.pages;
 
 import gui.GameUtilities;
+import java.io.Console;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
@@ -37,6 +38,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import thegame.Startup;
 import static thegame.Startup.music;
+import thegame.com.Game.Crafting;
 import thegame.com.Game.Map;
 import thegame.com.Game.Objects.ArmorType;
 import thegame.com.Game.Objects.Characters.CharacterGame;
@@ -393,6 +395,27 @@ public class GameFX {
                             break;
                     }
                     return;
+                }
+            } else if (clickX <= 500 && clickY <= 240 && clickX > 10 && clickY > 200) {
+                // Crafting
+                List<Crafting> toCraft = Crafting.recipes;
+
+                int maxX = toCraft.size();
+                
+                if(clickX <= 450 && clickX >= 60) {
+                    int clicked = (int) Math.floor((clickX - 60) / 50);
+                    if(clicked == ui.getSelect()) {
+                        //System.out.println("Craft: " + toCraft.get(ui.getOffset() + ui.getSelect()).crafting.name);
+                        me.Craft(toCraft.get(ui.getOffset() + ui.getSelect()));
+                    } else if(clicked < maxX) {
+                        ui.setCraftSelect(clicked);
+                    }
+                } else if (clickX < 60) {
+                    if(ui.getOffset() > 0)
+                        ui.remOffset();
+                } else if(clickX > 500) {
+                    if(ui.getOffset() + 8 < maxX)
+                        ui.addOffset();
                 }
             }
         }
