@@ -154,7 +154,7 @@ public class Player extends CharacterGame {
             updateHP(updatePlayer.getHP());
             if (!getArmor().equals(updatePlayer.getArmor()) || !updatePlayer.getHolding().equals(getHolding()))
             {
-                for(MapObject mo : updatePlayer.getHolding())
+                for (MapObject mo : updatePlayer.getHolding())
                 {
                     mo.setMap(playing);
                     mo.setType();
@@ -218,6 +218,35 @@ public class Player extends CharacterGame {
                     bpObject.setMap(play);
                 }
             }
+        }
+    }
+
+    public void reset(Player resetPlayer)
+    {
+        if (!getArmor().equals(resetPlayer.getArmor()) || !resetPlayer.getHolding().equals(getHolding()))
+        {
+            for (MapObject mo : resetPlayer.getHolding())
+            {
+                mo.setMap(playing);
+                mo.setType();
+            }
+            for (Armor armorPiece : resetPlayer.getArmor().values())
+            {
+                armorPiece.setMap(playing);
+                armorPiece.setType();
+            }
+            for (List<MapObject> bp : backpack)
+            {
+                for (MapObject bpObject : bp)
+                {
+                    bpObject.setMap(playing);
+                    bpObject.setType();
+                }
+            }
+            setHolding(resetPlayer.getHolding());
+            setArmor(resetPlayer.getArmor());
+            backpack = resetPlayer.getBackpackMap();
+            createSkin();
         }
     }
 }

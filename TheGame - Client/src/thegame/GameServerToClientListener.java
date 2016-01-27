@@ -13,6 +13,7 @@ import thegame.com.Game.Objects.Characters.Player;
 import thegame.com.Game.Objects.MapObject;
 import thegame.com.Menu.Account;
 import thegame.com.Menu.Message;
+import thegame.shared.IGameClientToServer;
 import thegame.shared.IGameServerToClientListener;
 
 /**
@@ -24,12 +25,15 @@ public class GameServerToClientListener implements IGameServerToClientListener {
     private transient Map map;
     private transient Account myAccount;
     private transient Player me;
+    
+    private transient IGameClientToServer gameClientToServer;
 
-    public void loadAfterRecieve(Account myAccount, Map map, Player me) throws RemoteException
+    public void loadAfterRecieve(Account myAccount, Map map, Player me, IGameClientToServer gameClientToServer) throws RemoteException
     {
         this.myAccount = myAccount;
         this.map = map;
         this.me = me;
+        this.gameClientToServer = gameClientToServer;
     }
 
     @Override
@@ -94,7 +98,19 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         }
         object.setMap(map);
         object.setType();
-        me.addToBackpack(object, spot);
+        if(!me.addToBackpack(object, spot))
+        {
+            Player meReset = gameClientToServer.resetMe(map.getLobby().getID(), me.getID());
+            if(meReset != null)
+            {
+                me.reset(meReset);
+                System.out.println("addToBackpack failed, but The Game managed to reset Player");
+            }
+            else
+            {
+                System.out.println("addToBackpack failed, but The Game could not retrieve a backup Player");
+            }
+        }
     }
 
     @Override
@@ -161,6 +177,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         {
             return;
         }
+        
         me.removeFromBackpack(spot, amount);
     }
 
@@ -171,6 +188,7 @@ public class GameServerToClientListener implements IGameServerToClientListener {
         {
             return;
         }
+       
         me.removeFromBackpack(spot);
     }
 }

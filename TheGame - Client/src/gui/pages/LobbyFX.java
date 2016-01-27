@@ -231,7 +231,7 @@ public class LobbyFX {
                 splash.countTill(50);
                 me = gameClientToServer.getMe(gameServerToClientListener, myAccount);
                 play = (Map) gameClientToServer.getMap(lobby);
-                gameServerToClientListener.loadAfterRecieve(myAccount, play, me);
+                gameServerToClientListener.loadAfterRecieve(myAccount, play, me, gameClientToServer);
                 splash.countTill(75);
                 play.loadAfterRecieve(gameClientToServer, myAccount, me, this);
                 me.loadAfterRecieve(play);

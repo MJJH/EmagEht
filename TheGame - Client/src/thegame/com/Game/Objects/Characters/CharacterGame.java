@@ -139,7 +139,7 @@ public abstract class CharacterGame extends MapObject {
 
         List<MapObject> l = backpack[spot];
 
-        if (l.size()>0)
+        if (l.size() > 0)
         {
             while (amount > 0 && l.size() > 0)
             {
@@ -190,14 +190,7 @@ public abstract class CharacterGame extends MapObject {
             }
         }
 
-        if (armor.get(add.getArmorType().bodypart) == null)
-        {
-            armor.put(add.getArmorType().bodypart, add);
-        } else
-        {
-            armor.put(add.getArmorType().bodypart, add);
-        }
-
+        armor.put(add.getArmorType().bodypart, add);
     }
 
     /**
@@ -250,13 +243,7 @@ public abstract class CharacterGame extends MapObject {
             }
         }
 
-        if (holding == null)
-        {
-            holding = add;
-        } else
-        {
-            holding = add;
-        }
+        holding = add;
     }
 
     /**

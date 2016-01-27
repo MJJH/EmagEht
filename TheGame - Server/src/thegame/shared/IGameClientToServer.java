@@ -45,4 +45,6 @@ public interface IGameClientToServer extends Remote {
     public boolean unequipTool(int lobbyID, int playerID) throws RemoteException;
     
     public boolean unequipArmor(int lobbyID, int playerID, ArmorType.bodyPart partToUnequip) throws RemoteException;
+
+    public Player resetMe(int lobbyID, int playerID) throws RemoteException;
 }

@@ -301,4 +301,30 @@ public class GameClientToServerHandler implements IGameClientToServer {
         }
         return false;
     }
+
+    @Override
+    public Player resetMe(int lobbyID, int playerID) throws RemoteException
+    {
+        Map map = null;
+        for(Lobby lobby : gameServerToClientHandler.getGameTable().keySet())
+        {
+            if(lobby.getID() == lobbyID)
+            {
+                map = gameServerToClientHandler.getGameTable().get(lobby);
+                break;
+            }
+        }
+        if(map == null)
+        {
+            return null;
+        }
+        for(Player player : map.getPlayers())
+        {
+            if(player.getID() == playerID)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
 }
