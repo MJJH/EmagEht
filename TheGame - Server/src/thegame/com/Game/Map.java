@@ -77,7 +77,8 @@ public class Map implements Serializable {
      */
     public Map(Lobby lobby, GameServerToClientHandler gameServerToClientHandler, GameClientToServerHandler gameClientToServerHandler)
     {
-        id = idCounter++;
+        id = idCounter;
+        idCounter++;
         width = 500;
         height = 100;
 
@@ -666,7 +667,7 @@ public class Map implements Serializable {
         return hash;
     }
 
-    private int getID()
+    public int getID()
     {
         return id;
     }

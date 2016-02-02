@@ -76,8 +76,7 @@ public class GameServerToClientHandler {
     {
         Map game = new Map(lobby, this, gameClientToServerHandler);
         gameTable.put(lobby, game);
-        lobbyServerToClientHandler.requestConnectToGame(lobby);
-        Timer update = new Timer("Game" + Integer.toString(lobby.getID()));
+        Timer update = new Timer("Game|Lobby:" + Integer.toString(lobby.getID()) + "Map:" + Integer.toString(game.getID()));
         gameTimerTable.put(game, update);
         update.schedule(new TimerTask() {
 
@@ -87,6 +86,7 @@ public class GameServerToClientHandler {
                 game.update();
             }
         }, 0, 1000 / 60);
+        lobbyServerToClientHandler.requestConnectToGame(lobby);
         theGameServer.changeGames(1);
     }
 
